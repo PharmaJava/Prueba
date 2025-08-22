@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimizador de Patrimonio Avanzado</title>
+    <title>Optimizador de Patrimonio</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #2c3e50;
@@ -40,7 +42,7 @@
 
         .container {
             width: 100%;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -63,20 +65,17 @@
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             font-size: 1.5rem;
-            margin-bottom: 10px;
         }
 
         .header-controls {
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
         }
 
         .language-selector {
             display: flex;
             align-items: center;
-            gap: 10px;
         }
 
         .language-selector select {
@@ -92,7 +91,7 @@
             background-color: var(--accent);
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 10px 15px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
@@ -145,7 +144,7 @@
             font-weight: 500;
         }
 
-        input, select, textarea {
+        input, select {
             width: 100%;
             padding: 10px 15px;
             border: 1px solid var(--border);
@@ -258,7 +257,7 @@
             flex-wrap: wrap;
             gap: 20px;
             margin: 2rem 0;
-        }
+}
 
         .simulation-card {
             flex: 1;
@@ -273,26 +272,6 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
-        }
-
-        .scenario-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .scenario-tab {
-            padding: 10px 20px;
-            background-color: var(--light);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .scenario-tab.active {
-            background-color: var(--secondary);
-            color: white;
         }
 
         .fire-results {
@@ -371,22 +350,6 @@
             color: #721c24;
         }
 
-        .savings-goals, .future-events {
-            margin: 1.5rem 0;
-        }
-
-        .goal-item, .event-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .goal-item:last-child, .event-item:last-child {
-            border-bottom: none;
-        }
-
         footer {
             background-color: var(--primary);
             color: white;
@@ -439,6 +402,7 @@
             .header-controls {
                 width: 100%;
                 justify-content: space-between;
+                margin-top: 10px;
             }
             
             .hero h1 {
@@ -456,10 +420,6 @@
             .asset-row {
                 flex-direction: column;
                 align-items: stretch;
-            }
-
-            .scenario-tabs {
-                flex-wrap: wrap;
             }
 
             .fire-results {
@@ -485,7 +445,7 @@
 <body>
     <header>
         <div class="container header-content">
-            <div class="logo">Optimizador de Patrimonio Avanzado</div>
+            <div class="logo">Optimizador de Patrimonio</div>
             <div class="header-controls">
                 <div class="language-selector">
                     <select id="languageSelector">
@@ -493,8 +453,6 @@
                         <option value="en">English</option>
                     </select>
                 </div>
-                <button id="saveScenario">Guardar Escenario</button>
-                <button id="loadScenario">Cargar Escenario</button>
                 <button id="downloadPDF" class="btn-download">Descargar PDF</button>
             </div>
         </div>
@@ -502,7 +460,7 @@
 
     <section class="hero">
         <div class="container">
-            <h1 id="heroTitle">Optimiza tu Patrimonio y Alcanza tu Independencia Financiera</h1>
+            <h1 id="heroTitle">Optimiza tu Patrimonio y Maximiza tu Rentabilidad</h1>
             <p id="heroText">Analiza y mejora la distribución de tu cash para alcanzar tus objetivos financieros con nuestro sistema de evaluación integral.</p>
         </div>
     </section>
@@ -515,8 +473,6 @@
                 <div class="tab" data-tab="dca" id="tab-dca">DCA</div>
                 <div class="tab" data-tab="fire-goals" id="tab-fire-goals">Metas FIRE</div>
                 <div class="tab" data-tab="taxes" id="tab-taxes">Impuestos</div>
-                <div class="tab" data-tab="scenarios" id="tab-scenarios">Escenarios</div>
-                <div class="tab" data-tab="events" id="tab-events">Eventos Futuros</div>
             </div>
         </div>
 
@@ -604,15 +560,6 @@
                         <input type="number" id="cryptoRate" min="0" step="0.1" value="12">
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="otherAssets" id="otherAssetsLabel">Otros Activos:</label>
-                    <input type="number" id="otherAssets" min="0" value="0">
-                    <div class="form-group sub-input">
-                        <label for="otherAssetsRate" id="otherAssetsRateLabel">Rendimiento esperado (%):</label>
-                        <input type="number" id="otherAssetsRate" min="0" step="0.1" value="4">
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -634,7 +581,6 @@
                                 <option value="equities" id="dcaEquitiesOption">Renta Variable</option>
                                 <option value="realEstate" id="dcaRealEstateOption">Inmobiliario</option>
                                 <option value="crypto" id="dcaCryptoOption">Criptomonedas</option>
-                                <option value="otherAssets" id="dcaOtherOption">Otros Activos</option>
                             </select>
                         </div>
                         <div class="percentage-input">
@@ -694,77 +640,6 @@
                         <option value="deferred" id="taxDeferredOption">Fondos de inversión (diferido)</option>
                         <option value="exempt" id="taxExemptOption">Cuentas pensiones (exento hasta límite)</option>
                     </select>
-                </div>
-                
-                <div class="tax-impact">
-                    <h4 id="taxImpactTitle">Impacto Fiscal Estimado</h4>
-                    <p id="taxImpactText">El impacto fiscal se calculará después de introducir todos los datos.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="scenarios">
-            <div class="card">
-                <h2 class="card-title" id="scenariosTitle">Escenarios</h2>
-                
-                <div class="scenario-tabs">
-                    <div class="scenario-tab active" data-scenario="conservative">Conservador</div>
-                    <div class="scenario-tab" data-scenario="moderate">Moderado</div>
-                    <div class="scenario-tab" data-scenario="aggressive">Agresivo</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="scenarioName" id="scenarioNameLabel">Nombre del escenario:</label>
-                    <input type="text" id="scenarioName" value="Mi Escenario">
-                </div>
-                
-                <div class="form-group">
-                    <button id="compareScenarios">Comparar Escenarios</button>
-                    <button id="resetScenarios">Reiniciar Escenarios</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="events">
-            <div class="card">
-                <h2 class="card-title" id="eventsTitle">Eventos Futuros y Metas de Ahorro</h2>
-                
-                <div class="savings-goals">
-                    <h3 id="savingsGoalsTitle">Metas de Ahorro</h3>
-                    <div class="form-group">
-                        <label for="goalName" id="goalNameLabel">Nombre de la meta:</label>
-                        <input type="text" id="goalName" placeholder="Ej: Entrada para vivienda">
-                    </div>
-                    <div class="form-group">
-                        <label for="goalAmount" id="goalAmountLabel">Cantidad objetivo (€):</label>
-                        <input type="number" id="goalAmount" min="0" value="30000">
-                    </div>
-                    <div class="form-group">
-                        <label for="goalYears" id="goalYearsLabel">Años para alcanzar la meta:</label>
-                        <input type="number" id="goalYears" min="1" value="5">
-                    </div>
-                    <button id="addGoal">Añadir Meta</button>
-                    
-                    <div id="goalsList"></div>
-                </div>
-                
-                <div class="future-events">
-                    <h3 id="futureEventsTitle">Eventos Futuros</h3>
-                    <div class="form-group">
-                        <label for="eventName" id="eventNameLabel">Nombre del evento:</label>
-                        <input type="text" id="eventName" placeholder="Ej: Boda, Viaje, etc.">
-                    </div>
-                    <div class="form-group">
-                        <label for="eventCost" id="eventCostLabel">Costo estimado (€):</label>
-                        <input type="number" id="eventCost" min="0" value="10000">
-                    </div>
-                    <div class="form-group">
-                        <label for="eventYear" id="eventYearLabel">Año del evento:</label>
-                        <input type="number" id="eventYear" min="2023" max="2100" value="2025">
-                    </div>
-                    <button id="addEvent">Añadir Evento</button>
-                    
-                    <div id="eventsList"></div>
                 </div>
             </div>
         </div>
@@ -849,11 +724,6 @@
                     <canvas id="projectionChart"></canvas>
                 </div>
                 
-                <h3 id="sensitivityTitle">Análisis de Sensibilidad</h3>
-                <div class="distribution-chart">
-                    <canvas id="sensitivityChart"></canvas>
-                </div>
-                
                 <h3 id="recommendationsTitle">Recomendaciones</h3>
                 <div id="recommendations">
                     <p id="recommendationsText">Aquí aparecerán recomendaciones personalizadas para optimizar tu patrimonio.</p>
@@ -864,7 +734,7 @@
 
     <footer>
         <div class="container">
-            <p id="footerText">© 2025 Optimizador de Patrimonio Avanzado. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión.</p>
+            <p id="footerText">© 2025 Optimizador de Patrimonio. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión.</p>
         </div>
     </footer>
 
@@ -878,11 +748,9 @@
                 "tab-dca": "DCA",
                 "tab-fire-goals": "Metas FIRE",
                 "tab-taxes": "Impuestos",
-                "tab-scenarios": "Escenarios",
-                "tab-events": "Eventos Futuros",
                 
                 // Resto de textos
-                "heroTitle": "Optimiza tu Patrimonio y Alcanza tu Independencia Financiera",
+                "heroTitle": "Optimiza tu Patrimonio y Maximiza tu Rentabilidad",
                 "heroText": "Analiza y mejora la distribución de tu cash para alcanzar tus objetivos financieros con nuestro sistema de evaluación integral.",
                 "financialProfileTitle": "Perfil Financiero",
                 "monthlyExpensesLabel": "Gastos Mensuales (€):",
@@ -905,8 +773,6 @@
                 "realEstateRateLabel": "Rendimiento esperado (%):",
                 "cryptoLabel": "Criptomonedas:",
                 "cryptoRateLabel": "Rendimiento esperado (%):",
-                "otherAssetsLabel": "Otros Activos:",
-                "otherAssetsRateLabel": "Rendimiento esperado (%):",
                 "dcaTitle": "DCA (Promedio de Costo en Dólares)",
                 "dcaAmountLabel": "Cantidad Mensual de DCA (€):",
                 "dcaDistributionLabel": "Distribución del DCA:",
@@ -927,19 +793,6 @@
                 "taxStandardOption": "Tributación estándar",
                 "taxDeferredOption": "Fondos de inversión (diferido)",
                 "taxExemptOption": "Cuentas pensiones (exento hasta límite)",
-                "taxImpactTitle": "Impacto Fiscal Estimado",
-                "taxImpactText": "El impacto fiscal se calculará después de introducir todos los datos.",
-                "scenariosTitle": "Escenarios",
-                "scenarioNameLabel": "Nombre del escenario:",
-                "eventsTitle": "Eventos Futuros y Metas de Ahorro",
-                "savingsGoalsTitle": "Metas de Ahorro",
-                "goalNameLabel": "Nombre de la meta:",
-                "goalAmountLabel": "Cantidad objetivo (€):",
-                "goalYearsLabel": "Años para alcanzar la meta:",
-                "futureEventsTitle": "Eventos Futuros",
-                "eventNameLabel": "Nombre del evento:",
-                "eventCostLabel": "Costo estimado (€):",
-                "eventYearLabel": "Año del evento:",
                 "calculateButton": "Calcular Optimización",
                 "resultsTitle": "Resultados de la Optimización",
                 "emergencyFundTitle": "Fondo de Emergencia",
@@ -953,10 +806,9 @@
                 "projectedValueTitle": "Valor Proyectado",
                 "inflationAdjustedTitle": "Ajustado por Inflación",
                 "afterTaxTitle": "Después de Impuestos",
-                "sensitivityTitle": "Análisis de Sensibilidad",
                 "recommendationsTitle": "Recomendaciones",
                 "recommendationsText": "Aquí aparecerán recomendaciones personalizadas para optimizar tu patrimonio.",
-                "footerText": "© 2023 Optimizador de Patrimonio Avanzado. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión."
+                "footerText": "© 2023 Optimizador de Patrimonio. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión."
             },
             en: {
                 // Textos de pestañas
@@ -965,11 +817,9 @@
                 "tab-dca": "DCA",
                 "tab-fire-goals": "FIRE Goals",
                 "tab-taxes": "Taxes",
-                "tab-scenarios": "Scenarios",
-                "tab-events": "Future Events",
                 
                 // Resto de textos
-                "heroTitle": "Optimize Your Assets and Achieve Financial Independence",
+                "heroTitle": "Optimize Your Assets and Maximize Your Returns",
                 "heroText": "Analyze and improve your cash distribution to achieve your financial goals with our comprehensive evaluation system.",
                 "financialProfileTitle": "Financial Profile",
                 "monthlyExpensesLabel": "Monthly Expenses (€):",
@@ -992,8 +842,6 @@
                 "realEstateRateLabel": "Expected Return (%):",
                 "cryptoLabel": "Cryptocurrencies:",
                 "cryptoRateLabel": "Expected Return (%):",
-                "otherAssetsLabel": "Other Assets:",
-                "otherAssetsRateLabel": "Expected Return (%):",
                 "dcaTitle": "DCA (Dollar-Cost Averaging)",
                 "dcaAmountLabel": "Monthly DCA Amount (€):",
                 "dcaDistributionLabel": "DCA Distribution:",
@@ -1014,19 +862,6 @@
                 "taxStandardOption": "Standard taxation",
                 "taxDeferredOption": "Investment funds (deferred)",
                 "taxExemptOption": "Pension accounts (exempt up to limit)",
-                "taxImpactTitle": "Estimated Tax Impact",
-                "taxImpactText": "Tax impact will be calculated after entering all data.",
-                "scenariosTitle": "Scenarios",
-                "scenarioNameLabel": "Scenario name:",
-                "eventsTitle": "Future Events and Savings Goals",
-                "savingsGoalsTitle": "Savings Goals",
-                "goalNameLabel": "Goal name:",
-                "goalAmountLabel": "Target amount (€):",
-                "goalYearsLabel": "Years to achieve goal:",
-                "futureEventsTitle": "Future Events",
-                "eventNameLabel": "Event name:",
-                "eventCostLabel": "Estimated cost (€):",
-                "eventYearLabel": "Event year:",
                 "calculateButton": "Calculate Optimization",
                 "resultsTitle": "Optimization Results",
                 "emergencyFundTitle": "Emergency Fund",
@@ -1040,10 +875,9 @@
                 "projectedValueTitle": "Projected Value",
                 "inflationAdjustedTitle": "Inflation Adjusted",
                 "afterTaxTitle": "After Taxes",
-                "sensitivityTitle": "Sensitivity Analysis",
                 "recommendationsTitle": "Recommendations",
                 "recommendationsText": "Personalized recommendations to optimize your assets will appear here.",
-                "footerText": "© 2023 Advanced Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
+                "footerText": "© 2025 Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
             }
         };
 
@@ -1051,15 +885,6 @@
         let currentLanguage = 'es';
         let distributionChart = null;
         let projectionChart = null;
-        let sensitivityChart = null;
-        let scenarios = {
-            conservative: {},
-            moderate: {},
-            aggressive: {}
-        };
-        let currentScenario = 'conservative';
-        let goals = [];
-        let events = [];
 
         // Cambiar idioma
         function changeLanguage(lang) {
@@ -1123,7 +948,6 @@
                             <option value="equities">${currentLanguage === 'es' ? 'Renta Variable' : 'Equities'}</option>
                             <option value="realEstate">${currentLanguage === 'es' ? 'Inmobiliario' : 'Real Estate'}</option>
                             <option value="crypto">${currentLanguage === 'es' ? 'Criptomonedas' : 'Cryptocurrencies'}</option>
-                            <option value="otherAssets">${currentLanguage === 'es' ? 'Otros Activos' : 'Other Assets'}</option>
                         </select>
                     </div>
                     <div class="percentage-input">
@@ -1145,52 +969,6 @@
                     e.target.value === 'custom' ? 'block' : 'none';
             });
             
-            // Añadir meta de ahorro
-            document.getElementById('addGoal').addEventListener('click', () => {
-                const name = document.getElementById('goalName').value;
-                const amount = parseFloat(document.getElementById('goalAmount').value);
-                const years = parseInt(document.getElementById('goalYears').value);
-                
-                if (name && amount > 0 && years > 0) {
-                    goals.push({ name, amount, years });
-                    updateGoalsList();
-                }
-            });
-            
-            // Añadir evento futuro
-            document.getElementById('addEvent').addEventListener('click', () => {
-                const name = document.getElementById('eventName').value;
-                const cost = parseFloat(document.getElementById('eventCost').value);
-                const year = parseInt(document.getElementById('eventYear').value);
-                
-                if (name && cost > 0 && year > 2022) {
-                    events.push({ name, cost, year });
-                    updateEventsList();
-                }
-            });
-            
-            // Cambiar entre escenarios
-            document.querySelectorAll('.scenario-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    currentScenario = tab.getAttribute('data-scenario');
-                    loadScenario(currentScenario);
-                });
-            });
-            
-            // Guardar escenario
-            document.getElementById('saveScenario').addEventListener('click', saveScenario);
-            
-            // Cargar escenario
-            document.getElementById('loadScenario').addEventListener('click', loadScenarioDialog);
-            
-            // Comparar escenarios
-            document.getElementById('compareScenarios').addEventListener('click', compareScenarios);
-            
-            // Reiniciar escenarios
-            document.getElementById('resetScenarios').addEventListener('click', resetScenarios);
-            
             // Descargar PDF
             document.getElementById('downloadPDF').addEventListener('click', downloadPDF);
             
@@ -1208,218 +986,36 @@
             
             // Inicializar con el idioma por defecto
             changeLanguage('es');
-            
-            // Cargar escenarios guardados si existen
-            loadSavedScenarios();
-        }
-
-        // Actualizar lista de metas
-        function updateGoalsList() {
-            const goalsList = document.getElementById('goalsList');
-            goalsList.innerHTML = '';
-            
-            goals.forEach((goal, index) => {
-                const goalItem = document.createElement('div');
-                goalItem.className = 'goal-item';
-                goalItem.innerHTML = `
-                    <div>
-                        <strong>${goal.name}</strong>: €${goal.amount.toFixed(2)} en ${goal.years} ${currentLanguage === 'es' ? 'años' : 'years'}
-                    </div>
-                    <button class="remove-goal" data-index="${index}">X</button>
-                `;
-                goalsList.appendChild(goalItem);
-            });
-            
-            // Añadir event listeners a los botones de eliminar
-            document.querySelectorAll('.remove-goal').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    goals.splice(index, 1);
-                    updateGoalsList();
-                });
-            });
-        }
-
-        // Actualizar lista de eventos
-        function updateEventsList() {
-            const eventsList = document.getElementById('eventsList');
-            eventsList.innerHTML = '';
-            
-            events.forEach((event, index) => {
-                const eventItem = document.createElement('div');
-                eventItem.className = 'event-item';
-                eventItem.innerHTML = `
-                    <div>
-                        <strong>${event.name}</strong>: €${event.cost.toFixed(2)} en ${event.year}
-                    </div>
-                    <button class="remove-event" data-index="${index}">X</button>
-                `;
-                eventsList.appendChild(eventItem);
-            });
-            
-            // Añadir event listeners a los botones de eliminar
-            document.querySelectorAll('.remove-event').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    events.splice(index, 1);
-                    updateEventsList();
-                });
-            });
-        }
-
-        // Guardar escenario
-        function saveScenario() {
-            const scenarioName = document.getElementById('scenarioName').value || currentScenario;
-            const scenarioData = {
-                monthlyExpenses: parseFloat(document.getElementById('monthlyExpenses').value),
-                annualIncome: parseFloat(document.getElementById('annualIncome').value),
-                riskProfile: document.getElementById('riskProfile').value,
-                inflationRate: parseFloat(document.getElementById('inflationRate').value),
-                totalAssets: parseFloat(document.getElementById('totalAssets').value),
-                checkingAccount: parseFloat(document.getElementById('checkingAccount').value),
-                remuneratedAccount: parseFloat(document.getElementById('remuneratedAccount').value),
-                remuneratedAccountRate: parseFloat(document.getElementById('remuneratedAccountRate').value),
-                fixedIncome: parseFloat(document.getElementById('fixedIncome').value),
-                fixedIncomeRate: parseFloat(document.getElementById('fixedIncomeRate').value),
-                equities: parseFloat(document.getElementById('equities').value),
-                equitiesRate: parseFloat(document.getElementById('equitiesRate').value),
-                realEstate: parseFloat(document.getElementById('realEstate').value),
-                realEstateRate: parseFloat(document.getElementById('realEstateRate').value),
-                crypto: parseFloat(document.getElementById('crypto').value),
-                cryptoRate: parseFloat(document.getElementById('cryptoRate').value),
-                otherAssets: parseFloat(document.getElementById('otherAssets').value),
-                otherAssetsRate: parseFloat(document.getElementById('otherAssetsRate').value),
-                dcaAmount: parseFloat(document.getElementById('dcaAmount').value),
-                taxRate: parseFloat(document.getElementById('taxRate').value),
-                taxTreatment: document.getElementById('taxTreatment').value,
-                fireGoal: document.getElementById('fireGoal').value,
-                customFireGoal: parseFloat(document.getElementById('customFireGoal').value),
-                currentAge: parseInt(document.getElementById('currentAge').value),
-                retirementAge: parseInt(document.getElementById('retirementAge').value)
-            };
-            
-            scenarios[currentScenario] = scenarioData;
-            
-            // Guardar en localStorage
-            localStorage.setItem('financialScenarios', JSON.stringify(scenarios));
-            
-            alert(currentLanguage === 'es' ? 
-                `Escenario "${scenarioName}" guardado correctamente.` :
-                `Scenario "${scenarioName}" saved successfully.`);
-        }
-
-        // Cargar escenario
-        function loadScenario(scenario) {
-            const scenarioData = scenarios[scenario];
-            if (scenarioData) {
-                document.getElementById('monthlyExpenses').value = scenarioData.monthlyExpenses;
-                document.getElementById('annualIncome').value = scenarioData.annualIncome;
-                document.getElementById('riskProfile').value = scenarioData.riskProfile;
-                document.getElementById('inflationRate').value = scenarioData.inflationRate;
-                document.getElementById('totalAssets').value = scenarioData.totalAssets;
-                document.getElementById('checkingAccount').value = scenarioData.checkingAccount;
-                document.getElementById('remuneratedAccount').value = scenarioData.remuneratedAccount;
-                document.getElementById('remuneratedAccountRate').value = scenarioData.remuneratedAccountRate;
-                document.getElementById('fixedIncome').value = scenarioData.fixedIncome;
-                document.getElementById('fixedIncomeRate').value = scenarioData.fixedIncomeRate;
-                document.getElementById('equities').value = scenarioData.equities;
-                document.getElementById('equitiesRate').value = scenarioData.equitiesRate;
-                document.getElementById('realEstate').value = scenarioData.realEstate;
-                document.getElementById('realEstateRate').value = scenarioData.realEstateRate;
-                document.getElementById('crypto').value = scenarioData.crypto;
-                document.getElementById('cryptoRate').value = scenarioData.cryptoRate;
-                document.getElementById('otherAssets').value = scenarioData.otherAssets;
-                document.getElementById('otherAssetsRate').value = scenarioData.otherAssetsRate;
-                document.getElementById('dcaAmount').value = scenarioData.dcaAmount;
-                document.getElementById('taxRate').value = scenarioData.taxRate;
-                document.getElementById('taxTreatment').value = scenarioData.taxTreatment;
-                document.getElementById('fireGoal').value = scenarioData.fireGoal;
-                document.getElementById('customFireGoal').value = scenarioData.customFireGoal;
-                document.getElementById('currentAge').value = scenarioData.currentAge;
-                document.getElementById('retirementAge').value = scenarioData.retirementAge;
-                
-                // Mostrar/ocultar objetivo FIRE personalizado
-                document.getElementById('customFireGoalContainer').style.display = 
-                    scenarioData.fireGoal === 'custom' ? 'block' : 'none';
-            }
-        }
-
-        // Cargar escenarios guardados
-        function loadSavedScenarios() {
-            const savedScenarios = localStorage.getItem('financialScenarios');
-            if (savedScenarios) {
-                scenarios = JSON.parse(savedScenarios);
-                loadScenario(currentScenario);
-            }
-        }
-
-        // Diálogo para cargar escenario
-        function loadScenarioDialog() {
-            // Implementar diálogo para seleccionar escenario
-            const scenarioNames = Object.keys(scenarios);
-            if (scenarioNames.length === 0) {
-                alert(currentLanguage === 'es' ? 
-                    "No hay escenarios guardados." :
-                    "No saved scenarios.");
-                return;
-            }
-            
-            let message = currentLanguage === 'es' ? 
-                "Escenarios guardados:\n" :
-                "Saved scenarios:\n";
-            
-            scenarioNames.forEach((name, index) => {
-                message += `${index + 1}. ${name}\n`;
-            });
-            
-            const choice = prompt(message + "\n" + (currentLanguage === 'es' ? 
-                "Introduce el número del escenario a cargar:" :
-                "Enter the number of the scenario to load:"));
-            
-            const index = parseInt(choice) - 1;
-            if (index >= 0 && index < scenarioNames.length) {
-                currentScenario = scenarioNames[index];
-                loadScenario(currentScenario);
-                
-                // Actualizar la pestaña activa
-                document.querySelectorAll('.scenario-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                    if (tab.getAttribute('data-scenario') === currentScenario) {
-                        tab.classList.add('active');
-                    }
-                });
-            }
-        }
-
-        // Comparar escenarios
-        function compareScenarios() {
-            // Implementar comparación de escenarios
-            alert(currentLanguage === 'es' ? 
-                "Funcionalidad de comparación de escenarios en desarrollo." :
-                "Scenario comparison functionality in development.");
-        }
-
-        // Reiniciar escenarios
-        function resetScenarios() {
-            if (confirm(currentLanguage === 'es' ? 
-                "¿Estás seguro de que quieres reiniciar todos los escenarios? Se perderán todos los datos guardados." :
-                "Are you sure you want to reset all scenarios? All saved data will be lost.")) {
-                scenarios = {
-                    conservative: {},
-                    moderate: {},
-                    aggressive: {}
-                };
-                localStorage.removeItem('financialScenarios');
-                loadScenario(currentScenario);
-            }
         }
 
         // Descargar PDF
         function downloadPDF() {
-            // Implementar descarga de PDF
-            alert(currentLanguage === 'es' ? 
-                "Funcionalidad de descarga de PDF en desarrollo." :
-                "PDF download functionality in development.");
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Título
+            doc.setFontSize(20);
+            doc.text(currentLanguage === 'es' ? 'Optimizador de Patrimonio - Reporte' : 'Assets Optimizer - Report', 105, 15, { align: 'center' });
+            
+            // Fecha
+            doc.setFontSize(12);
+            const now = new Date();
+            const dateStr = now.toLocaleDateString();
+            doc.text(`${currentLanguage === 'es' ? 'Fecha' : 'Date'}: ${dateStr}`, 105, 22, { align: 'center' });
+            
+            // Capturar la sección de resultados
+            const resultsElement = document.getElementById('results');
+            
+            html2canvas(resultsElement).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = doc.internal.pageSize.getWidth() - 20;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                doc.addImage(imgData, 'PNG', 10, 30, imgWidth, imgHeight);
+                
+                // Guardar PDF
+                doc.save(`Optimizador_Patrimonio_${dateStr.replace(/\//g, '-')}.pdf`);
+            });
         }
 
         // Calcular la optimización
@@ -1441,9 +1037,8 @@
             const equities = parseFloat(document.getElementById('equities').value) || 0;
             const realEstate = parseFloat(document.getElementById('realEstate').value) || 0;
             const crypto = parseFloat(document.getElementById('crypto').value) || 0;
-            const otherAssets = parseFloat(document.getElementById('otherAssets').value) || 0;
             
-            const totalAllocated = checkingAccount + remuneratedAccount + fixedIncome + equities + realEstate + crypto + otherAssets;
+            const totalAllocated = checkingAccount + remuneratedAccount + fixedIncome + equities + realEstate + crypto;
             const unallocated = totalAssets - totalAllocated;
             
             // Calcular puntuación (simplificado)
@@ -1462,14 +1057,12 @@
             }
             
             // Ajustar según diversificación
-            const distribution = [remuneratedAccount, fixedIncome, equities, realEstate, crypto, otherAssets];
+            const distribution = [remuneratedAccount, fixedIncome, equities, realEstate, crypto];
             const nonZeroAssets = distribution.filter(val => val > 0).length;
-            if (nonZeroAssets >= 4) {
+            if (nonZeroAssets >= 3) {
                 score += 10;
-            } else if (nonZeroAssets === 3) {
-                score += 5;
             } else if (nonZeroAssets === 2) {
-                score += 2;
+                score += 5;
             } else {
                 score -= 5;
             }
@@ -1488,7 +1081,7 @@
             document.getElementById('scoreValue').textContent = score;
             
             // Actualizar gráfico de distribución
-            updateDistributionChart(checkingAccount, remuneratedAccount, fixedIncome, equities, realEstate, crypto, otherAssets, unallocated);
+            updateDistributionChart(checkingAccount, remuneratedAccount, fixedIncome, equities, realEstate, crypto, unallocated);
             
             // Actualizar información del fondo de emergencia
             const emergencyFundProgress = Math.min(100, (checkingAccount + remuneratedAccount) / recommendedEmergencyFund * 100);
@@ -1498,7 +1091,7 @@
                 `${currentLanguage === 'es' ? 'Fondo de emergencia recomendado: ' : 'Recommended emergency fund: '}€${recommendedEmergencyFund.toFixed(2)} (${emergencyFundMonths} ${currentLanguage === 'es' ? 'meses de gastos' : 'months of expenses'})`;
             
             // Actualizar mapa de calor de riesgo
-            updateRiskHeatmap(checkingAccount, remuneratedAccount, fixedIncome, equities, realEstate, crypto, otherAssets, riskProfile);
+            updateRiskHeatmap(checkingAccount, remuneratedAccount, fixedIncome, equities, realEstate, crypto, riskProfile);
             
             // Calcular proyección
             calculateProjection();
@@ -1517,7 +1110,7 @@
         }
 
         // Actualizar gráfico de distribución
-        function updateDistributionChart(checking, remunerated, fixedIncome, equities, realEstate, crypto, otherAssets, unallocated) {
+        function updateDistributionChart(checking, remunerated, fixedIncome, equities, realEstate, crypto, unallocated) {
             const ctx = document.getElementById('distributionChart').getContext('2d');
             
             if (distributionChart) {
@@ -1534,11 +1127,10 @@
                         currentLanguage === 'es' ? 'Renta Variable' : 'Equities',
                         currentLanguage === 'es' ? 'Inmobiliario' : 'Real Estate',
                         currentLanguage === 'es' ? 'Criptomonedas' : 'Cryptocurrencies',
-                        currentLanguage === 'es' ? 'Otros Activos' : 'Other Assets',
                         currentLanguage === 'es' ? 'Sin asignar' : 'Unallocated'
                     ],
                     datasets: [{
-                        data: [checking, remunerated, fixedIncome, equities, realEstate, crypto, otherAssets, unallocated],
+                        data: [checking, remunerated, fixedIncome, equities, realEstate, crypto, unallocated],
                         backgroundColor: [
                             '#95a5a6', // checking - gris
                             '#3498db', // remunerated - azul
@@ -1546,7 +1138,6 @@
                             '#f1c40f', // equities - amarillo
                             '#e67e22', // real estate - naranja
                             '#9b59b6', // crypto - morado
-                            '#1abc9c', // otros - turquesa
                             '#e74c3c'  // unallocated - rojo
                         ]
                     }]
@@ -1573,18 +1164,17 @@
         }
 
         // Actualizar mapa de calor de riesgo
-        function updateRiskHeatmap(checking, remunerated, fixedIncome, equities, realEstate, crypto, otherAssets, riskProfile) {
+        function updateRiskHeatmap(checking, remunerated, fixedIncome, equities, realEstate, crypto, riskProfile) {
             const heatmap = document.getElementById('riskHeatmap');
             heatmap.innerHTML = '';
             
-            const total = checking + remunerated + fixedIncome + equities + realEstate + crypto + otherAssets;
+            const total = checking + remunerated + fixedIncome + equities + realEstate + crypto;
             if (total === 0) return;
             
             const assets = [
                 { name: currentLanguage === 'es' ? 'Cuenta Corriente' : 'Checking Account', value: checking, risk: 1 },
                 { name: currentLanguage === 'es' ? 'Cuenta Remunerada' : 'Remunerated Account', value: remunerated, risk: 2 },
                 { name: currentLanguage === 'es' ? 'Renta Fija' : 'Fixed Income', value: fixedIncome, risk: 3 },
-                { name: currentLanguage === 'es' ? 'Otros Activos' : 'Other Assets', value: otherAssets, risk: 4 },
                 { name: currentLanguage === 'es' ? 'Inmobiliario' : 'Real Estate', value: realEstate, risk: 5 },
                 { name: currentLanguage === 'es' ? 'Renta Variable' : 'Equities', value: equities, risk: 7 },
                 { name: currentLanguage === 'es' ? 'Criptomonedas' : 'Cryptocurrencies', value: crypto, risk: 9 }
@@ -1634,9 +1224,6 @@
             const crypto = parseFloat(document.getElementById('crypto').value) || 0;
             const cryptoRate = parseFloat(document.getElementById('cryptoRate').value) / 100;
             
-            const otherAssets = parseFloat(document.getElementById('otherAssets').value) || 0;
-            const otherAssetsRate = parseFloat(document.getElementById('otherAssetsRate').value) / 100;
-            
             // Obtener datos de DCA
             const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
             let dcaAllocations = [];
@@ -1657,7 +1244,7 @@
             }
             
             // Calcular valor actual
-            const currentValue = checkingAccount + remuneratedAccount + fixedIncome + equities + realEstate + crypto + otherAssets;
+            const currentValue = checkingAccount + remuneratedAccount + fixedIncome + equities + realEstate + crypto;
             document.getElementById('currentValue').textContent = `€${currentValue.toFixed(2)}`;
             
             // Calcular proyección año por año
@@ -1675,7 +1262,6 @@
                 yearlyGrowth += equities * equitiesRate;
                 yearlyGrowth += realEstate * realEstateRate;
                 yearlyGrowth += crypto * cryptoRate;
-                yearlyGrowth += otherAssets * otherAssetsRate;
                 
                 // Aplicar impuestos a las ganancias (simplificado)
                 const taxableGrowth = yearlyGrowth - (checkingAccount * checkingRate); // Excluir cuenta corriente
@@ -1707,14 +1293,6 @@
                 projectedValue += yearlyGrowth + dcaGrowth;
                 projectedValueAfterTax += growthAfterTax + dcaGrowthAfterTax;
                 
-                // Ajustar por eventos futuros (retiros de capital)
-                events.forEach(event => {
-                    if (event.year === new Date().getFullYear() + year) {
-                        projectedValue -= event.cost;
-                        projectedValueAfterTax -= event.cost;
-                    }
-                });
-                
                 // Guardar proyección para este año
                 yearlyProjection.push(projectedValue);
                 yearlyProjectionAfterTax.push(projectedValueAfterTax);
@@ -1730,70 +1308,176 @@
             document.getElementById('afterTaxValue').textContent = `€${projectedValueAfterTax.toFixed(2)}`;
             
             // Actualizar gráfico de proyección
-            
-            // Actualizar gráfico de proyección
-            updateProjectionChart(years, initialCapital, monthlyContribution, annualReturn, inflationRate, taxRate);
+            updateProjectionChart(yearlyProjection, yearlyProjectionAfterTax, years, inflationRate);
         }
 
-        function updateProjectionChart(years, initialCapital, monthlyContribution, annualReturn, inflationRate, taxRate) {
-            const labels = [];
-            const datasetRaw = [];
-            const datasetAfterTax = [];
-            const datasetInflationAdjusted = [];
-
-            let balance = initialCapital;
-
-            for (let year = 1; year <= years; year++) {
-                balance = balance * (1 + annualReturn) + monthlyContribution * 12;
-                const afterTax = balance * (1 - taxRate);
-                const inflationAdjusted = balance / Math.pow(1 + inflationRate, year);
-
-                labels.push(`Año ${year}`);
-                datasetRaw.push(balance);
-                datasetAfterTax.push(afterTax);
-                datasetInflationAdjusted.push(inflationAdjusted);
-            }
-
-            if (window.projectionChart) {
-                window.projectionChart.destroy();
-            }
-
+        // Actualizar gráfico de proyección
+        function updateProjectionChart(yearlyProjection, yearlyProjectionAfterTax, years, inflationRate) {
             const ctx = document.getElementById('projectionChart').getContext('2d');
-            window.projectionChart = new Chart(ctx, {
+            
+            // Calcular valores ajustados por inflación
+            const inflationAdjustedProjection = yearlyProjection.map((value, index) => {
+                return value / Math.pow(1 + inflationRate, index + 1);
+            });
+            
+            const inflationAdjustedProjectionAfterTax = yearlyProjectionAfterTax.map((value, index) => {
+                return value / Math.pow(1 + inflationRate, index + 1);
+            });
+            
+            // Crear etiquetas para los años
+            const labels = Array.from({length: years}, (_, i) => i + 1);
+            
+            if (projectionChart) {
+                projectionChart.destroy();
+            }
+            
+            projectionChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Proyección Bruta (€)',
-                            data: datasetRaw,
+                            label: currentLanguage === 'es' ? 'Valor Nominal' : 'Nominal Value',
+                            data: yearlyProjection,
                             borderColor: '#3498db',
-                            fill: false
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            fill: true,
+                            tension: 0.3
                         },
                         {
-                            label: 'Proyección tras Impuestos (€)',
-                            data: datasetAfterTax,
+                            label: currentLanguage === 'es' ? 'Valor después de Impuestos' : 'Value After Taxes',
+                            data: yearlyProjectionAfterTax,
+                            borderColor: '#9b59b6',
+                            backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: currentLanguage === 'es' ? 'Ajustado por Inflación' : 'Inflation Adjusted',
+                            data: inflationAdjustedProjection,
                             borderColor: '#e74c3c',
-                            fill: false
-                        },
-                        {
-                            label: 'Proyección Ajustada por Inflación (€)',
-                            data: datasetInflationAdjusted,
-                            borderColor: '#2ecc71',
-                            fill: false
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            fill: true,
+                            tension: 0.3
                         }
                     ]
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: '€'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: currentLanguage === 'es' ? 'Años' : 'Years'
+                            }
                         }
                     }
                 }
             });
         }
+
+        // Calcular objetivos FIRE
+        function calculateFIREGoals() {
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+            const annualExpenses = monthlyExpenses * 12;
+            
+            // Calcular objetivos FIRE
+            const leanFIRE = annualExpenses * 25;
+            const baristaFIRE = annualExpenses * 25 * 0.7; // Asumiendo que se cubre el 30% con ingresos
+            const coastFIRE = annualExpenses * 20; // Simplificado
+            const fullFIRE = annualExpenses * 33;
+            
+            // Mostrar valores FIRE
+            document.getElementById('leanFireValue').textContent = `€${leanFIRE.toFixed(0)}`;
+            document.getElementById('baristaFireValue').textContent = `€${baristaFIRE.toFixed(0)}`;
+            document.getElementById('coastFireValue').textContent = `€${coastFIRE.toFixed(0)}`;
+            document.getElementById('fullFireValue').textContent = `€${fullFIRE.toFixed(0)}`;
+            
+            // Calcular años para alcanzar cada objetivo (simplificado)
+            const currentAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
+            const annualReturn = 0.07; // 7% de retorno anual promedio
+            const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
+            const annualSavings = annualIncome - annualExpenses;
+            
+            document.getElementById('leanFireYear').textContent = 
+                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, leanFIRE, annualReturn, annualSavings)}`;
+            document.getElementById('baristaFireYear').textContent = 
+                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, baristaFIRE, annualReturn, annualSavings)}`;
+            document.getElementById('coastFireYear').textContent = 
+                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, coastFIRE, annualReturn, annualSavings)}`;
+            document.getElementById('fullFireYear').textContent = 
+                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, fullFIRE, annualReturn, annualSavings)}`;
+        }
+
+        // Calcular años para alcanzar un objetivo
+        function calculateYearsToGoal(current, goal, annualReturn, annualSavings) {
+            if (current >= goal) return new Date().getFullYear();
+            
+            let years = 0;
+            let value = current;
+            
+            while (value < goal && years < 60) {
+                value = value * (1 + annualReturn) + annualSavings;
+                years++;
+            }
+            
+            return new Date().getFullYear() + years;
+        }
+
+        // Generar recomendaciones
+        function generateRecommendations() {
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+            const riskProfile = document.getElementById('riskProfile').value;
+            const checkingAccount = parseFloat(document.getElementById('checkingAccount').value) || 0;
+            const remuneratedAccount = parseFloat(document.getElementById('remuneratedAccount').value) || 0;
+            const emergencyFund = checkingAccount + remuneratedAccount;
+            const recommendedEmergencyFund = monthlyExpenses * (riskProfile === 'conservative' ? 9 : 4.5);
+            
+            const equities = parseFloat(document.getElementById('equities').value) || 0;
+            const crypto = parseFloat(document.getElementById('crypto').value) || 0;
+            const currentAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
+            const riskyAssetsPercentage = (equities + crypto) / currentAssets * 100;
+            
+            let recommendationsHTML = '';
+            
+            // Recomendaciones sobre fondo de emergencia
+            if (emergencyFund < recommendedEmergencyFund * 0.9) {
+                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
+                    `🔶 Tu fondo de emergencia (€${emergencyFund.toFixed(2)}) está por debajo de lo recomendado (€${recommendedEmergencyFund.toFixed(2)}). Considera aumentar tus ahorros en cuentas de fácil acceso.` : 
+                    `🔶 Your emergency fund (€${emergencyFund.toFixed(2)}) is below the recommended amount (€${recommendedEmergencyFund.toFixed(2)}). Consider increasing your savings in easily accessible accounts.`}</p>`;
+            } else if (emergencyFund > recommendedEmergencyFund * 1.5) {
+                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
+                    `🔶 Tienes un exceso de efectivo en tu fondo de emergencia (€${emergencyFund.toFixed(2)} vs €${recommendedEmergencyFund.toFixed(2)} recomendado). Considera invertir el excedente para obtener mejor rentabilidad.` : 
+                    `🔶 You have excess cash in your emergency fund (€${emergencyFund.toFixed(2)} vs €${recommendedEmergencyFund.toFixed(2)} recommended). Consider investing the surplus for better returns.`}</p>`;
+            } else {
+                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
+                    `✅ Tu fondo de emergencia está en un nivel adecuado.` : 
+                    `✅ Your emergency fund is at an adequate level.`}</p>`;
+            }
+            
+            // Recomendaciones basadas en el perfil de riesgo
+            if (riskProfile === 'conservative' && riskyAssetsPercentage > 30) {
+                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
+                    `🔶 Para tu perfil conservador, tienes mucho peso en activos de riesgo (${riskyAssetsPercentage.toFixed(1)}%). Considera reducir tu exposición a renta variable y criptomonedas.` : 
+                    `🔶 For your conservative profile, you have a high weight in risky assets (${riskyAssetsPercentage.toFixed(1)}%). Consider reducing your exposure to equities and cryptocurrencies.`}</p>`;
+            } else if (riskProfile === 'aggressive' && riskyAssetsPercentage < 40) {
+                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
+                    `🔶 Para tu perfil agresivo, podrías aumentar tu exposición a activos de crecimiento. Actualmente tienes solo un ${riskyAssetsPercentage.toFixed(1)}% en renta variable y criptomonedas.` : 
+                    `🔶 For your aggressive profile, you could increase your exposure to growth assets. You currently have only ${riskyAssetsPercentage.toFixed(1)}% in equities and cryptocurrencies.`}</p>`;
+            }
+            
+            document.getElementById('recommendations').innerHTML = recommendationsHTML;
+        }
+
+        // Inicializar cuando el DOM esté cargado
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
