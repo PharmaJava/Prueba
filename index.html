@@ -6,8 +6,6 @@
     <title>Optimizador de Patrimonio</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #2c3e50;
@@ -87,16 +85,6 @@
             cursor: pointer;
         }
 
-        .btn-download {
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
         .hero {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
@@ -150,6 +138,11 @@
             border: 1px solid var(--border);
             border-radius: 4px;
             font-size: 1rem;
+        }
+
+        input[readonly] {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
         }
 
         button {
@@ -238,13 +231,18 @@
             flex: 2;
         }
 
-        .percentage-input {
+        .amount-input {
             flex: 1;
         }
 
         .add-asset {
             background-color: var(--warning);
             margin-top: 0.5rem;
+        }
+
+        .remove-asset {
+            background-color: var(--accent);
+            padding: 8px 12px;
         }
 
         .time-slider {
@@ -257,7 +255,7 @@
             flex-wrap: wrap;
             gap: 20px;
             margin: 2rem 0;
-}
+        }
 
         .simulation-card {
             flex: 1;
@@ -393,6 +391,15 @@
             display: block;
         }
 
+        .dca-total {
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -453,7 +460,6 @@
                         <option value="en">English</option>
                     </select>
                 </div>
-                <button id="downloadPDF" class="btn-download">Descargar PDF</button>
             </div>
         </div>
     </header>
@@ -506,19 +512,19 @@
                 <h2 class="card-title" id="currentAssetsTitle">Patrimonio Actual</h2>
                 <div class="form-group">
                     <label for="totalAssets" id="totalAssetsLabel">Patrimonio Total (€):</label>
-                    <input type="number" id="totalAssets" min="0" value="50000">
+                    <input type="number" id="totalAssets" min="0" value="50000" readonly>
                 </div>
                 
                 <h3 id="distributionTitle">Distribución Actual</h3>
                 
                 <div class="form-group">
                     <label for="checkingAccount" id="checkingAccountLabel">Cuenta Corriente (0%):</label>
-                    <input type="number" id="checkingAccount" min="0" value="5000">
+                    <input type="number" id="checkingAccount" min="0" value="5000" class="asset-input-field">
                 </div>
                 
                 <div class="form-group">
                     <label for="remuneratedAccount" id="remuneratedAccountLabel">Cuenta Remunerada (2%):</label>
-                    <input type="number" id="remuneratedAccount" min="0" value="10000">
+                    <input type="number" id="remuneratedAccount" min="0" value="10000" class="asset-input-field">
                     <div class="form-group sub-input">
                         <label for="remuneratedAccountRate" id="remuneratedAccountRateLabel">Tasa de interés (%):</label>
                         <input type="number" id="remuneratedAccountRate" min="0" step="0.1" value="2">
@@ -527,7 +533,7 @@
                 
                 <div class="form-group">
                     <label for="fixedIncome" id="fixedIncomeLabel">Renta Fija:</label>
-                    <input type="number" id="fixedIncome" min="0" value="15000">
+                    <input type="number" id="fixedIncome" min="0" value="15000" class="asset-input-field">
                     <div class="form-group sub-input">
                         <label for="fixedIncomeRate" id="fixedIncomeRateLabel">Rendimiento esperado (%):</label>
                         <input type="number" id="fixedIncomeRate" min="0" step="0.1" value="3.5">
@@ -536,7 +542,7 @@
                 
                 <div class="form-group">
                     <label for="equities" id="equitiesLabel">Renta Variable (fondos indexados/acciones):</label>
-                    <input type="number" id="equities" min="0" value="15000">
+                    <input type="number" id="equities" min="0" value="15000" class="asset-input-field">
                     <div class="form-group sub-input">
                         <label for="equitiesRate" id="equitiesRateLabel">Rendimiento esperado (%):</label>
                         <input type="number" id="equitiesRate" min="0" step="0.1" value="7">
@@ -545,7 +551,7 @@
                 
                 <div class="form-group">
                     <label for="realEstate" id="realEstateLabel">Inmobiliario:</label>
-                    <input type="number" id="realEstate" min="0" value="3000">
+                    <input type="number" id="realEstate" min="0" value="3000" class="asset-input-field">
                     <div class="form-group sub-input">
                         <label for="realEstateRate" id="realEstateRateLabel">Rendimiento esperado (%):</label>
                         <input type="number" id="realEstateRate" min="0" step="0.1" value="5">
@@ -554,7 +560,7 @@
                 
                 <div class="form-group">
                     <label for="crypto" id="cryptoLabel">Criptomonedas:</label>
-                    <input type="number" id="crypto" min="0" value="2000">
+                    <input type="number" id="crypto" min="0" value="2000" class="asset-input-field">
                     <div class="form-group sub-input">
                         <label for="cryptoRate" id="cryptoRateLabel">Rendimiento esperado (%):</label>
                         <input type="number" id="cryptoRate" min="0" step="0.1" value="12">
@@ -572,7 +578,7 @@
                 </div>
                 
                 <div id="dcaBox" class="dca-box">
-                    <h3 id="dcaDistributionLabel">Distribución del DCA:</h3>
+                    <h3 id="dcaDistributionLabel">Distribución del DCA (valores absolutos):</h3>
                     <div class="asset-row">
                         <div class="asset-input">
                             <select class="dca-asset-type">
@@ -583,11 +589,12 @@
                                 <option value="crypto" id="dcaCryptoOption">Criptomonedas</option>
                             </select>
                         </div>
-                        <div class="percentage-input">
-                            <input type="number" class="dca-percentage" min="0" max="100" placeholder="%" value="100">
+                        <div class="amount-input">
+                            <input type="number" class="dca-amount" min="0" placeholder="€" value="500">
                         </div>
                     </div>
                     <button class="add-asset" id="addAssetButton">+ Añadir otro activo</button>
+                    <div class="dca-total" id="dcaTotal">Total asignado: €500.00 de €500.00</div>
                 </div>
             </div>
         </div>
@@ -619,7 +626,7 @@
                 
                 <div class="form-group">
                     <label for="retirementAge" id="retirementAgeLabel">Edad de retiro deseada:</label>
-                    <input type="number" id="retirementAge" min="18" max="100" value="55">
+                    <input type="number" id"retirementAge" min="18" max="100" value="55">
                 </div>
             </div>
         </div>
@@ -734,7 +741,7 @@
 
     <footer>
         <div class="container">
-            <p id="footerText">© 2025 Optimizador de Patrimonio. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión.</p>
+            <p id="footerText">© 2023 Optimizador de Patrimonio. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión.</p>
         </div>
     </footer>
 
@@ -775,7 +782,7 @@
                 "cryptoRateLabel": "Rendimiento esperado (%):",
                 "dcaTitle": "DCA (Promedio de Costo en Dólares)",
                 "dcaAmountLabel": "Cantidad Mensual de DCA (€):",
-                "dcaDistributionLabel": "Distribución del DCA:",
+                "dcaDistributionLabel": "Distribución del DCA (valores absolutos):",
                 "addAssetButton": "+ Añadir otro activo",
                 "fireGoalsTitle": "Metas FIRE (Independencia Financiera)",
                 "fireGoalLabel": "Objetivo FIRE:",
@@ -844,7 +851,7 @@
                 "cryptoRateLabel": "Expected Return (%):",
                 "dcaTitle": "DCA (Dollar-Cost Averaging)",
                 "dcaAmountLabel": "Monthly DCA Amount (€):",
-                "dcaDistributionLabel": "DCA Distribution:",
+                "dcaDistributionLabel": "DCA Distribution (absolute values):",
                 "addAssetButton": "+ Add Another Asset",
                 "fireGoalsTitle": "FIRE Goals (Financial Independence)",
                 "fireGoalLabel": "FIRE Goal:",
@@ -877,7 +884,7 @@
                 "afterTaxTitle": "After Taxes",
                 "recommendationsTitle": "Recommendations",
                 "recommendationsText": "Personalized recommendations to optimize your assets will appear here.",
-                "footerText": "© 2025 Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
+                "footerText": "© 2023 Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
             }
         };
 
@@ -909,6 +916,44 @@
             }
         }
 
+        // Calcular el patrimonio total automáticamente
+        function calculateTotalAssets() {
+            const checkingAccount = parseFloat(document.getElementById('checkingAccount').value) || 0;
+            const remuneratedAccount = parseFloat(document.getElementById('remuneratedAccount').value) || 0;
+            const fixedIncome = parseFloat(document.getElementById('fixedIncome').value) || 0;
+            const equities = parseFloat(document.getElementById('equities').value) || 0;
+            const realEstate = parseFloat(document.getElementById('realEstate').value) || 0;
+            const crypto = parseFloat(document.getElementById('crypto').value) || 0;
+            
+            const total = checkingAccount + remuneratedAccount + fixedIncome + equities + realEstate + crypto;
+            document.getElementById('totalAssets').value = total.toFixed(2);
+            
+            return total;
+        }
+
+        // Calcular el total de DCA asignado
+        function calculateDCATotal() {
+            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
+            let totalAssigned = 0;
+            
+            document.querySelectorAll('.dca-amount').forEach(input => {
+                totalAssigned += parseFloat(input.value) || 0;
+            });
+            
+            const dcaTotalElement = document.getElementById('dcaTotal');
+            if (dcaTotalElement) {
+                dcaTotalElement.textContent = `${currentLanguage === 'es' ? 'Total asignado: ' : 'Total assigned: '}€${totalAssigned.toFixed(2)} ${currentLanguage === 'es' ? 'de' : 'of'} €${dcaAmount.toFixed(2)}`;
+                
+                if (totalAssigned > dcaAmount) {
+                    dcaTotalElement.style.color = '#e74c3c';
+                } else {
+                    dcaTotalElement.style.color = '';
+                }
+            }
+            
+            return totalAssigned;
+        }
+
         // Inicializar la aplicación
         function initApp() {
             // Configurar el selector de idioma
@@ -930,10 +975,19 @@
                 });
             });
             
+            // Calcular automáticamente el patrimonio total cuando cambie cualquier activo
+            document.querySelectorAll('.asset-input-field').forEach(input => {
+                input.addEventListener('input', calculateTotalAssets);
+            });
+            
+            // Calcular patrimonio total inicial
+            calculateTotalAssets();
+            
             // Mostrar/ocultar la caja de DCA
             document.getElementById('dcaAmount').addEventListener('input', (e) => {
                 const dcaBox = document.getElementById('dcaBox');
                 dcaBox.style.display = e.target.value > 0 ? 'block' : 'none';
+                calculateDCATotal();
             });
             
             // Añadir otro activo al DCA
@@ -950,17 +1004,28 @@
                             <option value="crypto">${currentLanguage === 'es' ? 'Criptomonedas' : 'Cryptocurrencies'}</option>
                         </select>
                     </div>
-                    <div class="percentage-input">
-                        <input type="number" class="dca-percentage" min="0" max="100" placeholder="%">
+                    <div class="amount-input">
+                        <input type="number" class="dca-amount" min="0" placeholder="€" value="0">
                     </div>
                     <button class="remove-asset">X</button>
                 `;
                 
                 newRow.querySelector('.remove-asset').addEventListener('click', function() {
                     this.parentElement.remove();
+                    calculateDCATotal();
                 });
                 
+                newRow.querySelector('.dca-amount').addEventListener('input', calculateDCATotal);
+                
                 document.getElementById('dcaBox').appendChild(newRow);
+                calculateDCATotal();
+            });
+            
+            // Calcular total DCA cuando cambien los valores
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('dca-amount')) {
+                    calculateDCATotal();
+                }
             });
             
             // Mostrar/ocultar objetivo FIRE personalizado
@@ -968,9 +1033,6 @@
                 document.getElementById('customFireGoalContainer').style.display = 
                     e.target.value === 'custom' ? 'block' : 'none';
             });
-            
-            // Descargar PDF
-            document.getElementById('downloadPDF').addEventListener('click', downloadPDF);
             
             // Calcular optimización
             document.getElementById('calculateButton').addEventListener('click', calculateOptimization);
@@ -986,36 +1048,6 @@
             
             // Inicializar con el idioma por defecto
             changeLanguage('es');
-        }
-
-        // Descargar PDF
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Título
-            doc.setFontSize(20);
-            doc.text(currentLanguage === 'es' ? 'Optimizador de Patrimonio - Reporte' : 'Assets Optimizer - Report', 105, 15, { align: 'center' });
-            
-            // Fecha
-            doc.setFontSize(12);
-            const now = new Date();
-            const dateStr = now.toLocaleDateString();
-            doc.text(`${currentLanguage === 'es' ? 'Fecha' : 'Date'}: ${dateStr}`, 105, 22, { align: 'center' });
-            
-            // Capturar la sección de resultados
-            const resultsElement = document.getElementById('results');
-            
-            html2canvas(resultsElement).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = doc.internal.pageSize.getWidth() - 20;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
-                doc.addImage(imgData, 'PNG', 10, 30, imgWidth, imgHeight);
-                
-                // Guardar PDF
-                doc.save(`Optimizador_Patrimonio_${dateStr.replace(/\//g, '-')}.pdf`);
-            });
         }
 
         // Calcular la optimización
@@ -1232,12 +1264,11 @@
                 const dcaRows = document.querySelectorAll('.asset-row');
                 dcaRows.forEach(row => {
                     const assetType = row.querySelector('.dca-asset-type').value;
-                    const percentage = parseFloat(row.querySelector('.dca-percentage').value) / 100 || 0;
-                    if (percentage > 0) {
+                    const amount = parseFloat(row.querySelector('.dca-amount').value) || 0;
+                    if (amount > 0) {
                         dcaAllocations.push({
                             type: assetType,
-                            percentage: percentage,
-                            amount: dcaAmount * percentage
+                            amount: amount
                         });
                     }
                 });
@@ -1303,9 +1334,9 @@
             const inflationAdjustedValueAfterTax = projectedValueAfterTax / Math.pow(1 + inflationRate, years);
             
             // Mostrar valores proyectados
-            document.getElementById('projectedValue').textContent = `€${projectedValue.toFixed(2)}`;
-            document.getElementById('inflationAdjustedValue').textContent = `€${inflationAdjustedValue.toFixed(2)}`;
-            document.getElementById('afterTaxValue').textContent = `€${projectedValueAfterTax.toFixed(2)}`;
+            document.getElementById('projectedValue').textContent = `€${isNaN(projectedValue) ? '0.00' : projectedValue.toFixed(2)}`;
+            document.getElementById('inflationAdjustedValue').textContent = `€${isNaN(inflationAdjustedValue) ? '0.00' : inflationAdjustedValue.toFixed(2)}`;
+            document.getElementById('afterTaxValue').textContent = `€${isNaN(projectedValueAfterTax) ? '0.00' : projectedValueAfterTax.toFixed(2)}`;
             
             // Actualizar gráfico de proyección
             updateProjectionChart(yearlyProjection, yearlyProjectionAfterTax, years, inflationRate);
