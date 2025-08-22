@@ -490,8 +490,8 @@
                     <input type="number" id="monthlyExpenses" min="0" value="2000">
                 </div>
                 <div class="form-group">
-                    <label for="annualIncome" id="annualIncomeLabel">Ingresos Anuales (€):</label>
-                    <input type="number" id="annualIncome" min="0" value="40000">
+                    <label for="monthlyIncome" id="monthlyIncomeLabel">Ingresos Mensuales (€):</label>
+                    <input type="number" id="monthlyIncome" min="0" value="3000">
                 </div>
                 <div class="form-group">
                     <label for="riskProfile" id="riskProfileLabel">Perfil de Riesgo:</label>
@@ -626,7 +626,7 @@
                 
                 <div class="form-group">
                     <label for="retirementAge" id="retirementAgeLabel">Edad de retiro deseada:</label>
-                    <input type="number" id"retirementAge" min="18" max="100" value="55">
+                    <input type="number" id="retirementAge" min="18" max="100" value="55">
                 </div>
             </div>
         </div>
@@ -761,7 +761,7 @@
                 "heroText": "Analiza y mejora la distribución de tu cash para alcanzar tus objetivos financieros con nuestro sistema de evaluación integral.",
                 "financialProfileTitle": "Perfil Financiero",
                 "monthlyExpensesLabel": "Gastos Mensuales (€):",
-                "annualIncomeLabel": "Ingresos Anuales (€):",
+                "monthlyIncomeLabel": "Ingresos Mensuales (€):",
                 "riskProfileLabel": "Perfil de Riesgo:",
                 "conservativeOption": "Conservador (6-12 meses)",
                 "aggressiveOption": "Agresivo (3-6 meses)",
@@ -774,7 +774,7 @@
                 "remuneratedAccountRateLabel": "Tasa de interés (%):",
                 "fixedIncomeLabel": "Renta Fija:",
                 "fixedIncomeRateLabel": "Rendimiento esperado (%):",
-                "equitiesLabel": "Renta Variable (fondos indexados/acciones):",
+                "equitiesLabel": "Renda Variable (fondos indexados/acciones):",
                 "equitiesRateLabel": "Rendimiento esperado (%):",
                 "realEstateLabel": "Inmobiliario:",
                 "realEstateRateLabel": "Rendimiento esperado (%):",
@@ -830,7 +830,7 @@
                 "heroText": "Analyze and improve your cash distribution to achieve your financial goals with our comprehensive evaluation system.",
                 "financialProfileTitle": "Financial Profile",
                 "monthlyExpensesLabel": "Monthly Expenses (€):",
-                "annualIncomeLabel": "Annual Income (€):",
+                "monthlyIncomeLabel": "Monthly Income (€):",
                 "riskProfileLabel": "Risk Profile:",
                 "conservativeOption": "Conservative (6-12 months)",
                 "aggressiveOption": "Aggressive (3-6 months)",
@@ -1054,6 +1054,8 @@
         function calculateOptimization() {
             // Obtener valores de entrada
             const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const annualIncome = monthlyIncome * 12;
             const riskProfile = document.getElementById('riskProfile').value;
             const inflationRate = parseFloat(document.getElementById('inflationRate').value) || 0;
             const totalAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
@@ -1434,7 +1436,8 @@
             // Calcular años para alcanzar cada objetivo (simplificado)
             const currentAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
             const annualReturn = 0.07; // 7% de retorno anual promedio
-            const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
+            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const annualIncome = monthlyIncome * 12;
             const annualSavings = annualIncome - annualExpenses;
             
             document.getElementById('leanFireYear').textContent = 
@@ -1500,14 +1503,27 @@
                     `🔶 For your conservative profile, you have a high weight in risky assets (${riskyAssetsPercentage.toFixed(1)}%). Consider reducing your exposure to equities and cryptocurrencies.`}</p>`;
             } else if (riskProfile === 'aggressive' && riskyAssetsPercentage < 40) {
                 recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Para tu perfil agresivo, podrías aumentar tu exposición a activos de crecimiento. Actualmente tienes solo un ${riskyAssetsPercentage.toFixed(1)}% en renta variable y criptomonedas.` : 
-                    `🔶 For your aggressive profile, you could increase your exposure to growth assets. You currently have only ${riskyAssetsPercentage.toFixed(1)}% in equities and cryptocurrencies.`}</p>`;
+                    `🔶 Para tu perfil agresivo, podrías aumentar tu exposición a activos de riesgo (actualmente ${riskyAssetsPercentage.toFixed(1)}%). Considera asignar más a renta variable y criptomonedas.` : 
+                    `🔶 For your aggressive profile, you could increase your exposure to risky assets (currently ${riskyAssetsPercentage.toFixed(1)}%). Consider allocating more to equities and cryptocurrencies.`}</p>`;
+            } else {
+                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
+                    `✅ Tu asignación de activos de riesgo (${riskyAssetsPercentage.toFixed(1)}%) es adecuada para tu perfil.` : 
+                    `✅ Your risky assets allocation (${riskyAssetsPercentage.toFixed(1)}%) is adequate for your profile.`}</p>`;
             }
+            
+            // Otras recomendaciones generales
+            recommendationsHTML += `<p>${currentLanguage === 'es' ? 
+                `💡 Considera utilizar cuentas de ahorro fiscalmente eficientes (como cuentas de pensiones) para minimizar tu carga fiscal.` : 
+                `💡 Consider using tax-efficient savings accounts (such as pension accounts) to minimize your tax burden.`}</p>`;
+            
+            recommendationsHTML += `<p>${currentLanguage === 'es' ? 
+                `💡 Recuerda revisar periódicamente tu asignación de activos y rebalancear si es necesario.` : 
+                `💡 Remember to periodically review your asset allocation and rebalance if necessary.`}</p>`;
             
             document.getElementById('recommendations').innerHTML = recommendationsHTML;
         }
 
-        // Inicializar cuando el DOM esté cargado
+        // Inicializar la aplicación cuando el DOM esté cargado
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
