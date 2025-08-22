@@ -6,8 +6,6 @@
     <title>Optimizador de Patrimonio Avanzado</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #2c3e50;
@@ -58,12 +56,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .logo {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .language-selector {
@@ -81,21 +88,31 @@
             cursor: pointer;
         }
 
+        .btn-download {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
         .hero {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 3rem 0;
+            padding: 2rem 0;
             text-align: center;
         }
 
         .hero h1 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 1rem;
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             max-width: 800px;
             margin: 0 auto;
         }
@@ -106,11 +123,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
             margin: 1.5rem 0;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
         }
 
         .card-title {
@@ -166,11 +178,6 @@
 
         .btn-calculate:hover {
             background-color: #27ae60;
-        }
-
-        .btn-download {
-            background-color: var(--accent);
-            margin-left: 10px;
         }
 
         .results {
@@ -255,7 +262,7 @@
 
         .simulation-card {
             flex: 1;
-            min-width: 250px;
+            min-width: 200px;
             text-align: center;
             padding: 1.5rem;
             border-radius: 8px;
@@ -263,7 +270,7 @@
         }
 
         .simulation-value {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
         }
@@ -272,6 +279,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .scenario-tab {
@@ -289,7 +297,7 @@
 
         .fire-results {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin: 2rem 0;
         }
@@ -336,7 +344,7 @@
 
         .heatmap {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
             margin: 1rem 0;
         }
@@ -387,26 +395,35 @@
             margin-top: 3rem;
         }
 
+        .tabs-container {
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
         .tabs {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 0;
             border-bottom: 1px solid var(--border);
+            min-width: max-content;
         }
 
         .tab {
-            padding: 10px 20px;
+            padding: 12px 20px;
             cursor: pointer;
             transition: background-color 0.3s;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
         }
 
         .tab.active {
-            background-color: var(--secondary);
-            color: white;
-            border-radius: 4px 4px 0 0;
+            background-color: var(--light);
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
         }
 
         .tab-content {
             display: none;
+            padding: 1.5rem 0;
         }
 
         .tab-content.active {
@@ -414,8 +431,22 @@
         }
 
         @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
             .hero h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
             }
             
             .simulation-result {
@@ -434,6 +465,20 @@
             .fire-results {
                 grid-template-columns: 1fr;
             }
+            
+            .tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .simulation-card {
+                min-width: 100%;
+            }
         }
     </style>
 </head>
@@ -441,11 +486,13 @@
     <header>
         <div class="container header-content">
             <div class="logo">Optimizador de Patrimonio Avanzado</div>
-            <div class="language-selector">
-                <select id="languageSelector">
-                    <option value="es">Español</option>
-                    <option value="en">English</option>
-                </select>
+            <div class="header-controls">
+                <div class="language-selector">
+                    <select id="languageSelector">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
                 <button id="saveScenario">Guardar Escenario</button>
                 <button id="loadScenario">Cargar Escenario</button>
                 <button id="downloadPDF" class="btn-download">Descargar PDF</button>
@@ -461,14 +508,16 @@
     </section>
 
     <div class="container">
-        <div class="tabs">
-            <div class="tab active" data-tab="financial-profile">Perfil Financiero</div>
-            <div class="tab" data-tab="current-assets">Patrimonio Actual</div>
-            <div class="tab" data-tab="dca">DCA</div>
-            <div class="tab" data-tab="fire-goals">Metas FIRE</div>
-            <div class="tab" data-tab="taxes">Impuestos</div>
-            <div class="tab" data-tab="scenarios">Escenarios</div>
-            <div class="tab" data-tab="events">Eventos Futuros</div>
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="financial-profile" id="tab-financial-profile">Perfil Financiero</div>
+                <div class="tab" data-tab="current-assets" id="tab-current-assets">Patrimonio Actual</div>
+                <div class="tab" data-tab="dca" id="tab-dca">DCA</div>
+                <div class="tab" data-tab="fire-goals" id="tab-fire-goals">Metas FIRE</div>
+                <div class="tab" data-tab="taxes" id="tab-taxes">Impuestos</div>
+                <div class="tab" data-tab="scenarios" id="tab-scenarios">Escenarios</div>
+                <div class="tab" data-tab="events" id="tab-events">Eventos Futuros</div>
+            </div>
         </div>
 
         <div class="tab-content active" id="financial-profile">
@@ -815,7 +864,7 @@
 
     <footer>
         <div class="container">
-            <p id="footerText">© 2023 Optimizador de Patrimonio Avanzado. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión.</p>
+            <p id="footerText">© 2025 Optimizador de Patrimonio Avanzado. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión.</p>
         </div>
     </footer>
 
@@ -823,158 +872,178 @@
         // Textos en diferentes idiomas
         const translations = {
             es: {
-                heroTitle: "Optimiza tu Patrimonio y Alcanza tu Independencia Financiera",
-                heroText: "Analiza y mejora la distribución de tu cash para alcanzar tus objetivos financieros con nuestro sistema de evaluación integral.",
-                financialProfileTitle: "Perfil Financiero",
-                monthlyExpensesLabel: "Gastos Mensuales (€):",
-                annualIncomeLabel: "Ingresos Anuales (€):",
-                riskProfileLabel: "Perfil de Riesgo:",
-                conservativeOption: "Conservador (6-12 meses)",
-                aggressiveOption: "Agresivo (3-6 meses)",
-                inflationRateLabel: "Tasa de Inflación (%):",
-                currentAssetsTitle: "Patrimonio Actual",
-                totalAssetsLabel: "Patrimonio Total (€):",
-                distributionTitle: "Distribución Actual",
-                checkingAccountLabel: "Cuenta Corriente (0%):",
-                remuneratedAccountLabel: "Cuenta Remunerada (2%):",
-                remuneratedAccountRateLabel: "Tasa de interés (%):",
-                fixedIncomeLabel: "Renta Fija:",
-                fixedIncomeRateLabel: "Rendimiento esperado (%):",
-                equitiesLabel: "Renta Variable (fondos indexados/acciones):",
-                equitiesRateLabel: "Rendimiento esperado (%):",
-                realEstateLabel: "Inmobiliario:",
-                realEstateRateLabel: "Rendimiento esperado (%):",
-                cryptoLabel: "Criptomonedas:",
-                cryptoRateLabel: "Rendimiento esperado (%):",
-                otherAssetsLabel: "Otros Activos:",
-                otherAssetsRateLabel: "Rendimiento esperado (%):",
-                dcaTitle: "DCA (Promedio de Costo en Dólares)",
-                dcaAmountLabel: "Cantidad Mensual de DCA (€):",
-                dcaDistributionLabel: "Distribución del DCA:",
-                addAssetButton: "+ Añadir otro activo",
-                fireGoalsTitle: "Metas FIRE (Independencia Financiera)",
-                fireGoalLabel: "Objetivo FIRE:",
-                fireLeanOption: "FIRE Lean (gastos anuales × 25)",
-                fireBaristaOption: "Barista FIRE (gastos anuales × 25 + ingresos parciales)",
-                fireCoastOption: "Coast FIRE (suficiente para retiro sin más aportaciones)",
-                fireFullOption: "Full FIRE (gastos anuales × 30-40)",
-                fireCustomOption: "Personalizado",
-                customFireGoalLabel: "Monto objetivo personalizado (€):",
-                currentAgeLabel: "Edad actual:",
-                retirementAgeLabel: "Edad de retiro deseada:",
-                taxesTitle: "Impuestos",
-                taxRateLabel: "Tipo impositivo efectivo (%):",
-                taxTreatmentLabel: "Tratamiento fiscal preferente:",
-                taxStandardOption: "Tributación estándar",
-                taxDeferredOption: "Fondos de inversión (diferido)",
-                taxExemptOption: "Cuentas pensiones (exento hasta límite)",
-                taxImpactTitle: "Impacto Fiscal Estimado",
-                taxImpactText: "El impacto fiscal se calculará después de introducir todos los datos.",
-                scenariosTitle: "Escenarios",
-                scenarioNameLabel: "Nombre del escenario:",
-                eventsTitle: "Eventos Futuros y Metas de Ahorro",
-                savingsGoalsTitle: "Metas de Ahorro",
-                goalNameLabel: "Nombre de la meta:",
-                goalAmountLabel: "Cantidad objetivo (€):",
-                goalYearsLabel: "Años para alcanzar la meta:",
-                futureEventsTitle: "Eventos Futuros",
-                eventNameLabel: "Nombre del evento:",
-                eventCostLabel: "Costo estimado (€):",
-                eventYearLabel: "Año del evento:",
-                calculateButton: "Calcular Optimización",
-                resultsTitle: "Resultados de la Optimización",
-                emergencyFundTitle: "Fondo de Emergencia",
-                emergencyFundText: "Fondo de emergencia recomendado: €0.00 (0 meses de gastos)",
-                riskHeatmapTitle: "Mapa de Calor de Riesgo",
-                fireResultsTitle: "Proyección FIRE",
-                projectionTitle: "Proyección de Patrimonio",
-                timeProjectionLabel: "Años de proyección:",
-                timeProjectionValue: "10 años",
-                currentValueTitle: "Valor Actual",
-                projectedValueTitle: "Valor Proyectado",
-                inflationAdjustedTitle: "Ajustado por Inflación",
-                afterTaxTitle: "Después de Impuestos",
-                sensitivityTitle: "Análisis de Sensibilidad",
-                recommendationsTitle: "Recomendaciones",
-                recommendationsText: "Aquí aparecerán recomendaciones personalizadas para optimizar tu patrimonio.",
-                footerText: "© 2023 Optimizador de Patrimonio Avanzado. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión."
+                // Textos de pestañas
+                "tab-financial-profile": "Perfil Financiero",
+                "tab-current-assets": "Patrimonio Actual",
+                "tab-dca": "DCA",
+                "tab-fire-goals": "Metas FIRE",
+                "tab-taxes": "Impuestos",
+                "tab-scenarios": "Escenarios",
+                "tab-events": "Eventos Futuros",
+                
+                // Resto de textos
+                "heroTitle": "Optimiza tu Patrimonio y Alcanza tu Independencia Financiera",
+                "heroText": "Analiza y mejora la distribución de tu cash para alcanzar tus objetivos financieros con nuestro sistema de evaluación integral.",
+                "financialProfileTitle": "Perfil Financiero",
+                "monthlyExpensesLabel": "Gastos Mensuales (€):",
+                "annualIncomeLabel": "Ingresos Anuales (€):",
+                "riskProfileLabel": "Perfil de Riesgo:",
+                "conservativeOption": "Conservador (6-12 meses)",
+                "aggressiveOption": "Agresivo (3-6 meses)",
+                "inflationRateLabel": "Tasa de Inflación (%):",
+                "currentAssetsTitle": "Patrimonio Actual",
+                "totalAssetsLabel": "Patrimonio Total (€):",
+                "distributionTitle": "Distribución Actual",
+                "checkingAccountLabel": "Cuenta Corriente (0%):",
+                "remuneratedAccountLabel": "Cuenta Remunerada (2%):",
+                "remuneratedAccountRateLabel": "Tasa de interés (%):",
+                "fixedIncomeLabel": "Renta Fija:",
+                "fixedIncomeRateLabel": "Rendimiento esperado (%):",
+                "equitiesLabel": "Renta Variable (fondos indexados/acciones):",
+                "equitiesRateLabel": "Rendimiento esperado (%):",
+                "realEstateLabel": "Inmobiliario:",
+                "realEstateRateLabel": "Rendimiento esperado (%):",
+                "cryptoLabel": "Criptomonedas:",
+                "cryptoRateLabel": "Rendimiento esperado (%):",
+                "otherAssetsLabel": "Otros Activos:",
+                "otherAssetsRateLabel": "Rendimiento esperado (%):",
+                "dcaTitle": "DCA (Promedio de Costo en Dólares)",
+                "dcaAmountLabel": "Cantidad Mensual de DCA (€):",
+                "dcaDistributionLabel": "Distribución del DCA:",
+                "addAssetButton": "+ Añadir otro activo",
+                "fireGoalsTitle": "Metas FIRE (Independencia Financiera)",
+                "fireGoalLabel": "Objetivo FIRE:",
+                "fireLeanOption": "FIRE Lean (gastos anuales × 25)",
+                "fireBaristaOption": "Barista FIRE (gastos anuales × 25 + ingresos parciales)",
+                "fireCoastOption": "Coast FIRE (suficiente para retiro sin más aportaciones)",
+                "fireFullOption": "Full FIRE (gastos anuales × 30-40)",
+                "fireCustomOption": "Personalizado",
+                "customFireGoalLabel": "Monto objetivo personalizado (€):",
+                "currentAgeLabel": "Edad actual:",
+                "retirementAgeLabel": "Edad de retiro deseada:",
+                "taxesTitle": "Impuestos",
+                "taxRateLabel": "Tipo impositivo efectivo (%):",
+                "taxTreatmentLabel": "Tratamiento fiscal preferente:",
+                "taxStandardOption": "Tributación estándar",
+                "taxDeferredOption": "Fondos de inversión (diferido)",
+                "taxExemptOption": "Cuentas pensiones (exento hasta límite)",
+                "taxImpactTitle": "Impacto Fiscal Estimado",
+                "taxImpactText": "El impacto fiscal se calculará después de introducir todos los datos.",
+                "scenariosTitle": "Escenarios",
+                "scenarioNameLabel": "Nombre del escenario:",
+                "eventsTitle": "Eventos Futuros y Metas de Ahorro",
+                "savingsGoalsTitle": "Metas de Ahorro",
+                "goalNameLabel": "Nombre de la meta:",
+                "goalAmountLabel": "Cantidad objetivo (€):",
+                "goalYearsLabel": "Años para alcanzar la meta:",
+                "futureEventsTitle": "Eventos Futuros",
+                "eventNameLabel": "Nombre del evento:",
+                "eventCostLabel": "Costo estimado (€):",
+                "eventYearLabel": "Año del evento:",
+                "calculateButton": "Calcular Optimización",
+                "resultsTitle": "Resultados de la Optimización",
+                "emergencyFundTitle": "Fondo de Emergencia",
+                "emergencyFundText": "Fondo de emergencia recomendado: €0.00 (0 meses de gastos)",
+                "riskHeatmapTitle": "Mapa de Calor de Riesgo",
+                "fireResultsTitle": "Proyección FIRE",
+                "projectionTitle": "Proyección de Patrimonio",
+                "timeProjectionLabel": "Años de proyección:",
+                "timeProjectionValue": "10 años",
+                "currentValueTitle": "Valor Actual",
+                "projectedValueTitle": "Valor Proyectado",
+                "inflationAdjustedTitle": "Ajustado por Inflación",
+                "afterTaxTitle": "Después de Impuestos",
+                "sensitivityTitle": "Análisis de Sensibilidad",
+                "recommendationsTitle": "Recomendaciones",
+                "recommendationsText": "Aquí aparecerán recomendaciones personalizadas para optimizar tu patrimonio.",
+                "footerText": "© 2023 Optimizador de Patrimonio Avanzado. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión."
             },
             en: {
-                heroTitle: "Optimize Your Assets and Achieve Financial Independence",
-                heroText: "Analyze and improve your cash distribution to achieve your financial goals with our comprehensive evaluation system.",
-                financialProfileTitle: "Financial Profile",
-                monthlyExpensesLabel: "Monthly Expenses (€):",
-                annualIncomeLabel: "Annual Income (€):",
-                riskProfileLabel: "Risk Profile:",
-                conservativeOption: "Conservative (6-12 months)",
-                aggressiveOption: "Aggressive (3-6 months)",
-                inflationRateLabel: "Inflation Rate (%):",
-                currentAssetsTitle: "Current Assets",
-                totalAssetsLabel: "Total Assets (€):",
-                distributionTitle: "Current Distribution",
-                checkingAccountLabel: "Checking Account (0%):",
-                remuneratedAccountLabel: "Remunerated Account (2%):",
-                remuneratedAccountRateLabel: "Interest Rate (%):",
-                fixedIncomeLabel: "Fixed Income:",
-                fixedIncomeRateLabel: "Expected Return (%):",
-                equitiesLabel: "Equities (index funds/stocks):",
-                equitiesRateLabel: "Expected Return (%):",
-                realEstateLabel: "Real Estate:",
-                realEstateRateLabel: "Expected Return (%):",
-                cryptoLabel: "Cryptocurrencies:",
-                cryptoRateLabel: "Expected Return (%):",
-                otherAssetsLabel: "Other Assets:",
-                otherAssetsRateLabel: "Expected Return (%):",
-                dcaTitle: "DCA (Dollar-Cost Averaging)",
-                dcaAmountLabel: "Monthly DCA Amount (€):",
-                dcaDistributionLabel: "DCA Distribution:",
-                addAssetButton: "+ Add Another Asset",
-                fireGoalsTitle: "FIRE Goals (Financial Independence)",
-                fireGoalLabel: "FIRE Goal:",
-                fireLeanOption: "Lean FIRE (annual expenses × 25)",
-                fireBaristaOption: "Barista FIRE (annual expenses × 25 + partial income)",
-                fireCoastOption: "Coast FIRE (enough to retire without further contributions)",
-                fireFullOption: "Full FIRE (annual expenses × 30-40)",
-                fireCustomOption: "Custom",
-                customFireGoalLabel: "Custom target amount (€):",
-                currentAgeLabel: "Current age:",
-                retirementAgeLabel: "Desired retirement age:",
-                taxesTitle: "Taxes",
-                taxRateLabel: "Effective tax rate (%):",
-                taxTreatmentLabel: "Preferred tax treatment:",
-                taxStandardOption: "Standard taxation",
-                taxDeferredOption: "Investment funds (deferred)",
-                taxExemptOption: "Pension accounts (exempt up to limit)",
-                taxImpactTitle: "Estimated Tax Impact",
-                taxImpactText: "Tax impact will be calculated after entering all data.",
-                scenariosTitle: "Scenarios",
-                scenarioNameLabel: "Scenario name:",
-                eventsTitle: "Future Events and Savings Goals",
-                savingsGoalsTitle: "Savings Goals",
-                goalNameLabel: "Goal name:",
-                goalAmountLabel: "Target amount (€):",
-                goalYearsLabel: "Years to achieve goal:",
-                futureEventsTitle: "Future Events",
-                eventNameLabel: "Event name:",
-                eventCostLabel: "Estimated cost (€):",
-                eventYearLabel: "Event year:",
-                calculateButton: "Calculate Optimization",
-                resultsTitle: "Optimization Results",
-                emergencyFundTitle: "Emergency Fund",
-                emergencyFundText: "Recommended emergency fund: €0.00 (0 months of expenses)",
-                riskHeatmapTitle: "Risk Heatmap",
-                fireResultsTitle: "FIRE Projection",
-                projectionTitle: "Assets Projection",
-                timeProjectionLabel: "Projection years:",
-                timeProjectionValue: "10 years",
-                currentValueTitle: "Current Value",
-                projectedValueTitle: "Projected Value",
-                inflationAdjustedTitle: "Inflation Adjusted",
-                afterTaxTitle: "After Taxes",
-                sensitivityTitle: "Sensitivity Analysis",
-                recommendationsTitle: "Recommendations",
-                recommendationsText: "Personalized recommendations to optimize your assets will appear here.",
-                footerText: "© 2023 Advanced Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
+                // Textos de pestañas
+                "tab-financial-profile": "Financial Profile",
+                "tab-current-assets": "Current Assets",
+                "tab-dca": "DCA",
+                "tab-fire-goals": "FIRE Goals",
+                "tab-taxes": "Taxes",
+                "tab-scenarios": "Scenarios",
+                "tab-events": "Future Events",
+                
+                // Resto de textos
+                "heroTitle": "Optimize Your Assets and Achieve Financial Independence",
+                "heroText": "Analyze and improve your cash distribution to achieve your financial goals with our comprehensive evaluation system.",
+                "financialProfileTitle": "Financial Profile",
+                "monthlyExpensesLabel": "Monthly Expenses (€):",
+                "annualIncomeLabel": "Annual Income (€):",
+                "riskProfileLabel": "Risk Profile:",
+                "conservativeOption": "Conservative (6-12 months)",
+                "aggressiveOption": "Aggressive (3-6 months)",
+                "inflationRateLabel": "Inflation Rate (%):",
+                "currentAssetsTitle": "Current Assets",
+                "totalAssetsLabel": "Total Assets (€):",
+                "distributionTitle": "Current Distribution",
+                "checkingAccountLabel": "Checking Account (0%):",
+                "remuneratedAccountLabel": "Remunerated Account (2%):",
+                "remuneratedAccountRateLabel": "Interest Rate (%):",
+                "fixedIncomeLabel": "Fixed Income:",
+                "fixedIncomeRateLabel": "Expected Return (%):",
+                "equitiesLabel": "Equities (index funds/stocks):",
+                "equitiesRateLabel": "Expected Return (%):",
+                "realEstateLabel": "Real Estate:",
+                "realEstateRateLabel": "Expected Return (%):",
+                "cryptoLabel": "Cryptocurrencies:",
+                "cryptoRateLabel": "Expected Return (%):",
+                "otherAssetsLabel": "Other Assets:",
+                "otherAssetsRateLabel": "Expected Return (%):",
+                "dcaTitle": "DCA (Dollar-Cost Averaging)",
+                "dcaAmountLabel": "Monthly DCA Amount (€):",
+                "dcaDistributionLabel": "DCA Distribution:",
+                "addAssetButton": "+ Add Another Asset",
+                "fireGoalsTitle": "FIRE Goals (Financial Independence)",
+                "fireGoalLabel": "FIRE Goal:",
+                "fireLeanOption": "Lean FIRE (annual expenses × 25)",
+                "fireBaristaOption": "Barista FIRE (annual expenses × 25 + partial income)",
+                "fireCoastOption": "Coast FIRE (enough to retire without further contributions)",
+                "fireFullOption": "Full FIRE (annual expenses × 30-40)",
+                "fireCustomOption": "Custom",
+                "customFireGoalLabel": "Custom target amount (€):",
+                "currentAgeLabel": "Current age:",
+                "retirementAgeLabel": "Desired retirement age:",
+                "taxesTitle": "Taxes",
+                "taxRateLabel": "Effective tax rate (%):",
+                "taxTreatmentLabel": "Preferred tax treatment:",
+                "taxStandardOption": "Standard taxation",
+                "taxDeferredOption": "Investment funds (deferred)",
+                "taxExemptOption": "Pension accounts (exempt up to limit)",
+                "taxImpactTitle": "Estimated Tax Impact",
+                "taxImpactText": "Tax impact will be calculated after entering all data.",
+                "scenariosTitle": "Scenarios",
+                "scenarioNameLabel": "Scenario name:",
+                "eventsTitle": "Future Events and Savings Goals",
+                "savingsGoalsTitle": "Savings Goals",
+                "goalNameLabel": "Goal name:",
+                "goalAmountLabel": "Target amount (€):",
+                "goalYearsLabel": "Years to achieve goal:",
+                "futureEventsTitle": "Future Events",
+                "eventNameLabel": "Event name:",
+                "eventCostLabel": "Estimated cost (€):",
+                "eventYearLabel": "Event year:",
+                "calculateButton": "Calculate Optimization",
+                "resultsTitle": "Optimization Results",
+                "emergencyFundTitle": "Emergency Fund",
+                "emergencyFundText": "Recommended emergency fund: €0.00 (0 months of expenses)",
+                "riskHeatmapTitle": "Risk Heatmap",
+                "fireResultsTitle": "FIRE Projection",
+                "projectionTitle": "Assets Projection",
+                "timeProjectionLabel": "Projection years:",
+                "timeProjectionValue": "10 years",
+                "currentValueTitle": "Current Value",
+                "projectedValueTitle": "Projected Value",
+                "inflationAdjustedTitle": "Inflation Adjusted",
+                "afterTaxTitle": "After Taxes",
+                "sensitivityTitle": "Sensitivity Analysis",
+                "recommendationsTitle": "Recommendations",
+                "recommendationsText": "Personalized recommendations to optimize your assets will appear here.",
+                "footerText": "© 2023 Advanced Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
             }
         };
 
@@ -1661,279 +1730,70 @@
             document.getElementById('afterTaxValue').textContent = `€${projectedValueAfterTax.toFixed(2)}`;
             
             // Actualizar gráfico de proyección
-            updateProjectionChart(yearlyProjection, yearlyProjectionAfterTax, years, inflationRate);
             
-            // Actualizar análisis de sensibilidad
-            updateSensitivityAnalysis(currentValue, years, inflationRate, taxRate);
+            // Actualizar gráfico de proyección
+            updateProjectionChart(years, initialCapital, monthlyContribution, annualReturn, inflationRate, taxRate);
         }
 
-        // Actualizar gráfico de proyección
-        function updateProjectionChart(yearlyProjection, yearlyProjectionAfterTax, years, inflationRate) {
-            const ctx = document.getElementById('projectionChart').getContext('2d');
-            
-            // Calcular valores ajustados por inflación
-            const inflationAdjustedProjection = yearlyProjection.map((value, index) => {
-                return value / Math.pow(1 + inflationRate, index + 1);
-            });
-            
-            const inflationAdjustedProjectionAfterTax = yearlyProjectionAfterTax.map((value, index) => {
-                return value / Math.pow(1 + inflationRate, index + 1);
-            });
-            
-            // Crear etiquetas para los años
-            const labels = Array.from({length: years}, (_, i) => i + 1);
-            
-            if (projectionChart) {
-                projectionChart.destroy();
+        function updateProjectionChart(years, initialCapital, monthlyContribution, annualReturn, inflationRate, taxRate) {
+            const labels = [];
+            const datasetRaw = [];
+            const datasetAfterTax = [];
+            const datasetInflationAdjusted = [];
+
+            let balance = initialCapital;
+
+            for (let year = 1; year <= years; year++) {
+                balance = balance * (1 + annualReturn) + monthlyContribution * 12;
+                const afterTax = balance * (1 - taxRate);
+                const inflationAdjusted = balance / Math.pow(1 + inflationRate, year);
+
+                labels.push(`Año ${year}`);
+                datasetRaw.push(balance);
+                datasetAfterTax.push(afterTax);
+                datasetInflationAdjusted.push(inflationAdjusted);
             }
-            
-            projectionChart = new Chart(ctx, {
+
+            if (window.projectionChart) {
+                window.projectionChart.destroy();
+            }
+
+            const ctx = document.getElementById('projectionChart').getContext('2d');
+            window.projectionChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
                         {
-                            label: currentLanguage === 'es' ? 'Valor Nominal' : 'Nominal Value',
-                            data: yearlyProjection,
+                            label: 'Proyección Bruta (€)',
+                            data: datasetRaw,
                             borderColor: '#3498db',
-                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                            fill: true,
-                            tension: 0.3
+                            fill: false
                         },
                         {
-                            label: currentLanguage === 'es' ? 'Valor después de Impuestos' : 'Value After Taxes',
-                            data: yearlyProjectionAfterTax,
-                            borderColor: '#9b59b6',
-                            backgroundColor: 'rgba(155, 89, 182, 0.1)',
-                            fill: true,
-                            tension: 0.3
-                        },
-                        {
-                            label: currentLanguage === 'es' ? 'Ajustado por Inflación' : 'Inflation Adjusted',
-                            data: inflationAdjustedProjection,
+                            label: 'Proyección tras Impuestos (€)',
+                            data: datasetAfterTax,
                             borderColor: '#e74c3c',
-                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                            fill: true,
-                            tension: 0.3
+                            fill: false
+                        },
+                        {
+                            label: 'Proyección Ajustada por Inflación (€)',
+                            data: datasetInflationAdjusted,
+                            borderColor: '#2ecc71',
+                            fill: false
                         }
                     ]
                 },
                 options: {
                     responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: '€'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: currentLanguage === 'es' ? 'Años' : 'Years'
-                            }
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
                         }
                     }
                 }
             });
         }
-
-        // Actualizar análisis de sensibilidad
-        function updateSensitivityAnalysis(currentValue, years, inflationRate, taxRate) {
-            const ctx = document.getElementById('sensitivityChart').getContext('2d');
-            
-            // Simular diferentes escenarios de inflación y rendimiento
-            const scenarios = [
-                { label: currentLanguage === 'es' ? 'Escenario Base' : 'Base Scenario', inf: inflationRate, return: 0.06 },
-                { label: currentLanguage === 'es' ? 'Alta Inflación' : 'High Inflation', inf: inflationRate + 0.02, return: 0.06 },
-                { label: currentLanguage === 'es' ? 'Baja Inflación' : 'Low Inflation', inf: inflationRate - 0.01, return: 0.06 },
-                { label: currentLanguage === 'es' ? 'Alto Rendimiento' : 'High Return', inf: inflationRate, return: 0.08 },
-                { label: currentLanguage === 'es' ? 'Bajo Rendimiento' : 'Low Return', inf: inflationRate, return: 0.04 }
-            ];
-            
-            const labels = Array.from({length: years}, (_, i) => i + 1);
-            const datasets = scenarios.map((scenario, index) => {
-                const data = [];
-                let value = currentValue;
-                
-                for (let i = 0; i < years; i++) {
-                    value = value * (1 + scenario.return - scenario.inf);
-                    data.push(value);
-                }
-                
-                const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6'];
-                
-                return {
-                    label: scenario.label,
-                    data: data,
-                    borderColor: colors[index],
-                    backgroundColor: colors[index] + '20',
-                    fill: false,
-                    tension: 0.3
-                };
-            });
-            
-            if (sensitivityChart) {
-                sensitivityChart.destroy();
-            }
-            
-            sensitivityChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: '€'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: currentLanguage === 'es' ? 'Años' : 'Years'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Calcular objetivos FIRE
-        function calculateFIREGoals() {
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const annualExpenses = monthlyExpenses * 12;
-            const currentAge = parseInt(document.getElementById('currentAge').value);
-            const retirementAge = parseInt(document.getElementById('retirementAge').value);
-            const yearsToRetirement = retirementAge - currentAge;
-            
-            const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
-            const savingsRate = (annualIncome - annualExpenses) / annualIncome;
-            
-            // Calcular objetivos FIRE
-            const leanFIRE = annualExpenses * 25;
-            const baristaFIRE = annualExpenses * 25 * 0.7; // Asumiendo que se cubre el 30% con ingresos
-            const coastFIRE = calculateCoastFIRE(annualExpenses, currentAge, retirementAge);
-            const fullFIRE = annualExpenses * 33;
-            
-            // Mostrar valores FIRE
-            document.getElementById('leanFireValue').textContent = `€${leanFIRE.toFixed(0)}`;
-            document.getElementById('baristaFireValue').textContent = `€${baristaFIRE.toFixed(0)}`;
-            document.getElementById('coastFireValue').textContent = `€${coastFIRE.toFixed(0)}`;
-            document.getElementById('fullFireValue').textContent = `€${fullFIRE.toFixed(0)}`;
-            
-            // Calcular años para alcanzar cada objetivo (simplificado)
-            const currentAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
-            const annualReturn = 0.07; // 7% de retorno anual promedio
-            const annualSavings = annualIncome - annualExpenses;
-            
-            document.getElementById('leanFireYear').textContent = 
-                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, leanFIRE, annualReturn, annualSavings)}`;
-            document.getElementById('baristaFireYear').textContent = 
-                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, baristaFIRE, annualReturn, annualSavings)}`;
-            document.getElementById('coastFireYear').textContent = 
-                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, coastFIRE, annualReturn, annualSavings)}`;
-            document.getElementById('fullFireYear').textContent = 
-                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, fullFIRE, annualReturn, annualSavings)}`;
-        }
-
-        // Calcular Coast FIRE
-        function calculateCoastFIRE(annualExpenses, currentAge, retirementAge) {
-            // Fórmula simplificada para Coast FIRE
-            const yearsToRetirement = retirementAge - currentAge;
-            const expectedReturn = 0.07; // 7% de retorno anual
-            const retirementYears = 30; // Asumiendo 30 años de retiro
-            
-            const neededAtRetirement = annualExpenses * 25; // Regla del 4%
-            return neededAtRetirement / Math.pow(1 + expectedReturn, yearsToRetirement);
-        }
-
-        // Calcular años para alcanzar un objetivo
-        function calculateYearsToGoal(current, goal, annualReturn, annualSavings) {
-            if (current >= goal) return new Date().getFullYear();
-            
-            let years = 0;
-            let value = current;
-            
-            while (value < goal && years < 60) {
-                value = value * (1 + annualReturn) + annualSavings;
-                years++;
-            }
-            
-            return new Date().getFullYear() + years;
-        }
-
-        // Generar recomendaciones
-        function generateRecommendations() {
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const riskProfile = document.getElementById('riskProfile').value;
-            const checkingAccount = parseFloat(document.getElementById('checkingAccount').value) || 0;
-            const remuneratedAccount = parseFloat(document.getElementById('remuneratedAccount').value) || 0;
-            const emergencyFund = checkingAccount + remuneratedAccount;
-            const recommendedEmergencyFund = monthlyExpenses * (riskProfile === 'conservative' ? 9 : 4.5);
-            
-            const equities = parseFloat(document.getElementById('equities').value) || 0;
-            const crypto = parseFloat(document.getElementById('crypto').value) || 0;
-            const currentAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
-            const riskyAssetsPercentage = (equities + crypto) / currentAssets * 100;
-            
-            let recommendationsHTML = '';
-            
-            // Recomendaciones sobre fondo de emergencia
-            if (emergencyFund < recommendedEmergencyFund * 0.9) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Tu fondo de emergencia (€${emergencyFund.toFixed(2)}) está por debajo de lo recomendado (€${recommendedEmergencyFund.toFixed(2)}). Considera aumentar tus ahorros en cuentas de fácil acceso.` : 
-                    `🔶 Your emergency fund (€${emergencyFund.toFixed(2)}) is below the recommended amount (€${recommendedEmergencyFund.toFixed(2)}). Consider increasing your savings in easily accessible accounts.`}</p>`;
-            } else if (emergencyFund > recommendedEmergencyFund * 1.5) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Tienes un exceso de efectivo en tu fondo de emergencia (€${emergencyFund.toFixed(2)} vs €${recommendedEmergencyFund.toFixed(2)} recomendado). Considera invertir el excedente para obtener mejor rentabilidad.` : 
-                    `🔶 You have excess cash in your emergency fund (€${emergencyFund.toFixed(2)} vs €${recommendedEmergencyFund.toFixed(2)} recommended). Consider investing the surplus for better returns.`}</p>`;
-            } else {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `✅ Tu fondo de emergencia está en un nivel adecuado.` : 
-                    `✅ Your emergency fund is at an adequate level.`}</p>`;
-            }
-            
-            // Recomendaciones basadas en el perfil de riesgo
-            if (riskProfile === 'conservative' && riskyAssetsPercentage > 30) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Para tu perfil conservador, tienes mucho peso en activos de riesgo (${riskyAssetsPercentage.toFixed(1)}%). Considera reducir tu exposición a renta variable y criptomonedas.` : 
-                    `🔶 For your conservative profile, you have a high weight in risky assets (${riskyAssetsPercentage.toFixed(1)}%). Consider reducing your exposure to equities and cryptocurrencies.`}</p>`;
-            } else if (riskProfile === 'aggressive' && riskyAssetsPercentage < 40) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Para tu perfil agresivo, podrías aumentar tu exposición a activos de crecimiento. Actualmente tienes solo un ${riskyAssetsPercentage.toFixed(1)}% en renta variable y criptomonedas.` : 
-                    `🔶 For your aggressive profile, you could increase your exposure to growth assets. You currently have only ${riskyAssetsPercentage.toFixed(1)}% in equities and cryptocurrencies.`}</p>`;
-            }
-            
-            // Recomendaciones sobre diversificación
-            const assets = [
-                parseFloat(document.getElementById('checkingAccount').value) || 0,
-                parseFloat(document.getElementById('remuneratedAccount').value) || 0,
-                parseFloat(document.getElementById('fixedIncome').value) || 0,
-                parseFloat(document.getElementById('equities').value) || 0,
-                parseFloat(document.getElementById('realEstate').value) || 0,
-                parseFloat(document.getElementById('crypto').value) || 0,
-                parseFloat(document.getElementById('otherAssets').value) || 0
-            ];
-            
-            const nonZeroAssets = assets.filter(val => val > 0).length;
-            if (nonZeroAssets < 3) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Tu cartera tiene poca diversificación (solo ${nonZeroAssets} tipos de activos). Considera diversificar en más clases de activos para reducir el riesgo.` : 
-                    `🔶 Your portfolio has low diversification (only ${nonZeroAssets} asset types). Consider diversifying into more asset classes to reduce risk.`}</p>`;
-            }
-            
-            document.getElementById('recommendations').innerHTML = recommendationsHTML;
-        }
-
-        // Inicializar cuando el DOM esté cargado
-        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
