@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Optimizador de Patrimonio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --primary: #2c3e50;
@@ -25,1557 +26,1245 @@
             --fire-full: #e67e22;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            color: var(--text);
-            background-color: var(--background);
-            line-height: 1.6;
-        }
+    body {
+        font-family: 'Roboto', sans-serif;
+        color: var(--text);
+        background-color: var(--background);
+        line-height: 1.6;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
 
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    header {
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
 
-        .logo {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
+    .logo {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
 
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-        .language-selector {
-            display: flex;
-            align-items: center;
-        }
+    .language-selector {
+        display: flex;
+        align-items: center;
+    }
 
-        .language-selector select {
-            padding: 8px 12px;
-            border-radius: 4px;
-            border: none;
-            background-color: var(--dark);
-            color: white;
-            cursor: pointer;
-        }
+    .language-selector button {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0 2px;
+    }
 
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-        }
+    .language-selector button.active {
+        background: var(--secondary);
+        border-color: var(--secondary);
+    }
 
-        .hero h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
+    .hero {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        padding: 2rem 0;
+        text-align: center;
+    }
 
-        .hero p {
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+    .hero h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
 
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
+    .hero p {
+        font-size: 1.1rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-        .card-title {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-            border-bottom: 2px solid var(--secondary);
-            padding-bottom: 0.5rem;
-        }
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
 
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
+    .card {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
+    .card h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        border-bottom: 2px solid var(--secondary);
+        padding-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-        input, select {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 1rem;
-        }
+    .input-group {
+        margin-bottom: 1.2rem;
+    }
 
-        input[readonly] {
-            background-color: #f5f5f5;
-            cursor: not-allowed;
-        }
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
 
-        button {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
+    input, select {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-size: 1rem;
+    }
 
-        button:hover {
-            background-color: var(--primary);
-        }
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
 
-        .btn-calculate {
-            background-color: var(--success);
-            font-size: 1.1rem;
-            padding: 15px 25px;
-            display: block;
-            margin: 2rem auto;
-        }
+    button, .btn {
+        background-color: var(--secondary);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.3s;
+        margin: 5px;
+    }
 
-        .btn-calculate:hover {
-            background-color: #27ae60;
-        }
+    button:hover, .btn:hover {
+        background-color: var(--primary);
+    }
 
-        .results {
-            display: none;
-        }
+    .btn-calculate {
+        background-color: var(--success);
+        font-size: 1.1rem;
+        padding: 15px 25px;
+        width: 100%;
+        margin: 1rem 0;
+    }
 
-        .score {
-            text-align: center;
-            margin: 2rem 0;
-        }
+    .btn-secondary {
+        background-color: var(--warning);
+    }
 
-        .score-value {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--secondary);
-        }
+    .score-card {
+        text-align: center;
+        margin: 2rem 0;
+        background: var(--secondary);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
 
-        .score-max {
-            font-size: 1.5rem;
-            color: var(--dark);
-        }
+    .score-number {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
 
-        .distribution-chart {
-            height: 300px;
-            margin: 2rem 0;
-        }
+    .progress-bar {
+        height: 25px;
+        background-color: rgba(255,255,255,0.3);
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        width: 100%;
+    }
 
-        .progress-bar {
-            height: 25px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            overflow: hidden;
-        }
+    .progress-fill {
+        height: 100%;
+        background-color: white;
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
 
-        .progress-bar-fill {
-            height: 100%;
-            background-color: var(--secondary);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
+    .chart-container {
+        height: 300px;
+        margin: 2rem 0;
+        position: relative;
+    }
 
-        .dca-box {
-            background-color: #f8f9fa;
-            border-left: 4px solid var(--secondary);
-            padding: 1rem;
-            margin: 1rem 0;
-            display: none;
-        }
+    .allocation-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+    }
 
-        .asset-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.8rem;
-            gap: 10px;
-        }
+    .risk-heatmap {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin: 1rem 0;
+    }
 
-        .asset-input {
-            flex: 2;
-        }
+    .risk-item {
+        padding: 1rem;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+    }
 
-        .amount-input {
-            flex: 1;
-        }
+    .risk-low {
+        background-color: #d4edda;
+        color: #155724;
+    }
 
-        .add-asset {
-            background-color: var(--warning);
-            margin-top: 0.5rem;
-        }
+    .risk-medium {
+        background-color: #fff3cd;
+        color: #856404;
+    }
 
-        .remove-asset {
-            background-color: var(--accent);
-            padding: 8px 12px;
-        }
+    .risk-high {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
 
-        .time-slider {
-            margin: 2rem 0;
-        }
+    .scenarios-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+    }
 
-        .simulation-result {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin: 2rem 0;
-        }
+    .scenario-card {
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--card-bg);
+    }
 
-        .simulation-card {
-            flex: 1;
-            min-width: 200px;
-            text-align: center;
-            padding: 1.5rem;
-            border-radius: 8px;
-            background-color: var(--light);
-        }
+    .scenario-card.active {
+        border-color: var(--secondary);
+        background-color: var(--light);
+    }
 
-        .simulation-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 20px;
+    }
 
-        .fire-results {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 2rem 0;
-        }
+    .tab {
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        border-bottom: 3px solid transparent;
+    }
 
-        .fire-card {
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-            color: white;
-        }
+    .tab.active {
+        background-color: var(--light);
+        color: var(--primary);
+        border-bottom: 3px solid var(--secondary);
+    }
 
-        .fire-card.lean {
-            background-color: var(--fire-lean);
-        }
+    .tab-content {
+        display: none;
+        padding: 1.5rem 0;
+    }
 
-        .fire-card.barista {
-            background-color: var(--fire-barista);
-        }
+    .tab-content.active {
+        display: block;
+    }
 
-        .fire-card.coast {
-            background-color: var(--fire-coast);
-        }
+    .fire-goals {
+        background-color: var(--fire-full);
+        color: white;
+    }
 
-        .fire-card.full {
-            background-color: var(--fire-full);
-        }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+    }
 
-        .fire-card h3 {
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
+    .modal-content {
+        background: var(--card-bg);
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
 
-        .fire-card .value {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 1;
+    }
 
-        .tax-impact {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
+    .close:hover {
+        color: #000;
+    }
 
-        .heatmap {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin: 1rem 0;
-        }
+    .dca-allocation {
+        background-color: #f8f9fa;
+        border-left: 4px solid var(--secondary);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+    }
 
-        .heatmap-item {
-            padding: 1rem;
-            border-radius: 4px;
-            text-align: center;
-            background-color: var(--light);
-        }
+    .dca-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 5px 0;
+        padding: 8px;
+        background: white;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+    }
 
-        .heatmap-item.low-risk {
-            background-color: #d4edda;
-            color: #155724;
-        }
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--success);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        z-index: 1001;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
 
-        .heatmap-item.medium-risk {
-            background-color: #fff3cd;
-            color: #856404;
-        }
+    .notification.show {
+        transform: translateX(0);
+    }
 
-        .heatmap-item.high-risk {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
+    .full-width {
+        grid-column: 1 / -1;
+    }
 
-        footer {
-            background-color: var(--primary);
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-            margin-top: 3rem;
+    @media (max-width: 768px) {
+        .main-grid {
+            grid-template-columns: 1fr;
         }
-
-        .tabs-container {
-            margin: 1.5rem 0;
-            overflow-x: auto;
+        
+        .allocation-grid {
+            grid-template-columns: 1fr;
         }
-
-        .tabs {
-            display: flex;
-            margin-bottom: 0;
-            border-bottom: 1px solid var(--border);
-            min-width: max-content;
+        
+        .modal-content {
+            width: 95%;
+            margin: 10% auto;
         }
+    }
+</style>
+```
 
-        .tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            white-space: nowrap;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab.active {
-            background-color: var(--light);
-            color: var(--primary);
-            border-bottom: 3px solid var(--secondary);
-        }
-
-        .tab-content {
-            display: none;
-            padding: 1.5rem 0;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .dca-total {
-            font-weight: bold;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #e8f4fc;
-            border-radius: 4px;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .header-controls {
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 10px;
-            }
-            
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .simulation-result {
-                flex-direction: column;
-            }
-            
-            .asset-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .fire-results {
-                grid-template-columns: 1fr;
-            }
-            
-            .tabs {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-            }
-            
-            .tab {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-            }
-            
-            .simulation-card {
-                min-width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
     <header>
-        <div class="container header-content">
-            <div class="logo">Optimizador de Patrimonio</div>
-            <div class="header-controls">
-                <div class="language-selector">
-                    <select id="languageSelector">
-                        <option value="es">Español</option>
-                        <option value="en">English</option>
-                    </select>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo" id="headerTitle">💰 Optimizador de Patrimonio</div>
+                <div class="header-controls">
+                    <div class="language-selector">
+                        <button onclick="changeLanguage('es')" class="active" id="lang-es">ES</button>
+                        <button onclick="changeLanguage('en')" id="lang-en">EN</button>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="container">
-            <h1 id="heroTitle">Optimiza tu Patrimonio y Maximiza tu Rentabilidad</h1>
-            <p id="heroText">Analiza y mejora la distribución de tu cash para alcanzar tus objetivos financieros con nuestro sistema de evaluación integral.</p>
-        </div>
-    </section>
-
+```
+<div class="hero">
     <div class="container">
-        <div class="tabs-container">
+        <h1 id="heroTitle">💰 Optimizador de Patrimonio</h1>
+        <p id="heroSubtitle">Maximiza tu riqueza con estrategias inteligentes de inversión</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="main-grid">
+        <!-- Input Panel -->
+        <div class="card">
+            <h2><span>📊</span><span id="configTitle">Configuración del Portafolio</span></h2>
+            
             <div class="tabs">
-                <div class="tab active" data-tab="financial-profile" id="tab-financial-profile">Perfil Financiero</div>
-                <div class="tab" data-tab="current-assets" id="tab-current-assets">Patrimonio Actual</div>
-                <div class="tab" data-tab="dca" id="tab-dca">DCA</div>
-                <div class="tab" data-tab="fire-goals" id="tab-fire-goals">Metas FIRE</div>
-                <div class="tab" data-tab="taxes" id="tab-taxes">Impuestos</div>
+                <div class="tab active" onclick="showTab('basic')" id="tabBasic">Básico</div>
+                <div class="tab" onclick="showTab('advanced')" id="tabAdvanced">Avanzado</div>
+                <div class="tab" onclick="showTab('fire')" id="tabFire">FIRE</div>
             </div>
-        </div>
 
-        <div class="tab-content active" id="financial-profile">
-            <div class="card">
-                <h2 class="card-title" id="financialProfileTitle">Perfil Financiero</h2>
-                <div class="form-group">
-                    <label for="monthlyExpenses" id="monthlyExpensesLabel">Gastos Mensuales (€):</label>
-                    <input type="number" id="monthlyExpenses" min="0" value="2000">
+            <div id="basic" class="tab-content active">
+                <div class="input-group">
+                    <label id="labelTotalCash">💵 Efectivo Total (€)</label>
+                    <input type="number" id="totalCash" placeholder="50000" value="50000">
                 </div>
-                <div class="form-group">
-                    <label for="monthlyIncome" id="monthlyIncomeLabel">Ingresos Mensuales (€):</label>
-                    <input type="number" id="monthlyIncome" min="0" value="3000">
+
+                <div class="input-group">
+                    <label id="labelMonthlyExpenses">🏠 Gastos Mensuales (€)</label>
+                    <input type="number" id="monthlyExpenses" placeholder="2000" value="2000">
                 </div>
-                <div class="form-group">
-                    <label for="riskProfile" id="riskProfileLabel">Perfil de Riesgo:</label>
+
+                <div class="input-group">
+                    <label id="labelRiskProfile">📈 Perfil de Riesgo</label>
                     <select id="riskProfile">
-                        <option value="conservative" id="conservativeOption">Conservador (6-12 meses)</option>
-                        <option value="aggressive" id="aggressiveOption">Agresivo (3-6 meses)</option>
+                        <option value="conservative" id="optionConservative">Conservador (6-12 meses)</option>
+                        <option value="aggressive" id="optionAggressive">Agresivo (3-6 meses)</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="inflationRate" id="inflationRateLabel">Tasa de Inflación (%):</label>
-                    <input type="number" id="inflationRate" min="0" step="0.1" value="3.5">
-                </div>
-            </div>
-        </div>
 
-        <div class="tab-content" id="current-assets">
-            <div class="card">
-                <h2 class="card-title" id="currentAssetsTitle">Patrimonio Actual</h2>
-                <div class="form-group">
-                    <label for="totalAssets" id="totalAssetsLabel">Patrimonio Total (€):</label>
-                    <input type="number" id="totalAssets" min="0" value="50000" readonly>
+                <div class="input-group">
+                    <label id="labelDcaAmount">💳 DCA Mensual (€)</label>
+                    <input type="number" id="dcaAmount" placeholder="1000" value="1000">
                 </div>
-                
-                <h3 id="distributionTitle">Distribución Actual</h3>
-                
-                <div class="form-group">
-                    <label for="checkingAccount" id="checkingAccountLabel">Cuenta Corriente (0%):</label>
-                    <input type="number" id="checkingAccount" min="0" value="5000" class="asset-input-field">
-                </div>
-                
-                <div class="form-group">
-                    <label for="remuneratedAccount" id="remuneratedAccountLabel">Cuenta Remunerada (2%):</label>
-                    <input type="number" id="remuneratedAccount" min="0" value="10000" class="asset-input-field">
-                    <div class="form-group sub-input">
-                        <label for="remuneratedAccountRate" id="remuneratedAccountRateLabel">Tasa de interés (%):</label>
-                        <input type="number" id="remuneratedAccountRate" min="0" step="0.1" value="2">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="fixedIncome" id="fixedIncomeLabel">Renta Fija:</label>
-                    <input type="number" id="fixedIncome" min="0" value="15000" class="asset-input-field">
-                    <div class="form-group sub-input">
-                        <label for="fixedIncomeRate" id="fixedIncomeRateLabel">Rendimiento esperado (%):</label>
-                        <input type="number" id="fixedIncomeRate" min="0" step="0.1" value="3.5">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="equities" id="equitiesLabel">Renta Variable (fondos indexados/acciones):</label>
-                    <input type="number" id="equities" min="0" value="15000" class="asset-input-field">
-                    <div class="form-group sub-input">
-                        <label for="equitiesRate" id="equitiesRateLabel">Rendimiento esperado (%):</label>
-                        <input type="number" id="equitiesRate" min="0" step="0.1" value="7">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="realEstate" id="realEstateLabel">Inmobiliario:</label>
-                    <input type="number" id="realEstate" min="0" value="3000" class="asset-input-field">
-                    <div class="form-group sub-input">
-                        <label for="realEstateRate" id="realEstateRateLabel">Rendimiento esperado (%):</label>
-                        <input type="number" id="realEstateRate" min="0" step="0.1" value="5">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="crypto" id="cryptoLabel">Criptomonedas:</label>
-                    <input type="number" id="crypto" min="0" value="2000" class="asset-input-field">
-                    <div class="form-group sub-input">
-                        <label for="cryptoRate" id="cryptoRateLabel">Rendimiento esperado (%):</label>
-                        <input type="number" id="cryptoRate" min="0" step="0.1" value="12">
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="tab-content" id="dca">
-            <div class="card">
-                <h2 class="card-title" id="dcaTitle">DCA (Promedio de Costo en Dólares)</h2>
-                <div class="form-group">
-                    <label for="dcaAmount" id="dcaAmountLabel">Cantidad Mensual de DCA (€):</label>
-                    <input type="number" id="dcaAmount" min="0" value="500">
+                <div class="input-group">
+                    <label id="labelInflation">📊 Inflación (%)</label>
+                    <input type="number" id="inflation" value="3.5" step="0.1">
                 </div>
-                
-                <div id="dcaBox" class="dca-box">
-                    <h3 id="dcaDistributionLabel">Distribución del DCA (valores absolutos):</h3>
-                    <div class="asset-row">
-                        <div class="asset-input">
-                            <select class="dca-asset-type">
-                                <option value="remuneratedAccount" id="dcaRemuneratedOption">Cuenta Remunerada</option>
-                                <option value="fixedIncome" id="dcaFixedIncomeOption">Renta Fija</option>
-                                <option value="equities" id="dcaEquitiesOption">Renta Variable</option>
-                                <option value="realEstate" id="dcaRealEstateOption">Inmobiliario</option>
-                                <option value="crypto" id="dcaCryptoOption">Criptomonedas</option>
-                            </select>
-                        </div>
-                        <div class="amount-input">
-                            <input type="number" class="dca-amount" min="0" placeholder="€" value="500">
-                        </div>
-                    </div>
-                    <button class="add-asset" id="addAssetButton">+ Añadir otro activo</button>
-                    <div class="dca-total" id="dcaTotal">Total asignado: €500.00 de €500.00</div>
-                </div>
-            </div>
-        </div>
 
-        <div class="tab-content" id="fire-goals">
-            <div class="card">
-                <h2 class="card-title" id="fireGoalsTitle">Metas FIRE (Independencia Financiera)</h2>
+                <div class="input-group">
+                    <label id="labelTaxRate">🏛️ Tipo Impositivo (%)</label>
+                    <input type="number" id="taxRate" value="19" step="0.1">
+                </div>
+
+                <button class="btn-calculate" onclick="calculatePortfolio()" id="btnCalculate">🔄 Calcular Portfolio</button>
+            </div>
+
+            <div id="advanced" class="tab-content">
+                <h3 id="assetAllocationTitle">Distribución de Activos</h3>
+                <div id="allocationInputs">
+                    <!-- Dynamic allocation inputs will be generated here -->
+                </div>
+                <button class="btn btn-secondary" onclick="addAsset()" id="btnAddAsset">+ Añadir Activo</button>
+            </div>
+
+            <div id="fire" class="tab-content">
+                <div class="input-group">
+                    <label id="labelFireGoal">🎯 Meta FIRE (€)</label>
+                    <input type="number" id="fireGoal" placeholder="1000000" value="1000000">
+                </div>
                 
-                <div class="form-group">
-                    <label for="fireGoal" id="fireGoalLabel">Objetivo FIRE:</label>
-                    <select id="fireGoal">
-                        <option value="lean" id="fireLeanOption">FIRE Lean (gastos anuales × 25)</option>
-                        <option value="barista" id="fireBaristaOption">Barista FIRE (gastos anuales × 25 + ingresos parciales)</option>
-                        <option value="coast" id="fireCoastOption">Coast FIRE (suficiente para retiro sin más aportaciones)</option>
-                        <option value="full" id="fireFullOption">Full FIRE (gastos anuales × 30-40)</option>
-                        <option value="custom" id="fireCustomOption">Personalizado</option>
+                <div class="input-group">
+                    <label id="labelFireType">🔥 Tipo de FIRE</label>
+                    <select id="fireType">
+                        <option value="lean">Lean FIRE</option>
+                        <option value="barista">Barista FIRE</option>
+                        <option value="coast">Coast FIRE</option>
+                        <option value="full">Full FIRE</option>
                     </select>
                 </div>
-                
-                <div class="form-group" id="customFireGoalContainer" style="display: none;">
-                    <label for="customFireGoal" id="customFireGoalLabel">Monto objetivo personalizado (€):</label>
-                    <input type="number" id="customFireGoal" min="0" value="600000">
-                </div>
-                
-                <div class="form-group">
-                    <label for="currentAge" id="currentAgeLabel">Edad actual:</label>
-                    <input type="number" id="currentAge" min="18" max="100" value="35">
-                </div>
-                
-                <div class="form-group">
-                    <label for="retirementAge" id="retirementAgeLabel">Edad de retiro deseada:</label>
-                    <input type="number" id="retirementAge" min="18" max="100" value="55">
+
+                <div class="input-group">
+                    <label id="labelAnnualExpenses">📅 Gastos Anuales Objetivo (€)</label>
+                    <input type="number" id="annualExpenses" placeholder="40000" value="40000">
                 </div>
             </div>
         </div>
 
-        <div class="tab-content" id="taxes">
-            <div class="card">
-                <h2 class="card-title" id="taxesTitle">Impuestos</h2>
-                
-                <div class="form-group">
-                    <label for="taxRate" id="taxRateLabel">Tipo impositivo efectivo (%):</label>
-                    <input type="number" id="taxRate" min="0" max="100" step="0.1" value="30">
-                </div>
-                
-                <div class="form-group">
-                    <label for="taxTreatment" id="taxTreatmentLabel">Tratamiento fiscal preferente:</label>
-                    <select id="taxTreatment">
-                        <option value="standard" id="taxStandardOption">Tributación estándar</option>
-                        <option value="deferred" id="taxDeferredOption">Fondos de inversión (diferido)</option>
-                        <option value="exempt" id="taxExemptOption">Cuentas pensiones (exento hasta límite)</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <button class="btn-calculate" id="calculateButton">Calcular Optimización</button>
-
-        <div id="results" class="results">
-            <div class="card">
-                <h2 class="card-title" id="resultsTitle">Resultados de la Optimización</h2>
-                
-                <div class="score">
-                    <span class="score-value" id="scoreValue">0</span>
-                    <span class="score-max">/ 100</span>
-                </div>
-                
-                <div class="distribution-chart">
-                    <canvas id="distributionChart"></canvas>
-                </div>
-                
-                <h3 id="emergencyFundTitle">Fondo de Emergencia</h3>
+        <!-- Results Panel -->
+        <div class="card">
+            <h2><span>🎯</span><span id="analysisTitle">Análisis y Puntuación</span></h2>
+            
+            <div class="score-card" id="scoreCard">
+                <div class="score-number" id="totalScore">85</div>
+                <div id="scoreLabel">Puntuación del Portafolio</div>
                 <div class="progress-bar">
-                    <div class="progress-bar-fill" id="emergencyFundProgress" style="width: 0%"></div>
+                    <div class="progress-fill" id="scoreFill" style="width: 85%"></div>
                 </div>
-                <p id="emergencyFundText">Fondo de emergencia recomendado: €0.00 (0 meses de gastos)</p>
-                
-                <h3 id="riskHeatmapTitle">Mapa de Calor de Riesgo</h3>
-                <div class="heatmap" id="riskHeatmap">
-                    <!-- Se generará dinámicamente -->
-                </div>
-                
-                <h3 id="fireResultsTitle">Proyección FIRE</h3>
-                <div class="fire-results">
-                    <div class="fire-card lean">
-                        <h3>Lean FIRE</h3>
-                        <p id="leanFireValue" class="value">€0</p>
-                        <p id="leanFireYear">Año: -</p>
-                    </div>
-                    <div class="fire-card barista">
-                        <h3>Barista FIRE</h3>
-                        <p id="baristaFireValue" class="value">€0</p>
-                        <p id="baristaFireYear">Año: -</p>
-                    </div>
-                    <div class="fire-card coast">
-                        <h3>Coast FIRE</h3>
-                        <p id="coastFireValue" class="value">€0</p>
-                        <p id="coastFireYear">Año: -</p>
-                    </div>
-                    <div class="fire-card full">
-                        <h3>Full FIRE</h3>
-                        <p id="fullFireValue" class="value">€0</p>
-                        <p id="fullFireYear">Año: -</p>
-                    </div>
-                </div>
-                
-                <h3 id="projectionTitle">Proyección de Patrimonio</h3>
-                <div class="form-group time-slider">
-                    <label for="timeProjection" id="timeProjectionLabel">Años de proyección:</label>
-                    <input type="range" id="timeProjection" min="1" max="30" value="10">
-                    <span id="timeProjectionValue">10 años</span>
-                </div>
-                
-                <div class="simulation-result">
-                    <div class="simulation-card">
-                        <h4 id="currentValueTitle">Valor Actual</h4>
-                        <p class="simulation-value" id="currentValue">€0.00</p>
-                    </div>
-                    <div class="simulation-card">
-                        <h4 id="projectedValueTitle">Valor Proyectado</h4>
-                        <p class="simulation-value" id="projectedValue">€0.00</p>
-                    </div>
-                    <div class="simulation-card">
-                        <h4 id="inflationAdjustedTitle">Ajustado por Inflación</h4>
-                        <p class="simulation-value" id="inflationAdjustedValue">€0.00</p>
-                    </div>
-                    <div class="simulation-card">
-                        <h4 id="afterTaxTitle">Después de Impuestos</h4>
-                        <p class="simulation-value" id="afterTaxValue">€0.00</p>
-                    </div>
-                </div>
-                
-                <div class="distribution-chart">
-                    <canvas id="projectionChart"></canvas>
-                </div>
-                
-                <h3 id="recommendationsTitle">Recomendaciones</h3>
-                <div id="recommendations">
-                    <p id="recommendationsText">Aquí aparecerán recomendaciones personalizadas para optimizar tu patrimonio.</p>
-                </div>
+                <div id="scoreExplanation">Buena diversificación con margen de mejora</div>
+            </div>
+
+            <div class="risk-heatmap" id="riskHeatmap">
+                <!-- Risk analysis will be displayed here -->
+            </div>
+
+            <button class="btn" onclick="generatePDF()" id="btnGenerateReport">📄 Generar Informe PDF</button>
+        </div>
+    </div>
+
+    <!-- Scenarios Section -->
+    <div class="card full-width">
+        <h2><span>🎭</span><span id="scenariosTitle">Escenarios de Inversión</span></h2>
+        <div class="scenarios-grid">
+            <div class="scenario-card active" onclick="selectScenario('conservative', this)">
+                <h3 id="conservativeTitle">🛡️ Conservador</h3>
+                <p id="conservativeDesc">Bajo riesgo, rentabilidad estable</p>
+            </div>
+            <div class="scenario-card" onclick="selectScenario('moderate', this)">
+                <h3 id="moderateTitle">⚖️ Moderado</h3>
+                <p id="moderateDesc">Equilibrio riesgo-rentabilidad</p>
+            </div>
+            <div class="scenario-card" onclick="selectScenario('aggressive', this)">
+                <h3 id="aggressiveTitle">🚀 Agresivo</h3>
+                <p id="aggressiveDesc">Alto riesgo, alta rentabilidad</p>
             </div>
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <p id="footerText">© 2025 Optimizador de Patrimonio. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión.</p>
+    <!-- Charts Section -->
+    <div class="card full-width">
+        <h2><span>📈</span><span id="wealthEvolutionTitle">Evolución del Patrimonio</span></h2>
+        <div class="chart-container">
+            <canvas id="wealthChart"></canvas>
         </div>
-    </footer>
+    </div>
 
-    <script>
-        // Textos en diferentes idiomas
-        const translations = {
-            es: {
-                // Textos de pestañas
-                "tab-financial-profile": "Perfil Financiero",
-                "tab-current-assets": "Patrimonio Actual",
-                "tab-dca": "DCA",
-                "tab-fire-goals": "Metas FIRE",
-                "tab-taxes": "Impuestos",
-                
-                // Resto de textos
-                "heroTitle": "Optimiza tu Patrimonio y Maximiza tu Rentabilidad",
-                "heroText": "Analiza y mejora la distribución de tu cash para alcanzar tus objetivos financieros con nuestro sistema de evaluación integral.",
-                "financialProfileTitle": "Perfil Financiero",
-                "monthlyExpensesLabel": "Gastos Mensuales (€):",
-                "monthlyIncomeLabel": "Ingresos Mensuales (€):",
-                "riskProfileLabel": "Perfil de Riesgo:",
-                "conservativeOption": "Conservador (6-12 meses)",
-                "aggressiveOption": "Agresivo (3-6 meses)",
-                "inflationRateLabel": "Tasa de Inflación (%):",
-                "currentAssetsTitle": "Patrimonio Actual",
-                "totalAssetsLabel": "Patrimonio Total (€):",
-                "distributionTitle": "Distribución Actual",
-                "checkingAccountLabel": "Cuenta Corriente (0%):",
-                "remuneratedAccountLabel": "Cuenta Remunerada (2%):",
-                "remuneratedAccountRateLabel": "Tasa de interés (%):",
-                "fixedIncomeLabel": "Renta Fija:",
-                "fixedIncomeRateLabel": "Rendimiento esperado (%):",
-                "equitiesLabel": "Renda Variable (fondos indexados/acciones):",
-                "equitiesRateLabel": "Rendimiento esperado (%):",
-                "realEstateLabel": "Inmobiliario:",
-                "realEstateRateLabel": "Rendimiento esperado (%):",
-                "cryptoLabel": "Criptomonedas:",
-                "cryptoRateLabel": "Rendimiento esperado (%):",
-                "dcaTitle": "DCA (Promedio de Costo en Dólares)",
-                "dcaAmountLabel": "Cantidad Mensual de DCA (€):",
-                "dcaDistributionLabel": "Distribución del DCA (valores absolutos):",
-                "addAssetButton": "+ Añadir otro activo",
-                "fireGoalsTitle": "Metas FIRE (Independencia Financiera)",
-                "fireGoalLabel": "Objetivo FIRE:",
-                "fireLeanOption": "FIRE Lean (gastos anuales × 25)",
-                "fireBaristaOption": "Barista FIRE (gastos anuales × 25 + ingresos parciales)",
-                "fireCoastOption": "Coast FIRE (suficiente para retiro sin más aportaciones)",
-                "fireFullOption": "Full FIRE (gastos anuales × 30-40)",
-                "fireCustomOption": "Personalizado",
-                "customFireGoalLabel": "Monto objetivo personalizado (€):",
-                "currentAgeLabel": "Edad actual:",
-                "retirementAgeLabel": "Edad de retiro deseada:",
-                "taxesTitle": "Impuestos",
-                "taxRateLabel": "Tipo impositivo efectivo (%):",
-                "taxTreatmentLabel": "Tratamiento fiscal preferente:",
-                "taxStandardOption": "Tributación estándar",
-                "taxDeferredOption": "Fondos de inversión (diferido)",
-                "taxExemptOption": "Cuentas pensiones (exento hasta límite)",
-                "calculateButton": "Calcular Optimización",
-                "resultsTitle": "Resultados de la Optimización",
-                "emergencyFundTitle": "Fondo de Emergencia",
-                "emergencyFundText": "Fondo de emergencia recomendado: €0.00 (0 meses de gastos)",
-                "riskHeatmapTitle": "Mapa de Calor de Riesgo",
-                "fireResultsTitle": "Proyección FIRE",
-                "projectionTitle": "Proyección de Patrimonio",
-                "timeProjectionLabel": "Años de proyección:",
-                "timeProjectionValue": "10 años",
-                "currentValueTitle": "Valor Actual",
-                "projectedValueTitle": "Valor Proyectado",
-                "inflationAdjustedTitle": "Ajustado por Inflación",
-                "afterTaxTitle": "Después de Impuestos",
-                "recommendationsTitle": "Recomendaciones",
-                "recommendationsText": "Aquí aparecerán recomendaciones personalizadas para optimizar tu patrimonio.",
-                "footerText": "© 2025 Optimizador de Patrimonio. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión."
-            },
-            en: {
-                // Textos de pestañas
-                "tab-financial-profile": "Financial Profile",
-                "tab-current-assets": "Current Assets",
-                "tab-dca": "DCA",
-                "tab-fire-goals": "FIRE Goals",
-                "tab-taxes": "Taxes",
-                
-                // Resto de textos
-                "heroTitle": "Optimize Your Assets and Maximize Your Returns",
-                "heroText": "Analyze and improve your cash distribution to achieve your financial goals with our comprehensive evaluation system.",
-                "financialProfileTitle": "Financial Profile",
-                "monthlyExpensesLabel": "Monthly Expenses (€):",
-                "monthlyIncomeLabel": "Monthly Income (€):",
-                "riskProfileLabel": "Risk Profile:",
-                "conservativeOption": "Conservative (6-12 months)",
-                "aggressiveOption": "Aggressive (3-6 months)",
-                "inflationRateLabel": "Inflation Rate (%):",
-                "currentAssetsTitle": "Current Assets",
-                "totalAssetsLabel": "Total Assets (€):",
-                "distributionTitle": "Current Distribution",
-                "checkingAccountLabel": "Checking Account (0%):",
-                "remuneratedAccountLabel": "Remunerated Account (2%):",
-                "remuneratedAccountRateLabel": "Interest Rate (%):",
-                "fixedIncomeLabel": "Fixed Income:",
-                "fixedIncomeRateLabel": "Expected Return (%):",
-                "equitiesLabel": "Equities (index funds/stocks):",
-                "equitiesRateLabel": "Expected Return (%):",
-                "realEstateLabel": "Real Estate:",
-                "realEstateRateLabel": "Expected Return (%):",
-                "cryptoLabel": "Cryptocurrencies:",
-                "cryptoRateLabel": "Expected Return (%):",
-                "dcaTitle": "DCA (Dollar-Cost Averaging)",
-                "dcaAmountLabel": "Monthly DCA Amount (€):",
-                "dcaDistributionLabel": "DCA Distribution (absolute values):",
-                "addAssetButton": "+ Add Another Asset",
-                "fireGoalsTitle": "FIRE Goals (Financial Independence)",
-                "fireGoalLabel": "FIRE Goal:",
-                "fireLeanOption": "Lean FIRE (annual expenses × 25)",
-                "fireBaristaOption": "Barista FIRE (annual expenses × 25 + partial income)",
-                "fireCoastOption": "Coast FIRE (enough to retire without further contributions)",
-                "fireFullOption": "Full FIRE (annual expenses × 30-40)",
-                "fireCustomOption": "Custom",
-                "customFireGoalLabel": "Custom target amount (€):",
-                "currentAgeLabel": "Current age:",
-                "retirementAgeLabel": "Desired retirement age:",
-                "taxesTitle": "Taxes",
-                "taxRateLabel": "Effective tax rate (%):",
-                "taxTreatmentLabel": "Preferred tax treatment:",
-                "taxStandardOption": "Standard taxation",
-                "taxDeferredOption": "Investment funds (deferred)",
-                "taxExemptOption": "Pension accounts (exempt up to limit)",
-                "calculateButton": "Calculate Optimization",
-                "resultsTitle": "Optimization Results",
-                "emergencyFundTitle": "Emergency Fund",
-                "emergencyFundText": "Recommended emergency fund: €0.00 (0 months of expenses)",
-                "riskHeatmapTitle": "Risk Heatmap",
-                "fireResultsTitle": "FIRE Projection",
-                "projectionTitle": "Assets Projection",
-                "timeProjectionLabel": "Projection years:",
-                "timeProjectionValue": "10 years",
-                "currentValueTitle": "Current Value",
-                "projectedValueTitle": "Projected Value",
-                "inflationAdjustedTitle": "Inflation Adjusted",
-                "afterTaxTitle": "After Taxes",
-                "recommendationsTitle": "Recommendations",
-                "recommendationsText": "Personalized recommendations to optimize your assets will appear here.",
-                "footerText": "© 2025 Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
-            }
-        };
+    <div class="main-grid">
+        <div class="card">
+            <h2><span>🍰</span><span id="allocationChartTitle">Distribución Actual</span></h2>
+            <div class="chart-container">
+                <canvas id="allocationChart"></canvas>
+            </div>
+        </div>
 
-        // Variables globales
-        let currentLanguage = 'es';
-        let distributionChart = null;
-        let projectionChart = null;
+        <div class="card fire-goals">
+            <h2><span>🔥</span><span id="fireProgressTitle">Progreso FIRE</span></h2>
+            <div id="fireAnalysis">
+                <div class="score-number" id="fireYears">15</div>
+                <div id="yearsToFireLabel">años para alcanzar FIRE</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="fireProgress" style="width: 25%"></div>
+                </div>
+                <p id="fireDetails">Con tu ahorro actual de €1000/mes...</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Cambiar idioma
-        function changeLanguage(lang) {
-            currentLanguage = lang;
-            document.getElementById('languageSelector').value = lang;
+<!-- DCA Modal -->
+<div id="dcaModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeDCAModal()">&times;</span>
+        <h2 id="dcaDistributionTitle">Distribución DCA</h2>
+        <p id="dcaDescription">Especifica cómo quieres distribuir tu DCA mensual:</p>
+        
+        <div id="dcaAllocations" class="dca-allocation">
+            <!-- DCA allocation inputs will be generated here -->
+        </div>
+        
+        <button class="btn" onclick="saveDCA()" id="btnSaveDca">Guardar</button>
+    </div>
+</div>
+
+<!-- Notification -->
+<div id="notification" class="notification">
+    <span id="notificationText"></span>
+</div>
+
+<script>
+    // Variables globales
+    let currentLanguage = 'es';
+    let currentScenario = 'conservative';
+    let allocationChart = null;
+    let wealthChart = null;
+    let chartsInitialized = false;
+
+    // Asset classes
+    let assetClasses = [
+        { name: 'Cuenta Corriente', nameEn: 'Checking Account', return: 0, amount: 0, icon: '🏦' },
+        { name: 'Cuenta Remunerada', nameEn: 'High Yield Account', return: 2, amount: 0, icon: '💰' },
+        { name: 'Renta Fija', nameEn: 'Fixed Income', return: 3, amount: 0, icon: '📊' },
+        { name: 'Fondos Indexados', nameEn: 'Index Funds', return: 7, amount: 0, icon: '📈' },
+        { name: 'Acciones', nameEn: 'Stocks', return: 10, amount: 0, icon: '🎯' },
+        { name: 'Inmobiliario', nameEn: 'Real Estate', return: 8, amount: 0, icon: '🏠' },
+        { name: 'Criptomonedas', nameEn: 'Cryptocurrency', return: 15, amount: 0, icon: '₿' }
+    ];
+
+    let dcaDistribution = [];
+
+    // Translations
+    const translations = {
+        es: {
+            title: '💰 Optimizador de Patrimonio',
+            subtitle: 'Maximiza tu riqueza con estrategias inteligentes de inversión',
+            configTitle: 'Configuración del Portafolio',
+            tabBasic: 'Básico',
+            tabAdvanced: 'Avanzado',
+            tabFire: 'FIRE',
+            labelTotalCash: '💵 Efectivo Total (€)',
+            labelMonthlyExpenses: '🏠 Gastos Mensuales (€)',
+            labelRiskProfile: '📈 Perfil de Riesgo',
+            optionConservative: 'Conservador (6-12 meses)',
+            optionAggressive: 'Agresivo (3-6 meses)',
+            labelDcaAmount: '💳 DCA Mensual (€)',
+            labelInflation: '📊 Inflación (%)',
+            labelTaxRate: '🏛️ Tipo Impositivo (%)',
+            btnCalculate: '🔄 Calcular Portfolio',
+            assetAllocationTitle: 'Distribución de Activos',
+            btnAddAsset: '+ Añadir Activo',
+            labelFireGoal: '🎯 Meta FIRE (€)',
+            labelFireType: '🔥 Tipo de FIRE',
+            labelAnnualExpenses: '📅 Gastos Anuales Objetivo (€)',
+            analysisTitle: 'Análisis y Puntuación',
+            scoreLabel: 'Puntuación del Portafolio',
+            scoreExplanation: 'Buena diversificación con margen de mejora',
+            btnGenerateReport: '📄 Generar Informe PDF',
+            scenariosTitle: 'Escenarios de Inversión',
+            conservativeTitle: '🛡️ Conservador',
+            conservativeDesc: 'Bajo riesgo, rentabilidad estable',
+            moderateTitle: '⚖️ Moderado',
+            moderateDesc: 'Equilibrio riesgo-rentabilidad',
+            aggressiveTitle: '🚀 Agresivo',
+            aggressiveDesc: 'Alto riesgo, alta rentabilidad',
+            wealthEvolutionTitle: 'Evolución del Patrimonio',
+            allocationChartTitle: 'Distribución Actual',
+            fireProgressTitle: 'Progreso FIRE',
+            yearsToFireLabel: 'años para alcanzar FIRE',
+            fireDetails: 'Con tu ahorro actual...',
+            dcaDistributionTitle: 'Distribución DCA',
+            dcaDescription: 'Especifica cómo quieres distribuir tu DCA mensual:',
+            btnSaveDca: 'Guardar'
+        },
+        en: {
+            title: '💰 Wealth Optimizer',
+            subtitle: 'Maximize your wealth with smart investment strategies',
+            configTitle: 'Portfolio Configuration',
+            tabBasic: 'Basic',
+            tabAdvanced: 'Advanced',
+            tabFire: 'FIRE',
+            labelTotalCash: '💵 Total Cash (€)',
+            labelMonthlyExpenses: '🏠 Monthly Expenses (€)',
+            labelRiskProfile: '📈 Risk Profile',
+            optionConservative: 'Conservative (6-12 months)',
+            optionAggressive: 'Aggressive (3-6 months)',
+            labelDcaAmount: '💳 Monthly DCA (€)',
+            labelInflation: '📊 Inflation (%)',
+            labelTaxRate: '🏛️ Tax Rate (%)',
+            btnCalculate: '🔄 Calculate Portfolio',
+            assetAllocationTitle: 'Asset Allocation',
+            btnAddAsset: '+ Add Asset',
+            labelFireGoal: '🎯 FIRE Goal (€)',
+            labelFireType: '🔥 FIRE Type',
+            labelAnnualExpenses: '📅 Target Annual Expenses (€)',
+            analysisTitle: 'Analysis & Score',
+            scoreLabel: 'Portfolio Score',
+            scoreExplanation: 'Good diversification with room for improvement',
+            btnGenerateReport: '📄 Generate PDF Report',
+            scenariosTitle: 'Investment Scenarios',
+            conservativeTitle: '🛡️ Conservative',
+            conservativeDesc: 'Low risk, stable returns',
+            moderateTitle: '⚖️ Moderate',
+            moderateDesc: 'Balanced risk-return',
+            aggressiveTitle: '🚀 Aggressive',
+            aggressiveDesc: 'High risk, high returns',
+            wealthEvolutionTitle: 'Wealth Evolution',
+            allocationChartTitle: 'Current Allocation',
+            fireProgressTitle: 'FIRE Progress',
+            yearsToFireLabel: 'years to reach FIRE',
+            fireDetails: 'With your current savings...',
+            dcaDistributionTitle: 'DCA Distribution',
+            dcaDescription: 'Specify how you want to distribute your monthly DCA:',
+            btnSaveDca: 'Save'
+        }
+    };
+
+    // Utility functions
+    function showNotification(message) {
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        if (notification && notificationText) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+    }
+
+    function updateText(elementId, textKey) {
+        const element = document.getElementById(elementId);
+        if (element && translations[currentLanguage][textKey]) {
+            element.textContent = translations[currentLanguage][textKey];
+        }
+    }
+
+    // Language functions
+    function changeLanguage(lang) {
+        currentLanguage = lang;
+        
+        // Update active language button
+        document.querySelectorAll('.language-selector button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById(`lang-${lang}`).classList.add('active');
+        
+        // Update all text elements
+        Object.keys(translations[lang]).forEach(key => {
+            updateText(key, key);
+        });
+        
+        // Update dynamic content
+        generateAllocationInputs();
+        showNotification(lang === 'es' ? 'Idioma cambiado' : 'Language changed');
+    }
+
+    // Tab functions
+    function showTab(tabName) {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // Add active class to clicked tab and corresponding content
+        event.target.classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+    }
+
+    // Scenario functions
+    function selectScenario(scenario, element) {
+        currentScenario = scenario;
+        
+        // Update active scenario
+        document.querySelectorAll('.scenario-card').forEach(card => card.classList.remove('active'));
+        element.classList.add('active');
+        
+        calculatePortfolio();
+    }
+
+    // Asset allocation functions
+    function generateAllocationInputs() {
+        const container = document.getElementById('allocationInputs');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        assetClasses.forEach((asset, index) => {
+            const div = document.createElement('div');
+            div.className = 'allocation-grid';
+            div.innerHTML = `
+                <label>${asset.icon} ${currentLanguage === 'es' ? asset.name : asset.nameEn}</label>
+                <input type="number" placeholder="€" value="${Math.round(asset.amount)}" 
+                       onchange="updateAssetAmount(${index}, this.value)">
+                <input type="number" placeholder="%" step="0.1" value="${asset.return}" 
+                       onchange="updateAssetReturn(${index}, this.value)">
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function updateAssetAmount(index, amount) {
+        if (assetClasses[index]) {
+            assetClasses[index].amount = parseFloat(amount) || 0;
+            calculatePortfolio();
+        }
+    }
+
+    function updateAssetReturn(index, returnRate) {
+        if (assetClasses[index]) {
+            assetClasses[index].return = parseFloat(returnRate) || 0;
+            calculatePortfolio();
+        }
+    }
+
+    function addAsset() {
+        const name = prompt(currentLanguage === 'es' ? 'Nombre del activo:' : 'Asset name:');
+        const returnRate = prompt(currentLanguage === 'es' ? 'Rentabilidad esperada (%):' : 'Expected return (%):');
+        
+        if (name && returnRate) {
+            assetClasses.push({
+                name: name,
+                nameEn: name,
+                return: parseFloat(returnRate) || 0,
+                amount: 0,
+                icon: '💎'
+            });
+            generateAllocationInputs();
+            calculatePortfolio();
+        }
+    }
+
+    // Main calculation function
+    function calculatePortfolio() {
+        try {
+            console.log('🔄 Calculating portfolio...');
             
-            // Actualizar todos los textos
-            for (const [key, value] of Object.entries(translations[lang])) {
-                const element = document.getElementById(key);
-                if (element) {
-                    if (element.tagName === 'INPUT' && element.placeholder) {
-                        element.placeholder = value;
+            // Get input values
+            const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+            const riskProfile = document.getElementById('riskProfile').value;
+            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
+            
+            // Calculate emergency fund
+            const emergencyMonths = riskProfile === 'aggressive' ? 4.5 : 9;
+            const emergencyFund = monthlyExpenses * emergencyMonths;
+            
+            // Auto-distribute if no manual allocation
+            const totalAllocated = assetClasses.reduce((sum, asset) => sum + asset.amount, 0);
+            if (totalAllocated === 0 && totalCash > 0) {
+                autoDistribute(totalCash, emergencyFund);
+            }
+            
+            // Calculate and update score
+            const score = calculateScore(totalCash, emergencyFund, monthlyExpenses, dcaAmount);
+            updateScoreDisplay(score);
+            
+            // Update displays
+            updateRiskHeatmap();
+            updateCharts();
+            updateFIREAnalysis();
+            
+            showNotification(currentLanguage === 'es' ? 'Portfolio calculado' : 'Portfolio calculated');
+            
+        } catch (error) {
+            console.error('Error calculating portfolio:', error);
+            showNotification(currentLanguage === 'es' ? 'Error en cálculos' : 'Calculation error');
+        }
+    }
+
+    function autoDistribute(totalCash, emergencyFund) {
+        // Reset amounts
+        assetClasses.forEach(asset => asset.amount = 0);
+
+        // Emergency fund distribution
+        if (emergencyFund > 0) {
+            assetClasses[0].amount = emergencyFund * 0.3; // Checking
+            assetClasses[1].amount = emergencyFund * 0.7; // High yield
+        }
+
+        const remainingCash = Math.max(0, totalCash - emergencyFund);
+        if (remainingCash > 0) {
+            // Distribute based on scenario
+            if (currentScenario === 'conservative') {
+                assetClasses[1].amount += remainingCash * 0.3;
+                assetClasses[2].amount = remainingCash * 0.4;
+                assetClasses[3].amount = remainingCash * 0.2;
+                assetClasses[4].amount = remainingCash * 0.1;
+            } else if (currentScenario === 'moderate') {
+                assetClasses[1].amount += remainingCash * 0.2;
+                assetClasses[2].amount = remainingCash * 0.3;
+                assetClasses[3].amount = remainingCash * 0.3;
+                assetClasses[4].amount = remainingCash * 0.15;
+                assetClasses[5].amount = remainingCash * 0.05;
+            } else { // aggressive
+                assetClasses[1].amount += remainingCash * 0.1;
+                assetClasses[2].amount = remainingCash * 0.2;
+                assetClasses[3].amount = remainingCash * 0.4;
+                assetClasses[4].amount = remainingCash * 0.2;
+                assetClasses[5].amount = remainingCash * 0.05;
+                assetClasses[6].amount = remainingCash * 0.05;
+            }
+        }
+
+        generateAllocationInputs();
+    }
+
+    function calculateScore(totalCash, emergencyFund, monthlyExpenses, dcaAmount) {
+        let score = 0;
+
+        // Emergency fund adequacy (25 points)
+        const currentEmergency = assetClasses[0].amount + assetClasses[1].amount;
+        const emergencyRatio = emergencyFund > 0 ? currentEmergency / emergencyFund : 0;
+        if (emergencyRatio >= 0.8) score += 25;
+        else if (emergencyRatio >= 0.6) score += 20;
+        else if (emergencyRatio >= 0.4) score += 15;
+        else score += emergencyRatio * 25;
+
+        // Diversification (25 points)
+        const activeAssets = assetClasses.filter(asset => asset.amount > 0).length;
+        score += Math.min(activeAssets * 4, 25);
+
+        // Risk-adjusted returns (25 points)
+        const totalInvested = assetClasses.reduce((sum, asset) => sum + asset.amount, 0);
+        if (totalInvested > 0) {
+            const weightedReturn = assetClasses.reduce((sum, asset) => 
+                sum + (asset.amount / totalInvested) * asset.return, 0);
+            score += Math.min(weightedReturn * 2.5, 25);
+        }
+
+        // Cash optimization (15 points)
+        if (totalCash > 0) {
+            const cashRatio = currentEmergency / totalCash;
+            if (cashRatio <= 0.3) score += 15;
+            else if (cashRatio <= 0.5) score += 10;
+            else score += 5;
+        }
+
+        // DCA implementation (10 points)
+        if (dcaAmount > 0) score += 10;
+
+        return Math.min(Math.round(score), 100);
+    }
+
+    function updateScoreDisplay(score) {
+        document.getElementById('totalScore').textContent = score;
+        document.getElementById('scoreFill').style.width = score + '%';
+        
+        const scoreCard = document.getElementById('scoreCard');
+        let explanation = '';
+        let bgColor = '';
+        
+        if (score >= 90) {
+            bgColor = 'var(--success)';
+            explanation = currentLanguage === 'es' ? 'Excelente optimización' : 'Excellent optimization';
+        } else if (score >= 75) {
+            bgColor = 'var(--secondary)';
+            explanation = currentLanguage === 'es' ? 'Buena diversificación' : 'Good diversification';
+        } else if (score >= 60) {
+            bgColor = 'var(--warning)';
+            explanation = currentLanguage === 'es' ? 'Necesita optimización' : 'Needs optimization';
+        } else {
+            bgColor = 'var(--accent)';
+            explanation = currentLanguage === 'es' ? 'Revisar estrategia' : 'Review strategy';
+        }
+        
+        document.getElementById('scoreExplanation').textContent = explanation;
+        scoreCard.style.backgroundColor = bgColor;
+    }
+
+    function updateRiskHeatmap() {
+        const container = document.getElementById('riskHeatmap');
+        container.innerHTML = '';
+
+        const totalAmount = assetClasses.reduce((sum, asset) => sum + asset.amount, 0);
+        const riskCategories = [
+            { name: 'Bajo Riesgo', nameEn: 'Low Risk', percentage: 0, class: 'risk-low' },
+            { name: 'Riesgo Medio', nameEn: 'Medium Risk', percentage: 0, class: 'risk-medium' },
+            { name: 'Alto Riesgo', nameEn: 'High Risk', percentage: 0, class: 'risk-high' }
+        ];
+
+        if (totalAmount > 0) {
+            assetClasses.forEach(asset => {
+                if (asset.amount > 0) {
+                    const percentage = (asset.amount / totalAmount) * 100;
+                    if (asset.return <= 3) {
+                        riskCategories[0].percentage += percentage;
+                    } else if (asset.return <= 8) {
+                        riskCategories[1].percentage += percentage;
                     } else {
-                        element.textContent = value;
+                        riskCategories[2].percentage += percentage;
                     }
                 }
-            }
-            
-            // Recalcular si ya hay resultados mostrados
-            if (document.getElementById('results').style.display === 'block') {
-                calculateOptimization();
-            }
+            });
         }
 
-        // Calcular el patrimonio total automáticamente
-        function calculateTotalAssets() {
-            const checkingAccount = parseFloat(document.getElementById('checkingAccount').value) || 0;
-            const remuneratedAccount = parseFloat(document.getElementById('remuneratedAccount').value) || 0;
-            const fixedIncome = parseFloat(document.getElementById('fixedIncome').value) || 0;
-            const equities = parseFloat(document.getElementById('equities').value) || 0;
-            const realEstate = parseFloat(document.getElementById('realEstate').value) || 0;
-            const crypto = parseFloat(document.getElementById('crypto').value) || 0;
-            
-            const total = checkingAccount + remuneratedAccount + fixedIncome + equities + realEstate + crypto;
-            document.getElementById('totalAssets').value = total.toFixed(2);
-            
-            return total;
-        }
-
-        // Calcular el total de DCA asignado
-        function calculateDCATotal() {
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            let totalAssigned = 0;
-            
-            document.querySelectorAll('.dca-amount').forEach(input => {
-                totalAssigned += parseFloat(input.value) || 0;
-            });
-            
-            const dcaTotalElement = document.getElementById('dcaTotal');
-            if (dcaTotalElement) {
-                dcaTotalElement.textContent = `${currentLanguage === 'es' ? 'Total asignado: ' : 'Total assigned: '}€${totalAssigned.toFixed(2)} ${currentLanguage === 'es' ? 'de' : 'of'} €${dcaAmount.toFixed(2)}`;
-                
-                if (totalAssigned > dcaAmount) {
-                    dcaTotalElement.style.color = '#e74c3c';
-                } else {
-                    dcaTotalElement.style.color = '';
-                }
-            }
-            
-            return totalAssigned;
-        }
-
-        // Inicializar la aplicación
-        function initApp() {
-            // Configurar el selector de idioma
-            document.getElementById('languageSelector').addEventListener('change', (e) => {
-                changeLanguage(e.target.value);
-            });
-            
-            // Configurar pestañas
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.getAttribute('data-tab');
-                    // Desactivar todas las pestañas
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-                    
-                    // Activar la pestaña seleccionada
-                    tab.classList.add('active');
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-            
-            // Calcular automáticamente el patrimonio total cuando cambie cualquier activo
-            document.querySelectorAll('.asset-input-field').forEach(input => {
-                input.addEventListener('input', calculateTotalAssets);
-            });
-            
-            // Calcular patrimonio total inicial
-            calculateTotalAssets();
-            
-            // Mostrar/ocultar la caja de DCA
-            document.getElementById('dcaAmount').addEventListener('input', (e) => {
-                const dcaBox = document.getElementById('dcaBox');
-                dcaBox.style.display = e.target.value > 0 ? 'block' : 'none';
-                calculateDCATotal();
-            });
-            
-            // Añadir otro activo al DCA
-            document.getElementById('addAssetButton').addEventListener('click', () => {
-                const newRow = document.createElement('div');
-                newRow.className = 'asset-row';
-                newRow.innerHTML = `
-                    <div class="asset-input">
-                        <select class="dca-asset-type">
-                            <option value="remuneratedAccount">${currentLanguage === 'es' ? 'Cuenta Remunerada' : 'Remunerated Account'}</option>
-                            <option value="fixedIncome">${currentLanguage === 'es' ? 'Renta Fija' : 'Fixed Income'}</option>
-                            <option value="equities">${currentLanguage === 'es' ? 'Renta Variable' : 'Equities'}</option>
-                            <option value="realEstate">${currentLanguage === 'es' ? 'Inmobiliario' : 'Real Estate'}</option>
-                            <option value="crypto">${currentLanguage === 'es' ? 'Criptomonedas' : 'Cryptocurrencies'}</option>
-                        </select>
-                    </div>
-                    <div class="amount-input">
-                        <input type="number" class="dca-amount" min="0" placeholder="€" value="0">
-                    </div>
-                    <button class="remove-asset">X</button>
+        riskCategories.forEach(category => {
+            if (category.percentage > 0) {
+                const div = document.createElement('div');
+                div.className = `risk-item ${category.class}`;
+                div.innerHTML = `
+                    <div>${currentLanguage === 'es' ? category.name : category.nameEn}</div>
+                    <div>${category.percentage.toFixed(1)}%</div>
                 `;
-                
-                newRow.querySelector('.remove-asset').addEventListener('click', function() {
-                    this.parentElement.remove();
-                    calculateDCATotal();
+                container.appendChild(div);
+            }
+        });
+    }
+
+    // Chart functions
+    function initCharts() {
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js not loaded');
+            setTimeout(initCharts, 1000);
+            return;
+        }
+
+        if (chartsInitialized) return;
+
+        try {
+            // Allocation Chart
+            const allocationCanvas = document.getElementById('allocationChart');
+            if (allocationCanvas) {
+                allocationChart = new Chart(allocationCanvas.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: [
+                                '#2c3e50', '#3498db', '#e74c3c', '#2ecc71', 
+                                '#f39c12', '#9b59b6', '#1abc9c', '#34495e'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
                 });
-                
-                newRow.querySelector('.dca-amount').addEventListener('input', calculateDCATotal);
-                
-                document.getElementById('dcaBox').appendChild(newRow);
-                calculateDCATotal();
-            });
-            
-            // Calcular total DCA cuando cambien los valores
-            document.addEventListener('input', function(e) {
-                if (e.target.classList.contains('dca-amount')) {
-                    calculateDCATotal();
-                }
-            });
-            
-            // Mostrar/ocultar objetivo FIRE personalizado
-            document.getElementById('fireGoal').addEventListener('change', (e) => {
-                document.getElementById('customFireGoalContainer').style.display = 
-                    e.target.value === 'custom' ? 'block' : 'none';
-            });
-            
-            // Calcular optimización
-            document.getElementById('calculateButton').addEventListener('click', calculateOptimization);
-            
-            // Actualizar valor del slider de años
-            document.getElementById('timeProjection').addEventListener('input', (e) => {
-                document.getElementById('timeProjectionValue').textContent = 
-                    `${e.target.value} ${currentLanguage === 'es' ? 'años' : 'years'}`;
-                // Recalcular proyección cuando se mueve el slider
-                if (document.getElementById('results').style.display === 'block') {
-                    calculateProjection();
-                }
-            });
-            
-            // Inicializar con el idioma por defecto
-            changeLanguage('es');
-        }
+            }
 
-        // Calcular la optimización
-        function calculateOptimization() {
-            // Obtener valores de entrada
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-            const annualIncome = monthlyIncome * 12;
-            const riskProfile = document.getElementById('riskProfile').value;
-            const inflationRate = parseFloat(document.getElementById('inflationRate').value) || 0;
-            const totalAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
-            
-            // Calcular fondo de emergencia recomendado
-            const emergencyFundMonths = riskProfile === 'conservative' ? 9 : 4.5; // promedio de 9 meses para conservador, 4.5 para agresivo
-            const recommendedEmergencyFund = monthlyExpenses * emergencyFundMonths;
-            
-            // Calcular distribución actual
-            const checkingAccount = parseFloat(document.getElementById('checkingAccount').value) || 0;
-            const remuneratedAccount = parseFloat(document.getElementById('remuneratedAccount').value) || 0;
-            const fixedIncome = parseFloat(document.getElementById('fixedIncome').value) || 0;
-            const equities = parseFloat(document.getElementById('equities').value) || 0;
-            const realEstate = parseFloat(document.getElementById('realEstate').value) || 0;
-            const crypto = parseFloat(document.getElementById('crypto').value) || 0;
-            
-            const totalAllocated = checkingAccount + remuneratedAccount + fixedIncome + equities + realEstate + crypto;
-            const unallocated = totalAssets - totalAllocated;
-            
-            // Calcular puntuación (simplificado)
-            let score = 70; // Puntuación base
-            
-            // Ajustar según el fondo de emergencia
-            const emergencyFundRatio = (checkingAccount + remuneratedAccount) / recommendedEmergencyFund;
-            if (emergencyFundRatio >= 0.9 && emergencyFundRatio <= 1.1) {
-                score += 10;
-            } else if (emergencyFundRatio >= 0.7 && emergencyFundRatio < 0.9) {
-                score += 5;
-            } else if (emergencyFundRatio > 1.1 && emergencyFundRatio <= 1.5) {
-                score += 3;
-            } else {
-                score -= 10;
-            }
-            
-            // Ajustar según diversificación
-            const distribution = [remuneratedAccount, fixedIncome, equities, realEstate, crypto];
-            const nonZeroAssets = distribution.filter(val => val > 0).length;
-            if (nonZeroAssets >= 3) {
-                score += 10;
-            } else if (nonZeroAssets === 2) {
-                score += 5;
-            } else {
-                score -= 5;
-            }
-            
-            // Ajustar según perfil de riesgo
-            if (riskProfile === 'conservative' && equities + crypto > 0.3 * totalAssets) {
-                score -= 10;
-            } else if (riskProfile === 'aggressive' && equities + crypto < 0.4 * totalAssets) {
-                score -= 5;
-            }
-            
-            // Asegurar que la puntuación esté entre 0 y 100
-            score = Math.max(0, Math.min(100, Math.round(score)));
-            
-            // Mostrar resultados
-            document.getElementById('scoreValue').textContent = score;
-            
-            // Actualizar gráfico de distribución
-            updateDistributionChart(checkingAccount, remuneratedAccount, fixedIncome, equities, realEstate, crypto, unallocated);
-            
-            // Actualizar información del fondo de emergencia
-            const emergencyFundProgress = Math.min(100, (checkingAccount + remuneratedAccount) / recommendedEmergencyFund * 100);
-            document.getElementById('emergencyFundProgress').style.width = `${emergencyFundProgress}%`;
-            
-            document.getElementById('emergencyFundText').textContent = 
-                `${currentLanguage === 'es' ? 'Fondo de emergencia recomendado: ' : 'Recommended emergency fund: '}€${recommendedEmergencyFund.toFixed(2)} (${emergencyFundMonths} ${currentLanguage === 'es' ? 'meses de gastos' : 'months of expenses'})`;
-            
-            // Actualizar mapa de calor de riesgo
-            updateRiskHeatmap(checkingAccount, remuneratedAccount, fixedIncome, equities, realEstate, crypto, riskProfile);
-            
-            // Calcular proyección
-            calculateProjection();
-            
-            // Calcular objetivos FIRE
-            calculateFIREGoals();
-            
-            // Generar recomendaciones
-            generateRecommendations();
-            
-            // Mostrar resultados
-            document.getElementById('results').style.display = 'block';
-            
-            // Scroll a resultados
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Actualizar gráfico de distribución
-        function updateDistributionChart(checking, remunerated, fixedIncome, equities, realEstate, crypto, unallocated) {
-            const ctx = document.getElementById('distributionChart').getContext('2d');
-            
-            if (distributionChart) {
-                distributionChart.destroy();
-            }
-            
-            distributionChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: [
-                        currentLanguage === 'es' ? 'Cuenta Corriente' : 'Checking Account',
-                        currentLanguage === 'es' ? 'Cuenta Remunerada' : 'Remunerated Account',
-                        currentLanguage === 'es' ? 'Renta Fija' : 'Fixed Income',
-                        currentLanguage === 'es' ? 'Renta Variable' : 'Equities',
-                        currentLanguage === 'es' ? 'Inmobiliario' : 'Real Estate',
-                        currentLanguage === 'es' ? 'Criptomonedas' : 'Cryptocurrencies',
-                        currentLanguage === 'es' ? 'Sin asignar' : 'Unallocated'
-                    ],
-                    datasets: [{
-                        data: [checking, remunerated, fixedIncome, equities, realEstate, crypto, unallocated],
-                        backgroundColor: [
-                            '#95a5a6', // checking - gris
-                            '#3498db', // remunerated - azul
-                            '#2ecc71', // fixed income - verde
-                            '#f1c40f', // equities - amarillo
-                            '#e67e22', // real estate - naranja
-                            '#9b59b6', // crypto - morado
-                            '#e74c3c'  // unallocated - rojo
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.raw;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    return `€${value.toFixed(2)} (${percentage}%)`;
+            // Wealth Chart
+            const wealthCanvas = document.getElementById('wealthChart');
+            if (wealthCanvas) {
+                wealthChart = new Chart(wealthCanvas.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: []
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '€' + value.toLocaleString();
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
-        }
-
-        // Actualizar mapa de calor de riesgo
-        function updateRiskHeatmap(checking, remunerated, fixedIncome, equities, realEstate, crypto, riskProfile) {
-            const heatmap = document.getElementById('riskHeatmap');
-            heatmap.innerHTML = '';
-            
-            const total = checking + remunerated + fixedIncome + equities + realEstate + crypto;
-            if (total === 0) return;
-            
-            const assets = [
-                { name: currentLanguage === 'es' ? 'Cuenta Corriente' : 'Checking Account', value: checking, risk: 1 },
-                { name: currentLanguage === 'es' ? 'Cuenta Remunerada' : 'Remunerated Account', value: remunerated, risk: 2 },
-                { name: currentLanguage === 'es' ? 'Renta Fija' : 'Fixed Income', value: fixedIncome, risk: 3 },
-                { name: currentLanguage === 'es' ? 'Inmobiliario' : 'Real Estate', value: realEstate, risk: 5 },
-                { name: currentLanguage === 'es' ? 'Renta Variable' : 'Equities', value: equities, risk: 7 },
-                { name: currentLanguage === 'es' ? 'Criptomonedas' : 'Cryptocurrencies', value: crypto, risk: 9 }
-            ];
-            
-            assets.forEach(asset => {
-                const percentage = (asset.value / total) * 100;
-                const item = document.createElement('div');
-                
-                let riskClass = 'low-risk';
-                if (asset.risk >= 7) riskClass = 'high-risk';
-                else if (asset.risk >= 4) riskClass = 'medium-risk';
-                
-                item.className = `heatmap-item ${riskClass}`;
-                item.innerHTML = `
-                    <div>${asset.name}</div>
-                    <div>${percentage.toFixed(1)}%</div>
-                    <div>${currentLanguage === 'es' ? 'Riesgo ' : 'Risk '}${asset.risk}/10</div>
-                `;
-                
-                heatmap.appendChild(item);
-            });
-        }
-
-        // Calcular proyección
-        function calculateProjection() {
-            const years = parseInt(document.getElementById('timeProjection').value);
-            const inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
-            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100;
-            
-            // Obtener valores actuales y tasas de rendimiento
-            const checkingAccount = parseFloat(document.getElementById('checkingAccount').value) || 0;
-            const checkingRate = 0; // 0% para cuenta corriente
-            
-            const remuneratedAccount = parseFloat(document.getElementById('remuneratedAccount').value) || 0;
-            const remuneratedRate = parseFloat(document.getElementById('remuneratedAccountRate').value) / 100;
-            
-            const fixedIncome = parseFloat(document.getElementById('fixedIncome').value) || 0;
-            const fixedIncomeRate = parseFloat(document.getElementById('fixedIncomeRate').value) / 100;
-            
-            const equities = parseFloat(document.getElementById('equities').value) || 0;
-            const equitiesRate = parseFloat(document.getElementById('equitiesRate').value) / 100;
-            
-            const realEstate = parseFloat(document.getElementById('realEstate').value) || 0;
-            const realEstateRate = parseFloat(document.getElementById('realEstateRate').value) / 100;
-            
-            const crypto = parseFloat(document.getElementById('crypto').value) || 0;
-            const cryptoRate = parseFloat(document.getElementById('cryptoRate').value) / 100;
-            
-            // Crear objeto de mapeo de tasas para evitar el uso de eval()
-            const ratesMap = {
-                'remuneratedAccount': remuneratedRate,
-                'fixedIncome': fixedIncomeRate,
-                'equities': equitiesRate,
-                'realEstate': realEstateRate,
-                'crypto': cryptoRate
-            };
-            
-            // Obtener datos de DCA
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            let dcaAllocations = [];
-            
-            if (dcaAmount > 0) {
-                const dcaRows = document.querySelectorAll('.asset-row');
-                dcaRows.forEach(row => {
-                    const assetType = row.querySelector('.dca-asset-type').value;
-                    const amount = parseFloat(row.querySelector('.dca-amount').value) || 0;
-                    if (amount > 0) {
-                        dcaAllocations.push({
-                            type: assetType,
-                            amount: amount
-                        });
-                    }
                 });
             }
-            
-            // Calcular valor actual
-            const currentValue = checkingAccount + remuneratedAccount + fixedIncome + equities + realEstate + crypto;
-            document.getElementById('currentValue').textContent = `€${currentValue.toFixed(2)}`;
-            
-            // Calcular proyección año por año
-            const yearlyProjection = [currentValue];
-            const yearlyProjectionAfterTax = [currentValue];
-            
-            // Inicializar valores para cada tipo de activo
-            let assets = {
-                checking: checkingAccount,
-                remuneratedAccount: remuneratedAccount,
-                fixedIncome: fixedIncome,
-                equities: equities,
-                realEstate: realEstate,
-                crypto: crypto
-            };
-            
-            let assetsAfterTax = {
-                checking: checkingAccount,
-                remuneratedAccount: remuneratedAccount,
-                fixedIncome: fixedIncome,
-                equities: equities,
-                realEstate: realEstate,
-                crypto: crypto
-            };
-            
-            for (let year = 1; year <= years; year++) {
-                let totalGrowth = 0;
-                let totalGrowthAfterTax = 0;
-                
-                // Calcular crecimiento para cada activo
-                for (const [assetType, value] of Object.entries(assets)) {
-                    let rate = 0;
-                    
-                    switch(assetType) {
-                        case 'checking':
-                            rate = checkingRate;
-                            break;
-                        case 'remuneratedAccount':
-                            rate = remuneratedRate;
-                            break;
-                        case 'fixedIncome':
-                            rate = fixedIncomeRate;
-                            break;
-                        case 'equities':
-                            rate = equitiesRate;
-                            break;
-                        case 'realEstate':
-                            rate = realEstateRate;
-                            break;
-                        case 'crypto':
-                            rate = cryptoRate;
-                            break;
-                    }
-                    
-                    const growth = value * rate;
-                    totalGrowth += growth;
-                    
-                    // Actualizar el valor del activo con crecimiento compuesto
-                    assets[assetType] = value + growth;
-                    
-                    // Para afterTax, aplicar impuestos a las ganancias (excepto checking account)
-                    const taxable = assetType !== 'checking';
-                    const growthAfterTax = taxable ? growth * (1 - taxRate) : growth;
-                    totalGrowthAfterTax += growthAfterTax;
-                    
-                    // Actualizar el valor afterTax
-                    assetsAfterTax[assetType] = assetsAfterTax[assetType] + growthAfterTax;
-                }
-                
-                // Añadir contribuciones DCA
-                dcaAllocations.forEach(allocation => {
-                    const assetType = allocation.type;
-                    const yearlyDCA = allocation.amount * 12;
-                    
-                    // Añadir DCA a los activos
-                    if (assets[assetType] !== undefined) {
-                        assets[assetType] += yearlyDCA;
-                        assetsAfterTax[assetType] += yearlyDCA;
-                    }
-                });
-                
-                // Calcular el valor total después del crecimiento y DCA
-                const totalValue = Object.values(assets).reduce((sum, value) => sum + value, 0);
-                const totalValueAfterTax = Object.values(assetsAfterTax).reduce((sum, value) => sum + value, 0);
-                
-                yearlyProjection.push(totalValue);
-                yearlyProjectionAfterTax.push(totalValueAfterTax);
+
+            chartsInitialized = true;
+            console.log('📊 Charts initialized');
+            updateCharts();
+
+        } catch (error) {
+            console.error('Error initializing charts:', error);
+        }
+    }
+
+    function updateCharts() {
+        updateAllocationChart();
+        updateWealthChart();
+    }
+
+    function updateAllocationChart() {
+        if (!allocationChart) return;
+        
+        const labels = [];
+        const data = [];
+        
+        assetClasses.forEach(asset => {
+            if (asset.amount > 0) {
+                labels.push(asset.icon + ' ' + (currentLanguage === 'es' ? asset.name : asset.nameEn));
+                data.push(asset.amount);
             }
-            
-            // Obtener valores finales
-            const projectedValue = yearlyProjection[yearlyProjection.length - 1];
-            const projectedValueAfterTax = yearlyProjectionAfterTax[yearlyProjectionAfterTax.length - 1];
-            
-            // Calcular valor ajustado por inflación
-            const inflationAdjustedValue = projectedValue / Math.pow(1 + inflationRate, years);
-            const inflationAdjustedValueAfterTax = projectedValueAfterTax / Math.pow(1 + inflationRate, years);
-            
-            // Mostrar valores proyectados
-            document.getElementById('projectedValue').textContent = `€${isNaN(projectedValue) ? '0.00' : projectedValue.toFixed(2)}`;
-            document.getElementById('inflationAdjustedValue').textContent = `€${isNaN(inflationAdjustedValue) ? '0.00' : inflationAdjustedValue.toFixed(2)}`;
-            document.getElementById('afterTaxValue').textContent = `€${isNaN(projectedValueAfterTax) ? '0.00' : projectedValueAfterTax.toFixed(2)}`;
-            
-            // Actualizar gráfico de proyección
-            updateProjectionChart(yearlyProjection, yearlyProjectionAfterTax, years, inflationRate);
+        });
+
+        allocationChart.data.labels = labels;
+        allocationChart.data.datasets[0].data = data;
+        allocationChart.update();
+    }
+
+    function updateWealthChart() {
+        if (!wealthChart) return;
+        
+        const years = 20;
+        const labels = [];
+        const datasets = [];
+        
+        for (let i = 0; i <= years; i++) {
+            labels.push(new Date().getFullYear() + i);
         }
 
-        // Actualizar gráfico de proyección
-        function updateProjectionChart(yearlyProjection, yearlyProjectionAfterTax, years, inflationRate) {
-            const ctx = document.getElementById('projectionChart').getContext('2d');
-            
-            // Calcular valores ajustados por inflación
-            const inflationAdjustedProjection = yearlyProjection.map((value, index) => {
-                return value / Math.pow(1 + inflationRate, index);
+        const scenarios = ['conservative', 'moderate', 'aggressive'];
+        const colors = ['#2ecc71', '#f39c12', '#e74c3c'];
+        const names = {
+            conservative: currentLanguage === 'es' ? 'Conservador' : 'Conservative',
+            moderate: currentLanguage === 'es' ? 'Moderado' : 'Moderate',
+            aggressive: currentLanguage === 'es' ? 'Agresivo' : 'Aggressive'
+        };
+
+        scenarios.forEach((scenario, index) => {
+            const evolution = calculateWealthEvolution(scenario, years);
+            datasets.push({
+                label: names[scenario],
+                data: evolution,
+                borderColor: colors[index],
+                fill: false,
+                tension: 0.4
             });
-            
-            const inflationAdjustedProjectionAfterTax = yearlyProjectionAfterTax.map((value, index) => {
-                return value / Math.pow(1 + inflationRate, index);
-            });
-            
-            // Crear etiquetas para los años
-            const labels = Array.from({length: years + 1}, (_, i) => i);
-            
-            if (projectionChart) {
-                projectionChart.destroy();
-            }
-            
-            projectionChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: currentLanguage === 'es' ? 'Valor Nominal' : 'Nominal Value',
-                            data: yearlyProjection,
-                            borderColor: '#3498db',
-                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                            fill: true,
-                            tension: 0.3
-                        },
-                        {
-                            label: currentLanguage === 'es' ? 'Valor después de Impuestos' : 'Value After Taxes',
-                            data: yearlyProjectionAfterTax,
-                            borderColor: '#9b59b6',
-                            backgroundColor: 'rgba(155, 89, 182, 0.1)',
-                            fill: true,
-                            tension: 0.3
-                        },
-                        {
-                            label: currentLanguage === 'es' ? 'Ajustado por Inflación' : 'Inflation Adjusted',
-                            data: inflationAdjustedProjection,
-                            borderColor: '#e74c3c',
-                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                            fill: true,
-                            tension: 0.3
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: '€'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: currentLanguage === 'es' ? 'Años' : 'Years'
-                            }
-                        }
-                    }
-                }
-            });
+        });
+
+        wealthChart.data.labels = labels;
+        wealthChart.data.datasets = datasets;
+        wealthChart.update();
+    }
+
+    function calculateWealthEvolution(scenario, years) {
+        const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
+        const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
+
+        const returns = { conservative: 4, moderate: 6.5, aggressive: 9 };
+        const annualReturn = returns[scenario] || 6;
+
+        const evolution = [totalCash];
+        let currentWealth = totalCash;
+
+        for (let year = 1; year <= years; year++) {
+            currentWealth += dcaAmount * 12;
+            currentWealth *= (1 + annualReturn / 100);
+            evolution.push(Math.round(currentWealth));
         }
 
-        // Calcular objetivos FIRE
-        function calculateFIREGoals() {
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const annualExpenses = monthlyExpenses * 12;
-            
-            // Calcular objetivos FIRE
-            const leanFIRE = annualExpenses * 25;
-            const baristaFIRE = annualExpenses * 25 * 0.7; // Asumiendo que se cubre el 30% con ingresos
-            const coastFIRE = annualExpenses * 20; // Simplificado
-            const fullFIRE = annualExpenses * 33;
-            
-            // Mostrar valores FIRE
-            document.getElementById('leanFireValue').textContent = `€${leanFIRE.toFixed(0)}`;
-            document.getElementById('baristaFireValue').textContent = `€${baristaFIRE.toFixed(0)}`;
-            document.getElementById('coastFireValue').textContent = `€${coastFIRE.toFixed(0)}`;
-            document.getElementById('fullFireValue').textContent = `€${fullFIRE.toFixed(0)}`;
-            
-            // Calcular años para alcanzar cada objetivo (simplificado)
-            const currentAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
-            const annualReturn = 0.07; // 7% de retorno anual promedio
-            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-            const annualIncome = monthlyIncome * 12;
-            const annualExpenses = monthlyExpenses * 12;
-            const annualSavings = annualIncome - annualExpenses;
-            
-            document.getElementById('leanFireYear').textContent = 
-                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, leanFIRE, annualReturn, annualSavings)}`;
-            document.getElementById('baristaFireYear').textContent = 
-                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, baristaFIRE, annualReturn, annualSavings)}`;
-            document.getElementById('coastFireYear').textContent = 
-                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, coastFIRE, annualReturn, annualSavings)}`;
-            document.getElementById('fullFireYear').textContent = 
-                `${currentLanguage === 'es' ? 'Año: ' : 'Year: '}${calculateYearsToGoal(currentAssets, fullFIRE, annualReturn, annualSavings)}`;
-        }
+        return evolution;
+    }
 
-        // Calcular años para alcanzar un objetivo
-        function calculateYearsToGoal(current, goal, annualReturn, annualSavings) {
-            if (current >= goal) return new Date().getFullYear();
-            
-            let years = 0;
-            let value = current;
-            
-            while (value < goal && years < 60) {
-                value = value * (1 + annualReturn) + annualSavings;
-                years++;
-            }
-            
-            return new Date().getFullYear() + years;
-        }
+    // FIRE Analysis
+    function updateFIREAnalysis() {
+        const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
+        const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
+        const fireGoal = parseFloat(document.getElementById('fireGoal').value) || 1000000;
+        const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
 
-        // Generar recomendaciones
-        function generateRecommendations() {
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const riskProfile = document.getElementById('riskProfile').value;
-            const checkingAccount = parseFloat(document.getElementById('checkingAccount').value) || 0;
-            const remuneratedAccount = parseFloat(document.getElementById('remuneratedAccount').value) || 0;
-            const emergencyFund = checkingAccount + remuneratedAccount;
-            const recommendedEmergencyFund = monthlyExpenses * (riskProfile === 'conservative' ? 9 : 4.5);
-            
-            const equities = parseFloat(document.getElementById('equities').value) || 0;
-            const crypto = parseFloat(document.getElementById('crypto').value) || 0;
-            const currentAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
-            const riskyAssetsPercentage = (equities + crypto) / currentAssets * 100;
-            
-            let recommendationsHTML = '';
-            
-            // Recomendaciones sobre fondo de emergencia
-            if (emergencyFund < recommendedEmergencyFund * 0.9) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Tu fondo de emergencia (€${emergencyFund.toFixed(2)}) está por debajo de lo recomendado (€${recommendedEmergencyFund.toFixed(2)}). Considera aumentar tus ahorros en cuentas de fácil acceso.` : 
-                    `🔶 Your emergency fund (€${emergencyFund.toFixed(2)}) is below the recommended amount (€${recommendedEmergencyFund.toFixed(2)}). Consider increasing your savings in easily accessible accounts.`}</p>`;
-            } else if (emergencyFund > recommendedEmergencyFund * 1.5) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Tienes un exceso de efectivo en tu fondo de emergencia (€${emergencyFund.toFixed(2)} vs €${recommendedEmergencyFund.toFixed(2)} recomendado). Considera invertir el excedente para obtener mejor rentabilidad.` : 
-                    `🔶 You have excess cash in your emergency fund (€${emergencyFund.toFixed(2)} vs €${recommendedEmergencyFund.toFixed(2)} recommended). Consider investing the surplus for better returns.`}</p>`;
-            } else {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `✅ Tu fondo de emergencia está en un nivel adecuado.` : 
-                    `✅ Your emergency fund is at an adequate level.`}</p>`;
-            }
-            
-            // Recomendaciones basadas en el perfil de riesgo
-            if (riskProfile === 'conservative' && riskyAssetsPercentage > 30) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Para tu perfil conservador, tienes mucho peso en activos de riesgo (${riskyAssetsPercentage.toFixed(1)}%). Considera reducir tu exposición a renta variable y criptomonedas.` : 
-                    `🔶 For your conservative profile, you have a high weight in risky assets (${riskyAssetsPercentage.toFixed(1)}%). Consider reducing your exposure to equities and cryptocurrencies.`}</p>`;
-            } else if (riskProfile === 'aggressive' && riskyAssetsPercentage < 40) {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `🔶 Para tu perfil agresivo, podrías aumentar tu exposición a activos de riesgo (actualmente ${riskyAssetsPercentage.toFixed(1)}%). Considera asignar más a renta variable y criptomonedas.` : 
-                    `🔶 For your aggressive profile, you could increase your exposure to risky assets (currently ${riskyAssetsPercentage.toFixed(1)}%). Consider allocating more to equities and cryptocurrencies.`}</p>`;
-            } else {
-                recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                    `✅ Tu asignación de activos de riesgo (${riskyAssetsPercentage.toFixed(1)}%) es adecuada para tu perfil.` : 
-                    `✅ Your risky assets allocation (${riskyAssetsPercentage.toFixed(1)}%) is adequate for your profile.`}</p>`;
-            }
-            
-            // Otras recomendaciones generales
-            recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                `💡 Considera utilizar cuentas de ahorro fiscalmente eficientes (como cuentas de pensiones) para minimizar tu carga fiscal.` : 
-                `💡 Consider using tax-efficient savings accounts (such as pension accounts) to minimize your tax burden.`}</p>`;
-            
-            recommendationsHTML += `<p>${currentLanguage === 'es' ? 
-                `💡 Recuerda revisar periódicamente tu asignación de activos y rebalancear si es necesario.` : 
-                `💡 Remember to periodically review your asset allocation and rebalance if necessary.`}</p>`;
-            
-            document.getElementById('recommendations').innerHTML = recommendationsHTML;
-        }
+        const fireTarget = fireGoal || monthlyExpenses * 12 * 25;
+        const yearsToFire = calculateYearsToFire(totalCash, dcaAmount, fireTarget);
 
-        // Inicializar la aplicación cuando el DOM esté cargado
-        document.addEventListener('DOMContentLoaded', initApp);
-    </script>
+        document.getElementById('fireYears').textContent = yearsToFire;
+
+        const progress = Math.min((totalCash / fireTarget) * 100, 100);
+        document.getElementById('fireProgress').style.width = progress + '%';
+
+        const details = currentLanguage === 'es' 
+            ? `Con €${dcaAmount}/mes alcanzarás €${fireTarget.toLocaleString()} en ${yearsToFire} años`
+            : `With €${dcaAmount}/month you'll reach €${fireTarget.toLocaleString()} in ${yearsToFire} years`;
+        
+        document.getElementById('fireDetails').textContent = details;
+    }
+
+    function calculateYearsToFire(currentAmount, monthlyContribution, targetAmount) {
+        if (currentAmount >= targetAmount) return 0;
+        if (monthlyContribution <= 0) return 50;
+
+        try {
+            const monthlyRate = 0.07 / 12;
+            const months = Math.log(1 + (targetAmount * monthlyRate) / monthlyContribution) / Math.log(1 + monthlyRate);
+            return Math.min(Math.max(Math.ceil(months / 12), 1), 50);
+        } catch {
+            return Math.min(Math.ceil((targetAmount - currentAmount) / (monthlyContribution * 12)), 50);
+        }
+    }
+
+    // DCA Modal functions
+    function showDCAModal() {
+        const modal = document.getElementById('dcaModal');
+        modal.style.display = 'block';
+        generateDCAInputs();
+    }
+
+    function closeDCAModal() {
+        const modal = document.getElementById('dcaModal');
+        modal.style.display = 'none';
+    }
+
+    function generateDCAInputs() {
+        const container = document.getElementById('dcaAllocations');
+        container.innerHTML = '';
+
+        assetClasses.forEach((asset, index) => {
+            const div = document.createElement('div');
+            div.className = 'dca-item';
+            div.innerHTML = `
+                <span>${asset.icon} ${currentLanguage === 'es' ? asset.name : asset.nameEn}</span>
+                <input type="number" placeholder="€" value="${dcaDistribution[index] || 0}"
+                       onchange="updateDCAAmount(${index}, this.value)">
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function updateDCAAmount(index, amount) {
+        dcaDistribution[index] = parseFloat(amount) || 0;
+    }
+
+    function saveDCA() {
+        showNotification(currentLanguage === 'es' ? 'DCA guardado' : 'DCA saved');
+        closeDCAModal();
+    }
+
+    // PDF Generation
+    function generatePDF() {
+        showNotification(currentLanguage === 'es' ? 'Función PDF en desarrollo' : 'PDF function in development');
+    }
+
+    // Initialize application
+    function init() {
+        console.log('🚀 Initializing application...');
+        
+        try {
+            // Initialize DCA distribution
+            dcaDistribution = new Array(assetClasses.length).fill(0);
+            
+            // Generate initial allocation inputs
+            generateAllocationInputs();
+            
+            // Initialize charts
+            setTimeout(() => {
+                initCharts();
+                calculatePortfolio();
+            }, 500);
+            
+            console.log('✅ Application initialized');
+            
+        } catch (error) {
+            console.error('❌ Initialization error:', error);
+            showNotification('Error de inicialización');
+        }
+    }
+
+    // Start when DOM is ready
+    document.addEventListener('DOMContentLoaded', init);
+
+    // Fallback initialization
+    if (document.readyState === 'complete') {
+        setTimeout(init, 100);
+    }
+</script>
+```
+
 </body>
 </html>
