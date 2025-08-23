@@ -815,7 +815,7 @@
                 "afterTaxTitle": "Después de Impuestos",
                 "recommendationsTitle": "Recomendaciones",
                 "recommendationsText": "Aquí aparecerán recomendaciones personalizadas para optimizar tu patrimonio.",
-                "footerText": "© 2023 Optimizador de Patrimonio. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión."
+                "footerText": "© 2025 Optimizador de Patrimonio. Esta herramienta es solo con fines educativos e informativos. Consulte con un asesor financiero profesional antes de tomar decisiones de inversión."
             },
             en: {
                 // Textos de pestañas
@@ -884,7 +884,7 @@
                 "afterTaxTitle": "After Taxes",
                 "recommendationsTitle": "Recommendations",
                 "recommendationsText": "Personalized recommendations to optimize your assets will appear here.",
-                "footerText": "© 2023 Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
+                "footerText": "© 2025 Assets Optimizer. This tool is for educational and informational purposes only. Consult with a professional financial advisor before making investment decisions."
             }
         };
 
@@ -1041,6 +1041,7 @@
             document.getElementById('timeProjection').addEventListener('input', (e) => {
                 document.getElementById('timeProjectionValue').textContent = 
                     `${e.target.value} ${currentLanguage === 'es' ? 'años' : 'years'}`;
+                // Recalcular proyección cuando se mueve el slider
                 if (document.getElementById('results').style.display === 'block') {
                     calculateProjection();
                 }
@@ -1258,6 +1259,15 @@
             const crypto = parseFloat(document.getElementById('crypto').value) || 0;
             const cryptoRate = parseFloat(document.getElementById('cryptoRate').value) / 100;
             
+            // Crear objeto de mapeo de tasas para evitar el uso de eval()
+            const ratesMap = {
+                'remuneratedAccount': remuneratedRate,
+                'fixedIncome': fixedIncomeRate,
+                'equities': equitiesRate,
+                'realEstate': realEstateRate,
+                'crypto': cryptoRate
+            };
+            
             // Obtener datos de DCA
             const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
             let dcaAllocations = [];
@@ -1281,55 +1291,95 @@
             document.getElementById('currentValue').textContent = `€${currentValue.toFixed(2)}`;
             
             // Calcular proyección año por año
-            const yearlyProjection = [];
-            const yearlyProjectionAfterTax = [];
-            let projectedValue = currentValue;
-            let projectedValueAfterTax = currentValue;
+            const yearlyProjection = [currentValue];
+            const yearlyProjectionAfterTax = [currentValue];
+            
+            // Inicializar valores para cada tipo de activo
+            let assets = {
+                checking: checkingAccount,
+                remuneratedAccount: remuneratedAccount,
+                fixedIncome: fixedIncome,
+                equities: equities,
+                realEstate: realEstate,
+                crypto: crypto
+            };
+            
+            let assetsAfterTax = {
+                checking: checkingAccount,
+                remuneratedAccount: remuneratedAccount,
+                fixedIncome: fixedIncome,
+                equities: equities,
+                realEstate: realEstate,
+                crypto: crypto
+            };
             
             for (let year = 1; year <= years; year++) {
-                // Calcular crecimiento de las inversiones existentes
-                let yearlyGrowth = 0;
-                yearlyGrowth += checkingAccount * checkingRate;
-                yearlyGrowth += remuneratedAccount * remuneratedRate;
-                yearlyGrowth += fixedIncome * fixedIncomeRate;
-                yearlyGrowth += equities * equitiesRate;
-                yearlyGrowth += realEstate * realEstateRate;
-                yearlyGrowth += crypto * cryptoRate;
+                let totalGrowth = 0;
+                let totalGrowthAfterTax = 0;
                 
-                // Aplicar impuestos a las ganancias (simplificado)
-                const taxableGrowth = yearlyGrowth - (checkingAccount * checkingRate); // Excluir cuenta corriente
-                const taxOnGrowth = taxableGrowth * taxRate;
-                const growthAfterTax = yearlyGrowth - taxOnGrowth;
+                // Calcular crecimiento para cada activo
+                for (const [assetType, value] of Object.entries(assets)) {
+                    let rate = 0;
+                    
+                    switch(assetType) {
+                        case 'checking':
+                            rate = checkingRate;
+                            break;
+                        case 'remuneratedAccount':
+                            rate = remuneratedRate;
+                            break;
+                        case 'fixedIncome':
+                            rate = fixedIncomeRate;
+                            break;
+                        case 'equities':
+                            rate = equitiesRate;
+                            break;
+                        case 'realEstate':
+                            rate = realEstateRate;
+                            break;
+                        case 'crypto':
+                            rate = cryptoRate;
+                            break;
+                    }
+                    
+                    const growth = value * rate;
+                    totalGrowth += growth;
+                    
+                    // Actualizar el valor del activo con crecimiento compuesto
+                    assets[assetType] = value + growth;
+                    
+                    // Para afterTax, aplicar impuestos a las ganancias (excepto checking account)
+                    const taxable = assetType !== 'checking';
+                    const growthAfterTax = taxable ? growth * (1 - taxRate) : growth;
+                    totalGrowthAfterTax += growthAfterTax;
+                    
+                    // Actualizar el valor afterTax
+                    assetsAfterTax[assetType] = assetsAfterTax[assetType] + growthAfterTax;
+                }
                 
-                // Añadir DCA y su crecimiento
-                let dcaGrowth = 0;
-                let dcaGrowthAfterTax = 0;
+                // Añadir contribuciones DCA
                 dcaAllocations.forEach(allocation => {
-                    // Añadir contribuciones DCA de este año
+                    const assetType = allocation.type;
                     const yearlyDCA = allocation.amount * 12;
                     
-                    // Calcular crecimiento de las contribuciones anteriores (asumiendo contribuciones mensuales)
-                    // Simplificación: crecimiento promedio de la mitad del capital añadido durante el año
-                    const assetRate = eval(`${allocation.type}Rate`);
-                    dcaGrowth += yearlyDCA * (assetRate / 2);
-                    
-                    // Aplicar impuestos al crecimiento del DCA
-                    const taxOnDCAGrowth = yearlyDCA * (assetRate / 2) * taxRate;
-                    dcaGrowthAfterTax += yearlyDCA * (assetRate / 2) - taxOnDCAGrowth;
-                    
-                    // Añadir la contribución de este año al valor proyectado
-                    projectedValue += yearlyDCA;
-                    projectedValueAfterTax += yearlyDCA;
+                    // Añadir DCA a los activos
+                    if (assets[assetType] !== undefined) {
+                        assets[assetType] += yearlyDCA;
+                        assetsAfterTax[assetType] += yearlyDCA;
+                    }
                 });
                 
-                // Aplicar crecimiento
-                projectedValue += yearlyGrowth + dcaGrowth;
-                projectedValueAfterTax += growthAfterTax + dcaGrowthAfterTax;
+                // Calcular el valor total después del crecimiento y DCA
+                const totalValue = Object.values(assets).reduce((sum, value) => sum + value, 0);
+                const totalValueAfterTax = Object.values(assetsAfterTax).reduce((sum, value) => sum + value, 0);
                 
-                // Guardar proyección para este año
-                yearlyProjection.push(projectedValue);
-                yearlyProjectionAfterTax.push(projectedValueAfterTax);
+                yearlyProjection.push(totalValue);
+                yearlyProjectionAfterTax.push(totalValueAfterTax);
             }
+            
+            // Obtener valores finales
+            const projectedValue = yearlyProjection[yearlyProjection.length - 1];
+            const projectedValueAfterTax = yearlyProjectionAfterTax[yearlyProjectionAfterTax.length - 1];
             
             // Calcular valor ajustado por inflación
             const inflationAdjustedValue = projectedValue / Math.pow(1 + inflationRate, years);
@@ -1350,15 +1400,15 @@
             
             // Calcular valores ajustados por inflación
             const inflationAdjustedProjection = yearlyProjection.map((value, index) => {
-                return value / Math.pow(1 + inflationRate, index + 1);
+                return value / Math.pow(1 + inflationRate, index);
             });
             
             const inflationAdjustedProjectionAfterTax = yearlyProjectionAfterTax.map((value, index) => {
-                return value / Math.pow(1 + inflationRate, index + 1);
+                return value / Math.pow(1 + inflationRate, index);
             });
             
             // Crear etiquetas para los años
-            const labels = Array.from({length: years}, (_, i) => i + 1);
+            const labels = Array.from({length: years + 1}, (_, i) => i);
             
             if (projectionChart) {
                 projectionChart.destroy();
@@ -1438,6 +1488,7 @@
             const annualReturn = 0.07; // 7% de retorno anual promedio
             const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
             const annualIncome = monthlyIncome * 12;
+            const annualExpenses = monthlyExpenses * 12;
             const annualSavings = annualIncome - annualExpenses;
             
             document.getElementById('leanFireYear').textContent = 
