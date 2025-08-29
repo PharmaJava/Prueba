@@ -3,1881 +3,1606 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimizador de Patrimonio</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>Calculadora de Inversión Inmobiliaria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --light: #ecf0f1;
-            --dark: #34495e;
-            --text: #2c3e50;
-            --background: #f8f9fa;
-            --card-bg: #ffffff;
-            --border: #ddd;
-            --fire-lean: #3498db;
-            --fire-barista: #9b59b6;
-            --fire-coast: #2ecc71;
-            --fire-full: #e67e22;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #3b82ff;
+            --primary-dark: #1d4ed8;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --text: #334155;
+            --text-light: #64748b;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --gradient-main: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--gradient-main);
+            background-attachment: fixed;
+            min-height: 100vh;
             color: var(--text);
-            background-color: var(--background);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .language-selector {
-            display: flex;
-            align-items: center;
-        }
-
-        .language-selector button {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 2px;
-        }
-
-        .language-selector button.active {
-            background: var(--secondary);
-            border-color: var(--secondary);
-        }
-
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .card h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-            border-bottom: 2px solid var(--secondary);
-            padding-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .input-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-
-        button, .btn {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s;
-            margin: 5px;
-        }
-
-        button:hover, .btn:hover {
-            background-color: var(--primary);
-        }
-
-        .btn-calculate {
-            background-color: var(--success);
-            font-size: 1.1rem;
-            padding: 15px 25px;
-            width: 100%;
-            margin: 1rem 0;
-        }
-
-        .btn-secondary {
-            background-color: var(--warning);
-        }
-
-        .score-card {
-            text-align: center;
-            margin: 2rem 0;
-            background: var(--secondary);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .score-number {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            height: 25px;
-            background-color: rgba(255,255,255,0.3);
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background-color: white;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .chart-container {
-            height: 300px;
-            margin: 2rem 0;
+        .app-container {
+            min-height: 100vh;
             position: relative;
         }
 
-        .allocation-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 0.8rem;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
         }
 
-        .risk-heatmap {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin: 1rem 0;
+        .particle {
+            position: absolute;
+            display: block;
+            pointer-events: none;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
         }
 
-        .risk-item {
-            padding: 1rem;
-            border-radius: 4px;
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .header {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(150%);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 2.5rem 2rem;
             text-align: center;
-            font-weight: bold;
+            color: white;
         }
 
-        .risk-low {
-            background-color: #d4edda;
-            color: #155724;
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .risk-medium {
-            background-color: #fff3cd;
-            color: #856404;
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
         }
 
-        .risk-high {
-            background-color: #f8d7da;
-            color: #721c24;
+        .main-content {
+            padding: 3rem 1.5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .scenarios-grid {
+        .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            grid-template-columns: 1fr;
+            gap: 2rem;
         }
 
-        .scenario-card {
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--card-bg);
+        @media (min-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 480px 1fr;
+            }
         }
 
-        .scenario-card.active {
-            border-color: var(--secondary);
-            background-color: var(--light);
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            position: relative;
         }
 
-        .tabs {
+        .card-header {
+            padding: 2rem 2.5rem;
+            background: var(--gradient-dark);
+            color: white;
+            position: relative;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
             display: flex;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
-        .tab {
-            padding: 12px 20px;
+        .card-subtitle {
+            opacity: 0.8;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .scenario-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .scenario-btn {
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--border);
+            background: var(--white);
+            border-radius: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            border-bottom: 3px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .tab.active {
-            background-color: var(--light);
+        .scenario-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .scenario-btn.active {
+            background: var(--gradient-main);
+            border-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--light);
+            border-radius: 20px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: fit-content;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .nav-tab.active {
+            background: var(--white);
             color: var(--primary);
-            border-bottom: 3px solid var(--secondary);
+            box-shadow: var(--shadow);
+            transform: scale(1.02);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--text);
         }
 
         .tab-content {
             display: none;
-            padding: 1.5rem 0;
         }
 
         .tab-content.active {
             display: block;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .fire-goals {
-            background-color: var(--fire-full);
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--dark);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--white);
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-input:disabled, .form-select:disabled {
+            background: var(--light);
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-weight: 600;
+            pointer-events: none;
+            font-size: 0.9rem;
+        }
+
+        .form-input.with-suffix {
+            padding-right: 4rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.25rem 2rem;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient-main);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px -12px rgba(59, 130, 246, 0.35);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-main);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .metric-title {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-icon {
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .metric-positive { color: var(--success); }
+        .metric-negative { color: var(--danger); }
+        .metric-warning { color: var(--warning); }
+        .metric-info { color: var(--primary); }
+
+        .alert {
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #92400e;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #991b1b;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #1e40af;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.6;
+        }
+
+        .empty-state h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .floating-summary {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-xl);
+            z-index: 50;
+            display: none;
             color: white;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+        @media (min-width: 1024px) {
+            .floating-summary {
+                display: block;
+            }
         }
 
-        .modal-content {
-            background: var(--card-bg);
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .close:hover {
-            color: #000;
-        }
-
-        .dca-allocation {
-            background-color: #f8f9fa;
-            border-left: 4px solid var(--secondary);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-        }
-
-        .dca-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 5px 0;
-            padding: 8px;
-            background: white;
-            border-radius: 4px;
+        .projection-table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            background: var(--white);
             border: 1px solid var(--border);
         }
 
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            z-index: 1001;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        .projection-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
         }
 
-        .notification.show {
-            transform: translateX(0);
+        .projection-table th,
+        .projection-table td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
         }
 
-        .full-width {
-            grid-column: 1 / -1;
+        .projection-table th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
+
+        .projection-table td:first-child,
+        .projection-table th:first-child {
+            text-align: left;
+        }
+
+        .projection-table tbody tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .projection-table .metric-positive { color: var(--success); }
+        .projection-table .metric-negative { color: var(--danger); }
+        .projection-table .metric-info { color: var(--primary); }
 
         @media (max-width: 768px) {
-            .main-grid {
-                grid-template-columns: 1fr;
+            .main-content {
+                padding: 2rem 1rem;
             }
             
-            .allocation-grid {
-                grid-template-columns: 1fr;
+            .card-body {
+                padding: 2rem;
             }
             
-            .modal-content {
-                width: 95%;
-                margin: 10% auto;
+            .nav-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
+            
+            .metric-value {
+                font-size: 2rem;
+            }
+
+            .scenario-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projection-table {
+                font-size: 0.8rem;
+            }
+
+            .projection-table th,
+            .projection-table td {
+                padding: 0.75rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-light);
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo" id="headerTitle">💰 Optimizador de Patrimonio</div>
-                <div class="header-controls">
-                    <div class="language-selector">
-                        <button onclick="changeLanguage('es')" class="active" id="lang-es">ES</button>
-                        <button onclick="changeLanguage('en')" id="lang-en">EN</button>
+    <div class="bg-particles" id="particles"></div>
+    
+    <div class="app-container">
+        <header class="header">
+
+<div style="position:absolute; top:1rem; right:1rem;">
+  <select id="langSelector" style="padding:0.5rem; border-radius:8px;">
+    <option value="es">🇪🇸 Español</option>
+    <option value="en">🇬🇧 English</option>
+  </select>
+</div>
+
+            <h1><span data-i18n="title">🏠 Calculadora de Inversión Inmobiliaria</span></h1>
+            <p><span data-i18n="subtitle">Análisis completo para inversión en alquiler - España</span></p>
+        </header>
+
+        <main class="main-content">
+            <div class="content-grid">
+                <!-- Panel de Configuración -->
+                <div class="glass-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span data-i18n="config_title">⚙️ Configuración de Inversión</span>
+                        </div>
+                        <div class="card-subtitle"><span data-i18n="config_subtitle">Personaliza todos los parámetros de tu análisis</span></div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </header>
+                    <div class="card-body">
+                        <!-- Selector de Escenarios -->
+                        <div class="scenario-selector">
+                            <button class="scenario-btn active" data-scenario="conservador">
+                                🛡️ Conservador
+                            </button>
+                            <button class="scenario-btn" data-scenario="moderado">
+                                ⚖️ Moderado
+                            </button>
+                            <button class="scenario-btn" data-scenario="optimista">
+                                🚀 Optimista
+                            </button>
+                        </div>
 
-    <div class="hero">
-        <div class="container">
-            <h1 id="heroTitle">💰 Optimizador de Patrimonio</h1>
-            <p id="heroSubtitle">Maximiza tu riqueza con estrategias inteligentes de inversión</p>
-        </div>
-    </div>
+                        <div class="nav-tabs">
+                            <button class="nav-tab active" data-tab="propiedad"><span data-i18n="tab_propiedad">🏠 Propiedad</span></button>
+                            <button class="nav-tab" data-tab="financiacion"><span data-i18n="tab_financiacion">💰 Financiación</span></button>
+                            <button class="nav-tab" data-tab="ingresos"><span data-i18n="tab_ingresos">📈 Ingresos</span></button>
+                            <button class="nav-tab" data-tab="gastos"><span data-i18n="tab_gastos">📊 Gastos</span></button>
+                            <button class="nav-tab" data-tab="revalorizacion"><span data-i18n="tab_revalorizacion">💎 Revalorización</span></button>
+                        </div>
 
-    <div class="container">
-        <div class="main-grid">
-            <!-- Input Panel -->
-            <div class="card">
-                <h2><span>📊</span><span id="configTitle">Configuración del Portafolio</span></h2>
-                
-                <div class="tabs">
-                    <div class="tab active" onclick="showTab('basic')" id="tabBasic">Básico</div>
-                    <div class="tab" onclick="showTab('advanced')" id="tabAdvanced">Avanzado</div>
-                    <div class="tab" onclick="showTab('fire')" id="tabFire">FIRE</div>
-                </div>
-
-                <div id="basic" class="tab-content active">
-                    <div class="input-group">
-                        <label id="labelTotalCash">💵 Efectivo Total (€)</label>
-                        <input type="number" id="totalCash" placeholder="50000" value="50000" readonly style="background-color: #f0f8ff; cursor: not-allowed;">
-                        <small style="color: #666; font-size: 0.9rem;">Se calcula automáticamente sumando los activos</small>
-                    </div>
-
-                    <div class="input-group">
-                        <label id="labelMonthlyExpenses">🏠 Gastos Mensuales (€)</label>
-                        <input type="number" id="monthlyExpenses" placeholder="2000" value="2000">
-                    </div>
-
-                    <div class="input-group">
-                        <label id="labelRiskProfile">📈 Perfil de Riesgo</label>
-                        <select id="riskProfile">
-                            <option value="conservative" id="optionConservative">Conservador (6-12 meses)</option>
-                            <option value="aggressive" id="optionAggressive">Agresivo (3-6 meses)</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label id="labelDcaAmount">💳 DCA Mensual (€)</label>
-                        <input type="number" id="dcaAmount" placeholder="1000" value="1000" onchange="showDCAModal()">
-                        <small>Haz clic para distribuir detalladamente</small>
-                    </div>
-
-                    <div class="input-group">
-                        <label id="labelInflation">📊 Inflación (%)</label>
-                        <input type="number" id="inflation" value="3.5" step="0.1">
-                    </div>
-
-                    <div class="input-group">
-                        <label id="labelTaxRate">🏛️ Tipo Impositivo (%)</label>
-                        <input type="number" id="taxRate" value="19" step="0.1">
-                    </div>
-
-                    <button class="btn-calculate" onclick="calculatePortfolio()" id="btnCalculate">🔄 Calcular Portfolio</button>
-                </div>
-
-                <div id="advanced" class="tab-content">
-                    <h3 id="assetAllocationTitle">Distribución de Activos</h3>
-                    <div id="allocationInputs">
-                        <!-- Dynamic allocation inputs will be generated here -->
-                    </div>
-                    <button class="btn btn-secondary" onclick="addAsset()" id="btnAddAsset">+ Añadir Activo</button>
-                </div>
-
-                <div id="fire" class="tab-content">
-                    <div class="input-group">
-                        <label id="labelFireGoal">🎯 Meta FIRE (€)</label>
-                        <input type="number" id="fireGoal" placeholder="1000000" value="1000000">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label id="labelFireType">🔥 Tipo de FIRE</label>
-                        <select id="fireType">
-                            <option value="lean">Lean FIRE</option>
-                            <option value="barista">Barista FIRE</option>
-                            <option value="coast">Coast FIRE</option>
-                            <option value="full">Full FIRE</option>
-                        </select>
-                    </div>
-
-                    <!-- Se eliminó el campo de ingresos anuales como se solicitó -->
-                    
-                    <div class="input-group">
-                        <label id="labelAnnualExpenses">📅 Gastos Anuales Objetivo (€)</label>
-                        <input type="number" id="annualExpenses" placeholder="40000" value="40000">
-                    </div>
-
-                    <div class="input-group">
-                        <label id="labelMonthlyIncome">💼 Ingresos Mensuales (€)</label>
-                        <input type="number" id="monthlyIncome" placeholder="5000" value="5000">
-                    </div>
-
-                    <div class="input-group">
-                        <label id="labelCurrentAge">🎂 Edad Actual</label>
-                        <input type="number" id="currentAge" placeholder="30" value="30">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results Panel -->
-            <div class="card">
-                <h2><span>🎯</span><span id="analysisTitle">Análisis y Puntuación</span></h2>
-                
-                <div class="score-card" id="scoreCard">
-                    <div class="score-number" id="totalScore">85</div>
-                    <div id="scoreLabel">Puntuación del Portafolio</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="scoreFill" style="width: 85%"></div>
-                    </div>
-                    <div id="scoreExplanation">Buena diversificación con margen de mejora</div>
-                </div>
-
-                <!-- Emergency Fund Analysis -->
-                <div class="card" style="margin: 1rem 0; padding: 1rem; background: #f8f9fa;">
-                    <h3 style="color: var(--primary); margin-bottom: 1rem;">💰 Análisis Fondo de Emergencia</h3>
-                    <div id="emergencyFundAnalysis">
-                        <div class="metrics-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
-                            <div>
-                                <strong id="emergencyRecommended">Recomendado:</strong>
-                                <div id="emergencyRecommendedAmount" style="font-size: 1.2rem; color: var(--secondary);">€0</div>
+                        <!-- Tab: Propiedad -->
+                        <div class="tab-content active" id="propiedad-tab">
+                            <div class="form-group">
+                                <label class="form-label">Precio de compra</label>
+                                <div class="input-group">
+                                    <input type="number" id="precio" class="form-input with-suffix" value="140000" min="0" step="1000">
+                                    <span class="input-suffix">€</span>
+                                </div>
                             </div>
-                            <div>
-                                <strong id="emergencyActual">Actual:</strong>
-                                <div id="emergencyActualAmount" style="font-size: 1.2rem; color: var(--primary);">€0</div>
+
+                            <div class="form-group">
+                                <label class="form-label">Tipo de vivienda</label>
+                                <select id="tipoVivienda" class="form-select">
+                                    <option value="segunda">Segunda vivienda (10% ITP)</option>
+                                    <option value="nueva">Vivienda nueva (10% IVA + 1.2% AJD)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Gastos de compra-venta</label>
+                                <div class="input-group">
+                                    <input type="number" id="gastosCompra" class="form-input with-suffix" value="3500" min="0" step="100">
+                                    <span class="input-suffix">€</span>
+                                </div>
                             </div>
                         </div>
-                        <div id="emergencyStatus" style="padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0;">
-                            Estado del fondo de emergencia
+
+                        <!-- Tab: Financiación -->
+                        <div class="tab-content" id="financiacion-tab">
+                            <div class="form-group">
+                                <label class="form-label">Tipo de financiación</label>
+                                <select id="financiacionTipo" class="form-select">
+                                    <option value="con_hipoteca">Con hipoteca</option>
+                                    <option value="sin_hipoteca">Sin hipoteca</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Porcentaje de entrada</label>
+                                <div class="input-group">
+                                    <input type="number" id="entrada" class="form-input with-suffix" value="20" min="0" max="100" step="1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Tipo de interés hipoteca</label>
+                                <div class="input-group">
+                                    <input type="number" id="interes" class="form-input with-suffix" value="2.5" min="0" max="15" step="0.1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Años de hipoteca</label>
+                                <input type="number" id="anos" class="form-input" value="25" min="5" max="40" step="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Gastos de hipoteca</label>
+                                <div class="input-group">
+                                    <input type="number" id="gastosHipoteca" class="form-input with-suffix" value="2500" min="0" step="100">
+                                    <span class="input-suffix">€</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab: Ingresos -->
+                        <div class="tab-content" id="ingresos-tab">
+                            <div class="form-group">
+                                <label class="form-label">Alquiler mensual</label>
+                                <div class="input-group">
+                                    <input type="number" id="alquiler" class="form-input with-suffix" value="800" min="0" step="50">
+                                    <span class="input-suffix">€/mes</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Meses vacío al año</label>
+                                <input type="number" id="mesesVacio" class="form-input" value="1" min="0" max="12" step="0.5">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Incremento anual del alquiler</label>
+                                <div class="input-group">
+                                    <input type="number" id="incrementoAlquiler" class="form-input with-suffix" value="2" min="0" max="10" step="0.1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Años de análisis</label>
+                                <input type="number" id="anosAnalisis" class="form-input" value="20" min="1" max="40" step="1">
+                            </div>
+                        </div>
+
+                        <!-- Tab: Gastos -->
+                        <div class="tab-content" id="gastos-tab">
+                            <div class="form-group">
+                                <label class="form-label">IBI anual</label>
+                                <div class="input-group">
+                                    <input type="number" id="ibi" class="form-input with-suffix" value="500" min="0" step="50">
+                                    <span class="input-suffix">€/año</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Gastos de comunidad</label>
+                                <div class="input-group">
+                                    <input type="number" id="comunidad" class="form-input with-suffix" value="80" min="0" step="10">
+                                    <span class="input-suffix">€/mes</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Seguro de hogar</label>
+                                <div class="input-group">
+                                    <input type="number" id="seguro" class="form-input with-suffix" value="300" min="0" step="50">
+                                    <span class="input-suffix">€/año</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Mantenimiento y reparaciones</label>
+                                <div class="input-group">
+                                    <input type="number" id="mantenimiento" class="form-input with-suffix" value="500" min="0" step="50">
+                                    <span class="input-suffix">€/año</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Administración/Gestión</label>
+                                <div class="input-group">
+                                    <input type="number" id="administracion" class="form-input with-suffix" value="60" min="0" step="10">
+                                    <span class="input-suffix">€/mes</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Incremento anual de gastos</label>
+                                <div class="input-group">
+                                    <input type="number" id="incrementoGastos" class="form-input with-suffix" value="0" min="0" max="10" step="0.1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Tasa impositiva sobre alquiler neto</label>
+                                <div class="input-group">
+                                    <input type="number" id="taxAlquiler" class="form-input with-suffix" value="21" min="0" max="47" step="0.1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab: Revalorización -->
+                        <div class="tab-content" id="revalorizacion-tab">
+                            <div class="form-group">
+                                <label class="form-label">Revalorización anual del inmueble</label>
+                                <div class="input-group">
+                                    <input type="number" id="revalorizacion" class="form-input with-suffix" value="2.5" min="-5" max="15" step="0.1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Gastos de venta futura</label>
+                                <div class="input-group">
+                                    <input type="number" id="gastosVenta" class="form-input with-suffix" value="8" min="0" max="15" step="0.1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Impuesto plusvalía municipal</label>
+                                <div class="input-group">
+                                    <input type="number" id="plusvalia" class="form-input with-suffix" value="2000" min="0" step="100">
+                                    <span class="input-suffix">€</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">IRPF por venta (19-23%)</label>
+                                <div class="input-group">
+                                    <input type="number" id="irpfVenta" class="form-input with-suffix" value="19" min="0" max="47" step="0.1">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BOTÓN DE CALCULAR -->
+                        <button class="btn btn-primary btn-block" id="calcularBtn">
+                            <span data-i18n="btn_calcular">🧮 Analizar Inversión</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panel de Resultados -->
+                <div class="glass-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span data-i18n="analisis_title">📊 Análisis de Rentabilidad</span>
+                        </div>
+                        <div class="card-subtitle"><span data-i18n="analisis_subtitle">Resultados completos de tu inversión a largo plazo</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="resultados">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📈</div>
+                                <h3><span data-i18n="empty_title">¡Analiza tu inversión inmobiliaria!</span></h3>
+                                <p><span data-i18n="empty_subtitle">Completa los datos en el panel izquierdo y haz clic en "Analizar Inversión" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.</span></p>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="risk-heatmap" id="riskHeatmap">
-                    <!-- Risk analysis will be displayed here -->
-                </div>
             </div>
-        </div>
+        </main>
 
-        <!-- Detailed Analysis Section -->
-        <div class="card full-width">
-            <h2><span>📊</span><span id="detailedAnalysisTitle">Análisis Detallado</span></h2>
-            
-            <!-- Financial Metrics -->
-            <div class="metrics-section" style="margin: 2rem 0;">
-                <h3 style="color: var(--primary); margin-bottom: 1rem;">📈 Métricas Financieras Clave</h3>
-                <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    
-                    <div class="metric-card" style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--secondary);">
-                        <div style="font-weight: bold; color: var(--primary);">Tasa de Ahorro</div>
-                        <div id="savingsRate" style="font-size: 1.5rem; color: var(--secondary);">0.0%</div>
-                        <div id="savingsRateStatus" style="color: #666; font-size: 0.9rem;">Mejorable</div>
-                    </div>
-
-                    <div class="metric-card" style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--success);">
-                        <div style="font-weight: bold; color: var(--primary);">Rentabilidad Real</div>
-                        <div id="realReturn" style="font-size: 1.5rem; color: var(--success);">0.0%</div>
-                        <div style="color: #666; font-size: 0.9rem;">Descontando inflación</div>
-                    </div>
-
-                    <div class="metric-card" style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--warning);">
-                        <div style="font-weight: bold; color: var(--primary);">Múltiplo por Ingresos</div>
-                        <div id="incomeMultiple" style="font-size: 1.5rem; color: var(--warning);">0.0x</div>
-                        <div style="color: #666; font-size: 0.9rem;">Patrimonio/Ingresos anuales</div>
-                    </div>
-
-                    <div class="metric-card" style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--accent);">
-                        <div style="font-weight: bold; color: var(--primary);">Años para Duplicar</div>
-                        <div id="doublingTime" style="font-size: 1.5rem; color: var(--accent);">0 años</div>
-                        <div style="color: #666; font-size: 0.9rem;">Con rentabilidad actual</div>
-                    </div>
-
-                    <div class="metric-card" style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary);">
-                        <div style="font-weight: bold; color: var(--primary);">Capacidad Inversión</div>
-                        <div id="investmentCapacity" style="font-size: 1.5rem; color: var(--primary);">€0/mes</div>
-                        <div style="color: #666; font-size: 0.9rem;">Ingresos - Gastos</div>
-                    </div>
-
-                    <div class="metric-card" style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--dark);">
-                        <div style="font-weight: bold; color: var(--primary);">Utilización DCA</div>
-                        <div id="dcaUtilization" style="font-size: 1.5rem; color: var(--dark);">0.0%</div>
-                        <div style="color: #666; font-size: 0.9rem;">De tu capacidad total</div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- FIRE Analysis Section -->
-            <div class="fire-analysis" style="margin: 2rem 0;">
-                <h3 style="color: var(--fire-full); margin-bottom: 1rem;">🏖️ Análisis FIRE (Financial Independence, Retire Early)</h3>
-                <div class="fire-metrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-                    
-                    <div class="fire-metric-card" style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid var(--fire-full);">
-                        <div style="font-weight: bold; color: var(--fire-full); margin-bottom: 0.5rem;">💰 Patrimonio FIRE</div>
-                        <div id="fireWealth" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 0.5rem;">€0</div>
-                        <div style="color: #666; font-size: 0.9rem;">Regla del 4% (25x gastos anuales)</div>
-                    </div>
-
-                    <div class="fire-metric-card" style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid var(--secondary);">
-                        <div style="font-weight: bold; color: var(--secondary); margin-bottom: 0.5rem;">📊 Progreso FIRE</div>
-                        <div id="fireProgressPercent" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 0.5rem;">0.0%</div>
-                        <div style="color: #666; font-size: 0.9rem;">Del objetivo alcanzado</div>
-                    </div>
-
-                    <div class="fire-metric-card" style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid var(--success);">
-                        <div style="font-weight: bold; color: var(--success); margin-bottom: 0.5rem;">⏰ Tiempo hasta FIRE</div>
-                        <div id="fireTimeToGoal" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 0.5rem;">N/A</div>
-                        <div id="fireAgeAtGoal" style="color: #666; font-size: 0.9rem;">A los -- años</div>
-                    </div>
-
-                    <div class="fire-metric-card" style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid var(--warning);">
-                        <div style="font-weight: bold; color: var(--warning); margin-bottom: 0.5rem;">💸 Renta Pasiva Actual</div>
-                        <div id="passiveIncome" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 0.5rem;">€0/año</div>
-                        <div id="passiveIncomeMonthly" style="color: #666; font-size: 0.9rem;">€0/mes</div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Personalized Recommendations -->
-            <div class="recommendations" style="margin: 2rem 0;">
-                <h3 style="color: var(--primary); margin-bottom: 1rem;">💡 Recomendaciones Personalizadas</h3>
-                <div id="personalizedRecommendations" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary);">
-                    <!-- Recommendations will be generated here -->
-                </div>
-            </div>
-
-            <!-- DCA Analysis -->
-            <div class="dca-analysis" style="margin: 2rem 0;">
-                <h3 style="color: var(--secondary); margin-bottom: 1rem;">📈 Análisis DCA</h3>
-                <div id="dcaAnalysisContent" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <!-- DCA Analysis will be generated here -->
-                </div>
-            </div>
-
-            <!-- Investment Preference Opinion -->
-            <div class="investment-opinion" style="margin: 2rem 0;">
-                <h3 style="color: var(--warning); margin-bottom: 1rem;">🎯 Opinión sobre tu Preferencia de Inversión</h3>
-                <div id="investmentOpinion" style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-                    <!-- Investment opinion will be generated here -->
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Scenarios Section -->
-        <div class="card full-width">
-            <h2><span>🎭</span><span id="scenariosTitle">Escenarios de Inversión</span></h2>
-            <div class="scenarios-grid">
-                <div class="scenario-card active" onclick="selectScenario('conservative', this)">
-                    <h3 id="conservativeTitle">🛡️ Conservador</h3>
-                    <p id="conservativeDesc">Bajo riesgo, rentabilidad estable</p>
-                </div>
-                <div class="scenario-card" onclick="selectScenario('moderate', this)">
-                    <h3 id="moderateTitle">⚖️ Moderado</h3>
-                    <p id="moderateDesc">Equilibrio riesgo-rentabilidad</p>
-                </div>
-                <div class="scenario-card" onclick="selectScenario('aggressive', this)">
-                    <h3 id="aggressiveTitle">🚀 Agresivo</h3>
-                    <p id="aggressiveDesc">Alto riesgo, alta rentabilidad</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts Section -->
-        <div class="card full-width">
-            <h2><span>📈</span><span id="wealthEvolutionTitle">Evolución del Patrimonio</span></h2>
-            <div class="chart-container">
-                <canvas id="wealthChart"></canvas>
-            </div>
-        </div>
-
-        <div class="main-grid">
-            <div class="card">
-                <h2><span>🍰</span><span id="allocationChartTitle">Distribución Actual</span></h2>
-                <div class="chart-container">
-                    <canvas id="allocationChart"></canvas>
-                </div>
-            </div>
-
-            <div class="card fire-goals">
-                <h2><span>🔥</span><span id="fireProgressTitle">Progreso FIRE</span></h2>
-                <div id="fireAnalysis">
-                    <div class="score-number" id="fireYears">15</div>
-                    <div id="yearsToFireLabel">años para alcanzar FIRE</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="fireProgress" style="width: 25%"></div>
-                    </div>
-                    <p id="fireDetails">Con tu ahorro actual de €1000/mes...</p>
-                </div>
-            </div>
+        <!-- Resumen flotante -->
+        <div class="floating-summary" id="floatingSummary">
+            <div style="font-weight: 600; margin-bottom: 0.5rem;"><span data-i18n="resumen">Rentabilidad por flujo</span></div>
+            <div id="floatingValue" style="font-size: 1.6rem; font-weight: 800;">-</div>
         </div>
     </div>
-
-    <!-- DCA Modal -->
-    <div id="dcaModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeDCAModal()">&times;</span>
-            <h2 id="dcaDistributionTitle">💳 Distribución Detallada DCA</h2>
-            <p id="dcaDescription">Especifica exactamente cómo quieres distribuir tu DCA mensual:</p>
-            
-            <div style="background: #e8f4fc; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <strong>DCA Mensual Total:</strong>
-                    <span id="dcaTotalAmount" style="font-size: 1.2rem; color: var(--secondary);">€1000</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <strong>Distribuido:</strong>
-                    <span id="dcaDistributedAmount" style="font-size: 1.2rem; color: var(--primary);">€0</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <strong>Restante:</strong>
-                    <span id="dcaRemainingAmount" style="font-size: 1.2rem; color: var(--accent);">€1000</span>
-                </div>
-            </div>
-            
-            <div id="dcaAllocations" class="dca-allocation">
-                <!-- DCA allocation inputs will be generated here -->
-            </div>
-            
-            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                <button class="btn" onclick="autoDistributeDCA()" style="background: var(--warning);">🔄 Auto-Distribuir</button>
-                <button class="btn" onclick="saveDCA()" id="btnSaveDca">💾 Guardar Distribución</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification -->
-    <div id="notification" class="notification">
-        <span id="notificationText"></span>
-    </div>
-
     <script>
         // Variables globales
-        let currentLanguage = 'es';
-        let currentScenario = 'conservative';
-        let allocationChart = null;
-        let wealthChart = null;
-        let chartsInitialized = false;
-
-        // Asset classes
-        let assetClasses = [
-            { name: 'Cuenta Corriente', nameEn: 'Checking Account', return: 0, amount: 0, icon: '🏦' },
-            { name: 'Cuenta Remunerada', nameEn: 'High Yield Account', return: 2, amount: 0, icon: '💰' },
-            { name: 'Renta Fija', nameEn: 'Fixed Income', return: 3, amount: 0, icon: '📊' },
-            { name: 'Fondos Indexados', nameEn: 'Index Funds', return: 7, amount: 0, icon: '📈' },
-            { name: 'Acciones', nameEn: 'Stocks', return: 10, amount: 0, icon: '🎯' },
-            { name: 'Inmobiliario', nameEn: 'Real Estate', return: 8, amount: 0, icon: '🏠' },
-            { name: 'Criptomonedas', nameEn: 'Cryptocurrency', return: 15, amount: 0, icon: '₿' }
-        ];
-
-        let dcaDistribution = [];
-
-        // Translations
-        const translations = {
-            es: {
-                title: '💰 Optimizador de Patrimonio',
-                subtitle: 'Maximiza tu riqueza con estrategias inteligentes de inversión',
-                configTitle: 'Configuración del Portafolio',
-                tabBasic: 'Básico',
-                tabAdvanced: 'Avanzado',
-                tabFire: 'FIRE',
-                labelTotalCash: '💵 Efectivo Total (€) - Calculado automáticamente',
-                labelMonthlyExpenses: '🏠 Gastos Mensuales (€)',
-                labelRiskProfile: '📈 Perfil de Riesgo',
-                optionConservative: 'Conservador (6-12 meses)',
-                optionAggressive: 'Agresivo (3-6 meses)',
-                labelDcaAmount: '💳 DCA Mensual (€)',
-                labelInflation: '📊 Inflación (%)',
-                labelTaxRate: '🏛️ Tipo Impositivo (%)',
-                btnCalculate: '🔄 Calcular Portfolio',
-                assetAllocationTitle: 'Distribución de Activos',
-                btnAddAsset: '+ Añadir Activo',
-                labelFireGoal: '🎯 Meta FIRE (€)',
-                labelFireType: '🔥 Tipo de FIRE',
-                labelAnnualExpenses: '📅 Gastos Anuales Objetivo (€)',
-                analysisTitle: 'Análisis y Puntuación',
-                scoreLabel: 'Puntuación del Portafolio',
-                scoreExplanation: 'Buena diversificación con margen de mejora',
-                scenariosTitle: 'Escenarios de Inversión',
-                conservativeTitle: '🛡️ Conservador',
-                conservativeDesc: 'Bajo riesgo, rentabilidad estable',
-                moderateTitle: '⚖️ Moderado',
-                moderateDesc: 'Equilibrio riesgo-rentabilidad',
-                aggressiveTitle: '🚀 Agresivo',
-                aggressiveDesc: 'Alto riesgo, alta rentabilidad',
-                wealthEvolutionTitle: 'Evolución del Patrimonio',
-                allocationChartTitle: 'Distribución Actual',
-                fireProgressTitle: 'Progreso FIRE',
-                yearsToFireLabel: 'años para alcanzar FIRE',
-                fireDetails: 'Con tu ahorro actual...',
-                dcaDistributionTitle: 'Distribución DCA',
-                dcaDescription: 'Especifica cómo quieres distribuir tu DCA mensual:',
-                btnSaveDca: 'Guardar'
+        const scenarios = {
+            conservador: {
+                revalorizacion: 1.5,
+                incrementoAlquiler: 2,
+                mesesVacio: 2,
+                mantenimiento: 1200,
+                interes: 4.0,
+                incrementoGastos: 0,
+                financiacionTipo: 'con_hipoteca',
+                taxAlquiler: 21
             },
-            en: {
-                title: '💰 Wealth Optimizer',
-                subtitle: 'Maximize your wealth with smart investment strategies',
-                configTitle: 'Portfolio Configuration',
-                tabBasic: 'Basic',
-                tabAdvanced: 'Advanced',
-                tabFire: 'FIRE',
-                labelTotalCash: '💵 Total Cash (€) - Auto calculated',
-                labelMonthlyExpenses: '🏠 Monthly Expenses (€)',
-                labelRiskProfile: '📈 Risk Profile',
-                optionConservative: 'Conservative (6-12 months)',
-                optionAggressive: 'Aggressive (3-6 months)',
-                labelDcaAmount: '💳 Monthly DCA (€)',
-                labelInflation: '📊 Inflation (%)',
-                labelTaxRate: '🏛️ Tax Rate (%)',
-                btnCalculate: '🔄 Calculate Portfolio',
-                assetAllocationTitle: 'Asset Allocation',
-                btnAddAsset: '+ Add Asset',
-                labelFireGoal: '🎯 FIRE Goal (€)',
-                labelFireType: '🔥 FIRE Type',
-                labelAnnualExpenses: '📅 Target Annual Expenses (€)',
-                analysisTitle: 'Analysis & Score',
-                scoreLabel: 'Portfolio Score',
-                scoreExplanation: 'Good diversification with room for improvement',
-                scenariosTitle: 'Investment Scenarios',
-                conservativeTitle: '🛡️ Conservative',
-                conservativeDesc: 'Low risk, stable returns',
-                moderateTitle: '⚖️ Moderate',
-                moderateDesc: 'Balanced risk-return',
-                aggressiveTitle: '🚀 Aggressive',
-                aggressiveDesc: 'High risk, high returns',
-                wealthEvolutionTitle: 'Wealth Evolution',
-                allocationChartTitle: 'Current Allocation',
-                fireProgressTitle: 'FIRE Progress',
-                yearsToFireLabel: 'years to reach FIRE',
-                fireDetails: 'With your current savings...',
-                dcaDistributionTitle: 'DCA Distribution',
-                dcaDescription: 'Specify how you want to distribute your monthly DCA:',
-                btnSaveDca: 'Save'
+            moderado: {
+                revalorizacion: 2.5,
+                incrementoAlquiler: 3,
+                mesesVacio: 1,
+                mantenimiento: 1000,
+                interes: 3.5,
+                incrementoGastos: 0,
+                financiacionTipo: 'con_hipoteca',
+                taxAlquiler: 21
+            },
+            optimista: {
+                revalorizacion: 4.0,
+                incrementoAlquiler: 4,
+                mesesVacio: 0.5,
+                mantenimiento: 800,
+                interes: 3.0,
+                incrementoGastos: 0,
+                financiacionTipo: 'con_hipoteca',
+                taxAlquiler: 21
             }
         };
 
-        // Utility functions
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notificationText');
-            if (notification && notificationText) {
-                notificationText.textContent = message;
-                notification.classList.add('show');
-                setTimeout(() => notification.classList.remove('show'), 3000);
-            }
-        }
-
-        function updateText(elementId, textKey) {
-            const element = document.getElementById(elementId);
-            if (element && translations[currentLanguage][textKey]) {
-                element.textContent = translations[currentLanguage][textKey];
-            }
-        }
-
-        // Language functions
-        function changeLanguage(lang) {
-            currentLanguage = lang;
+        // Crear partículas de fondo
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return;
             
-            // Update active language button
-            document.querySelectorAll('.language-selector button').forEach(btn => {
-                btn.classList.remove('active');
+            const particleCount = 30;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Habilitar/deshabilitar inputs de hipoteca
+        function toggleFinanciacionInputs() {
+            const financiacionTipo = document.getElementById('financiacionTipo').value;
+            const inputs = ['entrada', 'interes', 'anos', 'gastosHipoteca'];
+            inputs.forEach(id => {
+                const input = document.getElementById(id);
+                input.disabled = financiacionTipo === 'sin_hipoteca';
             });
-            document.getElementById(`lang-${lang}`).classList.add('active');
+            setTimeout(calcular, 100);
+        }
+
+        // Cargar escenario predefinido
+        function loadScenario(scenario) {
+            console.log('Cargando escenario:', scenario);
             
-            // Update all text elements
-            Object.keys(translations[lang]).forEach(key => {
-                updateText(key, key);
+            const config = scenarios[scenario];
+            if (!config) return;
+            
+            // Actualizar valores
+            document.getElementById('revalorizacion').value = config.revalorizacion;
+            document.getElementById('incrementoAlquiler').value = config.incrementoAlquiler;
+            document.getElementById('mesesVacio').value = config.mesesVacio;
+            document.getElementById('mantenimiento').value = config.mantenimiento;
+            document.getElementById('interes').value = config.interes;
+            document.getElementById('incrementoGastos').value = config.incrementoGastos;
+            document.getElementById('financiacionTipo').value = config.financiacionTipo;
+            document.getElementById('taxAlquiler').value = config.taxAlquiler;
+            
+            // Actualizar botones
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.scenario-btn[data-scenario="${scenario}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            
+            // Actualizar estado de inputs de hipoteca
+            toggleFinanciacionInputs();
+            
+            // Recalcular
+            setTimeout(calcular, 100);
+        }
+
+        // Cambiar tab
+        function switchTab(tabName) {
+            console.log('Cambiando a tab:', tabName);
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
             });
             
-            // Update dynamic content
-            generateAllocationInputs();
-            showNotification(lang === 'es' ? 'Idioma cambiado' : 'Language changed');
-        }
-
-        // Tab functions
-        function showTab(tabName) {
-            // Remove active class from all tabs and contents
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            // Add active class to clicked tab and corresponding content
-            event.target.classList.add('active');
-            document.getElementById(tabName).classList.add('active');
-        }
-
-        // Scenario functions
-        function selectScenario(scenario, element) {
-            currentScenario = scenario;
-            
-            // Update active scenario
-            document.querySelectorAll('.scenario-card').forEach(card => card.classList.remove('active'));
-            element.classList.add('active');
-            
-            calculatePortfolio();
-        }
-
-        // Asset allocation functions
-        function generateAllocationInputs() {
-            const container = document.getElementById('allocationInputs');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            assetClasses.forEach((asset, index) => {
-                const div = document.createElement('div');
-                div.className = 'allocation-grid';
-                div.innerHTML = `
-                    <label>${asset.icon} ${currentLanguage === 'es' ? asset.name : asset.nameEn}</label>
-                    <input type="number" placeholder="€" value="${Math.round(asset.amount)}" 
-                           onchange="updateAssetAmount(${index}, this.value)">
-                    <input type="number" placeholder="%" step="0.1" value="${asset.return}" 
-                           onchange="updateAssetReturn(${index}, this.value)">
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function updateAssetAmount(index, amount) {
-            if (assetClasses[index]) {
-                assetClasses[index].amount = parseFloat(amount) || 0;
-                updateTotalCash(); // Update total automatically
-                calculatePortfolio();
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) {
+                targetTab.classList.add('active');
             }
-        }
-
-        function updateAssetReturn(index, returnRate) {
-            if (assetClasses[index]) {
-                assetClasses[index].return = parseFloat(returnRate) || 0;
-                calculatePortfolio();
-            }
-        }
-
-        function updateTotalCash() {
-            const total = assetClasses.reduce((sum, asset) => sum + (asset.amount || 0), 0);
-            document.getElementById('totalCash').value = Math.round(total);
-        }
-
-        function addAsset() {
-            const name = prompt(currentLanguage === 'es' ? 'Nombre del activo:' : 'Asset name:');
-            const returnRate = prompt(currentLanguage === 'es' ? 'Rentabilidad esperada (%):' : 'Expected return (%):');
             
-            if (name && returnRate) {
-                assetClasses.push({
-                    name: name,
-                    nameEn: name,
-                    return: parseFloat(returnRate) || 0,
-                    amount: 0,
-                    icon: '💎'
-                });
-                generateAllocationInputs();
-                calculatePortfolio();
-            }
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            const activeTab = document.querySelector(`.nav-tab[data-tab="${tabName}"]`);
+            if (activeTab) activeTab.classList.add('active');
         }
 
-        // Main calculation function
-        function calculatePortfolio() {
-            try {
-                console.log('🔄 Calculating portfolio...');
-                
-                // Get input values
-                const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
-                const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-                const riskProfile = document.getElementById('riskProfile').value;
-                const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-                
-                // Calculate emergency fund
-                const emergencyMonths = riskProfile === 'aggressive' ? 4.5 : 9;
-                const emergencyFund = monthlyExpenses * emergencyMonths;
-                
-                // Auto-distribute if no manual allocation
-                const totalAllocated = assetClasses.reduce((sum, asset) => sum + asset.amount, 0);
-                if (totalAllocated === 0 && totalCash > 0) {
-                    autoDistribute(totalCash, emergencyFund);
-                }
-                
-                // Calculate and update score
-                const score = calculateScore(totalCash, emergencyFund, monthlyExpenses, dcaAmount);
-                updateScoreDisplay(score);
-                
-                // Update displays
-                updateRiskHeatmap();
-                updateCharts();
-                updateFIREAnalysis();
-                updateDetailedFIREAnalysis(); // Nueva función añadida
-                updateFinancialMetrics();
-                updateEmergencyFundAnalysis();
-                generatePersonalizedRecommendations();
-                generateDCAAnalysis();
-                generateInvestmentOpinion();
-                
-                showNotification(currentLanguage === 'es' ? 'Portfolio calculado' : 'Portfolio calculated');
-                
-            } catch (error) {
-                console.error('Error calculating portfolio:', error);
-                showNotification(currentLanguage === 'es' ? 'Error en cálculos' : 'Calculation error');
-            }
+        // Obtener valor seguro de un elemento
+        function getValue(id, defaultValue = 0) {
+            const element = document.getElementById(id);
+            if (!element) return defaultValue;
+            const value = parseFloat(element.value);
+            return isNaN(value) ? defaultValue : Math.max(0, value);
         }
 
-        function autoDistribute(totalCash, emergencyFund) {
-            // Reset amounts
-            assetClasses.forEach(asset => asset.amount = 0);
-
-            // Emergency fund distribution
-            if (emergencyFund > 0) {
-                assetClasses[0].amount = emergencyFund * 0.3; // Checking
-                assetClasses[1].amount = emergencyFund * 0.7; // High yield
-            }
-
-            const remainingCash = Math.max(0, totalCash - emergencyFund);
-            if (remainingCash > 0) {
-                // Distribute based on scenario
-                if (currentScenario === 'conservative') {
-                    assetClasses[1].amount += remainingCash * 0.3;
-                    assetClasses[2].amount = remainingCash * 0.4;
-                    assetClasses[3].amount = remainingCash * 0.2;
-                    assetClasses[4].amount = remainingCash * 0.1;
-                } else if (currentScenario === 'moderate') {
-                    assetClasses[1].amount += remainingCash * 0.2;
-                    assetClasses[2].amount = remainingCash * 0.3;
-                    assetClasses[3].amount = remainingCash * 0.3;
-                    assetClasses[4].amount = remainingCash * 0.15;
-                    assetClasses[5].amount = remainingCash * 0.05;
-                } else { // aggressive
-                    assetClasses[1].amount += remainingCash * 0.1;
-                    assetClasses[2].amount = remainingCash * 0.2;
-                    assetClasses[3].amount = remainingCash * 0.4;
-                    assetClasses[4].amount = remainingCash * 0.2;
-                    assetClasses[5].amount = remainingCash * 0.05;
-                    assetClasses[6].amount = remainingCash * 0.05;
-                }
-            }
-
-            generateAllocationInputs();
-            updateTotalCash(); // Update the total cash field
+        // Obtener valor de texto
+        function getTextValue(id, defaultValue = '') {
+            const element = document.getElementById(id);
+            return element ? element.value : defaultValue;
         }
 
-        function calculateScore(totalCash, emergencyFund, monthlyExpenses, dcaAmount) {
-            let score = 0;
-
-            // Emergency fund adequacy (25 points)
-            const currentEmergency = assetClasses[0].amount + assetClasses[1].amount;
-            const emergencyRatio = emergencyFund > 0 ? currentEmergency / emergencyFund : 0;
-            if (emergencyRatio >= 0.8) score += 25;
-            else if (emergencyRatio >= 0.6) score += 20;
-            else if (emergencyRatio >= 0.4) score += 15;
-            else score += emergencyRatio * 25;
-
-            // Diversification (25 points)
-            const activeAssets = assetClasses.filter(asset => asset.amount > 0).length;
-            score += Math.min(activeAssets * 4, 25);
-
-            // Risk-adjusted returns (25 points)
-            const totalInvested = assetClasses.reduce((sum, asset) => sum + asset.amount, 0);
-            if (totalInvested > 0) {
-                const weightedReturn = assetClasses.reduce((sum, asset) => 
-                    sum + (asset.amount / totalInvested) * asset.return, 0);
-                score += Math.min(weightedReturn * 2.5, 25);
-            }
-
-            // Cash optimization (15 points)
-            if (totalCash > 0) {
-                const cashRatio = currentEmergency / totalCash;
-                if (cashRatio <= 0.3) score += 15;
-                else if (cashRatio <= 0.5) score += 10;
-                else score += 5;
-            }
-
-            // DCA implementation (10 points)
-            if (dcaAmount > 0) score += 10;
-
-            return Math.min(Math.round(score), 100);
-        }
-
-        function updateScoreDisplay(score) {
-            document.getElementById('totalScore').textContent = score;
-            document.getElementById('scoreFill').style.width = score + '%';
+        // Calcular cuota hipoteca
+        function calcularCuotaHipoteca(capital, interes, anos) {
+            if (capital <= 0 || anos <= 0) return 0;
+            if (interes === 0) return capital / (anos * 12);
             
-            const scoreCard = document.getElementById('scoreCard');
-            let explanation = '';
-            let bgColor = '';
-            
-            if (score >= 90) {
-                bgColor = 'var(--success)';
-                explanation = currentLanguage === 'es' ? 'Excelente optimización' : 'Excellent optimization';
-            } else if (score >= 75) {
-                bgColor = 'var(--secondary)';
-                explanation = currentLanguage === 'es' ? 'Buena diversificación' : 'Good diversification';
-            } else if (score >= 60) {
-                bgColor = 'var(--warning)';
-                explanation = currentLanguage === 'es' ? 'Necesita optimización' : 'Needs optimization';
+            const i = interes / 100 / 12;
+            const n = anos * 12;
+            return (capital * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+        }
+
+        // Calcular saldo pendiente del inmueble
+        function calcularSaldoPendiente(capital, interes, anos, year) {
+            if (capital <= 0 || anos <= 0 || year >= anos) return 0;
+            const i = interes / 100 / 12;
+            const n = anos * 12;
+            const pagosRealizados = year * 12;
+            const cuota = calcularCuotaHipoteca(capital, interes, anos);
+            return capital * Math.pow(1 + i, pagosRealizados) - cuota * (Math.pow(1 + i, pagosRealizados) - 1) / i;
+        }
+
+        // Calcular impuestos
+        function calcularImpuestos(precio, tipo) {
+            if (tipo === 'nueva') {
+                return precio * 0.10 + precio * 0.012; // IVA + AJD
             } else {
-                bgColor = 'var(--accent)';
-                explanation = currentLanguage === 'es' ? 'Revisar estrategia' : 'Review strategy';
+                return precio * 0.10; // ITP
             }
-            
-            document.getElementById('scoreExplanation').textContent = explanation;
-            scoreCard.style.backgroundColor = bgColor;
         }
 
-        function updateRiskHeatmap() {
-            const container = document.getElementById('riskHeatmap');
-            container.innerHTML = '';
+        // Función principal de cálculo
+        function calcular() {
+            console.log('Iniciando cálculo...');
+            
+            try {
+                // Obtener todos los valores
+                const precio = getValue('precio', 140000);
+                const tipoVivienda = getTextValue('tipoVivienda', 'segunda');
+                const gastosCompra = getValue('gastosCompra', 3500);
+                
+                const financiacionTipo = getTextValue('financiacionTipo', 'con_hipoteca');
+                let entrada = financiacionTipo === 'sin_hipoteca' ? 100 : getValue('entrada', 20);
+                let interes = financiacionTipo === 'sin_hipoteca' ? 0 : getValue('interes', 2.5);
+                let anos = financiacionTipo === 'sin_hipoteca' ? 0 : getValue('anos', 25);
+                let gastosHipoteca = financiacionTipo === 'sin_hipoteca' ? 0 : getValue('gastosHipoteca', 2500);
+                
+                const alquiler = getValue('alquiler', 800);
+                const mesesVacio = getValue('mesesVacio', 1);
+                const incrementoAlquiler = getValue('incrementoAlquiler', 3);
+                const anosAnalisis = getValue('anosAnalisis', 20);
+                
+                const ibi = getValue('ibi', 500);
+                const comunidad = getValue('comunidad', 80);
+                const seguro = getValue('seguro', 300);
+                const mantenimiento = getValue('mantenimiento', 500);
+                const administracion = getValue('administracion', 60);
+                const incrementoGastos = getValue('incrementoGastos', 0);
+                const taxAlquiler = getValue('taxAlquiler', 21);
+                
+                const revalorizacion = getValue('revalorizacion', 2.5);
+                const gastosVenta = getValue('gastosVenta', 8);
+                const plusvalia = getValue('plusvalia', 2000);
+                const irpfVenta = getValue('irpfVenta', 19);
 
-            const totalAmount = assetClasses.reduce((sum, asset) => sum + asset.amount, 0);
-            const riskCategories = [
-                { name: 'Bajo Riesgo', nameEn: 'Low Risk', percentage: 0, class: 'risk-low' },
-                { name: 'Riesgo Medio', nameEn: 'Medium Risk', percentage: 0, class: 'risk-medium' },
-                { name: 'Alto Riesgo', nameEn: 'High Risk', percentage: 0, class: 'risk-high' }
-            ];
+                // Validaciones
+                if (anosAnalisis < 1) {
+                    throw new Error('Los años de análisis deben ser mayores a 0.');
+                }
+                if (financiacionTipo === 'con_hipoteca' && anos < 1) {
+                    throw new Error('Los años de hipoteca deben ser mayores a 0.');
+                }
+                if (mesesVacio > 12) {
+                    throw new Error('Los meses vacíos no pueden superar los 12 meses.');
+                }
 
-            if (totalAmount > 0) {
-                assetClasses.forEach(asset => {
-                    if (asset.amount > 0) {
-                        const percentage = (asset.amount / totalAmount) * 100;
-                        if (asset.return <= 3) {
-                            riskCategories[0].percentage += percentage;
-                        } else if (asset.return <= 8) {
-                            riskCategories[1].percentage += percentage;
-                        } else {
-                            riskCategories[2].percentage += percentage;
+                // Cálculos básicos
+                const impuestos = calcularImpuestos(precio, tipoVivienda);
+                const montoEntrada = precio * (entrada / 100);
+                const capitalPrestamo = precio - montoEntrada;
+                const inversionInicial = montoEntrada + impuestos + gastosCompra + gastosHipoteca;
+                const cuotaHipoteca = calcularCuotaHipoteca(capitalPrestamo, interes, anos);
+                const mesesOcupados = 12 - mesesVacio;
+
+                // Calcular ingresos y gastos del primer año
+                const ingresosAlquiler = alquiler * mesesOcupados;
+                const gastosFijos = (cuotaHipoteca * 12) + ibi + seguro + mantenimiento + (comunidad * 12) + (administracion * 12);
+                let interest_anual = 0;
+                let remaining = capitalPrestamo;
+                if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
+                    let remaining_year = remaining;
+                    for (let m = 0; m < 12; m++) {
+                        const interest_month = remaining_year * (interes / 100 / 12);
+                        const principal_month = cuotaHipoteca - interest_month;
+                        remaining_year -= principal_month;
+                        interest_anual += interest_month;
+                    }
+                }
+                const operativos = gastosFijos - (cuotaHipoteca * 12);
+                const net_for_tax = ingresosAlquiler - operativos - interest_anual;
+                const tax_anual = Math.max(0, net_for_tax) * (taxAlquiler / 100);
+                const taxMensual = tax_anual / 12; // Calcular impuesto mensual
+                const flujoMensual = (ingresosAlquiler - gastosFijos - tax_anual) / 12;
+                const ingresosMensuales = ingresosAlquiler / 12;
+
+                // Simulación año por año
+                let flujoAcumulado = 0;
+                let valorVivienda = precio;
+                let alquilerActual = alquiler;
+                let ibiActual = ibi;
+                let comunidadActual = comunidad;
+                let seguroActual = seguro;
+                let mantenimientoActual = mantenimiento;
+                let administracionActual = administracion;
+                const proyecciones = [];
+
+                for (let year = 1; year <= anosAnalisis; year++) {
+                    const ingresosAlquilerAnual = alquilerActual * mesesOcupados;
+                    const gastosFijosAnual = (cuotaHipoteca * 12) + ibiActual + seguroActual + mantenimientoActual + (comunidadActual * 12) + (administracionActual * 12);
+                    let interest_anual_loop = 0;
+                    if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
+                        let remaining_year = remaining;
+                        for (let m = 0; m < 12; m++) {
+                            const interest_month = remaining_year * (interes / 100 / 12);
+                            const principal_month = cuotaHipoteca - interest_month;
+                            remaining_year -= principal_month;
+                            interest_anual_loop += interest_month;
                         }
                     }
-                });
-            }
+                    const operativos_loop = gastosFijosAnual - (cuotaHipoteca * 12);
+                    const net_for_tax_loop = ingresosAlquilerAnual - operativos_loop - interest_anual_loop;
+                    const tax_loop = Math.max(0, net_for_tax_loop) * (taxAlquiler / 100);
+                    const flujoAnual = ingresosAlquilerAnual - gastosFijosAnual - tax_loop;
+                    const rentabilidadFlujo = (flujoAnual / inversionInicial) * 100;
+                    const saldoPendiente = financiacionTipo === 'sin_hipoteca' ? 0 : calcularSaldoPendiente(capitalPrestamo, interes, anos, year);
 
-            riskCategories.forEach(category => {
-                if (category.percentage > 0) {
-                    const div = document.createElement('div');
-                    div.className = `risk-item ${category.class}`;
-                    div.innerHTML = `
-                        <div>${currentLanguage === 'es' ? category.name : category.nameEn}</div>
-                        <div>${category.percentage.toFixed(1)}%</div>
-                    `;
-                    container.appendChild(div);
-                }
-            });
-        }
+                    const precioVentaBruto = valorVivienda;
+                    const gastosVentaEuros = precioVentaBruto * (gastosVenta / 100);
+                    const gananciaCapital = Math.max(0, precioVentaBruto - precio);
+                    const impuestosGanancias = gananciaCapital * (irpfVenta / 100);
+                    const precioVentaNeto = precioVentaBruto - gastosVentaEuros - plusvalia - impuestosGanancias;
+                    const beneficioVenta = precioVentaNeto - saldoPendiente;
+                    const beneficioAcumulado = flujoAcumulado + flujoAnual + beneficioVenta - inversionInicial;
 
-        // Chart functions
-        function initCharts() {
-            if (typeof Chart === 'undefined') {
-                console.warn('Chart.js not loaded');
-                setTimeout(initCharts, 1000);
-                return;
-            }
-
-            if (chartsInitialized) return;
-
-            try {
-                // Allocation Chart
-                const allocationCanvas = document.getElementById('allocationChart');
-                if (allocationCanvas) {
-                    allocationChart = new Chart(allocationCanvas.getContext('2d'), {
-                        type: 'doughnut',
-                        data: {
-                            labels: [],
-                            datasets: [{
-                                data: [],
-                                backgroundColor: [
-                                    '#2c3e50', '#3498db', '#e74c3c', '#2ecc71', 
-                                    '#f39c12', '#9b59b6', '#1abc9c', '#34495e'
-                                ]
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false
-                        }
+                    proyecciones.push({
+                        year,
+                        ingresosAlquiler: ingresosAlquilerAnual,
+                        gastosFijos: gastosFijosAnual,
+                        cuotaHipoteca: cuotaHipoteca * 12,
+                        tax: tax_loop,
+                        flujoAnual,
+                        rentabilidadFlujo,
+                        valorVivienda,
+                        saldoPendiente,
+                        precioVentaNeto,
+                        beneficioAcumulado
                     });
+
+                    flujoAcumulado += flujoAnual;
+                    valorVivienda *= (1 + revalorizacion / 100);
+                    alquilerActual *= (1 + incrementoAlquiler / 100);
+                    ibiActual *= (1 + incrementoGastos / 100);
+                    comunidadActual *= (1 + incrementoGastos / 100);
+                    seguroActual *= (1 + incrementoGastos / 100);
+                    mantenimientoActual *= (1 + incrementoGastos / 100);
+                    administracionActual *= (1 + incrementoGastos / 100);
+                    if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
+                        remaining = saldoPendiente;
+                    }
                 }
 
-                // Wealth Chart
-                const wealthCanvas = document.getElementById('wealthChart');
-                if (wealthCanvas) {
-                    wealthChart = new Chart(wealthCanvas.getContext('2d'), {
-                        type: 'line',
-                        data: {
-                            labels: [],
-                            datasets: []
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        callback: function(value) {
-                                            return '€' + value.toLocaleString();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
+                // Cálculo final (para el último año)
+                const precioVentaBruto = valorVivienda;
+                const gastosVentaEuros = precioVentaBruto * (gastosVenta / 100);
+                const gananciaCapital = Math.max(0, precioVentaBruto - precio);
+                const impuestosGanancias = gananciaCapital * (irpfVenta / 100);
+                const precioVentaNeto = precioVentaBruto - gastosVentaEuros - plusvalia - impuestosGanancias;
 
-                chartsInitialized = true;
-                console.log('📊 Charts initialized');
-                updateCharts();
+                // Rentabilidad
+                const beneficioTotal = flujoAcumulado + (precioVentaNeto - precio);
+                const valorFinal = inversionInicial + beneficioTotal;
+                const rentabilidadAnual = inversionInicial > 0 && valorFinal > 0 && anosAnalisis > 0 ? 
+                    (Math.pow(valorFinal / inversionInicial, 1 / anosAnalisis) - 1) * 100 : 0;
 
-            } catch (error) {
-                console.error('Error initializing charts:', error);
-            }
-        }
-
-        function updateCharts() {
-            updateAllocationChart();
-            updateWealthChart();
-        }
-
-        function updateAllocationChart() {
-            if (!allocationChart) return;
-            
-            const labels = [];
-            const data = [];
-            
-            assetClasses.forEach(asset => {
-                if (asset.amount > 0) {
-                    labels.push(asset.icon + ' ' + (currentLanguage === 'es' ? asset.name : asset.nameEn));
-                    data.push(asset.amount);
-                }
-            });
-
-            allocationChart.data.labels = labels;
-            allocationChart.data.datasets[0].data = data;
-            allocationChart.update();
-        }
-
-        function updateWealthChart() {
-            if (!wealthChart) return;
-            
-            const years = 20;
-            const labels = [];
-            const datasets = [];
-            
-            for (let i = 0; i <= years; i++) {
-                labels.push(new Date().getFullYear() + i);
-            }
-
-            const scenarios = ['conservative', 'moderate', 'aggressive'];
-            const colors = ['#2ecc71', '#f39c12', '#e74c3c'];
-            const names = {
-                conservative: currentLanguage === 'es' ? 'Conservador' : 'Conservative',
-                moderate: currentLanguage === 'es' ? 'Moderado' : 'Moderate',
-                aggressive: currentLanguage === 'es' ? 'Agresivo' : 'Aggressive'
-            };
-
-            scenarios.forEach((scenario, index) => {
-                const evolution = calculateWealthEvolution(scenario, years);
-                datasets.push({
-                    label: names[scenario],
-                    data: evolution,
-                    borderColor: colors[index],
-                    fill: false,
-                    tension: 0.4
-                });
-            });
-
-            wealthChart.data.labels = labels;
-            wealthChart.data.datasets = datasets;
-            wealthChart.update();
-        }
-
-        function calculateWealthEvolution(scenario, years) {
-            const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-
-            const returns = { conservative: 4, moderate: 6.5, aggressive: 9 };
-            const annualReturn = returns[scenario] || 6;
-
-            const evolution = [totalCash];
-            let currentWealth = totalCash;
-
-            for (let year = 1; year <= years; year++) {
-                currentWealth += dcaAmount * 12;
-                currentWealth *= (1 + annualReturn / 100);
-                evolution.push(Math.round(currentWealth));
-            }
-
-            return evolution;
-        }
-
-        // Advanced Analysis Functions
-        function updateFinancialMetrics() {
-            const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
-            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            const inflation = parseFloat(document.getElementById('inflation').value) || 3.5;
-
-            const annualIncome = monthlyIncome * 12;
-
-            // Calculate savings rate
-            const savingsRate = monthlyIncome > 0 ? (dcaAmount / monthlyIncome) * 100 : 0;
-
-            // Update savings rate display
-            document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
-            const savingsStatus = savingsRate < 10 ? 'Muy bajo' : savingsRate < 20 ? 'Mejorable' : savingsRate < 30 ? 'Bueno' : 'Excelente';
-            document.getElementById('savingsRateStatus').textContent = 
-                currentLanguage === 'es' ? savingsStatus : 
-                (savingsRate < 10 ? 'Very low' : savingsRate < 20 ? 'Needs improvement' : savingsRate < 30 ? 'Good' : 'Excellent');
-
-            // Calculate real return - only consider invested assets (exclude cash accounts)
-            const investedAssets = assetClasses.slice(2); // Skip checking and savings accounts
-            const totalInvested = investedAssets.reduce((sum, asset) => sum + (asset.amount || 0), 0);
-            const weightedReturn = totalInvested > 0 ? 
-                investedAssets.reduce((sum, asset) => sum + ((asset.amount || 0) / totalInvested) * (asset.return || 0), 0) : 0;
-            const realReturn = Math.max(0, weightedReturn - inflation);
-            document.getElementById('realReturn').textContent = realReturn.toFixed(2) + '%';
-
-            // Income multiple - use annual income
-            const incomeMultiple = annualIncome > 0 ? totalCash / annualIncome : 0;
-            document.getElementById('incomeMultiple').textContent = incomeMultiple.toFixed(1) + 'x';
-
-            // Years to double - use real return
-            let doublingText = 'N/A';
-            if (realReturn > 0.1) { // Only if real return is meaningful (> 0.1%)
-                const doublingTime = Math.log(2) / Math.log(1 + realReturn / 100);
-                doublingText = doublingTime.toFixed(1) + (currentLanguage === 'es' ? ' años' : ' years');
-            }
-            document.getElementById('doublingTime').textContent = doublingText;
-
-            // Investment capacity
-            const investmentCapacity = Math.max(0, monthlyIncome - monthlyExpenses);
-            document.getElementById('investmentCapacity').textContent = '€' + investmentCapacity.toLocaleString() + '/mes';
-
-            // DCA utilization
-            const dcaUtilization = investmentCapacity > 0 ? (dcaAmount / investmentCapacity) * 100 : 0;
-            document.getElementById('dcaUtilization').textContent = Math.min(dcaUtilization, 100).toFixed(1) + '%';
-        }
-
-        function updateEmergencyFundAnalysis() {
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const riskProfile = document.getElementById('riskProfile').value;
-            
-            // Calculate recommended emergency fund
-            const emergencyMonths = riskProfile === 'aggressive' ? 4.5 : 9;
-            const recommendedAmount = monthlyExpenses * emergencyMonths;
-            
-            // Calculate current liquid funds (checking + high yield)
-            const currentLiquid = (assetClasses[0]?.amount || 0) + (assetClasses[1]?.amount || 0);
-            
-            // Update display
-            document.getElementById('emergencyRecommendedAmount').textContent = '€' + recommendedAmount.toLocaleString();
-            document.getElementById('emergencyActualAmount').textContent = '€' + currentLiquid.toLocaleString();
-            
-            // Status assessment
-            const ratio = recommendedAmount > 0 ? currentLiquid / recommendedAmount : 0;
-            const statusEl = document.getElementById('emergencyStatus');
-            
-            let status, color;
-            if (ratio >= 1) {
-                status = currentLanguage === 'es' ? '✅ Fondo de emergencia completo' : '✅ Emergency fund complete';
-                color = 'var(--success)';
-            } else if (ratio >= 0.75) {
-                status = currentLanguage === 'es' ? '🟡 Casi completo, añadir €' + Math.round(recommendedAmount - currentLiquid).toLocaleString() 
-                    : '🟡 Almost complete, add €' + Math.round(recommendedAmount - currentLiquid).toLocaleString();
-                color = 'var(--warning)';
-            } else if (ratio >= 0.5) {
-                status = currentLanguage === 'es' ? '🟠 Insuficiente, necesitas €' + Math.round(recommendedAmount - currentLiquid).toLocaleString() + ' más'
-                    : '🟠 Insufficient, need €' + Math.round(recommendedAmount - currentLiquid).toLocaleString() + ' more';
-                color = 'var(--warning)';
-            } else {
-                status = currentLanguage === 'es' ? '🔴 Crítico, prioriza crear tu fondo de emergencia'
-                    : '🔴 Critical, prioritize building emergency fund';
-                color = 'var(--accent)';
-            }
-            
-            statusEl.textContent = status;
-            statusEl.style.backgroundColor = color + '20';
-            statusEl.style.color = color;
-            statusEl.style.border = '1px solid ' + color;
-        }
-
-        function generatePersonalizedRecommendations() {
-            const container = document.getElementById('personalizedRecommendations');
-            const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
-            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            const currentAge = parseFloat(document.getElementById('currentAge').value) || 30;
-            
-            const recommendations = [];
-            const savingsRate = monthlyIncome > 0 ? (dcaAmount / monthlyIncome) * 100 : 0;
-            const emergencyRatio = totalCash > 0 ? ((assetClasses[0]?.amount || 0) + (assetClasses[1]?.amount || 0)) / (monthlyExpenses * 9) : 0;
-            
-            // Emergency fund recommendations
-            if (emergencyRatio < 0.5) {
-                recommendations.push({
-                    priority: 'alta',
-                    icon: '🚨',
-                    title: currentLanguage === 'es' ? 'Prioridad: Fondo de Emergencia' : 'Priority: Emergency Fund',
-                    desc: currentLanguage === 'es' ? 
-                        'Antes de invertir agresivamente, asegúrate de tener 6-9 meses de gastos en cuentas líquidas.' :
-                        'Before investing aggressively, ensure you have 6-9 months of expenses in liquid accounts.'
-                });
-            }
-            
-            // Savings rate recommendations
-            if (savingsRate < 20) {
-                recommendations.push({
-                    priority: 'alta',
-                    icon: '💰',
-                    title: currentLanguage === 'es' ? 'Aumenta tu Tasa de Ahorro' : 'Increase Savings Rate',
-                    desc: currentLanguage === 'es' ? 
-                        `Tu tasa de ahorro del ${savingsRate.toFixed(1)}% es baja. Intenta alcanzar al menos 20% para un futuro financiero sólido.` :
-                        `Your savings rate of ${savingsRate.toFixed(1)}% is low. Try to reach at least 20% for solid financial future.`
-                });
-            }
-            
-            // Age-based recommendations
-            if (currentAge < 35) {
-                recommendations.push({
-                    priority: 'media',
-                    icon: '🚀',
-                    title: currentLanguage === 'es' ? 'Aprovecha tu Juventud' : 'Leverage Your Youth',
-                    desc: currentLanguage === 'es' ? 
-                        'A tu edad, puedes asumir más riesgo. Considera aumentar la exposición a renta variable y fondos indexados.' :
-                        'At your age, you can take more risk. Consider increasing exposure to equities and index funds.'
-                });
-            } else if (currentAge > 50) {
-                recommendations.push({
-                    priority: 'media',
-                    icon: '🛡️',
-                    title: currentLanguage === 'es' ? 'Protege tu Patrimonio' : 'Protect Your Wealth',
-                    desc: currentLanguage === 'es' ? 
-                        'Considera reducir gradualmente el riesgo y aumentar la proporción de renta fija y activos defensivos.' :
-                        'Consider gradually reducing risk and increasing fixed income and defensive assets allocation.'
-                });
-            }
-            
-            // Investment diversification
-            const activeAssets = assetClasses.filter(asset => asset.amount > 0).length;
-            if (activeAssets < 4) {
-                recommendations.push({
-                    priority: 'media',
-                    icon: '🎯',
-                    title: currentLanguage === 'es' ? 'Diversifica Más' : 'Diversify More',
-                    desc: currentLanguage === 'es' ? 
-                        `Tienes solo ${activeAssets} tipos de activos. Considera diversificar en más clases para reducir riesgo.` :
-                        `You have only ${activeAssets} asset types. Consider diversifying into more asset classes to reduce risk.`
-                });
-            }
-            
-            // DCA recommendations
-            const investmentCapacity = monthlyIncome - monthlyExpenses;
-            if (dcaAmount < investmentCapacity * 0.8) {
-                recommendations.push({
-                    priority: 'baja',
-                    icon: '📈',
-                    title: currentLanguage === 'es' ? 'Optimiza tu DCA' : 'Optimize Your DCA',
-                    desc: currentLanguage === 'es' ? 
-                        `Podrías aumentar tu DCA hasta €${Math.round(investmentCapacity * 0.8)} manteniendo un colchón de seguridad.` :
-                        `You could increase your DCA up to €${Math.round(investmentCapacity * 0.8)} while maintaining a safety cushion.`
-                });
-            }
-            
-            // Generate HTML
-            let html = '';
-            recommendations.forEach(rec => {
-                const priorityColor = rec.priority === 'alta' ? 'var(--accent)' : 
-                                    rec.priority === 'media' ? 'var(--warning)' : 'var(--secondary)';
-                html += `
-                    <div style="background: white; margin: 1rem 0; padding: 1rem; border-radius: 8px; border-left: 4px solid ${priorityColor};">
-                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                            <span style="font-size: 1.2rem;">${rec.icon}</span>
-                            <strong style="color: var(--primary);">${rec.title}</strong>
-                        </div>
-                        <p style="margin: 0; color: #666;">${rec.desc}</p>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html || '<p style="text-align: center; color: #666;">¡Excelente! Tu portafolio está bien optimizado.</p>';
-        }
-
-        function generateDCAAnalysis() {
-            const container = document.getElementById('dcaAnalysisContent');
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            const totalDistributed = dcaDistribution.reduce((sum, amount) => sum + (amount || 0), 0);
-            
-            let html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">';
-            
-            // Left column - DCA Distribution Analysis
-            html += '<div>';
-            html += '<h4 style="color: var(--secondary); margin-bottom: 1rem;">📊 Análisis de Distribución</h4>';
-            
-            if (dcaAmount > 0 && totalDistributed > 0) {
-                const dcaByCategory = {
-                    'Líquido': (dcaDistribution[0] || 0) + (dcaDistribution[1] || 0),
-                    'Renta Fija': dcaDistribution[2] || 0,
-                    'Renta Variable': (dcaDistribution[3] || 0) + (dcaDistribution[4] || 0),
-                    'Alternativos': (dcaDistribution[5] || 0) + (dcaDistribution[6] || 0)
+                const datos = {
+                    inversionInicial,
+                    flujoMensual,
+                    flujoAcumulado,
+                    rentabilidadAnual,
+                    beneficioTotal,
+                    precioVentaNeto,
+                    precioVentaBruto,
+                    montoEntrada,
+                    impuestos,
+                    gastosCompra,
+                    gastosHipoteca,
+                    entrada,
+                    ingresosMensuales,
+                    cuotaHipoteca,
+                    comunidad,
+                    ibi,
+                    seguro,
+                    mantenimiento,
+                    administracion,
+                    gastosVentaEuros,
+                    plusvalia,
+                    impuestosGanancias,
+                    anosAnalisis,
+                    proyecciones,
+                    financiacionTipo,
+                    taxMensual
                 };
-                
-                Object.entries(dcaByCategory).forEach(([category, amount]) => {
-                    if (amount > 0) {
-                        const percentage = (amount / totalDistributed) * 100;
-                        html += `
-                            <div style="display: flex; justify-content: space-between; margin: 0.5rem 0; padding: 0.5rem; background: #f8f9fa; border-radius: 4px;">
-                                <span>${category}:</span>
-                                <span><strong>€${amount.toLocaleString()} (${percentage.toFixed(1)}%)</strong></span>
-                            </div>
-                        `;
-                    }
-                });
-            } else {
-                html += '<p style="color: #666;">Configura tu DCA para ver el análisis detallado.</p>';
-            }
-            
-            html += '</div>';
-            
-            // Right column - DCA Strategy Assessment
-            html += '<div>';
-            html += '<h4 style="color: var(--primary); margin-bottom: 1rem;">🎯 Evaluación de Estrategia</h4>';
-            
-            if (totalDistributed > 0) {
-                const variablePercentage = ((dcaDistribution[3] || 0) + (dcaDistribution[4] || 0)) / totalDistributed * 100;
-                let strategy, color;
-                
-                if (variablePercentage > 70) {
-                    strategy = currentLanguage === 'es' ? 
-                        '🚀 Estrategia Agresiva - Alto potencial de crecimiento con mayor volatilidad' :
-                        '🚀 Aggressive Strategy - High growth potential with higher volatility';
-                    color = 'var(--accent)';
-                } else if (variablePercentage > 40) {
-                    strategy = currentLanguage === 'es' ? 
-                        '⚖️ Estrategia Equilibrada - Buen balance entre crecimiento y estabilidad' :
-                        '⚖️ Balanced Strategy - Good balance between growth and stability';
-                    color = 'var(--warning)';
-                } else {
-                    strategy = currentLanguage === 'es' ? 
-                        '🛡️ Estrategia Conservadora - Prioriza la preservación del capital' :
-                        '🛡️ Conservative Strategy - Prioritizes capital preservation';
-                    color = 'var(--success)';
-                }
-                
-                html += `<div style="padding: 1rem; background: ${color}20; border: 1px solid ${color}; border-radius: 8px; color: ${color};">${strategy}</div>`;
-                
-                // DCA efficiency score
-                const efficiency = Math.min(100, (totalDistributed / dcaAmount) * 100);
-                html += `
-                    <div style="margin-top: 1rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span>Eficiencia DCA:</span>
-                            <span><strong>${efficiency.toFixed(1)}%</strong></span>
-                        </div>
-                        <div style="background: #e9ecef; height: 8px; border-radius: 4px; overflow: hidden;">
-                            <div style="background: var(--secondary); height: 100%; width: ${efficiency}%; transition: width 0.3s;"></div>
-                        </div>
+
+                console.log('Datos calculados:', datos);
+                mostrarResultados(datos);
+                actualizarResumenFlotante(datos);
+
+            } catch (error) {
+                console.error('Error en cálculo:', error);
+                document.getElementById('resultados').innerHTML = `
+                    <div class="alert alert-danger">
+                        ⚠️ <strong>Error:</strong> Ha ocurrido un problema en el cálculo. Verifica los valores introducidos.
+                        <br><small>Error técnico: ${error.message}</small>
                     </div>
                 `;
-            } else {
-                html += '<p style="color: #666;">Distribuye tu DCA para ver la evaluación.</p>';
             }
-            
-            html += '</div>';
-            html += '</div>';
-            
-            container.innerHTML = html;
         }
 
-        function generateInvestmentOpinion() {
-            const container = document.getElementById('investmentOpinion');
-            const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
-            const currentAge = parseFloat(document.getElementById('currentAge').value) || 30;
+        // Mostrar resultados
+        function mostrarResultados(datos) {
+            console.log('Mostrando resultados...');
             
-            if (totalCash === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666;">Ingresa tu patrimonio para recibir una opinión personalizada.</p>';
-                return;
-            }
+            const resultadosDiv = document.getElementById('resultados');
+            if (!resultadosDiv) return;
+
+            // Clases de color
+            let rentabilidadClass = 'metric-warning';
+            if (datos.rentabilidadAnual > 6) rentabilidadClass = 'metric-positive';
+            else if (datos.rentabilidadAnual < 3) rentabilidadClass = 'metric-negative';
             
-            // Analyze current allocation
-            const totalInvested = assetClasses.reduce((sum, asset) => sum + asset.amount, 0);
-            const allocations = {
-                conservative: ((assetClasses[0]?.amount || 0) + (assetClasses[1]?.amount || 0) + (assetClasses[2]?.amount || 0)) / totalInvested * 100,
-                moderate: ((assetClasses[3]?.amount || 0) + (assetClasses[5]?.amount || 0)) / totalInvested * 100,
-                aggressive: ((assetClasses[4]?.amount || 0) + (assetClasses[6]?.amount || 0)) / totalInvested * 100
-            };
-            
-            let dominantStyle, recommendation, color;
-            
-            if (allocations.conservative > 60) {
-                dominantStyle = currentLanguage === 'es' ? 'Conservador' : 'Conservative';
-                recommendation = currentLanguage === 'es' ? 
-                    `Tu perfil es predominantemente conservador (${allocations.conservative.toFixed(1)}% en activos de bajo riesgo). Esto es apropiado si priorizas la preservación del capital, pero considera que a los ${currentAge} años podrías beneficiarte de mayor exposición a crecimiento.` :
-                    `Your profile is predominantly conservative (${allocations.conservative.toFixed(1)}% in low-risk assets). This is appropriate if you prioritize capital preservation, but consider that at age ${currentAge} you could benefit from more growth exposure.`;
-                color = 'var(--success)';
-            } else if (allocations.aggressive > 50) {
-                dominantStyle = currentLanguage === 'es' ? 'Agresivo' : 'Aggressive';
-                recommendation = currentLanguage === 'es' ? 
-                    `Tu perfil es agresivo (${allocations.aggressive.toFixed(1)}% en activos de alto riesgo). Esto puede generar grandes retornos a largo plazo, pero asegúrate de tener un fondo de emergencia sólido y estómago para la volatilidad.` :
-                    `Your profile is aggressive (${allocations.aggressive.toFixed(1)}% in high-risk assets). This can generate great long-term returns, but make sure you have a solid emergency fund and stomach for volatility.`;
-                color = 'var(--accent)';
-            } else {
-                dominantStyle = currentLanguage === 'es' ? 'Equilibrado' : 'Balanced';
-                recommendation = currentLanguage === 'es' ? 
-                    `Tu perfil es equilibrado con una buena distribución entre activos conservadores (${allocations.conservative.toFixed(1)}%) y de crecimiento (${(allocations.moderate + allocations.aggressive).toFixed(1)}%). Esto ofrece un buen balance entre riesgo y retorno.` :
-                    `Your profile is balanced with good distribution between conservative (${allocations.conservative.toFixed(1)}%) and growth assets (${(allocations.moderate + allocations.aggressive).toFixed(1)}%). This offers a good balance between risk and return.`;
-                color = 'var(--warning)';
-            }
-            
-            let html = `
-                <div style="border-left: 4px solid ${color}; padding: 1rem; background: ${color}10;">
-                    <h4 style="color: ${color}; margin-bottom: 1rem;">🎯 Perfil: ${dominantStyle}</h4>
-                    <p style="margin-bottom: 1rem;">${recommendation}</p>
+            let flujoClass = datos.flujoMensual > 0 ? 'metric-positive' : 'metric-negative';
+            let beneficioClass = datos.beneficioTotal > 0 ? 'metric-positive' : 'metric-negative';
+
+            // Generar tabla de proyecciones
+            let tablaProyecciones = `
+                <div class="projection-table-container">
+                    <table class="projection-table">
+                        <thead>
+                            <tr>
+                                <th>Año</th>
+                                <th>Ingresos Alquiler</th>
+                                <th>Gastos</th>
+                                <th>Hipoteca</th>
+                                <th>Impuestos</th>
+                                <th>Flujo de Caja</th>
+                                <th>Rentabilidad Flujo (%)</th>
+                                <th>Valor Inmueble</th>
+                                <th>Préstamo Restante</th>
+                                <th>Neto si Vende</th>
+                                <th>Beneficio Acumulado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
-            
-            // Age-based advice
-            if (currentAge < 30) {
-                html += '<p><strong>💡 Por tu edad:</strong> ' + (currentLanguage === 'es' ? 
-                    'Tienes tiempo de tu lado. Considera ser más agresivo con un 70-80% en renta variable.' :
-                    'You have time on your side. Consider being more aggressive with 70-80% in equities.') + '</p>';
-            } else if (currentAge < 50) {
-                html += '<p><strong>💡 Por tu edad:</strong> ' + (currentLanguage === 'es' ? 
-                    'Estás en tu mejor momento para construir riqueza. Un 60-70% en crecimiento es apropiado.' :
-                    'You\'re in your prime wealth-building years. 60-70% in growth assets is appropriate.') + '</p>';
-            } else {
-                html += '<p><strong>💡 Por tu edad:</strong> ' + (currentLanguage === 'es' ? 
-                    'Considera gradualmente reducir riesgo. Un 40-50% en renta variable con más renta fija.' :
-                    'Consider gradually reducing risk. 40-50% in equities with more fixed income.') + '</p>';
-            }
-            
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        // FIRE Analysis
-        function updateFIREAnalysis() {
-            const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            const fireGoal = parseFloat(document.getElementById('fireGoal').value) || 0;
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-
-            const fireTarget = fireGoal || monthlyExpenses * 12 * 25;
-            const yearsToFire = calculateYearsToFire(totalCash, dcaAmount, fireTarget);
-
-            document.getElementById('fireYears').textContent = yearsToFire;
-
-            const progress = Math.min((totalCash / fireTarget) * 100, 100);
-            document.getElementById('fireProgress').style.width = progress + '%';
-
-            const details = currentLanguage === 'es' 
-                ? `Con €${dcaAmount}/mes alcanzarás €${fireTarget.toLocaleString()} en ${yearsToFire} años`
-                : `With €${dcaAmount}/month you'll reach €${fireTarget.toLocaleString()} in ${yearsToFire} years`;
-            
-            document.getElementById('fireDetails').textContent = details;
-        }
-
-        // Nueva función para el análisis FIRE detallado
-        function updateDetailedFIREAnalysis() {
-            const totalCash = parseFloat(document.getElementById('totalCash').value) || 0;
-            const fireGoal = parseFloat(document.getElementById('fireGoal').value) || 0;
-            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            const currentAge = parseFloat(document.getElementById('currentAge').value) || 30;
-
-            // Calcular el patrimonio FIRE (25x gastos anuales) si no se ha establecido un goal
-            const fireWealth = fireGoal || monthlyExpenses * 12 * 25;
-            document.getElementById('fireWealth').textContent = '€' + fireWealth.toLocaleString();
-
-            // Progreso FIRE (porcentaje del goal alcanzado)
-            const fireProgress = totalCash / fireWealth * 100;
-            document.getElementById('fireProgressPercent').textContent = fireProgress.toFixed(1) + '%';
-
-            // Tiempo hasta FIRE (en años) y edad al alcanzarlo
-            const yearsToFire = calculateYearsToFire(totalCash, dcaAmount, fireWealth);
-            document.getElementById('fireTimeToGoal').textContent = yearsToFire + (currentLanguage === 'es' ? ' años' : ' years');
-            document.getElementById('fireAgeAtGoal').textContent = (currentLanguage === 'es' ? 'A los ' : 'At age ') + (currentAge + yearsToFire);
-
-            // Renta pasiva actual (4% del patrimonio actual)
-            const passiveIncomeYearly = totalCash * 0.04;
-            const passiveIncomeMonthly = passiveIncomeYearly / 12;
-            document.getElementById('passiveIncome').textContent = '€' + passiveIncomeYearly.toLocaleString() + (currentLanguage === 'es' ? '/año' : '/year');
-            document.getElementById('passiveIncomeMonthly').textContent = '€' + passiveIncomeMonthly.toLocaleString() + (currentLanguage === 'es' ? '/mes' : '/month');
-        }
-
-        function calculateYearsToFire(currentAmount, monthlyContribution, targetAmount) {
-            if (currentAmount >= targetAmount) return 0;
-            if (monthlyContribution <= 0) return 50;
-
-            try {
-                const monthlyRate = 0.07 / 12;
-                const months = Math.log(1 + (targetAmount * monthlyRate) / monthlyContribution) / Math.log(1 + monthlyRate);
-                return Math.min(Math.max(Math.ceil(months / 12), 1), 50);
-            } catch {
-                return Math.min(Math.ceil((targetAmount - currentAmount) / (monthlyContribution * 12)), 50);
-            }
-        }
-
-        // DCA Modal functions
-        function showDCAModal() {
-            const dcaAmount = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            if (dcaAmount > 0) {
-                document.getElementById('dcaTotalAmount').textContent = '€' + dcaAmount.toLocaleString();
-                updateDCAAmounts();
-                generateDCAInputs();
-                document.getElementById('dcaModal').style.display = 'block';
-            } else {
-                showNotification(currentLanguage === 'es' ? 'Ingresa un monto DCA primero' : 'Enter DCA amount first');
-            }
-        }
-
-        function closeDCAModal() {
-            const modal = document.getElementById('dcaModal');
-            modal.style.display = 'none';
-        }
-
-        function generateDCAInputs() {
-            const container = document.getElementById('dcaAllocations');
-            container.innerHTML = '';
-
-            assetClasses.forEach((asset, index) => {
-                const div = document.createElement('div');
-                div.className = 'dca-item';
-                div.style.cssText = 'display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; align-items: center; margin: 0.5rem 0; padding: 1rem; background: white; border-radius: 8px; border: 1px solid var(--border);';
-                div.innerHTML = `
-                    <span style="font-weight: 500;">${asset.icon} ${currentLanguage === 'es' ? asset.name : asset.nameEn}</span>
-                    <input type="number" placeholder="€0" value="${dcaDistribution[index] || 0}" 
-                           style="padding: 8px; border: 1px solid var(--border); border-radius: 4px;"
-                           onchange="updateDCAAmount(${index}, this.value)">
-                    <span style="font-size: 0.9rem; color: #666;">${((dcaDistribution[index] || 0) / (parseFloat(document.getElementById('dcaAmount').value) || 1) * 100).toFixed(1)}%</span>
+            datos.proyecciones.forEach(proy => {
+                tablaProyecciones += `
+                    <tr>
+                        <td>${proy.year}</td>
+                        <td class="metric-positive">+${proy.ingresosAlquiler.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                        <td class="metric-negative">-${(proy.gastosFijos - proy.cuotaHipoteca).toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                        <td class="metric-negative">-${proy.cuotaHipoteca.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                        <td class="metric-negative">-${proy.tax.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                        <td class="${proy.flujoAnual >= 0 ? 'metric-positive' : 'metric-negative'}">${proy.flujoAnual.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                        <td class="${proy.rentabilidadFlujo >= 0 ? 'metric-positive' : 'metric-negative'}">${proy.rentabilidadFlujo.toFixed(2)}%</td>
+                        <td>${proy.valorVivienda.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                        <td>${proy.saldoPendiente.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                        <td class="metric-info">${proy.precioVentaNeto.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                        <td class="${proy.beneficioAcumulado >= 0 ? 'metric-positive' : 'metric-negative'}">${proy.beneficioAcumulado.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</td>
+                    </tr>
                 `;
-                container.appendChild(div);
             });
+            tablaProyecciones += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            resultadosDiv.innerHTML = `
+                <div class="results-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Inversión Inicial</div>
+                            <div class="metric-icon">💰</div>
+                        </div>
+                        <div class="metric-value">${datos.inversionInicial.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</div>
+                        <div class="metric-subtitle">Capital necesario para empezar</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Flujo Mensual</div>
+                            <div class="metric-icon">${datos.flujoMensual >= 0 ? '📈' : '📉'}</div>
+                        </div>
+                        <div class="metric-value ${flujoClass}">${datos.flujoMensual.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</div>
+                        <div class="metric-subtitle">Cashflow mensual neto (Año 1)</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">TIR Anualizada</div>
+                            <div class="metric-icon">⚡</div>
+                        </div>
+                        <div class="metric-value ${rentabilidadClass}">${datos.rentabilidadAnual.toFixed(2)}%</div>
+                        <div class="metric-subtitle">Rentabilidad anual compuesta</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Beneficio Total</div>
+                            <div class="metric-icon">${datos.beneficioTotal >= 0 ? '🎯' : '⚠️'}</div>
+                        </div>
+                        <div class="metric-value ${beneficioClass}">${datos.beneficioTotal.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</div>
+                        <div class="metric-subtitle">En ${datos.anosAnalisis} años</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Valor Final</div>
+                            <div class="metric-icon">🏠</div>
+                        </div>
+                        <div class="metric-value metric-info">${datos.precioVentaNeto.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</div>
+                        <div class="metric-subtitle">Precio venta estimado</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Flujo Acumulado</div>
+                            <div class="metric-icon">💎</div>
+                        </div>
+                        <div class="metric-value ${datos.flujoAcumulado >= 0 ? 'metric-positive' : 'metric-negative'}">${datos.flujoAcumulado.toLocaleString('es-ES', {maximumFractionDigits: 0})} €</div>
+                        <div class="metric-subtitle">Solo por alquileres</div>
+                    </div>
+                </div>
+
+                ${datos.rentabilidadAnual < 4 ? `
+                <div class="alert alert-warning">
+                    ⚠️ <strong>Rentabilidad Moderada:</strong> Con un ${datos.rentabilidadAnual.toFixed(2)}% anual, considera alternativas como fondos indexados o REITs.
+                </div>
+                ` : ''}
+
+                ${datos.flujoMensual < 0 ? `
+                <div class="alert alert-danger">
+                    🔴 <strong>Cashflow Negativo:</strong> Necesitarás aportar ${Math.abs(datos.flujoMensual).toLocaleString('es-ES')} € mensuales adicionales.
+                </div>
+                ` : ''}
+
+                ${datos.rentabilidadAnual > 8 ? `
+                <div class="alert alert-info">
+                    🚀 <strong>Excelente Rentabilidad:</strong> Esta inversión supera significativamente la media del mercado inmobiliario español (4-6% anual).
+                </div>
+                ` : ''}
+
+                <!-- Desglose de Inversión Inicial -->
+                <div style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); margin: 2rem 0; border: 1px solid var(--border);">
+                    <div style="background: linear-gradient(135deg, var(--light) 0%, #e2e8f0 100%); padding: 1.5rem 2rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
+                        💰 Desglose de Inversión Inicial
+                    </div>
+                    <div style="padding: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Entrada (${datos.entrada}%)</span>
+                            <span style="font-weight: 700;">${datos.montoEntrada.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Impuestos (ITP/IVA+AJD)</span>
+                            <span style="font-weight: 700;">${datos.impuestos.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Gastos de compra</span>
+                            <span style="font-weight: 700;">${datos.gastosCompra.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Gastos de hipoteca</span>
+                            <span style="font-weight: 700;">${datos.gastosHipoteca.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; background: var(--light); font-weight: 700; color: var(--dark);">
+                            <span><strong>TOTAL INVERSIÓN</strong></span>
+                            <span><strong>${datos.inversionInicial.toLocaleString('es-ES')} €</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desglose Mensual Año 1 -->
+                <div style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); margin: 2rem 0; border: 1px solid var(--border);">
+                    <div style="background: linear-gradient(135deg, var(--light) 0%, #e2e8f0 100%); padding: 1.5rem 2rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
+                        📊 Cashflow Mensual (Año 1)
+                    </div>
+                    <div style="padding: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Ingresos por Alquiler</span>
+                            <span style="font-weight: 700; color: var(--success);">+${datos.ingresosMensuales.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Cuota Hipoteca</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${datos.cuotaHipoteca.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Gastos de Comunidad</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${datos.comunidad.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">IBI (mensual)</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${(datos.ibi / 12).toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Seguro de hogar (mensual)</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${(datos.seguro / 12).toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Mantenimiento (mensual)</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${(datos.mantenimiento / 12).toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Administración</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${datos.administracion.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Impuestos sobre alquiler (mensualizado)</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${datos.taxMensual.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; background: var(--light); font-weight: 700; color: var(--dark);">
+                            <span><strong>CASHFLOW NETO</strong></span>
+                            <span style="color: ${datos.flujoMensual >= 0 ? 'var(--success)' : 'var(--danger)'}"><strong>${datos.flujoMensual.toLocaleString('es-ES')} €</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proyección de Venta -->
+                <div style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); margin: 2rem 0; border: 1px solid var(--border);">
+                    <div style="background: linear-gradient(135deg, var(--light) 0%, #e2e8f0 100%); padding: 1.5rem 2rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
+                        🏠 Proyección de Venta (Año ${datos.anosAnalisis})
+                    </div>
+                    <div style="padding: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Valor Estimado del Inmueble</span>
+                            <span style="font-weight: 700;">${datos.precioVentaBruto.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Gastos de Venta (${getValue('gastosVenta', 8)}%)</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${datos.gastosVentaEuros.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">Plusvalía Municipal</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${datos.plusvalia.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                            <span style="color: var(--text); font-weight: 500;">IRPF Ganancia Capital (${getValue('irpfVenta', 19)}%)</span>
+                            <span style="font-weight: 700; color: var(--danger);">-${datos.impuestosGanancias.toLocaleString('es-ES')} €</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; background: var(--light); font-weight: 700; color: var(--dark);">
+                            <span><strong>VALOR NETO DE VENTA</strong></span>
+                            <span><strong>${datos.precioVentaNeto.toLocaleString('es-ES')} €</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparación con Otras Inversiones -->
+                <div style="margin-top: 2rem;">
+                    <h3 style="color: var(--dark); margin-bottom: 1.5rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.75rem;">
+                        📊 Comparación con Otras Inversiones
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                            <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">Tu Inversión</div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">${datos.rentabilidadAnual.toFixed(1)}%</div>
+                        </div>
+                        <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                            <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">Depósito Bancario</div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">3.2%</div>
+                        </div>
+                        <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                            <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">Bonos España</div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">3.8%</div>
+                        </div>
+                        <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                            <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">Fondos Mixtos</div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">5.5%</div>
+                        </div>
+                        <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                            <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">REITs</div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">7.2%</div>
+                        </div>
+                        <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
+                            <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">S&P 500</div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">10.5%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proyecciones Año por Año -->
+                <div style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); margin: 2rem 0; border: 1px solid var(--border);">
+                    <div style="background: linear-gradient(135deg, var(--light) 0%, #e2e8f0 100%); padding: 1.5rem 2rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
+                        📅 Proyecciones Año por Año
+                    </div>
+                    ${tablaProyecciones}
+                </div>
+            `;
         }
 
-        function updateDCAAmount(index, amount) {
-            dcaDistribution[index] = parseFloat(amount) || 0;
-            updateDCAAmounts();
+        // Actualizar resumen flotante
+        function actualizarResumenFlotante(datos) {
+            const floatingValue = document.getElementById('floatingValue');
+            if (!floatingValue) return;
             
-            // Update percentage display
-            const dcaTotal = parseFloat(document.getElementById('dcaAmount').value) || 1;
-            const items = document.querySelectorAll('#dcaAllocations .dca-item');
-            if (items[index]) {
-                const percentSpan = items[index].querySelector('span:last-child');
-                if (percentSpan) {
-                    percentSpan.textContent = ((dcaDistribution[index] / dcaTotal) * 100).toFixed(1) + '%';
-                }
-            }
-        }
-
-        function updateDCAAmounts() {
-            const dcaTotal = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            const distributed = dcaDistribution.reduce((sum, amount) => sum + (amount || 0), 0);
-            const remaining = dcaTotal - distributed;
-
-            document.getElementById('dcaDistributedAmount').textContent = '€' + distributed.toLocaleString();
-            document.getElementById('dcaRemainingAmount').textContent = '€' + remaining.toLocaleString();
+            let color = 'rgba(245, 158, 11, 1)';
+            if (datos.rentabilidadAnual > 6) color = 'rgba(16, 185, 129, 1)';
+            else if (datos.rentabilidadAnual < 3) color = 'rgba(239, 68, 68, 1)';
             
-            // Color coding
-            const remainingEl = document.getElementById('dcaRemainingAmount');
-            if (remaining < 0) {
-                remainingEl.style.color = 'var(--accent)';
-            } else if (remaining === 0) {
-                remainingEl.style.color = 'var(--success)';
-            } else {
-                remainingEl.style.color = 'var(--warning)';
-            }
+            floatingValue.textContent = `${datos.rentabilidadAnual.toFixed(1)}%`;
+            floatingValue.style.color = color;
         }
 
-        function autoDistributeDCA() {
-            const dcaTotal = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            if (dcaTotal <= 0) return;
-
-            // Reset distribution
-            dcaDistribution = new Array(assetClasses.length).fill(0);
-
-            // Smart auto-distribution based on current scenario
-            if (currentScenario === 'conservative') {
-                dcaDistribution[1] = dcaTotal * 0.30; // High yield savings
-                dcaDistribution[2] = dcaTotal * 0.40; // Fixed income
-                dcaDistribution[3] = dcaTotal * 0.20; // Index funds
-                dcaDistribution[4] = dcaTotal * 0.10; // Stocks
-            } else if (currentScenario === 'moderate') {
-                dcaDistribution[1] = dcaTotal * 0.15; // High yield savings
-                dcaDistribution[2] = dcaTotal * 0.25; // Fixed income
-                dcaDistribution[3] = dcaTotal * 0.40; // Index funds
-                dcaDistribution[4] = dcaTotal * 0.15; // Stocks
-                dcaDistribution[5] = dcaTotal * 0.05; // Real estate
-            } else { // aggressive
-                dcaDistribution[1] = dcaTotal * 0.10; // High yield savings
-                dcaDistribution[2] = dcaTotal * 0.15; // Fixed income
-                dcaDistribution[3] = dcaTotal * 0.35; // Index funds
-                dcaDistribution[4] = dcaTotal * 0.25; // Stocks
-                dcaDistribution[5] = dcaTotal * 0.10; // Real estate
-                dcaDistribution[6] = dcaTotal * 0.05; // Crypto
-            }
-
-            generateDCAInputs();
-            updateDCAAmounts();
-            showNotification(currentLanguage === 'es' ? 'DCA auto-distribuido' : 'DCA auto-distributed');
-        }
-
-        function saveDCA() {
-            const dcaTotal = parseFloat(document.getElementById('dcaAmount').value) || 0;
-            const distributed = dcaDistribution.reduce((sum, amount) => sum + (amount || 0), 0);
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando aplicación...');
             
-            if (Math.abs(distributed - dcaTotal) > 1) {
-                const confirm = window.confirm(
-                    currentLanguage === 'es' 
-                        ? `La distribución no coincide exactamente (€${distributed} vs €${dcaTotal}). ¿Continuar?`
-                        : `Distribution doesn't match exactly (€${distributed} vs €${dcaTotal}). Continue?`
-                );
-                if (!confirm) return;
-            }
-
-            showNotification(currentLanguage === 'es' ? 'DCA guardado correctamente' : 'DCA saved successfully');
-            closeDCAModal();
-            calculatePortfolio();
-        }
-
-        // Initialize application
-        function init() {
-            console.log('🚀 Initializing application...');
+            // Crear partículas
+            createParticles();
             
-            try {
-                // Initialize DCA distribution
-                dcaDistribution = new Array(assetClasses.length).fill(0);
-                
-                // Generate initial allocation inputs
-                generateAllocationInputs();
-                
-                // Initialize charts
-                setTimeout(() => {
-                    initCharts();
-                    calculatePortfolio();
-                }, 500);
-                
-                console.log('✅ Application initialized');
-                
-            } catch (error) {
-                console.error('❌ Initialization error:', error);
-                showNotification('Error de inicialización');
+            // Configurar eventos para botones de escenario
+            document.querySelectorAll('.scenario-btn').forEach(btn => {
+                btn.addEventListener('click', () => loadScenario(btn.dataset.scenario));
+            });
+
+            // Configurar eventos para tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+
+            // Configurar evento para el botón de calcular
+            const calcularBtn = document.getElementById('calcularBtn');
+            if (calcularBtn) {
+                calcularBtn.addEventListener('click', calcular);
             }
-        }
 
-        // Start when DOM is ready
-        document.addEventListener('DOMContentLoaded', init);
+            // Configurar evento para cambio en tipo de financiación
+            const financiacionTipo = document.getElementById('financiacionTipo');
+            if (financiacionTipo) {
+                financiacionTipo.addEventListener('change', toggleFinanciacionInputs);
+            }
 
-        // Fallback initialization
-        if (document.readyState === 'complete') {
-            setTimeout(init, 100);
-        }
+            // Configurar eventos para inputs (recalcular al cambiar cualquier valor)
+            const inputs = document.querySelectorAll('.form-input, .form-select');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    // Desmarcar escenarios predefinidos cuando se modifica cualquier input
+                    document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+                    setTimeout(calcular, 100);
+                });
+            });
+
+            // Cargar escenario moderado por defecto
+            loadScenario('moderado');
+        });
     </script>
+
+<script>
+const translations = {
+  es: {
+    title: "🏠 Calculadora de Inversión Inmobiliaria",
+    subtitle: "Análisis completo para inversión en alquiler - España",
+    config_title: "⚙️ Configuración de Inversión",
+    config_subtitle: "Personaliza todos los parámetros de tu análisis",
+    tab_propiedad: "🏠 Propiedad",
+    tab_financiacion: "💰 Financiación",
+    tab_ingresos: "📈 Ingresos",
+    tab_gastos: "📊 Gastos",
+    tab_revalorizacion: "💎 Revalorización",
+    btn_calcular: "🧮 Analizar Inversión",
+    analisis_title: "📊 Análisis de Rentabilidad",
+    analisis_subtitle: "Resultados completos de tu inversión a largo plazo",
+    empty_title: "¡Analiza tu inversión inmobiliaria!",
+    empty_subtitle: "Completa los datos en el panel izquierdo y haz clic en \"Analizar Inversión\" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.",
+    resumen: "Rentabilidad por flujo"
+  },
+  en: {
+    title: "🏠 Real Estate Investment Calculator",
+    subtitle: "Comprehensive rental investment analysis - Spain",
+    config_title: "⚙️ Investment Settings",
+    config_subtitle: "Customize all parameters of your analysis",
+    tab_propiedad: "🏠 Property",
+    tab_financiacion: "💰 Financing",
+    tab_ingresos: "📈 Income",
+    tab_gastos: "📊 Expenses",
+    tab_revalorizacion: "💎 Appreciation",
+    btn_calcular: "🧮 Analyze Investment",
+    analisis_title: "📊 Profitability Analysis",
+    analisis_subtitle: "Complete results of your long-term investment",
+    empty_title: "Analyze your real estate investment!",
+    empty_subtitle: "Fill in the data on the left panel and click \"Analyze Investment\" to get a detailed profitability analysis with long-term projection.",
+    resumen: "Cashflow Return"
+  }
+};
+
+function applyTranslations(lang) {
+  document.querySelector('[data-i18n="title"]').innerText = translations[lang].title;
+  document.querySelector('[data-i18n="subtitle"]').innerText = translations[lang].subtitle;
+  document.querySelector('[data-i18n="config_title"]').innerText = translations[lang].config_title;
+  document.querySelector('[data-i18n="config_subtitle"]').innerText = translations[lang].config_subtitle;
+  document.querySelector('[data-i18n="tab_propiedad"]').innerText = translations[lang].tab_propiedad;
+  document.querySelector('[data-i18n="tab_financiacion"]').innerText = translations[lang].tab_financiacion;
+  document.querySelector('[data-i18n="tab_ingresos"]').innerText = translations[lang].tab_ingresos;
+  document.querySelector('[data-i18n="tab_gastos"]').innerText = translations[lang].tab_gastos;
+  document.querySelector('[data-i18n="tab_revalorizacion"]').innerText = translations[lang].tab_revalorizacion;
+  document.querySelector('[data-i18n="btn_calcular"]').innerText = translations[lang].btn_calcular;
+  document.querySelector('[data-i18n="analisis_title"]').innerText = translations[lang].analisis_title;
+  document.querySelector('[data-i18n="analisis_subtitle"]').innerText = translations[lang].analisis_subtitle;
+  document.querySelector('[data-i18n="empty_title"]').innerText = translations[lang].empty_title;
+  document.querySelector('[data-i18n="empty_subtitle"]').innerText = translations[lang].empty_subtitle;
+  document.querySelector('[data-i18n="resumen"]').innerText = translations[lang].resumen;
+}
+
+document.getElementById("langSelector").addEventListener("change", function() {
+  applyTranslations(this.value);
+});
+</script>
+
 </body>
 </html>
