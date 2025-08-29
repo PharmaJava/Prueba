@@ -1494,51 +1494,144 @@
             loadScenario('moderado');
         });
     </script>
-
 <script>
-(function() {
-  const translations = {
-    es: {'espa_ol_0': '🇪🇸 Español', 'english_1': '🇬🇧 English', 'calculadora_de_inversi_n_inmobiliaria_2': '🏠 Calculadora de Inversión Inmobiliaria', 'an_lisis_completo_para_inversi_n_en_alqu_3': 'Análisis completo para inversión en alquiler - España', 'configuraci_n_de_inversi_n_4': '⚙️ Configuración de Inversión', 'personaliza_todos_los_par_metros_de_tu_a_5': 'Personaliza todos los parámetros de tu análisis', 'conservador_6': '🛡️ Conservador', 'moderado_7': '⚖️ Moderado', 'optimista_8': '🚀 Optimista', 'propiedad_9': '🏠 Propiedad', 'financiaci_n_10': '💰 Financiación', 'ingresos_11': '📈 Ingresos', 'gastos_12': '📊 Gastos', 'revalorizaci_n_13': '💎 Revalorización', 'precio_de_compra_14': 'Precio de compra', 'tipo_de_vivienda_15': 'Tipo de vivienda', 'segunda_vivienda_10_itp_16': 'Segunda vivienda (10% ITP)', 'vivienda_nueva_10_iva_1_2_ajd_17': 'Vivienda nueva (10% IVA + 1.2% AJD)', 'gastos_de_compra_venta_18': 'Gastos de compra-venta', 'tipo_de_financiaci_n_19': 'Tipo de financiación', 'con_hipoteca_20': 'Con hipoteca', 'sin_hipoteca_21': 'Sin hipoteca', 'porcentaje_de_entrada_22': 'Porcentaje de entrada', 'tipo_de_inter_s_hipoteca_23': 'Tipo de interés hipoteca', 'a_os_de_hipoteca_24': 'Años de hipoteca', 'gastos_de_hipoteca_25': 'Gastos de hipoteca', 'alquiler_mensual_26': 'Alquiler mensual', 'mes_27': '€/mes', 'meses_vac_o_al_a_o_28': 'Meses vacío al año', 'incremento_anual_del_alquiler_29': 'Incremento anual del alquiler', 'a_os_de_an_lisis_30': 'Años de análisis', 'ibi_anual_31': 'IBI anual', 'a_o_32': '€/año', 'gastos_de_comunidad_33': 'Gastos de comunidad', 'mes_34': '€/mes', 'seguro_de_hogar_35': 'Seguro de hogar', 'a_o_36': '€/año', 'mantenimiento_y_reparaciones_37': 'Mantenimiento y reparaciones', 'a_o_38': '€/año', 'administraci_n_gesti_n_39': 'Administración/Gestión', 'mes_40': '€/mes', 'incremento_anual_de_gastos_41': 'Incremento anual de gastos', 'tasa_impositiva_sobre_alquiler_neto_42': 'Tasa impositiva sobre alquiler neto', 'revalorizaci_n_anual_del_inmueble_43': 'Revalorización anual del inmueble', 'gastos_de_venta_futura_44': 'Gastos de venta futura', 'impuesto_plusval_a_municipal_45': 'Impuesto plusvalía municipal', 'irpf_por_venta_19_23_46': 'IRPF por venta (19-23%)', 'analizar_inversi_n_47': '🧮 Analizar Inversión', 'an_lisis_de_rentabilidad_48': '📊 Análisis de Rentabilidad', 'resultados_completos_de_tu_inversi_n_a_l_49': 'Resultados completos de tu inversión a largo plazo', 'analiza_tu_inversi_n_inmobiliaria_50': '¡Analiza tu inversión inmobiliaria!', 'completa_los_datos_en_el_panel_izquierdo_51': 'Completa los datos en el panel izquierdo y haz clic en "Analizar Inversión" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.', 'rentabilidad_por_flujo_52': 'Rentabilidad por flujo'},
-    en: {'espa_ol_0': '🇪🇸 Español', 'english_1': '🇬🇧 English', 'calculadora_de_inversi_n_inmobiliaria_2': '🏠 Real Estate Investment Calculator', 'an_lisis_completo_para_inversi_n_en_alqu_3': 'Comprehensive rental investment analysis - Spain', 'configuraci_n_de_inversi_n_4': '⚙️ Investment Settings', 'personaliza_todos_los_par_metros_de_tu_a_5': 'Customize all parameters of your analysis', 'conservador_6': '🛡️ Conservative', 'moderado_7': '⚖️ Moderate', 'optimista_8': '🚀 Optimistic', 'propiedad_9': '🏠 Property', 'financiaci_n_10': '💰 Financing', 'ingresos_11': '📈 Income', 'gastos_12': '📊 Expenses', 'revalorizaci_n_13': '💎 Appreciation', 'precio_de_compra_14': 'Purchase price', 'tipo_de_vivienda_15': 'Property type', 'segunda_vivienda_10_itp_16': 'Second home (10% transfer tax)', 'vivienda_nueva_10_iva_1_2_ajd_17': 'New property (10% VAT + 1.2% stamp duty)', 'gastos_de_compra_venta_18': 'Purchase & sale costs', 'tipo_de_financiaci_n_19': 'Financing type', 'con_hipoteca_20': 'With mortgage', 'sin_hipoteca_21': 'No mortgage', 'porcentaje_de_entrada_22': 'Down payment percentage', 'tipo_de_inter_s_hipoteca_23': 'Mortgage interest rate', 'a_os_de_hipoteca_24': 'Mortgage term (years)', 'gastos_de_hipoteca_25': 'Mortgage fees', 'alquiler_mensual_26': 'Alquiler monthly', 'mes_27': '€/month', 'meses_vac_o_al_a_o_28': 'Meses vacío al año', 'incremento_anual_del_alquiler_29': 'Incremento annual del rent', 'a_os_de_an_lisis_30': 'Years de análisis', 'ibi_anual_31': 'IBI annual', 'a_o_32': '€/year', 'gastos_de_comunidad_33': 'HOA / community fees', 'mes_34': '€/month', 'seguro_de_hogar_35': 'Home insurance', 'a_o_36': '€/year', 'mantenimiento_y_reparaciones_37': 'Maintenance & repairs', 'a_o_38': '€/year', 'administraci_n_gesti_n_39': 'Property management', 'mes_40': '€/month', 'incremento_anual_de_gastos_41': 'Annual expense increase', 'tasa_impositiva_sobre_alquiler_neto_42': 'Tax rate on net rental income', 'revalorizaci_n_anual_del_inmueble_43': 'Annual property appreciation', 'gastos_de_venta_futura_44': 'Future sale costs', 'impuesto_plusval_a_municipal_45': 'Local capital gains tax (plusvalía)', 'irpf_por_venta_19_23_46': 'Capital gains tax (19–23%)', 'analizar_inversi_n_47': '🧮 Analyze Investment', 'an_lisis_de_rentabilidad_48': '📊 Profitability Analysis', 'resultados_completos_de_tu_inversi_n_a_l_49': 'Complete results of your long‑term investment', 'analiza_tu_inversi_n_inmobiliaria_50': 'Analyze your real estate investment!', 'completa_los_datos_en_el_panel_izquierdo_51': 'Fill in the data on the left panel and click "Analyze Investment" to get a detailed profitability analysis with a long‑term projection.', 'rentabilidad_por_flujo_52': 'Cashflow return'}
+(function(){
+  const extra_es = {
+    "INVERSIÓN INICIAL": "INVERSIÓN INICIAL",
+    "Capital necesario para empezar": "Capital necesario para empezar",
+    "FLUJO MENSUAL": "FLUJO MENSUAL",
+    "Cashflow mensual neto (Año 1)": "Cashflow mensual neto (Año 1)",
+    "TIR ANUALIZADA": "TIR ANUALIZADA",
+    "Rentabilidad anual compuesta": "Rentabilidad anual compuesta",
+    "BENEFICIO TOTAL": "BENEFICIO TOTAL",
+    "En 20 años": "En 20 años",
+    "VALOR FINAL": "VALOR FINAL",
+    "Precio venta estimado": "Precio venta estimado",
+    "FLUJO ACUMULADO": "FLUJO ACUMULADO",
+    "Solo por alquileres": "Solo por alquileres",
+    "Rentabilidad Moderada:": "Rentabilidad Moderada:",
+    "Con un": "Con un",
+    "anual, considera alternativas como fondos indexados o REITs.": "anual, considera alternativas como fondos indexados o REITs.",
+    "Cashflow Negativo:": "Cashflow Negativo:",
+    "Necesitarás aportar": "Necesitarás aportar",
+    "mensuales adicionales.": "mensuales adicionales.",
+    "💰 Desglose de Inversión Inicial": "💰 Desglose de Inversión Inicial",
+    "Entrada (20%)": "Entrada (20%)",
+    "Impuestos (ITP/IVA+AJD)": "Impuestos (ITP/IVA+AJD)",
+    "Gastos de compra": "Gastos de compra",
+    "Gastos de hipoteca": "Gastos de hipoteca",
+    "TOTAL INVERSIÓN": "TOTAL INVERSIÓN",
+    "📊 Cashflow Mensual (Año 1)": "📊 Cashflow Mensual (Año 1)",
+    "Ingresos por Alquiler": "Ingresos por Alquiler",
+    "Cuota Hipoteca": "Cuota Hipoteca",
+    "Gastos de Comunidad": "Gastos de Comunidad",
+    "IBI (mensual)": "IBI (mensual)",
+    "Seguro de hogar (mensual)": "Seguro de hogar (mensual)",
+    "Mantenimiento (mensual)": "Mantenimiento (mensual)",
+    "Administración": "Administración",
+    "Impuestos sobre alquiler (mensualizado)": "Impuestos sobre alquiler (mensualizado)",
+    "CASHFLOW NETO": "CASHFLOW NETO",
+    "🏠 Proyección de Venta (Año 20)": "🏠 Proyección de Venta (Año 20)",
+    "Valor Estimado del Inmueble": "Valor Estimado del Inmueble",
+    "Gastos de Venta (8%)": "Gastos de Venta (8%)",
+    "Plusvalía Municipal": "Plusvalía Municipal",
+    "IRPF Ganancia Capital (19%)": "IRPF Ganancia Capital (19%)",
+    "VALOR NETO DE VENTA": "VALOR NETO DE VENTA",
+    "📊 Comparación con Otras Inversiones": "📊 Comparación con Otras Inversiones",
+    "Tu Inversión": "Tu Inversión",
+    "Depósito Bancario": "Depósito Bancario",
+    "Bonos España": "Bonos España",
+    "Fondos Mixtos": "Fondos Mixtos",
+    "S&P 500": "S&P 500",
+    "📅 Proyecciones Año por Año": "📅 Proyecciones Año por Año",
+    "AÑO": "AÑO",
+    "INGRESOS ALQUILER": "INGRESOS ALQUILER",
+    "GASTOS": "GASTOS",
+    "HIPOTECA": "HIPOTECA",
+    "IMPUESTOS": "IMPUESTOS",
+    "FLUJO DE CAJA": "FLUJO DE CAJA",
+    "RENTABILIDAD FLUJO (%)": "RENTABILIDAD FLUJO (%)",
+    "VALOR INMUEBLE": "VALOR INMUEBLE",
+    "PRÉSTAMO RESTANTE": "PRÉSTAMO RESTANTE",
+    "NETO SI VENDE": "NETO SI VENDE",
+    "BENEFICIO ACUMULADO": "BENEFICIO ACUMULADO",
+    "Tipo de vivienda": "Tipo de vivienda",
+    "Con hipoteca": "Con hipoteca",
+    "Sin hipoteca": "Sin hipoteca",
+    "Meses ocupados al año": "Meses ocupados al año",
+    "Meses vacío al año": "Meses vacío al año"
   };
-
-  function applyTranslations(lang) {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      const t = translations[lang] && translations[lang][key];
-      if (t !== undefined) {
-        el.textContent = t;
-      }
-    });
-    document.documentElement.setAttribute('lang', lang);
-    localStorage.setItem('lang', lang);
+  const extra_en = {
+    "INVERSIÓN INICIAL": "INITIAL INVESTMENT",
+    "Capital necesario para empezar": "Capital required to start",
+    "FLUJO MENSUAL": "MONTHLY CASHFLOW",
+    "Cashflow mensual neto (Año 1)": "Net monthly cashflow (Year 1)",
+    "TIR ANUALIZADA": "ANNUALIZED IRR",
+    "Rentabilidad anual compuesta": "Compound annual return",
+    "BENEFICIO TOTAL": "TOTAL PROFIT",
+    "En 20 años": "In 20 years",
+    "VALOR FINAL": "FINAL VALUE",
+    "Precio venta estimado": "Estimated sale price",
+    "FLUJO ACUMULADO": "CUMULATIVE CASHFLOW",
+    "Solo por alquileres": "Only from rents",
+    "Rentabilidad Moderada:": "Moderate Profitability:",
+    "Con un": "With",
+    "anual, considera alternativas como fondos indexados o REITs.": "annually, consider alternatives like index funds or REITs.",
+    "Cashflow Negativo:": "Negative Cashflow:",
+    "Necesitarás aportar": "You will need to contribute",
+    "mensuales adicionales.": "monthly additionally.",
+    "💰 Desglose de Inversión Inicial": "💰 Initial Investment Breakdown",
+    "Entrada (20%)": "Down payment (20%)",
+    "Impuestos (ITP/IVA+AJD)": "Taxes (ITP/VAT+Stamp duty)",
+    "Gastos de compra": "Purchase costs",
+    "Gastos de hipoteca": "Mortgage costs",
+    "TOTAL INVERSIÓN": "TOTAL INVESTMENT",
+    "📊 Cashflow Mensual (Año 1)": "📊 Monthly Cashflow (Year 1)",
+    "Ingresos por Alquiler": "Rental income",
+    "Cuota Hipoteca": "Mortgage payment",
+    "Gastos de Comunidad": "HOA / Community fees",
+    "IBI (mensual)": "Property tax (monthly)",
+    "Seguro de hogar (mensual)": "Home insurance (monthly)",
+    "Mantenimiento (mensual)": "Maintenance (monthly)",
+    "Administración": "Management",
+    "Impuestos sobre alquiler (mensualizado)": "Rental taxes (monthly)",
+    "CASHFLOW NETO": "NET CASHFLOW",
+    "🏠 Proyección de Venta (Año 20)": "🏠 Sale Projection (Year 20)",
+    "Valor Estimado del Inmueble": "Estimated property value",
+    "Gastos de Venta (8%)": "Sale costs (8%)",
+    "Plusvalía Municipal": "Local capital gains tax",
+    "IRPF Ganancia Capital (19%)": "Capital gains tax (19%)",
+    "VALOR NETO DE VENTA": "NET SALE VALUE",
+    "📊 Comparación con Otras Inversiones": "📊 Comparison with Other Investments",
+    "Tu Inversión": "Your Investment",
+    "Depósito Bancario": "Bank Deposit",
+    "Bonos España": "Spanish Bonds",
+    "Fondos Mixtos": "Mixed Funds",
+    "S&P 500": "S&P 500",
+    "📅 Proyecciones Año por Año": "📅 Year by Year Projections",
+    "AÑO": "YEAR",
+    "INGRESOS ALQUILER": "RENTAL INCOME",
+    "GASTOS": "EXPENSES",
+    "HIPOTECA": "MORTGAGE",
+    "IMPUESTOS": "TAXES",
+    "FLUJO DE CAJA": "CASHFLOW",
+    "RENTABILIDAD FLUJO (%)": "CASHFLOW YIELD (%)",
+    "VALOR INMUEBLE": "PROPERTY VALUE",
+    "PRÉSTAMO RESTANTE": "OUTSTANDING LOAN",
+    "NETO SI VENDE": "NET IF SOLD",
+    "BENEFICIO ACUMULADO": "CUMULATED PROFIT",
+    "Tipo de vivienda": "Property type",
+    "Con hipoteca": "With mortgage",
+    "Sin hipoteca": "Without mortgage",
+    "Meses ocupados al año": "Occupied months per year",
+    "Meses vacío al año": "Vacant months per year"
+  };
+  if (typeof translations !== 'undefined') {
+    Object.assign(translations.es, extra_es);
+    Object.assign(translations.en, extra_en);
   }
-
-  // Observe DOM changes to translate dynamically injected nodes
-  const observer = new MutationObserver((mutations) => {
-    const lang = localStorage.getItem('lang') || 'es';
-    mutations.forEach(m => {
-      m.addedNodes && m.addedNodes.forEach(n => {
-        if (n.nodeType === 1) {
-          n.querySelectorAll && n.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            const t = translations[lang] && translations[lang][key];
-            if (t !== undefined) el.textContent = t;
-          });
-        }
-      })
-    });
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    const selector = document.getElementById('langSelector');
-    const saved = localStorage.getItem('lang') || 'es';
-    if (selector) selector.value = saved;
-    applyTranslations(saved);
-    if (selector) selector.addEventListener('change', (e) => applyTranslations(e.target.value));
-  });
 })();
 </script>
+
 </body>
 </html>
