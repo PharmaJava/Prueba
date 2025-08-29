@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Inversión Inmobiliaria</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Calculadora de Inversión Inmobiliaria</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -585,279 +586,230 @@
     </style>
 </head>
 <body>
-    <div class="bg-particles" id="particles"></div>
-    
-    <div class="app-container">
-        <header class="header">
-
-<div style="position:absolute; top:1rem; right:1rem;">
-  <select id="langSelector" style="padding:0.5rem; border-radius:8px;">
-    <option value="es">🇪🇸 Español</option>
-    <option value="en">🇬🇧 English</option>
-  </select>
+<div class="bg-particles" id="particles"></div>
+<div class="app-container">
+<header class="header"><div style="position:absolute;top:1rem;right:1rem;z-index:9999;"><select id="langSelector"><option value="es"><span data-i18n="espa_ol_0">🇪🇸 Español</span></option><option value="en"><span data-i18n="english_1">🇬🇧 English</span></option></select></div>
+<h1><span data-i18n="calculadora_de_inversi_n_inmobiliaria_2">🏠 Calculadora de Inversión Inmobiliaria</span></h1>
+<p><span data-i18n="an_lisis_completo_para_inversi_n_en_alqu_3">Análisis completo para inversión en alquiler - España</span></p>
+</header>
+<main class="main-content">
+<div class="content-grid">
+<!-- Panel de Configuración -->
+<div class="glass-card">
+<div class="card-header">
+<div class="card-title"><span data-i18n="configuraci_n_de_inversi_n_4">⚙️ Configuración de Inversión</span></div>
+<div class="card-subtitle"><span data-i18n="personaliza_todos_los_par_metros_de_tu_a_5">Personaliza todos los parámetros de tu análisis</span></div>
 </div>
-
-            <h1><span data-i18n="title">🏠 Calculadora de Inversión Inmobiliaria</span></h1>
-            <p><span data-i18n="subtitle">Análisis completo para inversión en alquiler - España</span></p>
-        </header>
-
-        <main class="main-content">
-            <div class="content-grid">
-                <!-- Panel de Configuración -->
-                <div class="glass-card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <span data-i18n="config_title">⚙️ Configuración de Inversión</span>
-                        </div>
-                        <div class="card-subtitle"><span data-i18n="config_subtitle">Personaliza todos los parámetros de tu análisis</span></div>
-                    </div>
-                    <div class="card-body">
-                        <!-- Selector de Escenarios -->
-                        <div class="scenario-selector">
-                            <button class="scenario-btn active" data-scenario="conservador">
-                                🛡️ Conservador
-                            </button>
-                            <button class="scenario-btn" data-scenario="moderado">
-                                ⚖️ Moderado
-                            </button>
-                            <button class="scenario-btn" data-scenario="optimista">
-                                🚀 Optimista
-                            </button>
-                        </div>
-
-                        <div class="nav-tabs">
-                            <button class="nav-tab active" data-tab="propiedad"><span data-i18n="tab_propiedad">🏠 Propiedad</span></button>
-                            <button class="nav-tab" data-tab="financiacion"><span data-i18n="tab_financiacion">💰 Financiación</span></button>
-                            <button class="nav-tab" data-tab="ingresos"><span data-i18n="tab_ingresos">📈 Ingresos</span></button>
-                            <button class="nav-tab" data-tab="gastos"><span data-i18n="tab_gastos">📊 Gastos</span></button>
-                            <button class="nav-tab" data-tab="revalorizacion"><span data-i18n="tab_revalorizacion">💎 Revalorización</span></button>
-                        </div>
-
-                        <!-- Tab: Propiedad -->
-                        <div class="tab-content active" id="propiedad-tab">
-                            <div class="form-group">
-                                <label class="form-label">Precio de compra</label>
-                                <div class="input-group">
-                                    <input type="number" id="precio" class="form-input with-suffix" value="140000" min="0" step="1000">
-                                    <span class="input-suffix">€</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Tipo de vivienda</label>
-                                <select id="tipoVivienda" class="form-select">
-                                    <option value="segunda">Segunda vivienda (10% ITP)</option>
-                                    <option value="nueva">Vivienda nueva (10% IVA + 1.2% AJD)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Gastos de compra-venta</label>
-                                <div class="input-group">
-                                    <input type="number" id="gastosCompra" class="form-input with-suffix" value="3500" min="0" step="100">
-                                    <span class="input-suffix">€</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tab: Financiación -->
-                        <div class="tab-content" id="financiacion-tab">
-                            <div class="form-group">
-                                <label class="form-label">Tipo de financiación</label>
-                                <select id="financiacionTipo" class="form-select">
-                                    <option value="con_hipoteca">Con hipoteca</option>
-                                    <option value="sin_hipoteca">Sin hipoteca</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Porcentaje de entrada</label>
-                                <div class="input-group">
-                                    <input type="number" id="entrada" class="form-input with-suffix" value="20" min="0" max="100" step="1">
-                                    <span class="input-suffix">%</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Tipo de interés hipoteca</label>
-                                <div class="input-group">
-                                    <input type="number" id="interes" class="form-input with-suffix" value="2.5" min="0" max="15" step="0.1">
-                                    <span class="input-suffix">%</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Años de hipoteca</label>
-                                <input type="number" id="anos" class="form-input" value="25" min="5" max="40" step="1">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Gastos de hipoteca</label>
-                                <div class="input-group">
-                                    <input type="number" id="gastosHipoteca" class="form-input with-suffix" value="2500" min="0" step="100">
-                                    <span class="input-suffix">€</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tab: Ingresos -->
-                        <div class="tab-content" id="ingresos-tab">
-                            <div class="form-group">
-                                <label class="form-label">Alquiler mensual</label>
-                                <div class="input-group">
-                                    <input type="number" id="alquiler" class="form-input with-suffix" value="800" min="0" step="50">
-                                    <span class="input-suffix">€/mes</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Meses vacío al año</label>
-                                <input type="number" id="mesesVacio" class="form-input" value="1" min="0" max="12" step="0.5">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Incremento anual del alquiler</label>
-                                <div class="input-group">
-                                    <input type="number" id="incrementoAlquiler" class="form-input with-suffix" value="2" min="0" max="10" step="0.1">
-                                    <span class="input-suffix">%</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Años de análisis</label>
-                                <input type="number" id="anosAnalisis" class="form-input" value="20" min="1" max="40" step="1">
-                            </div>
-                        </div>
-
-                        <!-- Tab: Gastos -->
-                        <div class="tab-content" id="gastos-tab">
-                            <div class="form-group">
-                                <label class="form-label">IBI anual</label>
-                                <div class="input-group">
-                                    <input type="number" id="ibi" class="form-input with-suffix" value="500" min="0" step="50">
-                                    <span class="input-suffix">€/año</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Gastos de comunidad</label>
-                                <div class="input-group">
-                                    <input type="number" id="comunidad" class="form-input with-suffix" value="80" min="0" step="10">
-                                    <span class="input-suffix">€/mes</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Seguro de hogar</label>
-                                <div class="input-group">
-                                    <input type="number" id="seguro" class="form-input with-suffix" value="300" min="0" step="50">
-                                    <span class="input-suffix">€/año</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Mantenimiento y reparaciones</label>
-                                <div class="input-group">
-                                    <input type="number" id="mantenimiento" class="form-input with-suffix" value="500" min="0" step="50">
-                                    <span class="input-suffix">€/año</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Administración/Gestión</label>
-                                <div class="input-group">
-                                    <input type="number" id="administracion" class="form-input with-suffix" value="60" min="0" step="10">
-                                    <span class="input-suffix">€/mes</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Incremento anual de gastos</label>
-                                <div class="input-group">
-                                    <input type="number" id="incrementoGastos" class="form-input with-suffix" value="0" min="0" max="10" step="0.1">
-                                    <span class="input-suffix">%</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Tasa impositiva sobre alquiler neto</label>
-                                <div class="input-group">
-                                    <input type="number" id="taxAlquiler" class="form-input with-suffix" value="21" min="0" max="47" step="0.1">
-                                    <span class="input-suffix">%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tab: Revalorización -->
-                        <div class="tab-content" id="revalorizacion-tab">
-                            <div class="form-group">
-                                <label class="form-label">Revalorización anual del inmueble</label>
-                                <div class="input-group">
-                                    <input type="number" id="revalorizacion" class="form-input with-suffix" value="2.5" min="-5" max="15" step="0.1">
-                                    <span class="input-suffix">%</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Gastos de venta futura</label>
-                                <div class="input-group">
-                                    <input type="number" id="gastosVenta" class="form-input with-suffix" value="8" min="0" max="15" step="0.1">
-                                    <span class="input-suffix">%</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Impuesto plusvalía municipal</label>
-                                <div class="input-group">
-                                    <input type="number" id="plusvalia" class="form-input with-suffix" value="2000" min="0" step="100">
-                                    <span class="input-suffix">€</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">IRPF por venta (19-23%)</label>
-                                <div class="input-group">
-                                    <input type="number" id="irpfVenta" class="form-input with-suffix" value="19" min="0" max="47" step="0.1">
-                                    <span class="input-suffix">%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- BOTÓN DE CALCULAR -->
-                        <button class="btn btn-primary btn-block" id="calcularBtn">
-                            <span data-i18n="btn_calcular">🧮 Analizar Inversión</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Panel de Resultados -->
-                <div class="glass-card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <span data-i18n="analisis_title">📊 Análisis de Rentabilidad</span>
-                        </div>
-                        <div class="card-subtitle"><span data-i18n="analisis_subtitle">Resultados completos de tu inversión a largo plazo</span></div>
-                    </div>
-                    <div class="card-body">
-                        <div id="resultados">
-                            <div class="empty-state">
-                                <div class="empty-state-icon">📈</div>
-                                <h3><span data-i18n="empty_title">¡Analiza tu inversión inmobiliaria!</span></h3>
-                                <p><span data-i18n="empty_subtitle">Completa los datos en el panel izquierdo y haz clic en "Analizar Inversión" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Resumen flotante -->
-        <div class="floating-summary" id="floatingSummary">
-            <div style="font-weight: 600; margin-bottom: 0.5rem;"><span data-i18n="resumen">Rentabilidad por flujo</span></div>
-            <div id="floatingValue" style="font-size: 1.6rem; font-weight: 800;">-</div>
-        </div>
-    </div>
-    <script>
+<div class="card-body">
+<!-- Selector de Escenarios -->
+<div class="scenario-selector">
+<button class="scenario-btn active" data-scenario="conservador"><span data-i18n="conservador_6">🛡️ Conservador</span></button>
+<button class="scenario-btn" data-scenario="moderado"><span data-i18n="moderado_7">⚖️ Moderado</span></button>
+<button class="scenario-btn" data-scenario="optimista"><span data-i18n="optimista_8">🚀 Optimista</span></button>
+</div>
+<div class="nav-tabs">
+<button class="nav-tab active" data-tab="propiedad"><span data-i18n="propiedad_9">🏠 Propiedad</span></button>
+<button class="nav-tab" data-tab="financiacion"><span data-i18n="financiaci_n_10">💰 Financiación</span></button>
+<button class="nav-tab" data-tab="ingresos"><span data-i18n="ingresos_11">📈 Ingresos</span></button>
+<button class="nav-tab" data-tab="gastos"><span data-i18n="gastos_12">📊 Gastos</span></button>
+<button class="nav-tab" data-tab="revalorizacion"><span data-i18n="revalorizaci_n_13">💎 Revalorización</span></button>
+</div>
+<!-- Tab: Propiedad -->
+<div class="tab-content active" id="propiedad-tab">
+<div class="form-group">
+<label class="form-label"><span data-i18n="precio_de_compra_14">Precio de compra</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="precio" min="0" step="1000" type="number" value="140000"/>
+<span class="input-suffix">€</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="tipo_de_vivienda_15">Tipo de vivienda</span></label>
+<select class="form-select" id="tipoVivienda">
+<option value="segunda"><span data-i18n="segunda_vivienda_10_itp_16">Segunda vivienda (10% ITP)</span></option>
+<option value="nueva"><span data-i18n="vivienda_nueva_10_iva_1_2_ajd_17">Vivienda nueva (10% IVA + 1.2% AJD)</span></option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="gastos_de_compra_venta_18">Gastos de compra-venta</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="gastosCompra" min="0" step="100" type="number" value="3500"/>
+<span class="input-suffix">€</span>
+</div>
+</div>
+</div>
+<!-- Tab: Financiación -->
+<div class="tab-content" id="financiacion-tab">
+<div class="form-group">
+<label class="form-label"><span data-i18n="tipo_de_financiaci_n_19">Tipo de financiación</span></label>
+<select class="form-select" id="financiacionTipo">
+<option value="con_hipoteca"><span data-i18n="con_hipoteca_20">Con hipoteca</span></option>
+<option value="sin_hipoteca"><span data-i18n="sin_hipoteca_21">Sin hipoteca</span></option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="porcentaje_de_entrada_22">Porcentaje de entrada</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="entrada" max="100" min="0" step="1" type="number" value="20"/>
+<span class="input-suffix">%</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="tipo_de_inter_s_hipoteca_23">Tipo de interés hipoteca</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="interes" max="15" min="0" step="0.1" type="number" value="2.5"/>
+<span class="input-suffix">%</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="a_os_de_hipoteca_24">Años de hipoteca</span></label>
+<input class="form-input" id="anos" max="40" min="5" step="1" type="number" value="25"/>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="gastos_de_hipoteca_25">Gastos de hipoteca</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="gastosHipoteca" min="0" step="100" type="number" value="2500"/>
+<span class="input-suffix">€</span>
+</div>
+</div>
+</div>
+<!-- Tab: Ingresos -->
+<div class="tab-content" id="ingresos-tab">
+<div class="form-group">
+<label class="form-label"><span data-i18n="alquiler_mensual_26">Alquiler mensual</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="alquiler" min="0" step="50" type="number" value="800"/>
+<span class="input-suffix"><span data-i18n="mes_27">€/mes</span></span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="meses_vac_o_al_a_o_28">Meses vacío al año</span></label>
+<input class="form-input" id="mesesVacio" max="12" min="0" step="0.5" type="number" value="1"/>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="incremento_anual_del_alquiler_29">Incremento anual del alquiler</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="incrementoAlquiler" max="10" min="0" step="0.1" type="number" value="2"/>
+<span class="input-suffix">%</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="a_os_de_an_lisis_30">Años de análisis</span></label>
+<input class="form-input" id="anosAnalisis" max="40" min="1" step="1" type="number" value="20"/>
+</div>
+</div>
+<!-- Tab: Gastos -->
+<div class="tab-content" id="gastos-tab">
+<div class="form-group">
+<label class="form-label"><span data-i18n="ibi_anual_31">IBI anual</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="ibi" min="0" step="50" type="number" value="500"/>
+<span class="input-suffix"><span data-i18n="a_o_32">€/año</span></span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="gastos_de_comunidad_33">Gastos de comunidad</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="comunidad" min="0" step="10" type="number" value="80"/>
+<span class="input-suffix"><span data-i18n="mes_34">€/mes</span></span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="seguro_de_hogar_35">Seguro de hogar</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="seguro" min="0" step="50" type="number" value="300"/>
+<span class="input-suffix"><span data-i18n="a_o_36">€/año</span></span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="mantenimiento_y_reparaciones_37">Mantenimiento y reparaciones</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="mantenimiento" min="0" step="50" type="number" value="500"/>
+<span class="input-suffix"><span data-i18n="a_o_38">€/año</span></span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="administraci_n_gesti_n_39">Administración/Gestión</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="administracion" min="0" step="10" type="number" value="60"/>
+<span class="input-suffix"><span data-i18n="mes_40">€/mes</span></span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="incremento_anual_de_gastos_41">Incremento anual de gastos</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="incrementoGastos" max="10" min="0" step="0.1" type="number" value="0"/>
+<span class="input-suffix">%</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="tasa_impositiva_sobre_alquiler_neto_42">Tasa impositiva sobre alquiler neto</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="taxAlquiler" max="47" min="0" step="0.1" type="number" value="21"/>
+<span class="input-suffix">%</span>
+</div>
+</div>
+</div>
+<!-- Tab: Revalorización -->
+<div class="tab-content" id="revalorizacion-tab">
+<div class="form-group">
+<label class="form-label"><span data-i18n="revalorizaci_n_anual_del_inmueble_43">Revalorización anual del inmueble</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="revalorizacion" max="15" min="-5" step="0.1" type="number" value="2.5"/>
+<span class="input-suffix">%</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="gastos_de_venta_futura_44">Gastos de venta futura</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="gastosVenta" max="15" min="0" step="0.1" type="number" value="8"/>
+<span class="input-suffix">%</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="impuesto_plusval_a_municipal_45">Impuesto plusvalía municipal</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="plusvalia" min="0" step="100" type="number" value="2000"/>
+<span class="input-suffix">€</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label"><span data-i18n="irpf_por_venta_19_23_46">IRPF por venta (19-23%)</span></label>
+<div class="input-group">
+<input class="form-input with-suffix" id="irpfVenta" max="47" min="0" step="0.1" type="number" value="19"/>
+<span class="input-suffix">%</span>
+</div>
+</div>
+</div>
+<!-- BOTÓN DE CALCULAR -->
+<button class="btn btn-primary btn-block" id="calcularBtn"><span data-i18n="analizar_inversi_n_47">🧮 Analizar Inversión</span></button>
+</div>
+</div>
+<!-- Panel de Resultados -->
+<div class="glass-card">
+<div class="card-header">
+<div class="card-title"><span data-i18n="an_lisis_de_rentabilidad_48">📊 Análisis de Rentabilidad</span></div>
+<div class="card-subtitle"><span data-i18n="resultados_completos_de_tu_inversi_n_a_l_49">Resultados completos de tu inversión a largo plazo</span></div>
+</div>
+<div class="card-body">
+<div id="resultados">
+<div class="empty-state">
+<div class="empty-state-icon">📈</div>
+<h3><span data-i18n="analiza_tu_inversi_n_inmobiliaria_50">¡Analiza tu inversión inmobiliaria!</span></h3>
+<p><span data-i18n="completa_los_datos_en_el_panel_izquierdo_51">Completa los datos en el panel izquierdo y haz clic en "Analizar Inversión" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Resumen flotante -->
+<div class="floating-summary" id="floatingSummary">
+<div style="font-weight: 600; margin-bottom: 0.5rem;"><span data-i18n="rentabilidad_por_flujo_52">Rentabilidad por flujo</span></div>
+<div id="floatingValue" style="font-size: 1.6rem; font-weight: 800;">-</div>
+</div>
+</div>
+<script>
         // Variables globales
         const scenarios = {
             conservador: {
@@ -1544,65 +1496,49 @@
     </script>
 
 <script>
-const translations = {
-  es: {
-    title: "🏠 Calculadora de Inversión Inmobiliaria",
-    subtitle: "Análisis completo para inversión en alquiler - España",
-    config_title: "⚙️ Configuración de Inversión",
-    config_subtitle: "Personaliza todos los parámetros de tu análisis",
-    tab_propiedad: "🏠 Propiedad",
-    tab_financiacion: "💰 Financiación",
-    tab_ingresos: "📈 Ingresos",
-    tab_gastos: "📊 Gastos",
-    tab_revalorizacion: "💎 Revalorización",
-    btn_calcular: "🧮 Analizar Inversión",
-    analisis_title: "📊 Análisis de Rentabilidad",
-    analisis_subtitle: "Resultados completos de tu inversión a largo plazo",
-    empty_title: "¡Analiza tu inversión inmobiliaria!",
-    empty_subtitle: "Completa los datos en el panel izquierdo y haz clic en \"Analizar Inversión\" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.",
-    resumen: "Rentabilidad por flujo"
-  },
-  en: {
-    title: "🏠 Real Estate Investment Calculator",
-    subtitle: "Comprehensive rental investment analysis - Spain",
-    config_title: "⚙️ Investment Settings",
-    config_subtitle: "Customize all parameters of your analysis",
-    tab_propiedad: "🏠 Property",
-    tab_financiacion: "💰 Financing",
-    tab_ingresos: "📈 Income",
-    tab_gastos: "📊 Expenses",
-    tab_revalorizacion: "💎 Appreciation",
-    btn_calcular: "🧮 Analyze Investment",
-    analisis_title: "📊 Profitability Analysis",
-    analisis_subtitle: "Complete results of your long-term investment",
-    empty_title: "Analyze your real estate investment!",
-    empty_subtitle: "Fill in the data on the left panel and click \"Analyze Investment\" to get a detailed profitability analysis with long-term projection.",
-    resumen: "Cashflow Return"
+(function() {
+  const translations = {
+    es: {'espa_ol_0': '🇪🇸 Español', 'english_1': '🇬🇧 English', 'calculadora_de_inversi_n_inmobiliaria_2': '🏠 Calculadora de Inversión Inmobiliaria', 'an_lisis_completo_para_inversi_n_en_alqu_3': 'Análisis completo para inversión en alquiler - España', 'configuraci_n_de_inversi_n_4': '⚙️ Configuración de Inversión', 'personaliza_todos_los_par_metros_de_tu_a_5': 'Personaliza todos los parámetros de tu análisis', 'conservador_6': '🛡️ Conservador', 'moderado_7': '⚖️ Moderado', 'optimista_8': '🚀 Optimista', 'propiedad_9': '🏠 Propiedad', 'financiaci_n_10': '💰 Financiación', 'ingresos_11': '📈 Ingresos', 'gastos_12': '📊 Gastos', 'revalorizaci_n_13': '💎 Revalorización', 'precio_de_compra_14': 'Precio de compra', 'tipo_de_vivienda_15': 'Tipo de vivienda', 'segunda_vivienda_10_itp_16': 'Segunda vivienda (10% ITP)', 'vivienda_nueva_10_iva_1_2_ajd_17': 'Vivienda nueva (10% IVA + 1.2% AJD)', 'gastos_de_compra_venta_18': 'Gastos de compra-venta', 'tipo_de_financiaci_n_19': 'Tipo de financiación', 'con_hipoteca_20': 'Con hipoteca', 'sin_hipoteca_21': 'Sin hipoteca', 'porcentaje_de_entrada_22': 'Porcentaje de entrada', 'tipo_de_inter_s_hipoteca_23': 'Tipo de interés hipoteca', 'a_os_de_hipoteca_24': 'Años de hipoteca', 'gastos_de_hipoteca_25': 'Gastos de hipoteca', 'alquiler_mensual_26': 'Alquiler mensual', 'mes_27': '€/mes', 'meses_vac_o_al_a_o_28': 'Meses vacío al año', 'incremento_anual_del_alquiler_29': 'Incremento anual del alquiler', 'a_os_de_an_lisis_30': 'Años de análisis', 'ibi_anual_31': 'IBI anual', 'a_o_32': '€/año', 'gastos_de_comunidad_33': 'Gastos de comunidad', 'mes_34': '€/mes', 'seguro_de_hogar_35': 'Seguro de hogar', 'a_o_36': '€/año', 'mantenimiento_y_reparaciones_37': 'Mantenimiento y reparaciones', 'a_o_38': '€/año', 'administraci_n_gesti_n_39': 'Administración/Gestión', 'mes_40': '€/mes', 'incremento_anual_de_gastos_41': 'Incremento anual de gastos', 'tasa_impositiva_sobre_alquiler_neto_42': 'Tasa impositiva sobre alquiler neto', 'revalorizaci_n_anual_del_inmueble_43': 'Revalorización anual del inmueble', 'gastos_de_venta_futura_44': 'Gastos de venta futura', 'impuesto_plusval_a_municipal_45': 'Impuesto plusvalía municipal', 'irpf_por_venta_19_23_46': 'IRPF por venta (19-23%)', 'analizar_inversi_n_47': '🧮 Analizar Inversión', 'an_lisis_de_rentabilidad_48': '📊 Análisis de Rentabilidad', 'resultados_completos_de_tu_inversi_n_a_l_49': 'Resultados completos de tu inversión a largo plazo', 'analiza_tu_inversi_n_inmobiliaria_50': '¡Analiza tu inversión inmobiliaria!', 'completa_los_datos_en_el_panel_izquierdo_51': 'Completa los datos en el panel izquierdo y haz clic en "Analizar Inversión" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.', 'rentabilidad_por_flujo_52': 'Rentabilidad por flujo'},
+    en: {'espa_ol_0': '🇪🇸 Español', 'english_1': '🇬🇧 English', 'calculadora_de_inversi_n_inmobiliaria_2': '🏠 Real Estate Investment Calculator', 'an_lisis_completo_para_inversi_n_en_alqu_3': 'Comprehensive rental investment analysis - Spain', 'configuraci_n_de_inversi_n_4': '⚙️ Investment Settings', 'personaliza_todos_los_par_metros_de_tu_a_5': 'Customize all parameters of your analysis', 'conservador_6': '🛡️ Conservative', 'moderado_7': '⚖️ Moderate', 'optimista_8': '🚀 Optimistic', 'propiedad_9': '🏠 Property', 'financiaci_n_10': '💰 Financing', 'ingresos_11': '📈 Income', 'gastos_12': '📊 Expenses', 'revalorizaci_n_13': '💎 Appreciation', 'precio_de_compra_14': 'Purchase price', 'tipo_de_vivienda_15': 'Property type', 'segunda_vivienda_10_itp_16': 'Second home (10% transfer tax)', 'vivienda_nueva_10_iva_1_2_ajd_17': 'New property (10% VAT + 1.2% stamp duty)', 'gastos_de_compra_venta_18': 'Purchase & sale costs', 'tipo_de_financiaci_n_19': 'Financing type', 'con_hipoteca_20': 'With mortgage', 'sin_hipoteca_21': 'No mortgage', 'porcentaje_de_entrada_22': 'Down payment percentage', 'tipo_de_inter_s_hipoteca_23': 'Mortgage interest rate', 'a_os_de_hipoteca_24': 'Mortgage term (years)', 'gastos_de_hipoteca_25': 'Mortgage fees', 'alquiler_mensual_26': 'Alquiler monthly', 'mes_27': '€/month', 'meses_vac_o_al_a_o_28': 'Meses vacío al año', 'incremento_anual_del_alquiler_29': 'Incremento annual del rent', 'a_os_de_an_lisis_30': 'Years de análisis', 'ibi_anual_31': 'IBI annual', 'a_o_32': '€/year', 'gastos_de_comunidad_33': 'HOA / community fees', 'mes_34': '€/month', 'seguro_de_hogar_35': 'Home insurance', 'a_o_36': '€/year', 'mantenimiento_y_reparaciones_37': 'Maintenance & repairs', 'a_o_38': '€/year', 'administraci_n_gesti_n_39': 'Property management', 'mes_40': '€/month', 'incremento_anual_de_gastos_41': 'Annual expense increase', 'tasa_impositiva_sobre_alquiler_neto_42': 'Tax rate on net rental income', 'revalorizaci_n_anual_del_inmueble_43': 'Annual property appreciation', 'gastos_de_venta_futura_44': 'Future sale costs', 'impuesto_plusval_a_municipal_45': 'Local capital gains tax (plusvalía)', 'irpf_por_venta_19_23_46': 'Capital gains tax (19–23%)', 'analizar_inversi_n_47': '🧮 Analyze Investment', 'an_lisis_de_rentabilidad_48': '📊 Profitability Analysis', 'resultados_completos_de_tu_inversi_n_a_l_49': 'Complete results of your long‑term investment', 'analiza_tu_inversi_n_inmobiliaria_50': 'Analyze your real estate investment!', 'completa_los_datos_en_el_panel_izquierdo_51': 'Fill in the data on the left panel and click "Analyze Investment" to get a detailed profitability analysis with a long‑term projection.', 'rentabilidad_por_flujo_52': 'Cashflow return'}
+  };
+
+  function applyTranslations(lang) {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const t = translations[lang] && translations[lang][key];
+      if (t !== undefined) {
+        el.textContent = t;
+      }
+    });
+    document.documentElement.setAttribute('lang', lang);
+    localStorage.setItem('lang', lang);
   }
-};
 
-function applyTranslations(lang) {
-  document.querySelector('[data-i18n="title"]').innerText = translations[lang].title;
-  document.querySelector('[data-i18n="subtitle"]').innerText = translations[lang].subtitle;
-  document.querySelector('[data-i18n="config_title"]').innerText = translations[lang].config_title;
-  document.querySelector('[data-i18n="config_subtitle"]').innerText = translations[lang].config_subtitle;
-  document.querySelector('[data-i18n="tab_propiedad"]').innerText = translations[lang].tab_propiedad;
-  document.querySelector('[data-i18n="tab_financiacion"]').innerText = translations[lang].tab_financiacion;
-  document.querySelector('[data-i18n="tab_ingresos"]').innerText = translations[lang].tab_ingresos;
-  document.querySelector('[data-i18n="tab_gastos"]').innerText = translations[lang].tab_gastos;
-  document.querySelector('[data-i18n="tab_revalorizacion"]').innerText = translations[lang].tab_revalorizacion;
-  document.querySelector('[data-i18n="btn_calcular"]').innerText = translations[lang].btn_calcular;
-  document.querySelector('[data-i18n="analisis_title"]').innerText = translations[lang].analisis_title;
-  document.querySelector('[data-i18n="analisis_subtitle"]').innerText = translations[lang].analisis_subtitle;
-  document.querySelector('[data-i18n="empty_title"]').innerText = translations[lang].empty_title;
-  document.querySelector('[data-i18n="empty_subtitle"]').innerText = translations[lang].empty_subtitle;
-  document.querySelector('[data-i18n="resumen"]').innerText = translations[lang].resumen;
-}
+  // Observe DOM changes to translate dynamically injected nodes
+  const observer = new MutationObserver((mutations) => {
+    const lang = localStorage.getItem('lang') || 'es';
+    mutations.forEach(m => {
+      m.addedNodes && m.addedNodes.forEach(n => {
+        if (n.nodeType === 1) {
+          n.querySelectorAll && n.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const t = translations[lang] && translations[lang][key];
+            if (t !== undefined) el.textContent = t;
+          });
+        }
+      })
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 
-document.getElementById("langSelector").addEventListener("change", function() {
-  applyTranslations(this.value);
-});
+  window.addEventListener('DOMContentLoaded', () => {
+    const selector = document.getElementById('langSelector');
+    const saved = localStorage.getItem('lang') || 'es';
+    if (selector) selector.value = saved;
+    applyTranslations(saved);
+    if (selector) selector.addEventListener('change', (e) => applyTranslations(e.target.value));
+  });
+})();
 </script>
-
 </body>
 </html>
