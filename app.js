@@ -136,6 +136,7 @@ const translations = {
         impuestos_header: "Impuestos",
         flujo_caja: "Flujo de Caja",
         rentabilidad_flujo_header: "Rentabilidad Flujo (%)",
+        roi_anual_header: "ROI Anual (%)",
         valor_inmueble: "Valor Inmueble",
         prestamo_restante: "Préstamo Restante",
         neto_si_vende: "Neto si Vende",
@@ -243,25 +244,25 @@ const translations = {
         reits: "REITs",
         sp500: "S&P 500",
         proyecciones_ano: "📅 Year-by-Year Projections",
-        ano_header: "Año",
-        ingresos_alquiler_header: "Ingresos Alquiler",
-        gastos_header: "Gastos",
-        hipoteca_header: "Hipoteca",
-        impuestos_header: "Impuestos",
-        flujo_caja: "Flujo de Caja",
-        rentabilidad_flujo_header: "Rentabilidad Flujo (%)",
-        roi_anual_header: "ROI Anual (%)",
-        valor_inmueble: "Valor Inmueble",
-        prestamo_restante: "Préstamo Restante",
-        neto_si_vende: "Neto si Vende",
-        beneficio_acumulado: "Beneficio Acumulado",
-        error_calculo: "Error: Ha ocurrido un problema en el cálculo. Verifica los valores introducidos.",
-        error_tecnico: "Error técnico:",
-        rentabilidad_moderada: "Rentabilidad Moderada: Con un",
-        anual_considera: "% anual, considera alternativas como fondos indexados o REITs.",
-        cashflow_negativo: "Cashflow Negativo: Necesitarás aportar",
-        mensuales_adicionales: "€ mensuales adicionales.",
-        excelente_rentabilidad: "Excelente Rentabilidad: Esta inversión supera significativamente la media del mercado inmobiliario español (4-6% anual)."
+        ano_header: "Year",
+        ingresos_alquiler_header: "Rental Income",
+        gastos_header: "Expenses",
+        hipoteca_header: "Mortgage",
+        impuestos_header: "Taxes",
+        flujo_caja: "Cash Flow",
+        rentabilidad_flujo_header: "Cashflow Return (%)",
+        roi_anual_header: "Annual ROI (%)",
+        valor_inmueble: "Property Value",
+        prestamo_restante: "Remaining Loan",
+        neto_si_vende: "Net if Sold",
+        beneficio_acumulado: "Accumulated Profit",
+        error_calculo: "Error: There was a problem with the calculation. Please check the entered values.",
+        error_tecnico: "Technical error:",
+        rentabilidad_moderada: "Moderate Return: With a",
+        anual_considera: "% annual return, consider alternatives like index funds or REITs.",
+        cashflow_negativo: "Negative Cashflow: You will need to contribute",
+        mensuales_adicionales: "€ monthly additionally.",
+        excelente_rentabilidad: "Excellent Return: This investment significantly outperforms the Spanish real estate market average (4-6% annually)."
     }
 };
 
@@ -689,6 +690,7 @@ function mostrarResultados(datos) {
         </div>
     `;
 
+    // Generar el HTML completo de los resultados
     resultadosDiv.innerHTML = `
         <div class="results-grid">
             <div class="metric-card">
@@ -765,4 +767,229 @@ function mostrarResultados(datos) {
         <div class="alert alert-danger">
             🔴 <strong>${translations[currentLanguage].cashflow_negativo}</strong> ${Math.abs(datos.flujoMensual).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')}${translations[currentLanguage].mensuales_adicionales}
         </div>
-        `
+        ` : ''}
+
+        ${datos.rentabilidadAnual > 7 ? `
+        <div class="alert alert-info">
+            🌟 <strong>${translations[currentLanguage].excelente_rentabilidad}</strong>
+        </div>
+        ` : ''}
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">${translations[currentLanguage].desglose_inversion}</div>
+                <div class="metric-icon">💸</div>
+            </div>
+            <div style="display: grid; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].entrada_porcentaje}</span>
+                    <span>${datos.montoEntrada.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} € (${datos.entrada}%)</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].impuestos_itp}</span>
+                    <span>${datos.impuestos.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].gastos_compra_text}</span>
+                    <span>${datos.gastosCompra.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].gastos_reforma_text}</span>
+                    <span>${datos.reforma.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                ${datos.financiacionTipo === 'con_hipoteca' ? `
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].gastos_hipoteca_text}</span>
+                    <span>${datos.gastosHipoteca.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                ` : ''}
+                <div style="display: flex; justify-content: space-between; font-weight: 600; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+                    <span>${translations[currentLanguage].total_inversion}</span>
+                    <span>${datos.inversionInicial.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">${translations[currentLanguage].cashflow_mensual}</div>
+                <div class="metric-icon">💧</div>
+            </div>
+            <div style="display: grid; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].ingresos_alquiler}</span>
+                    <span class="metric-positive">+${datos.ingresosMensuales.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                ${datos.financiacionTipo === 'con_hipoteca' ? `
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].cuota_hipoteca}</span>
+                    <span class="metric-negative">-${datos.cuotaHipoteca.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                ` : ''}
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].comunidad_text}</span>
+                    <span class="metric-negative">-${datos.comunidad.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].ibi_mensual}</span>
+                    <span class="metric-negative">-${(datos.ibi / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].seguro_mensual}</span>
+                    <span class="metric-negative">-${(datos.seguro / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].seguro_impago_mensual}</span>
+                    <span class="metric-negative">-${(datos.seguroImpago / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].mantenimiento_mensual}</span>
+                    <span class="metric-negative">-${(datos.mantenimiento / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].administracion_text}</span>
+                    <span class="metric-negative">-${datos.administracion.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].impuestos_alquiler}</span>
+                    <span class="metric-negative">-${datos.taxMensual.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: 600; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+                    <span>${translations[currentLanguage].net_cashflow}</span>
+                    <span class="${flujoClass}">${datos.flujoMensual.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">${translations[currentLanguage].proyeccion_venta} ${datos.anosAnalisis})</div>
+                <div class="metric-icon">🏠</div>
+            </div>
+            <div style="display: grid; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].valor_estimado}</span>
+                    <span>${datos.precioVentaBruto.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].gastos_venta_porcentaje}</span>
+                    <span class="metric-negative">-${datos.gastosVentaEuros.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].plusvalia_municipal}</span>
+                    <span class="metric-negative">-${datos.plusvalia.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].irpf_ganancia}</span>
+                    <span class="metric-negative">-${datos.impuestosGanancias.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: 600; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);">
+                    <span>${translations[currentLanguage].valor_neto_venta}</span>
+                    <span class="metric-info">${datos.precioVentaNeto.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">${translations[currentLanguage].comparacion_inversiones}</div>
+                <div class="metric-icon">📊</div>
+            </div>
+            <div style="display: grid; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].tu_inversion}</span>
+                    <span class="${rentabilidadClass}">${datos.rentabilidadAnual.toFixed(2)}%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].deposito_bancario}</span>
+                    <span>2.0%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].bonos_espana}</span>
+                    <span>3.0%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].fondos_mixtos}</span>
+                    <span>4.5%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].reits}</span>
+                    <span>6.0%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${translations[currentLanguage].sp500}</span>
+                    <span>7.0%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <div class="metric-title">${translations[currentLanguage].proyecciones_ano}</div>
+                <div class="metric-icon">📅</div>
+            </div>
+            ${tablaProyecciones}
+        </div>
+    `;
+}
+
+// Actualizar resumen flotante
+function actualizarResumenFlotante(datos) {
+    const floatingSummary = document.getElementById('floatingSummary');
+    const floatingValue = document.getElementById('floatingValue');
+    if (floatingSummary && floatingValue) {
+        floatingValue.innerHTML = `${datos.flujoMensual.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €<small style="font-size: 0.8rem; opacity: 0.8;">/mes</small>`;
+        floatingValue.className = datos.flujoMensual >= 0 ? 'metric-positive' : 'metric-negative';
+        floatingSummary.style.display = 'block';
+    }
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    createParticles();
+    setLanguage('es');
+    loadScenario('moderado');
+
+    // Evento para cambiar idioma
+    const langSelector = document.getElementById('langSelector');
+    if (langSelector) {
+        langSelector.addEventListener('change', (e) => {
+            setLanguage(e.target.value);
+        });
+    }
+
+    // Evento para los botones de escenario
+    document.querySelectorAll('.scenario-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const scenario = btn.getAttribute('data-scenario');
+            loadScenario(scenario);
+        });
+    });
+
+    // Evento para los tabs
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.getAttribute('data-tab');
+            switchTab(tabName);
+        });
+    });
+
+    // Evento para el cambio de tipo de financiación
+    const financiacionTipo = document.getElementById('financiacionTipo');
+    if (financiacionTipo) {
+        financiacionTipo.addEventListener('change', toggleFinanciacionInputs);
+    }
+
+    // Evento para el botón de calcular
+    const calcularBtn = document.getElementById('calcularBtn');
+    if (calcularBtn) {
+        calcularBtn.addEventListener('click', calcular);
+    }
+
+    // Evento para cambio en cualquier input
+    document.querySelectorAll('.form-input, .form-select').forEach(input => {
+        input.addEventListener('input', () => {
+            setTimeout(calcular, 100);
+        });
+    });
+});
