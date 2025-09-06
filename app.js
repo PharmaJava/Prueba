@@ -1,4 +1,3 @@
-// app.js
 // Variables globales
 const scenarios = {
     conservador: {
@@ -244,24 +243,25 @@ const translations = {
         reits: "REITs",
         sp500: "S&P 500",
         proyecciones_ano: "📅 Year-by-Year Projections",
-        ano_header: "Year",
-        ingresos_alquiler_header: "Rental Income",
-        gastos_header: "Expenses",
-        hipoteca_header: "Mortgage",
-        impuestos_header: "Taxes",
-        flujo_caja: "Cash Flow",
-        rentabilidad_flujo_header: "Cash Return (%)",
-        valor_inmueble: "Property Value",
-        prestamo_restante: "Remaining Loan",
-        neto_si_vende: "Net if Sold",
-        beneficio_acumulado: "Accumulated Profit",
-        error_calculo: "Error: A problem occurred in the calculation. Please verify the entered values.",
-        error_tecnico: "Technical error:",
-        rentabilidad_moderada: "Moderate Profitability: With",
-        anual_considera: "% annual return, consider alternatives like index funds or REITs.",
-        cashflow_negativo: "Negative Cashflow: You will need to contribute an additional",
-        mensuales_adicionales: "€ monthly.",
-        excelente_rentabilidad: "Excellent Profitability: This investment significantly exceeds the average Spanish real estate market return (4-6% annually)."
+        ano_header: "Año",
+        ingresos_alquiler_header: "Ingresos Alquiler",
+        gastos_header: "Gastos",
+        hipoteca_header: "Hipoteca",
+        impuestos_header: "Impuestos",
+        flujo_caja: "Flujo de Caja",
+        rentabilidad_flujo_header: "Rentabilidad Flujo (%)",
+        roi_anual_header: "ROI Anual (%)",
+        valor_inmueble: "Valor Inmueble",
+        prestamo_restante: "Préstamo Restante",
+        neto_si_vende: "Neto si Vende",
+        beneficio_acumulado: "Beneficio Acumulado",
+        error_calculo: "Error: Ha ocurrido un problema en el cálculo. Verifica los valores introducidos.",
+        error_tecnico: "Error técnico:",
+        rentabilidad_moderada: "Rentabilidad Moderada: Con un",
+        anual_considera: "% anual, considera alternativas como fondos indexados o REITs.",
+        cashflow_negativo: "Cashflow Negativo: Necesitarás aportar",
+        mensuales_adicionales: "€ mensuales adicionales.",
+        excelente_rentabilidad: "Excelente Rentabilidad: Esta inversión supera significativamente la media del mercado inmobiliario español (4-6% anual)."
     }
 };
 
@@ -407,7 +407,7 @@ function calcularImpuestos(precio, tipo) {
     if (tipo === 'nueva') {
         return precio * 0.10 + precio * 0.012; // IVA + AJD
     } else {
-        return precio * 0.07; // ITP changed to 7%
+        return precio * 0.07; // ITP para segunda vivienda
     }
 }
 
@@ -524,6 +524,7 @@ function calcular() {
             const tax_loop = Math.max(0, net_for_tax_loop) * (taxAlquiler / 100);
             const flujoAnual = ingresosAlquilerAnual - gastosFijosAnual - tax_loop;
             const rentabilidadFlujo = (flujoAnual / inversionInicial) * 100;
+            const roiAnualLoop = (flujoAnual / inversionInicial) * 100; // ROI por año
             const saldoPendiente = financiacionTipo === 'sin_hipoteca' ? 0 : calcularSaldoPendiente(capitalPrestamo, interes, anos, year);
 
             const precioVentaBruto = valorVivienda;
@@ -542,6 +543,7 @@ function calcular() {
                 tax: tax_loop,
                 flujoAnual,
                 rentabilidadFlujo,
+                roiAnual: roiAnualLoop,
                 valorVivienda,
                 saldoPendiente,
                 precioVentaNeto,
@@ -654,6 +656,7 @@ function mostrarResultados(datos) {
                         <th>${translations[currentLanguage].impuestos_header}</th>
                         <th>${translations[currentLanguage].flujo_caja}</th>
                         <th>${translations[currentLanguage].rentabilidad_flujo_header}</th>
+                        <th>${translations[currentLanguage].roi_anual_header}</th>
                         <th>${translations[currentLanguage].valor_inmueble}</th>
                         <th>${translations[currentLanguage].prestamo_restante}</th>
                         <th>${translations[currentLanguage].neto_si_vende}</th>
@@ -672,6 +675,7 @@ function mostrarResultados(datos) {
                 <td class="metric-negative">-${proy.tax.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</td>
                 <td class="${proy.flujoAnual >= 0 ? 'metric-positive' : 'metric-negative'}">${proy.flujoAnual.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</td>
                 <td class="${proy.rentabilidadFlujo >= 0 ? 'metric-positive' : 'metric-negative'}">${proy.rentabilidadFlujo.toFixed(2)}%</td>
+                <td class="${proy.roiAnual >= 0 ? 'metric-positive' : 'metric-negative'}">${proy.roiAnual.toFixed(2)}%</td>
                 <td>${proy.valorVivienda.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</td>
                 <td>${proy.saldoPendiente.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</td>
                 <td class="metric-info">${proy.precioVentaNeto.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</td>
@@ -761,223 +765,4 @@ function mostrarResultados(datos) {
         <div class="alert alert-danger">
             🔴 <strong>${translations[currentLanguage].cashflow_negativo}</strong> ${Math.abs(datos.flujoMensual).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')}${translations[currentLanguage].mensuales_adicionales}
         </div>
-        ` : ''}
-
-        ${datos.rentabilidadAnual > 8 ? `
-        <div class="alert alert-info">
-            🚀 <strong>${translations[currentLanguage].excelente_rentabilidad}</strong>
-        </div>
-        ` : ''}
-
-        <!-- Desglose de Inversión Inicial -->
-        <div style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); margin: 2rem 0; border: 1px solid var(--border);">
-            <div style="background: linear-gradient(135deg, var(--light) 0%, #e2e8f0 100%); padding: 1.5rem 2rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
-                ${translations[currentLanguage].desglose_inversion}
-            </div>
-            <div style="padding: 0;">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].entrada_porcentaje} (${datos.entrada}%)</span>
-                    <span style="font-weight: 700;">${datos.montoEntrada.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].impuestos_itp}</span>
-                    <span style="font-weight: 700;">${datos.impuestos.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].gastos_compra_text}</span>
-                    <span style="font-weight: 700;">${datos.gastosCompra.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].gastos_reforma_text}</span>
-                    <span style="font-weight: 700;">${datos.reforma.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].gastos_hipoteca_text}</span>
-                    <span style="font-weight: 700;">${datos.gastosHipoteca.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; background: var(--light); font-weight: 700; color: var(--dark);">
-                    <span><strong>${translations[currentLanguage].total_inversion}</strong></span>
-                    <span><strong>${datos.inversionInicial.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</strong></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Desglose Mensual Año 1 -->
-        <div style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); margin: 2rem 0; border: 1px solid var(--border);">
-            <div style="background: linear-gradient(135deg, var(--light) 0%, #e2e8f0 100%); padding: 1.5rem 2rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
-                ${translations[currentLanguage].cashflow_mensual}
-            </div>
-            <div style="padding: 0;">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].ingresos_alquiler}</span>
-                    <span style="font-weight: 700; color: var(--success);">+${datos.ingresosMensuales.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].cuota_hipoteca}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${datos.cuotaHipoteca.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].comunidad_text}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${datos.comunidad.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].ibi_mensual}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${(datos.ibi / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].seguro_mensual}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${(datos.seguro / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].seguro_impago_mensual}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${(datos.seguroImpago / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].mantenimiento_mensual}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${(datos.mantenimiento / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].administracion_text}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${datos.administracion.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].impuestos_alquiler}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${datos.taxMensual.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; background: var(--light); font-weight: 700; color: var(--dark);">
-                    <span><strong>${translations[currentLanguage].net_cashflow}</strong></span>
-                    <span style="color: ${datos.flujoMensual >= 0 ? 'var(--success)' : 'var(--danger)'}"><strong>${datos.flujoMensual.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</strong></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Proyección de Venta -->
-        <div style="background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); margin: 2rem 0; border: 1px solid var(--border);">
-            <div style="background: linear-gradient(135deg, var(--light) 0%, #e2e8f0 100%); padding: 1.5rem 2rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
-                ${translations[currentLanguage].proyeccion_venta} ${datos.anosAnalisis})
-            </div>
-            <div style="padding: 0;">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].valor_estimado}</span>
-                    <span style="font-weight: 700;">${datos.precioVentaBruto.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].gastos_venta_porcentaje} (${getValue('gastosVenta', 8)}%)</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${datos.gastosVentaEuros.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].plusvalia_municipal}</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${datos.plusvalia.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
-                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].irpf_ganancia} (${getValue('irpfVenta', 19)}%)</span>
-                    <span style="font-weight: 700; color: var(--danger);">-${datos.impuestosGanancias.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; background: var(--light); font-weight: 700; color: var(--dark);">
-                    <span><strong>${translations[currentLanguage].valor_neto_venta}</strong></span>
-                    <span><strong>${datos.precioVentaNeto.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</strong></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Comparación con Otras Inversiones -->
-        <div style="margin-top: 2rem;">
-            <h3 style="color: var(--dark); margin-bottom: 1.5rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.75rem;">
-                ${translations[currentLanguage].comparacion_inversiones}
-            </h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
-                    <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">${translations[currentLanguage].tu_inversion}</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">${datos.rentabilidadAnual.toFixed(1)}%</div>
-                </div>
-                <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
-                    <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">${translations[currentLanguage].deposito_bancario}</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--text);">0.5%</div>
-                </div>
-                <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
-                    <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">${translations[currentLanguage].bonos_espana}</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--text);">2.0%</div>
-                </div>
-                <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
-                    <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">${translations[currentLanguage].fondos_mixtos}</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--text);">4.0%</div>
-                </div>
-                <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
-                    <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">${translations[currentLanguage].reits}</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--text);">6.0%</div>
-                </div>
-                <div style="background: var(--white); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);">
-                    <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; font-weight: 600;">${translations[currentLanguage].sp500}</div>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--text);">8.0%</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Proyecciones Año por Año -->
-        <div style="margin-top: 2rem;">
-            <h3 style="color: var(--dark); margin-bottom: 1.5rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.75rem;">
-                ${translations[currentLanguage].proyecciones_ano}
-            </h3>
-            ${tablaProyecciones}
-        </div>
-    `;
-}
-
-// Actualizar resumen flotante
-function actualizarResumenFlotante(datos) {
-    const floatingValue = document.getElementById('floatingValue');
-    if (floatingValue) {
-        floatingValue.textContent = datos.rentabilidadAnual.toFixed(2) + '%';
-        floatingValue.className = datos.rentabilidadAnual > 6 ? 'metric-positive' : 
-                               datos.rentabilidadAnual < 3 ? 'metric-negative' : 'metric-warning';
-    }
-}
-
-// Event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Crear partículas
-    createParticles();
-    
-    // Cargar idioma por defecto
-    setLanguage('es');
-    
-    // Cargar escenario por defecto
-    loadScenario('moderado');
-    
-    // Event listener para cambio de idioma
-    document.getElementById('langSelector').addEventListener('change', (e) => {
-        setLanguage(e.target.value);
-    });
-    
-    // Event listeners para botones de escenario
-    document.querySelectorAll('.scenario-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            loadScenario(btn.getAttribute('data-scenario'));
-        });
-    });
-    
-    // Event listeners para tabs
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            switchTab(tab.getAttribute('data-tab'));
-        });
-    });
-    
-    // Event listener para tipo de financiación
-    document.getElementById('financiacionTipo').addEventListener('change', toggleFinanciacionInputs);
-    
-    // Event listener para botón calcular
-    document.getElementById('calcularBtn').addEventListener('click', calcular);
-    
-    // Event listeners para inputs (recalcular al cambiar)
-    document.querySelectorAll('.form-input, .form-select').forEach(input => {
-        input.addEventListener('change', () => {
-            // Desmarcar botones de escenario si se modifica algún input
-            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
-            setTimeout(calcular, 100);
-        });
-    });
-    
-    // Calcular inicial
-    calcular();
-});
+        `
