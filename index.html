@@ -55,7 +55,7 @@
 <div class="form-group">
 <label class="form-label" data-i18n="tipo_vivienda">Tipo de vivienda</label>
 <select class="form-select" id="tipoVivienda">
-<option value="segunda" data-i18n="segunda_vivienda">Segunda vivienda (10% ITP)</option>
+<option value="segunda" data-i18n="segunda_vivienda">Segunda vivienda (7% ITP)</option>
 <option value="nueva" data-i18n="vivienda_nueva">Vivienda nueva (10% IVA + 1.2% AJD)</option>
 </select>
 </div>
@@ -63,6 +63,13 @@
 <label class="form-label" data-i18n="gastos_compra">Gastos de compra-venta</label>
 <div class="input-group">
 <input class="form-input with-suffix" id="gastosCompra" min="0" step="100" type="number" value="3500"/>
+<span class="input-suffix">€</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label" data-i18n="gastos_reforma">Gastos de reforma</label>
+<div class="input-group">
+<input class="form-input with-suffix" id="reforma" min="0" step="100" type="number" value="5000"/>
 <span class="input-suffix">€</span>
 </div>
 </div>
@@ -147,6 +154,13 @@
 <label class="form-label" data-i18n="seguro_hogar">Seguro de hogar</label>
 <div class="input-group">
 <input class="form-input with-suffix" id="seguro" min="0" step="50" type="number" value="300"/>
+<span class="input-suffix" data-i18n="ano">€/año</span>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label" data-i18n="seguro_impago">Seguro de impago</label>
+<div class="input-group">
+<input class="form-input with-suffix" id="seguroImpago" min="0" step="50" type="number" value="200"/>
 <span class="input-suffix" data-i18n="ano">€/año</span>
 </div>
 </div>
