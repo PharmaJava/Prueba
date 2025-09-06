@@ -50,9 +50,10 @@ const translations = {
         revalorizacion: "💎 Revalorización",
         precio_compra: "Precio de compra",
         tipo_vivienda: "Tipo de vivienda",
-        segunda_vivienda: "Segunda vivienda (10% ITP)",
+        segunda_vivienda: "Segunda vivienda (7% ITP)",
         vivienda_nueva: "Vivienda nueva (10% IVA + 1.2% AJD)",
         gastos_compra: "Gastos de compra-venta",
+        gastos_reforma: "Gastos de reforma",
         tipo_financiacion: "Tipo de financiación",
         con_hipoteca: "Con hipoteca",
         sin_hipoteca: "Sin hipoteca",
@@ -67,6 +68,7 @@ const translations = {
         ibi_anual: "IBI anual",
         gastos_comunidad: "Gastos de comunidad",
         seguro_hogar: "Seguro de hogar",
+        seguro_impago: "Seguro de impago",
         mantenimiento: "Mantenimiento y reparaciones",
         administracion: "Administración/Gestión",
         incremento_gastos: "Incremento anual de gastos",
@@ -86,18 +88,21 @@ const translations = {
         inversion_inicial: "Inversión Inicial",
         flujo_mensual: "Flujo Mensual",
         tir_anualizada: "TIR Anualizada",
+        roi_anual: "ROI Anual",
         beneficio_total: "Beneficio Total",
         valor_final: "Valor Final",
         flujo_acumulado: "Flujo Acumulado",
         capital_necesario: "Capital necesario para empezar",
         cashflow_mensual_neto: "Cashflow mensual neto (Año 1)",
         rentabilidad_anual_compuesta: "Rentabilidad anual compuesta",
+        basado_flujo_anual: "Basado en flujo de caja año 1",
         en_anos: "años",
         solo_por_alquileres: "Solo por alquileres",
         desglose_inversion: "💰 Desglose de Inversión Inicial",
         entrada_porcentaje: "Entrada",
         impuestos_itp: "Impuestos (ITP/IVA+AJD)",
         gastos_compra_text: "Gastos de compra",
+        gastos_reforma_text: "Gastos de reforma",
         gastos_hipoteca_text: "Gastos de hipoteca",
         total_inversion: "TOTAL INVERSIÓN",
         cashflow_mensual: "📊 Cashflow Mensual (Año 1)",
@@ -106,6 +111,7 @@ const translations = {
         comunidad_text: "Gastos de Comunidad",
         ibi_mensual: "IBI (mensual)",
         seguro_mensual: "Seguro de hogar (mensual)",
+        seguro_impago_mensual: "Seguro de impago (mensual)",
         mantenimiento_mensual: "Mantenimiento (mensual)",
         administracion_text: "Administración",
         impuestos_alquiler: "Impuestos sobre alquiler (mensualizado)",
@@ -158,9 +164,10 @@ const translations = {
         revalorizacion: "💎 Appreciation",
         precio_compra: "Purchase price",
         tipo_vivienda: "Property type",
-        segunda_vivienda: "Second home (10% Transfer Tax)",
+        segunda_vivienda: "Second home (7% Transfer Tax)",
         vivienda_nueva: "New home (10% VAT + 1.2% Stamp Duty)",
         gastos_compra: "Purchase expenses",
+        gastos_reforma: "Renovation expenses",
         tipo_financiacion: "Financing type",
         con_hipoteca: "With mortgage",
         sin_hipoteca: "Without mortgage",
@@ -175,6 +182,7 @@ const translations = {
         ibi_anual: "Annual property tax (IBI)",
         gastos_comunidad: "Community fees",
         seguro_hogar: "Home insurance",
+        seguro_impago: "Non-payment insurance",
         mantenimiento: "Maintenance and repairs",
         administracion: "Administration/Management",
         incremento_gastos: "Annual expense increase",
@@ -194,18 +202,21 @@ const translations = {
         inversion_inicial: "Initial Investment",
         flujo_mensual: "Monthly Cashflow",
         tir_anualizada: "Annualized IRR",
+        roi_anual: "Annual ROI",
         beneficio_total: "Total Profit",
         valor_final: "Final Value",
         flujo_acumulado: "Accumulated Cashflow",
         capital_necesario: "Capital needed to start",
         cashflow_mensual_neto: "Net monthly cashflow (Year 1)",
         rentabilidad_anual_compuesta: "Compound annual return",
+        basado_flujo_anual: "Based on year 1 cash flow",
         en_anos: "years",
         solo_por_alquileres: "From rentals only",
         desglose_inversion: "💰 Initial Investment Breakdown",
         entrada_porcentaje: "Down payment",
         impuestos_itp: "Taxes (Transfer Tax/VAT+Stamp Duty)",
         gastos_compra_text: "Purchase expenses",
+        gastos_reforma_text: "Renovation expenses",
         gastos_hipoteca_text: "Mortgage expenses",
         total_inversion: "TOTAL INVESTMENT",
         cashflow_mensual: "📊 Monthly Cashflow (Year 1)",
@@ -214,6 +225,7 @@ const translations = {
         comunidad_text: "Community Fees",
         ibi_mensual: "Property Tax (monthly)",
         seguro_mensual: "Home Insurance (monthly)",
+        seguro_impago_mensual: "Non-payment Insurance (monthly)",
         mantenimiento_mensual: "Maintenance (monthly)",
         administracion_text: "Administration",
         impuestos_alquiler: "Rental taxes (monthly)",
@@ -395,7 +407,7 @@ function calcularImpuestos(precio, tipo) {
     if (tipo === 'nueva') {
         return precio * 0.10 + precio * 0.012; // IVA + AJD
     } else {
-        return precio * 0.10; // ITP
+        return precio * 0.07; // ITP changed to 7%
     }
 }
 
@@ -408,6 +420,7 @@ function calcular() {
         const precio = getValue('precio', 140000);
         const tipoVivienda = getTextValue('tipoVivienda', 'segunda');
         const gastosCompra = getValue('gastosCompra', 3500);
+        const reforma = getValue('reforma', 5000);
         
         const financiacionTipo = getTextValue('financiacionTipo', 'con_hipoteca');
         let entrada = financiacionTipo === 'sin_hipoteca' ? 100 : getValue('entrada', 20);
@@ -423,6 +436,7 @@ function calcular() {
         const ibi = getValue('ibi', 500);
         const comunidad = getValue('comunidad', 80);
         const seguro = getValue('seguro', 300);
+        const seguroImpago = getValue('seguroImpago', 200);
         const mantenimiento = getValue('mantenimiento', 500);
         const administracion = getValue('administracion', 60);
         const incrementoGastos = getValue('incrementoGastos', 0);
@@ -454,13 +468,13 @@ function calcular() {
         const impuestos = calcularImpuestos(precio, tipoVivienda);
         const montoEntrada = precio * (entrada / 100);
         const capitalPrestamo = precio - montoEntrada;
-        const inversionInicial = montoEntrada + impuestos + gastosCompra + gastosHipoteca;
+        const inversionInicial = montoEntrada + impuestos + gastosCompra + gastosHipoteca + reforma;
         const cuotaHipoteca = calcularCuotaHipoteca(capitalPrestamo, interes, anos);
         const mesesOcupados = 12 - mesesVacio;
 
         // Calcular ingresos y gastos del primer año
         const ingresosAlquiler = alquiler * mesesOcupados;
-        const gastosFijos = (cuotaHipoteca * 12) + ibi + seguro + mantenimiento + (comunidad * 12) + (administracion * 12);
+        const gastosFijos = (cuotaHipoteca * 12) + ibi + seguro + seguroImpago + mantenimiento + (comunidad * 12) + (administracion * 12);
         let interest_anual = 0;
         let remaining = capitalPrestamo;
         if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
@@ -478,6 +492,7 @@ function calcular() {
         const taxMensual = tax_anual / 12; // Calcular impuesto mensual
         const flujoMensual = (ingresosAlquiler - gastosFijos - tax_anual) / 12;
         const ingresosMensuales = ingresosAlquiler / 12;
+        const roiAnual = (flujoMensual * 12 / inversionInicial) * 100;
 
         // Simulación año por año
         let flujoAcumulado = 0;
@@ -486,13 +501,14 @@ function calcular() {
         let ibiActual = ibi;
         let comunidadActual = comunidad;
         let seguroActual = seguro;
+        let seguroImpagoActual = seguroImpago;
         let mantenimientoActual = mantenimiento;
         let administracionActual = administracion;
         const proyecciones = [];
 
         for (let year = 1; year <= anosAnalisis; year++) {
             const ingresosAlquilerAnual = alquilerActual * mesesOcupados;
-            const gastosFijosAnual = (cuotaHipoteca * 12) + ibiActual + seguroActual + mantenimientoActual + (comunidadActual * 12) + (administracionActual * 12);
+            const gastosFijosAnual = (cuotaHipoteca * 12) + ibiActual + seguroActual + seguroImpagoActual + mantenimientoActual + (comunidadActual * 12) + (administracionActual * 12);
             let interest_anual_loop = 0;
             if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
                 let remaining_year = remaining;
@@ -538,6 +554,7 @@ function calcular() {
             ibiActual *= (1 + incrementoGastos / 100);
             comunidadActual *= (1 + incrementoGastos / 100);
             seguroActual *= (1 + incrementoGastos / 100);
+            seguroImpagoActual *= (1 + incrementoGastos / 100);
             mantenimientoActual *= (1 + incrementoGastos / 100);
             administracionActual *= (1 + incrementoGastos / 100);
             if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
@@ -563,12 +580,14 @@ function calcular() {
             flujoMensual,
             flujoAcumulado,
             rentabilidadAnual,
+            roiAnual,
             beneficioTotal,
             precioVentaNeto,
             precioVentaBruto,
             montoEntrada,
             impuestos,
             gastosCompra,
+            reforma,
             gastosHipoteca,
             entrada,
             ingresosMensuales,
@@ -576,6 +595,7 @@ function calcular() {
             comunidad,
             ibi,
             seguro,
+            seguroImpago,
             mantenimiento,
             administracion,
             gastosVentaEuros,
@@ -613,6 +633,10 @@ function mostrarResultados(datos) {
     let rentabilidadClass = 'metric-warning';
     if (datos.rentabilidadAnual > 6) rentabilidadClass = 'metric-positive';
     else if (datos.rentabilidadAnual < 3) rentabilidadClass = 'metric-negative';
+    
+    let roiClass = 'metric-warning';
+    if (datos.roiAnual > 6) roiClass = 'metric-positive';
+    else if (datos.roiAnual < 3) roiClass = 'metric-negative';
     
     let flujoClass = datos.flujoMensual > 0 ? 'metric-positive' : 'metric-negative';
     let beneficioClass = datos.beneficioTotal > 0 ? 'metric-positive' : 'metric-negative';
@@ -679,6 +703,15 @@ function mostrarResultados(datos) {
                 </div>
                 <div class="metric-value ${flujoClass}">${datos.flujoMensual.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', {maximumFractionDigits: 0})} €</div>
                 <div class="metric-subtitle">${translations[currentLanguage].cashflow_mensual_neto}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">${translations[currentLanguage].roi_anual}</div>
+                    <div class="metric-icon">📊</div>
+                </div>
+                <div class="metric-value ${roiClass}">${datos.roiAnual.toFixed(2)}%</div>
+                <div class="metric-subtitle">${translations[currentLanguage].basado_flujo_anual}</div>
             </div>
 
             <div class="metric-card">
@@ -755,6 +788,10 @@ function mostrarResultados(datos) {
                     <span style="font-weight: 700;">${datos.gastosCompra.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].gastos_reforma_text}</span>
+                    <span style="font-weight: 700;">${datos.reforma.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
                     <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].gastos_hipoteca_text}</span>
                     <span style="font-weight: 700;">${datos.gastosHipoteca.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
                 </div>
@@ -790,6 +827,10 @@ function mostrarResultados(datos) {
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
                     <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].seguro_mensual}</span>
                     <span style="font-weight: 700; color: var(--danger);">-${(datos.seguro / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
+                    <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].seguro_impago_mensual}</span>
+                    <span style="font-weight: 700; color: var(--danger);">-${(datos.seguroImpago / 12).toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US')} €</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); font-size: 1rem;">
                     <span style="color: var(--text); font-weight: 500;">${translations[currentLanguage].mantenimiento_mensual}</span>
