@@ -1,37 +1,3 @@
-// Variables globales
-const scenarios = {
-    conservador: {
-        revalorizacion: 1.5,
-        incrementoAlquiler: 2,
-        mesesVacio: 2,
-        mantenimiento: 1200,
-        interes: 4.0,
-        incrementoGastos: 0,
-        financiacionTipo: 'con_hipoteca',
-        taxAlquiler: 21
-    },
-    moderado: {
-        revalorizacion: 2.5,
-        incrementoAlquiler: 3,
-        mesesVacio: 1,
-        mantenimiento: 1000,
-        interes: 3.5,
-        incrementoGastos: 0,
-        financiacionTipo: 'con_hipoteca',
-        taxAlquiler: 21
-    },
-    optimista: {
-        revalorizacion: 4.0,
-        incrementoAlquiler: 4,
-        mesesVacio: 0.5,
-        mantenimiento: 800,
-        interes: 3.0,
-        incrementoGastos: 0,
-        financiacionTipo: 'con_hipoteca',
-        taxAlquiler: 21
-    }
-};
-
 // Sistema de traducción
 const translations = {
     es: {
@@ -39,9 +5,6 @@ const translations = {
         analisis_completo: "Análisis completo para inversión en alquiler - España",
         configuracion_inversion: "⚙️ Configuración de Inversión",
         personaliza_parametros: "Personaliza todos los parámetros de tu análisis",
-        conservador: "🛡️ Conservador",
-        moderado: "⚖️ Moderado",
-        optimista: "🚀 Optimista",
         propiedad: "🏠 Propiedad",
         financiacion: "💰 Financiación",
         ingresos: "📈 Ingresos",
@@ -154,9 +117,6 @@ const translations = {
         analisis_completo: "Complete analysis for rental investment - Spain",
         configuracion_inversion: "⚙️ Investment Configuration",
         personaliza_parametros: "Customize all parameters of your analysis",
-        conservador: "🛡️ Conservative",
-        moderado: "⚖️ Moderate",
-        optimista: "🚀 Optimistic",
         propiedad: "🏠 Property",
         financiacion: "💰 Financing",
         ingresos: "📈 Income",
@@ -528,19 +488,6 @@ function toggleFinanciacionInputs() {
     setTimeout(calcular, 100);
 }
 
-// Funciones auxiliares (loadScenario, setLanguage, switchTab, etc.) - mantén las tuyas
-function loadScenario(scenario) {
-    const s = scenarios[scenario];
-    document.getElementById('revalorizacion').value = s.revalorizacion;
-    document.getElementById('incrementoAlquiler').value = s.incrementoAlquiler;
-    document.getElementById('mesesVacio').value = s.mesesVacio;
-    document.getElementById('mantenimiento').value = s.mantenimiento;
-    document.getElementById('interes').value = s.interes;
-    document.getElementById('incrementoGastos').value = s.incrementoGastos;
-    document.getElementById('financiacionTipo').value = s.financiacionTipo;
-    document.getElementById('taxAlquiler').value = s.taxAlquiler;
-    calcular();
-}
 // Cambiar tab
 function switchTab(tabName) {
     console.log('Cambiando a tab:', tabName);
@@ -925,7 +872,6 @@ function actualizarResumenFlotante(datos) {
 document.addEventListener('DOMContentLoaded', () => {
     createParticles();
     setLanguage('es');
-    loadScenario('moderado');
 
     // Evento para cambiar idioma
     const langSelector = document.getElementById('langSelector');
@@ -960,14 +906,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(calcular, 100);
         });
     }
-    
-    // Evento para los botones de escenario
-    document.querySelectorAll('.scenario-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const scenario = btn.getAttribute('data-scenario');
-            loadScenario(scenario);
-        });
-    });
     
     // Evento para los tabs
     document.querySelectorAll('.nav-tab').forEach(tab => {
