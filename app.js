@@ -294,6 +294,213 @@ function setLanguage(lang) {
         calcular();
     }
 }
+// Función para actualizar el slider de entrada (ahorro aportado)
+function actualizarEntradaSlider() {
+    const precioInput = document.getElementById('precio');
+    const entradaEurosInput = document.getElementById('entradaEuros');
+    const entradaSlider = document.getElementById('entradaSlider');
+    const entradaPorcentajeDisplay = document.getElementById('entradaPorcentajeDisplay');
+
+    if (!precioInput || !entradaEurosInput || !entradaSlider || !entradaPorcentajeDisplay) return;
+
+    const precio = parseFloat(precioInput.value) || 0;
+    let euros = parseFloat(entradaEurosInput.value) || 0;
+
+    // Limitar euros al precio máximo
+    if (euros > precio && precio > 0) {
+        euros = precio;
+        entradaEurosInput.value = precio;
+    }
+
+    const porcentaje = precio > 0 ? (euros / precio) * 100 : 0;
+
+    entradaPorcentajeDisplay.textContent = `${euros.toLocaleString('es-ES', {maximumFractionDigits: 0})} € ${porcentaje.toFixed(0)}%`;
+
+    entradaSlider.max = precio;
+    entradaSlider.value = euros;
+
+    const progress = precio > 0 ? (euros / precio) * 100 : 0;
+    entradaSlider.style.setProperty('--progress', `${progress}%`);
+}
+// Función principal de cálculo (aquí se usa entradaEuros)
+function calcular() {
+    try {
+        // Lectura de valores
+        const precio = parseFloat(document.getElementById('precio').value) || 0;
+        const tipoVivienda = document.getElementById('tipoVivienda').value;
+        const gastosCompra = parseFloat(document.getElementById('gastosCompra').value) || 0;
+        const reforma = parseFloat(document.getElementById('reforma').value) || 0;
+        const financiacionTipo = document.getElementById('financiacionTipo').value;
+        const entradaEuros = parseFloat(document.getElementById('entradaEuros').value) || 0;
+        const interes = parseFloat(document.getElementById('interes').value) || 0;
+        const anos = parseFloat(document.getElementById('anos').value) || 0;
+        const gastosHipoteca = parseFloat(document.getElementById('gastosHipoteca').value) || 0;
+        const alquiler = parseFloat(document.getElementById('alquiler').value) || 0;
+        const mesesVacio = parseFloat(document.getElementById('mesesVacio').value) || 0;
+        const incrementoAlquiler = parseFloat(document.getElementById('incrementoAlquiler').value) || 0;
+        const anosAnalisis = parseFloat(document.getElementById('anosAnalisis').value) || 0;
+        const ibi = parseFloat(document.getElementById('ibi').value) || 0;
+        const comunidad = parseFloat(document.getElementById('comunidad').value) || 0;
+        const seguro = parseFloat(document.getElementById('seguro').value) || 0;
+        const seguroImpago = parseFloat(document.getElementById('seguroImpago').value) || 0;
+        const mantenimiento = parseFloat(document.getElementById('mantenimiento').value) || 0;
+        const administracion = parseFloat(document.getElementById('administracion').value) || 0;
+        const incrementoGastos = parseFloat(document.getElementById('incrementoGastos').value) || 0;
+        const taxAlquiler = parseFloat(document.getElementById('taxAlquiler').value) || 0;
+        const revalorizacion = parseFloat(document.getElementById('revalorizacion').value) || 0;
+        const gastosVentaPorc = parseFloat(document.getElementById('gastosVenta').value) || 0;
+        const plusvalia = parseFloat(document.getElementById('plusvalia').value) || 0;
+        const irpfVenta = parseFloat(document.getElementById('irpfVenta').value) || 0;
+
+        // Cálculo de impuestos compra
+        let impuestos = calcularImpuestos(precio, tipoVivienda);
+
+        // Entrada y préstamo
+        const entradaPorcentaje = precio > 0 ? (entradaEuros / precio) * 100 : 0;
+        const prestamo = financiacionTipo === 'con_hipoteca' ? precio - entradaEuros : 0;
+
+        // Inversión inicial
+        const inversionInicial = entradaEuros + impuestos + gastosCompra + reforma + (financiacionTipo === 'con_hipoteca' ? gastosHipoteca : 0);
+
+        // Cuota hipoteca (fórmula estándar)
+        let cuotaHipoteca = calcularCuotaHipoteca(prestamo, interes, anos);
+
+        // Ingresos año 1
+        const ingresosAnuales = alquiler * 12 * (1 - mesesVacio / 12);
+
+        // Gastos año 1
+        const gastosAnuales = ibi + comunidad * 12 + seguro + seguroImpago + mantenimiento + administracion * 12;
+
+        // Impuestos alquiler año 1 (aprox)
+        const interesesAnuales = cuotaHipoteca * 12 * (interes / 100) / (interes / 100 + 1); // Aprox intereses año 1
+        const alquilerNeto = ingresosAnuales - gastosAnuales - interesesAnuales; // Deducción intereses
+        const taxAnual = alquilerNeto * (taxAlquiler / 100);
+        const taxMensual = taxAnual / 12;
+
+        // Cashflow mensual año 1
+        const ingresosMensuales = ingresosAnuales / 12;
+        const gastosMensuales = gastosAnuales / 12;
+        const flujoMensual = ingresosMensuales - cuotaHipoteca - gastosMensuales - taxMensual;
+        const flujoAnual = flujoMensual * 12;
+
+        // ROI año 1
+        const roiAnual = (flujoAnual / inversionInicial) * 100;
+
+        // Proyecciones año por año
+        const proyecciones = [];
+        let flujoAcumulado = 0;
+        let beneficioTotal = 0;
+        let valorVivienda = precio;
+        let saldoPendiente = prestamo;
+        for (let year = 1; year <= anosAnalisis; year++) {
+            const ingresosAlquilerYear = ingresosAnuales * Math.pow(1 + incrementoAlquiler / 100, year - 1);
+            const gastosFijosYear = gastosAnuales * Math.pow(1 + incrementoGastos / 100, year - 1);
+            const cuotaHipotecaYear = cuotaHipoteca * 12; // Constante por simplicidad (hipoteca fija)
+            const interesesYear = calcularInteresesAnual(saldoPendiente, interes); // Función auxiliar
+            const alquilerNetoYear = ingresosAlquilerYear - gastosFijosYear - interesesYear;
+            const taxYear = alquilerNetoYear * (taxAlquiler / 100);
+            const flujoAnualYear = ingresosAlquilerYear - gastosFijosYear - cuotaHipotecaYear - taxYear;
+            flujoAcumulado += flujoAnualYear;
+
+            const rentabilidadFlujo = (flujoAnualYear / inversionInicial) * 100;
+            const roiAnualYear = rentabilidadFlujo;
+
+            valorVivienda = precio * Math.pow(1 + revalorizacion / 100, year);
+
+            saldoPendiente = calcularSaldoPendiente(prestamo, interes, anos, year);
+
+            const gananciaCapital = valorVivienda - precio;
+            const impuestosGanancias = gananciaCapital * (irpfVenta / 100);
+            const gastosVentaEuros = valorVivienda * (gastosVentaPorc / 100);
+            const precioVentaNeto = valorVivienda - gastosVentaEuros - plusvalia - impuestosGanancias - saldoPendiente;
+
+            const beneficioAcumulado = precioVentaNeto + flujoAcumulado - inversionInicial;
+            if (year === anosAnalisis) beneficioTotal = beneficioAcumulado;
+
+            proyecciones.push({
+                year,
+                ingresosAlquiler: ingresosAlquilerYear,
+                gastosFijos: gastosFijosYear + cuotaHipotecaYear,
+                cuotaHipoteca: cuotaHipotecaYear,
+                tax: taxYear,
+                flujoAnual: flujoAnualYear,
+                rentabilidadFlujo,
+                roiAnual: roiAnualYear,
+                valorVivienda,
+                saldoPendiente,
+                precioVentaNeto,
+                beneficioAcumulado
+            });
+        }
+
+        // TIR (usando bisección simple)
+        const tir = calcularTIR([-inversionInicial, ...proyecciones.map(p => p.flujoAnual), proyecciones[anosAnalisis - 1].precioVentaNeto + proyecciones[anosAnalisis - 1].flujoAnual]) * 100;
+
+        // Datos para mostrar
+        const datos = {
+            montoEntrada: entradaEuros,
+            entrada: entradaPorcentaje.toFixed(0),
+            impuestos,
+            gastosCompra,
+            reforma,
+            gastosHipoteca,
+            inversionInicial,
+            ingresosMensuales,
+            cuotaHipoteca,
+            comunidad,
+            ibi,
+            seguro,
+            seguroImpago,
+            mantenimiento,
+            administracion,
+            taxMensual,
+            flujoMensual,
+            roiAnual,
+            rentabilidadAnual: tir,
+            beneficioTotal,
+            precioVentaNeto: proyecciones[anosAnalisis - 1].precioVentaNeto,
+            flujoAcumulado,
+            anosAnalisis,
+            precioVentaBruto: proyecciones[anosAnalisis - 1].valorVivienda,
+            gastosVentaEuros: proyecciones[anosAnalisis - 1].valorVivienda * (gastosVentaPorc / 100),
+            plusvalia,
+            impuestosGanancias: (proyecciones[anosAnalisis - 1].valorVivienda - precio) * (irpfVenta / 100),
+            proyecciones,
+            financiacionTipo
+        };
+
+        // Actualizar resultados
+        document.getElementById('resultados').innerHTML = mostrarResultados(datos);
+
+        actualizarResumenFlotante(datos);
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('resultados').innerHTML = `<div class="alert alert-danger">${translations[currentLanguage].error_calculo} <br> ${translations[currentLanguage].error_tecnico} ${err.message}</div>`;
+    }
+}
+
+// Función auxiliar para intereses anuales approx
+function calcularInteresesAnual(saldo, interes) {
+    return saldo * (interes / 100);
+}
+
+// Función para calcular TIR (bisección)
+function calcularTIR(cashflows) {
+    let low = -1.0;
+    let high = 1.0;
+    let mid;
+    while (high - low > 0.0001) {
+        mid = (low + high) / 2;
+        let npv = 0;
+        for (let i = 0; i < cashflows.length; i++) {
+            npv += cashflows[i] / Math.pow(1 + mid, i);
+        }
+        if (npv > 0) low = mid;
+        else high = mid;
+    }
+    return mid;
+}
 
 // Crear partículas de fondo
 function createParticles() {
@@ -310,47 +517,30 @@ function createParticles() {
         particlesContainer.appendChild(particle);
     }
 }
-
 // Habilitar/deshabilitar inputs de hipoteca
 function toggleFinanciacionInputs() {
     const financiacionTipo = document.getElementById('financiacionTipo').value;
-    const inputs = ['entrada', 'interes', 'anos', 'gastosHipoteca'];
+    const inputs = ['entradaEuros', 'entradaSlider', 'interes', 'anos', 'gastosHipoteca'];
     inputs.forEach(id => {
         const input = document.getElementById(id);
-        input.disabled = financiacionTipo === 'sin_hipoteca';
+        if (input) input.disabled = financiacionTipo === 'sin_hipoteca';
     });
     setTimeout(calcular, 100);
 }
 
-// Cargar escenario predefinido
+// Funciones auxiliares (loadScenario, setLanguage, switchTab, etc.) - mantén las tuyas
 function loadScenario(scenario) {
-    console.log('Cargando escenario:', scenario);
-    
-    const config = scenarios[scenario];
-    if (!config) return;
-    
-    // Actualizar valores
-    document.getElementById('revalorizacion').value = config.revalorizacion;
-    document.getElementById('incrementoAlquiler').value = config.incrementoAlquiler;
-    document.getElementById('mesesVacio').value = config.mesesVacio;
-    document.getElementById('mantenimiento').value = config.mantenimiento;
-    document.getElementById('interes').value = config.interes;
-    document.getElementById('incrementoGastos').value = config.incrementoGastos;
-    document.getElementById('financiacionTipo').value = config.financiacionTipo;
-    document.getElementById('taxAlquiler').value = config.taxAlquiler;
-    
-    // Actualizar botones
-    document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.querySelector(`.scenario-btn[data-scenario="${scenario}"]`);
-    if (activeBtn) activeBtn.classList.add('active');
-    
-    // Actualizar estado de inputs de hipoteca
-    toggleFinanciacionInputs();
-    
-    // Recalcular
-    setTimeout(calcular, 100);
+    const s = scenarios[scenario];
+    document.getElementById('revalorizacion').value = s.revalorizacion;
+    document.getElementById('incrementoAlquiler').value = s.incrementoAlquiler;
+    document.getElementById('mesesVacio').value = s.mesesVacio;
+    document.getElementById('mantenimiento').value = s.mantenimiento;
+    document.getElementById('interes').value = s.interes;
+    document.getElementById('incrementoGastos').value = s.incrementoGastos;
+    document.getElementById('financiacionTipo').value = s.financiacionTipo;
+    document.getElementById('taxAlquiler').value = s.taxAlquiler;
+    calcular();
 }
-
 // Cambiar tab
 function switchTab(tabName) {
     console.log('Cambiando a tab:', tabName);
@@ -412,225 +602,12 @@ function calcularImpuestos(precio, tipo) {
     }
 }
 
-// Función principal de cálculo
-function calcular() {
-    console.log('Iniciando cálculo...');
-    
-    try {
-        // Obtener todos los valores
-        const precio = getValue('precio', 140000);
-        const tipoVivienda = getTextValue('tipoVivienda', 'segunda');
-        const gastosCompra = getValue('gastosCompra', 3500);
-        const reforma = getValue('reforma', 5000);
-        
-        const financiacionTipo = getTextValue('financiacionTipo', 'con_hipoteca');
-        let entrada = financiacionTipo === 'sin_hipoteca' ? 100 : getValue('entrada', 20);
-        let interes = financiacionTipo === 'sin_hipoteca' ? 0 : getValue('interes', 2.5);
-        let anos = financiacionTipo === 'sin_hipoteca' ? 0 : getValue('anos', 25);
-        let gastosHipoteca = financiacionTipo === 'sin_hipoteca' ? 0 : getValue('gastosHipoteca', 2500);
-        
-        const alquiler = getValue('alquiler', 800);
-        const mesesVacio = getValue('mesesVacio', 1);
-        const incrementoAlquiler = getValue('incrementoAlquiler', 3);
-        const anosAnalisis = getValue('anosAnalisis', 20);
-        
-        const ibi = getValue('ibi', 500);
-        const comunidad = getValue('comunidad', 80);
-        const seguro = getValue('seguro', 300);
-        const seguroImpago = getValue('seguroImpago', 200);
-        const mantenimiento = getValue('mantenimiento', 500);
-        const administracion = getValue('administracion', 60);
-        const incrementoGastos = getValue('incrementoGastos', 0);
-        const taxAlquiler = getValue('taxAlquiler', 21);
-        
-        const revalorizacion = getValue('revalorizacion', 2.5);
-        const gastosVenta = getValue('gastosVenta', 8);
-        const plusvalia = getValue('plusvalia', 2000);
-        const irpfVenta = getValue('irpfVenta', 19);
-
-        // Validaciones
-        if (anosAnalisis < 1) {
-            throw new Error(currentLanguage === 'es' ? 
-                'Los años de análisis deben ser mayores a 0.' : 
-                'Analysis period must be greater than 0 years.');
-        }
-        if (financiacionTipo === 'con_hipoteca' && anos < 1) {
-            throw new Error(currentLanguage === 'es' ? 
-                'Los años de hipoteca deben ser mayores a 0.' : 
-                'Mortgage term must be greater than 0 years.');
-        }
-        if (mesesVacio > 12) {
-            throw new Error(currentLanguage === 'es' ? 
-                'Los meses vacíos no pueden superar los 12 meses.' : 
-                'Vacant months cannot exceed 12 months.');
-        }
-
-        // Cálculos básicos
-        const impuestos = calcularImpuestos(precio, tipoVivienda);
-        const montoEntrada = precio * (entrada / 100);
-        const capitalPrestamo = precio - montoEntrada;
-        const inversionInicial = montoEntrada + impuestos + gastosCompra + gastosHipoteca + reforma;
-        const cuotaHipoteca = calcularCuotaHipoteca(capitalPrestamo, interes, anos);
-        const mesesOcupados = 12 - mesesVacio;
-
-        // Calcular ingresos y gastos del primer año
-        const ingresosAlquiler = alquiler * mesesOcupados;
-        const gastosFijos = (cuotaHipoteca * 12) + ibi + seguro + seguroImpago + mantenimiento + (comunidad * 12) + (administracion * 12);
-        let interest_anual = 0;
-        let remaining = capitalPrestamo;
-        if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
-            let remaining_year = remaining;
-            for (let m = 0; m < 12; m++) {
-                const interest_month = remaining_year * (interes / 100 / 12);
-                const principal_month = cuotaHipoteca - interest_month;
-                remaining_year -= principal_month;
-                interest_anual += interest_month;
-            }
-        }
-        const operativos = gastosFijos - (cuotaHipoteca * 12);
-        const net_for_tax = ingresosAlquiler - operativos - interest_anual;
-        const tax_anual = Math.max(0, net_for_tax) * (taxAlquiler / 100);
-        const taxMensual = tax_anual / 12; // Calcular impuesto mensual
-        const flujoMensual = (ingresosAlquiler - gastosFijos - tax_anual) / 12;
-        const ingresosMensuales = ingresosAlquiler / 12;
-        const roiAnual = (flujoMensual * 12 / inversionInicial) * 100;
-
-        // Simulación año por año
-        let flujoAcumulado = 0;
-        let valorVivienda = precio;
-        let alquilerActual = alquiler;
-        let ibiActual = ibi;
-        let comunidadActual = comunidad;
-        let seguroActual = seguro;
-        let seguroImpagoActual = seguroImpago;
-        let mantenimientoActual = mantenimiento;
-        let administracionActual = administracion;
-        const proyecciones = [];
-
-        for (let year = 1; year <= anosAnalisis; year++) {
-            const ingresosAlquilerAnual = alquilerActual * mesesOcupados;
-            const gastosFijosAnual = (cuotaHipoteca * 12) + ibiActual + seguroActual + seguroImpagoActual + mantenimientoActual + (comunidadActual * 12) + (administracionActual * 12);
-            let interest_anual_loop = 0;
-            if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
-                let remaining_year = remaining;
-                for (let m = 0; m < 12; m++) {
-                    const interest_month = remaining_year * (interes / 100 / 12);
-                    const principal_month = cuotaHipoteca - interest_month;
-                    remaining_year -= principal_month;
-                    interest_anual_loop += interest_month;
-                }
-            }
-            const operativos_loop = gastosFijosAnual - (cuotaHipoteca * 12);
-            const net_for_tax_loop = ingresosAlquilerAnual - operativos_loop - interest_anual_loop;
-            const tax_loop = Math.max(0, net_for_tax_loop) * (taxAlquiler / 100);
-            const flujoAnual = ingresosAlquilerAnual - gastosFijosAnual - tax_loop;
-            const rentabilidadFlujo = (flujoAnual / inversionInicial) * 100;
-            const roiAnualLoop = (flujoAnual / inversionInicial) * 100; // ROI por año
-            const saldoPendiente = financiacionTipo === 'sin_hipoteca' ? 0 : calcularSaldoPendiente(capitalPrestamo, interes, anos, year);
-
-            const precioVentaBruto = valorVivienda;
-            const gastosVentaEuros = precioVentaBruto * (gastosVenta / 100);
-            const gananciaCapital = Math.max(0, precioVentaBruto - precio);
-            const impuestosGanancias = gananciaCapital * (irpfVenta / 100);
-            const precioVentaNeto = precioVentaBruto - gastosVentaEuros - plusvalia - impuestosGanancias;
-            const beneficioVenda = precioVentaNeto - saldoPendiente;
-            const beneficioAcumulado = flujoAcumulado + flujoAnual + beneficioVenda - inversionInicial;
-
-            proyecciones.push({
-                year,
-                ingresosAlquiler: ingresosAlquilerAnual,
-                gastosFijos: gastosFijosAnual,
-                cuotaHipoteca: cuotaHipoteca * 12,
-                tax: tax_loop,
-                flujoAnual,
-                rentabilidadFlujo,
-                roiAnual: roiAnualLoop,
-                valorVivienda,
-                saldoPendiente,
-                precioVentaNeto,
-                beneficioAcumulado
-            });
-
-            flujoAcumulado += flujoAnual;
-            valorVivienda *= (1 + revalorizacion / 100);
-            alquilerActual *= (1 + incrementoAlquiler / 100);
-            ibiActual *= (1 + incrementoGastos / 100);
-            comunidadActual *= (1 + incrementoGastos / 100);
-            seguroActual *= (1 + incrementoGastos / 100);
-            seguroImpagoActual *= (1 + incrementoGastos / 100);
-            mantenimientoActual *= (1 + incrementoGastos / 100);
-            administracionActual *= (1 + incrementoGastos / 100);
-            if (financiacionTipo === 'con_hipoteca' && capitalPrestamo > 0) {
-                remaining = saldoPendiente;
-            }
-        }
-
-        // Cálculo final (para el último año)
-        const precioVentaBruto = valorVivienda;
-        const gastosVentaEuros = precioVentaBruto * (gastosVenta / 100);
-        const gananciaCapital = Math.max(0, precioVentaBruto - precio);
-        const impuestosGanancias = gananciaCapital * (irpfVenta / 100);
-        const precioVentaNeto = precioVentaBruto - gastosVentaEuros - plusvalia - impuestosGanancias;
-
-        // Rentabilidad
-        const beneficioTotal = flujoAcumulado + (precioVentaNeto - precio);
-        const valorFinal = inversionInicial + beneficioTotal;
-        const rentabilidadAnual = inversionInicial > 0 && valorFinal > 0 && anosAnalisis > 0 ? 
-            (Math.pow(valorFinal / inversionInicial, 1 / anosAnalisis) - 1) * 100 : 0;
-
-        const datos = {
-            inversionInicial,
-            flujoMensual,
-            flujoAcumulado,
-            rentabilidadAnual,
-            roiAnual,
-            beneficioTotal,
-            precioVentaNeto,
-            precioVentaBruto,
-            montoEntrada,
-            impuestos,
-            gastosCompra,
-            reforma,
-            gastosHipoteca,
-            entrada,
-            ingresosMensuales,
-            cuotaHipoteca,
-            comunidad,
-            ibi,
-            seguro,
-            seguroImpago,
-            mantenimiento,
-            administracion,
-            gastosVentaEuros,
-            plusvalia,
-            impuestosGanancias,
-            anosAnalisis,
-            proyecciones,
-            financiacionTipo,
-            taxMensual
-        };
-
-        console.log('Datos calculados:', datos);
-        mostrarResultados(datos);
-        actualizarResumenFlotante(datos);
-
-    } catch (error) {
-        console.error('Error en cálculo:', error);
-        document.getElementById('resultados').innerHTML = `
-            <div class="alert alert-danger">
-                ⚠️ <strong>${translations[currentLanguage].error_calculo}</strong>
-                <br><small>${translations[currentLanguage].error_tecnico} ${error.message}</small>
-            </div>
-        `;
-    }
-}
-
 // Mostrar resultados
 function mostrarResultados(datos) {
     console.log('Mostrando resultados...');
     
     const resultadosDiv = document.getElementById('resultados');
-    if (!resultadosDiv) return;
+    if (!resultadosDiv) return '';
 
     // Clases de color
     let rentabilidadClass = 'metric-warning';
@@ -691,7 +668,7 @@ function mostrarResultados(datos) {
     `;
 
     // Generar el HTML completo de los resultados
-    resultadosDiv.innerHTML = `
+    return `
         <div class="results-grid">
             <div class="metric-card">
                 <div class="metric-header">
@@ -957,7 +934,33 @@ document.addEventListener('DOMContentLoaded', () => {
             setLanguage(e.target.value);
         });
     }
+    // Eventos slider entrada
+    const precioInput = document.getElementById('precio');
+    const entradaEurosInput = document.getElementById('entradaEuros');
+    const entradaSlider = document.getElementById('entradaSlider');
 
+    if (precioInput) {
+        precioInput.addEventListener('input', () => {
+            actualizarEntradaSlider();
+            setTimeout(calcular, 100);
+        });
+    }
+
+    if (entradaEurosInput) {
+        entradaEurosInput.addEventListener('input', () => {
+            actualizarEntradaSlider();
+            setTimeout(calcular, 100);
+        });
+    }
+
+    if (entradaSlider) {
+        entradaSlider.addEventListener('input', () => {
+            entradaEurosInput.value = entradaSlider.value;
+            actualizarEntradaSlider();
+            setTimeout(calcular, 100);
+        });
+    }
+    
     // Evento para los botones de escenario
     document.querySelectorAll('.scenario-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -965,7 +968,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadScenario(scenario);
         });
     });
-
+    
     // Evento para los tabs
     document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.addEventListener('click', () => {
