@@ -1,256 +1,108 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Real Estate Investment Calculator | Calculadora de Inversión Inmobiliaria</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Salarial Farmacia 2026 | Convenio Colectivo</title>
+    <meta name="description" content="Calcula tu sueldo neto real en oficina de farmacia según el XXV convenio. Actualizado para 2022-2026.">
+    <link rel="canonical" href="https://conveniodefarmacia.com/">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="bg-particles" id="particles"></div>
-<div class="app-container">
-<header class="header">
-    <div class="language-selector">
-        <select id="langSelector">
-            <option value="es">🇪🇸 Español</option>
-            <option value="en">🇬🇧 English</option>
-        </select>
+
+<main class="container">
+    <header class="header">
+        <i class="fas fa-calculator"></i>
+        <h1>Sueldo Farmacia</h1>
+    </header>
+
+    <section class="calculator-grid">
+        <div class="input-group">
+            <label for="profesion">Profesión</label>
+            <select id="profesion">
+                <option value="farmaceutico">Farmacéutico/a</option>
+                <option value="tecnico">Técnico/a</option>
+                <option value="auxiliar">Auxiliar</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="anio">Año del convenio</label>
+            <select id="anio">
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="numPagas">Distribución de pagas</label>
+            <select id="numPagas">
+                <option value="12" selected>12 pagas (Prorrateadas)</option>
+                <option value="14">14 pagas (Con extras)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="porcentaje">Jornada laboral (%)</label>
+            <input type="number" id="porcentaje" value="100" min="1" max="100" inputmode="decimal">
+        </div>
+
+        <div class="input-group">
+            <label for="numHoras">Horas nocturnas/mes</label>
+            <input type="number" id="numHoras" value="0" min="0" inputmode="decimal">
+        </div>
+
+        <div class="input-group">
+            <label for="mejoraSalarial">Mejora salarial mensual (€)</label>
+            <input type="number" id="mejoraSalarial" value="0" step="0.01" inputmode="decimal">
+        </div>
+
+        <details class="advanced-settings">
+            <summary>Configuración de impuestos y SS <i class="fas fa-cog"></i></summary>
+            <div class="settings-content">
+                <div class="input-group">
+                    <label for="porcentajeIRPF">Retención IRPF (%)</label>
+                    <input type="number" id="porcentajeIRPF" value="15.86" step="0.01" inputmode="decimal">
+                </div>
+                <div class="input-group">
+                    <label for="cotizacionContComu">Contingencias Comunes (%)</label>
+                    <input type="number" id="cotizacionContComu" value="4.80" step="0.01" inputmode="decimal">
+                </div>
+                <div class="input-group">
+                    <label for="cotizacionDesempleo">Desempleo (%)</label>
+                    <input type="number" id="cotizacionDesempleo" value="1.55" step="0.01" inputmode="decimal">
+                </div>
+                <div class="input-group">
+                    <label for="cotizacionMEI">MEI (%)</label>
+                    <input type="number" id="cotizacionMEI" value="0.15" step="0.01" inputmode="decimal">
+                </div>
+                <div class="input-group" style="display:none">
+                    <input type="number" id="cotizacionFormacion" value="0.10">
+                </div>
+            </div>
+        </details>
+    </section>
+
+    <div id="resultados" class="results-container">
+        <p class="placeholder-text">Introduce tus datos para ver el cálculo</p>
     </div>
-    <h1 data-i18n="calculadora_inversion">🏠 Calculadora de Inversión Inmobiliaria</h1>
-    <p data-i18n="analisis_completo">Análisis completo para inversión en alquiler - España</p>
-</header>
-<main class="main-content">
-<div class="content-grid">
-<!-- Panel de Configuración -->
-<div class="glass-card">
-<div class="card-header">
-<div class="card-title"><span data-i18n="configuracion_inversion">⚙️ Configuración de Inversión</span></div>
-<div class="card-subtitle"><span data-i18n="personaliza_parametros">Personaliza todos los parámetros de tu análisis</span></div>
-</div>
-<div class="card-body">
-<div class="nav-tabs">
-<button class="nav-tab active" data-tab="propiedad"><span data-i18n="propiedad">🏠 Propiedad</span></button>
-<button class="nav-tab" data-tab="financiacion"><span data-i18n="financiacion">💰 Financiación</span></button>
-<button class="nav-tab" data-tab="ingresos"><span data-i18n="ingresos">📈 Ingresos</span></button>
-<button class="nav-tab" data-tab="gastos"><span data-i18n="gastos">📊 Gastos</span></button>
-<button class="nav-tab" data-tab="revalorizacion"><span data-i18n="revalorizacion">💎 Revalorización</span></button>
-</div>
-<!-- Tab: Propiedad -->
-<div class="tab-content active" id="propiedad-tab">
-<div class="form-group">
-<label class="form-label" data-i18n="precio_compra">Precio de compra</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="precio" min="0" step="1000" type="number" value="140000"/>
-<span class="input-suffix">€</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="tipo_vivienda">Tipo de vivienda</label>
-<select class="form-select" id="tipoVivienda">
-<option value="segunda" data-i18n="segunda_vivienda">Segunda vivienda (7% ITP)</option>
-<option value="nueva" data-i18n="vivienda_nueva">Vivienda nueva (10% IVA + 1.2% AJD)</option>
-</select>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="gastos_compra">Gastos de compra-venta</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="gastosCompra" min="0" step="100" type="number" value="3500"/>
-<span class="input-suffix">€</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="gastos_reforma">Gastos de reforma</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="reforma" min="0" step="100" type="number" value="5000"/>
-<span class="input-suffix">€</span>
-</div>
-</div>
-</div>
-<!-- Tab: Financiación -->
-<div class="tab-content" id="financiacion-tab">
-<div class="form-group">
-<label class="form-label" data-i18n="tipo_financiacion">Tipo de financiación</label>
-<select class="form-select" id="financiacionTipo">
-<option value="con_hipoteca" data-i18n="con_hipoteca">Con hipoteca</option>
-<option value="sin_hipoteca" data-i18n="sin_hipoteca">Sin hipoteca</option>
-</select>
-</div>
 
-<!-- NUEVO CONTROL DE AHORRO APORTADO -->
-<div class="form-group">
-<label class="form-label">Ahorro aportado</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="entradaEuros" min="0" step="1000" type="number" value="28000"/>
-<span class="input-suffix" id="entradaPorcentajeDisplay">28.000 € 20%</span>
-</div>
-<div class="slider-container">
-<input type="range" id="entradaSlider" class="form-slider" min="0" max="140000" step="1000" value="28000"/>
-</div>
-</div>
-
-<div class="form-group">
-<label class="form-label" data-i18n="interes_hipoteca">Tipo de interés hipoteca</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="interes" max="15" min="0" step="0.1" type="number" value="2.5"/>
-<span class="input-suffix">%</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="anos_hipoteca">Años de hipoteca</label>
-<input class="form-input" id="anos" max="40" min="5" step="1" type="number" value="25"/>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="gastos_hipoteca">Gastos de hipoteca</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="gastosHipoteca" min="0" step="100" type="number" value="2500"/>
-<span class="input-suffix">€</span>
-</div>
-</div>
-</div>
-<!-- Tab: Ingresos -->
-<div class="tab-content" id="ingresos-tab">
-<div class="form-group">
-<label class="form-label" data-i18n="alquiler_mensual">Alquiler mensual</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="alquiler" min="0" step="50" type="number" value="800"/>
-<span class="input-suffix" data-i18n="mes">€/mes</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="meses_vacios">Meses vacío al año</label>
-<input class="form-input" id="mesesVacio" max="12" min="0" step="0.5" type="number" value="1"/>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="incremento_alquiler">Incremento anual del alquiler</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="incrementoAlquiler" max="10" min="0" step="0.1" type="number" value="2"/>
-<span class="input-suffix">%</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="anos_analisis">Años de análisis</label>
-<input class="form-input" id="anosAnalisis" max="40" min="1" step="1" type="number" value="20"/>
-</div>
-</div>
-<!-- Tab: Gastos -->
-<div class="tab-content" id="gastos-tab">
-<div class="form-group">
-<label class="form-label" data-i18n="ibi_anual">IBI anual</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="ibi" min="0" step="50" type="number" value="500"/>
-<span class="input-suffix" data-i18n="ano">€/año</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="gastos_comunidad">Gastos de comunidad</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="comunidad" min="0" step="10" type="number" value="80"/>
-<span class="input-suffix" data-i18n="mes">€/mes</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="seguro_hogar">Seguro de hogar</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="seguro" min="0" step="50" type="number" value="300"/>
-<span class="input-suffix" data-i18n="ano">€/año</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="seguro_impago">Seguro de impago</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="seguroImpago" min="0" step="50" type="number" value="200"/>
-<span class="input-suffix" data-i18n="ano">€/año</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="mantenimiento">Mantenimiento y reparaciones</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="mantenimiento" min="0" step="50" type="number" value="500"/>
-<span class="input-suffix" data-i18n="ano">€/año</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="administracion">Administración/Gestión</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="administracion" min="0" step="10" type="number" value="60"/>
-<span class="input-suffix" data-i18n="mes">€/mes</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="incremento_gastos">Incremento anual de gastos</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="incrementoGastos" max="10" min="0" step="0.1" type="number" value="0"/>
-<span class="input-suffix">%</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="tasa_impositiva">Tasa impositiva sobre alquiler neto</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="taxAlquiler" max="47" min="0" step="0.1" type="number" value="21"/>
-<span class="input-suffix">%</span>
-</div>
-</div>
-</div>
-<!-- Tab: Revalorización -->
-<div class="tab-content" id="revalorizacion-tab">
-<div class="form-group">
-<label class="form-label" data-i18n="revalorizacion_anual">Revalorización anual del inmueble</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="revalorizacion" max="15" min="-5" step="0.1" type="number" value="2.5"/>
-<span class="input-suffix">%</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="gastos_venta">Gastos de venta futura</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="gastosVenta" max="15" min="0" step="0.1" type="number" value="8"/>
-<span class="input-suffix">%</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="plusvalia">Impuesto plusvalía municipal</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="plusvalia" min="0" step="100" type="number" value="2000"/>
-<span class="input-suffix">€</span>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label" data-i18n="irpf_venta">IRPF por venta (19-23%)</label>
-<div class="input-group">
-<input class="form-input with-suffix" id="irpfVenta" max="47" min="0" step="0.1" type="number" value="19"/>
-<span class="input-suffix">%</span>
-</div>
-</div>
-</div>
-<!-- BOTÓN DE CALCULAR -->
-<button class="btn btn-primary btn-block" id="calcularBtn"><span data-i18n="analizar_inversion">🧮 Analizar Inversión</span></button>
-</div>
-</div>
-<!-- Panel de Resultados -->
-<div class="glass-card">
-<div class="card-header">
-<div class="card-title"><span data-i18n="analisis_rentabilidad">📊 Análisis de Rentabilidad</span></div>
-<div class="card-subtitle"><span data-i18n="resultados_completos">Resultados completos de tu inversión a largo plazo</span></div>
-</div>
-<div class="card-body">
-<div id="resultados">
-<div class="empty-state">
-<div class="empty-state-icon">📈</div>
-<h3 data-i18n="analiza_inversion">¡Analiza tu inversión inmobiliaria!</h3>
-<p data-i18n="completa_datos">Completa los datos en el panel izquierdo y haz clic en "Analizar Inversión" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
+    <footer class="legal-info">
+        <p>Datos basados en el <strong>XXV Convenio Colectivo de Oficinas de Farmacia</strong>.</p>
+    </footer>
 </main>
-<!-- Resumen flotante -->
-<div class="floating-summary" id="floatingSummary">
-<div style="font-weight: 600; margin-bottom: 0.5rem;" data-i18n="rentabilidad_flujo">Rentabilidad por flujo</div>
-<div id="floatingValue" style="font-size: 1.6rem; font-weight: 800;">-</div>
+
+<div class="donation-banner">
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR" target="_blank">
+        <i class="fas fa-coffee"></i> Cómprame un café
+    </a>
 </div>
-</div>
-<script src="app.js"></script>
+
+<script src="script.js"></script>
 </body>
 </html>
