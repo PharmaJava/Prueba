@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sueldo Farmacia Pro | Calculadora Convenio 2024-2026</title>
-    <meta name="description" content="Calcula tu sueldo neto real en farmacia según el XXV Convenio Nacional y convenios provinciales como Barcelona, País Vasco y Asturias.">
+    <title>Sueldo Farmacia Pro | Calculadora Oficial Convenio 2024-2026</title>
+    <meta name="description" content="Calculadora de sueldo neto para farmacéuticos, técnicos y auxiliares. Incluye el XXV Convenio Nacional y provinciales (Barcelona, Euskadi, Asturias).">
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta property="og:title" content="Calculadora Sueldo Farmacia 2026 🏥">
+    <meta property="og:description" content="Calcula tu nómina exacta con trienios, nocturnidad e IRPF.">
+    <meta property="og:image" content="https://conveniodefarmacia.com/IMG_9941.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -18,22 +23,23 @@
     <header class="header">
         <i class="fas fa-hand-holding-medical"></i>
         <h1>Sueldo Farmacia Pro</h1>
+        <p>Calculadora Profesional Multiconvenio</p>
     </header>
 
     <div id="capture-area">
         <section class="calculator-grid">
             <div class="input-group full-width-input">
-                <label for="convenio" style="color: var(--primary); font-weight: bold;">Convenio Aplicable</label>
+                <label for="convenio" style="color: var(--primary); font-weight: bold;">Convenio Colectivo Aplicable</label>
                 <select id="convenio">
-                    <option value="nacional" selected>Nacional (XXV Convenio)</option>
-                    <option value="barcelona">Barcelona (Provincial)</option>
+                    <option value="nacional" selected>Nacional (XXV Convenio Colectivo)</option>
+                    <option value="barcelona">Barcelona (Convenio Provincial)</option>
                     <option value="euskadi">País Vasco (Euskadi)</option>
-                    <option value="asturias">Asturias (15 pagas)</option>
+                    <option value="asturias">Asturias (Principado)</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="profesion">Categoría</label>
+                <label for="profesion">Categoría Profesional</label>
                 <select id="profesion">
                     <option value="farmaceutico">Farmacéutico/a</option>
                     <option value="tecnico">Técnico/a</option>
@@ -47,8 +53,10 @@
             </div>
 
             <div class="input-group">
-                <label for="anio">Año</label>
+                <label for="anio">Año de Vigencia</label>
                 <select id="anio">
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
                     <option value="2026" selected>2026</option>
@@ -56,26 +64,26 @@
             </div>
 
             <div class="input-group">
-                <label for="porcentaje">Jornada (%)</label>
+                <label for="porcentaje">Jornada Laboral (%)</label>
                 <input type="number" id="porcentaje" value="100">
             </div>
 
             <div class="input-group">
-                <label for="numPagas">Nº Pagas</label>
+                <label for="numPagas">Distribución de Pagas</label>
                 <select id="numPagas">
-                    <option value="12">12 pagas (Prorrateadas)</option>
-                    <option value="extra" selected>Según Convenio</option>
+                    <option value="12">12 Pagas (Extras Prorrateadas)</option>
+                    <option value="extra" selected>Pagas Extras Separadas</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="numHoras">H. Nocturnas/mes</label>
+                <label for="numHoras">H. Nocturnas (Promedio mes)</label>
                 <input type="number" id="numHoras" value="0">
             </div>
 
             <div class="input-group full-width-input">
                 <label for="mejoraSalarial">Mejora Voluntaria Bruta (€/mes)</label>
-                <input type="number" id="mejoraSalarial" value="0" step="10">
+                <input type="number" id="mejoraSalarial" value="0" step="10" placeholder="Ej: 200">
             </div>
 
             <div class="input-group full-width-input">
@@ -85,12 +93,24 @@
         </section>
 
         <details class="advanced-settings">
-            <summary>Configuración de Cotizaciones (MEI, SS...) <i class="fas fa-cog"></i></summary>
+            <summary>Detalle de Cotizaciones (MEI, SS...) <i class="fas fa-cog"></i></summary>
             <div class="settings-content">
-                <div class="input-group"><label>C. Comunes</label><input type="number" id="cotizacionContComu" value="4.80"></div>
-                <div class="input-group"><label>Desempleo</label><input type="number" id="cotizacionDesempleo" value="1.55"></div>
-                <div class="input-group"><label>MEI</label><input type="number" id="cotizacionMEI" value="0.15"></div>
-                <div class="input-group"><label>Formación</label><input type="number" id="cotizacionFormacion" value="0.10"></div>
+                <div class="input-group">
+                    <label>Cont. Comunes (%)</label>
+                    <input type="number" id="cotizacionContComu" value="4.80" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Desempleo (%)</label>
+                    <input type="number" id="cotizacionDesempleo" value="1.55" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>MEI (%)</label>
+                    <input type="number" id="cotizacionMEI" value="0.15" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Formación (%)</label>
+                    <input type="number" id="cotizacionFormacion" value="0.10" step="0.01">
+                </div>
             </div>
         </details>
 
@@ -98,31 +118,50 @@
             <canvas id="salaryChart"></canvas>
         </div>
 
-        <div id="resultados" class="results-container"></div>
+        <div id="resultados" class="results-container">
+            </div>
+        
+        <p class="watermark">Generado en sueldofarmacia.pro / conveniodefarmacia.com</p>
     </div>
 
     <button onclick="exportarImagen()" class="btn-export">
-        <i class="fab fa-whatsapp"></i> Compartir Cálculo
+        <i class="fab fa-whatsapp"></i> Compartir Nómina
     </button>
 
     <section class="info-section">
-        <h2>¿Por qué usar esta calculadora?</h2>
-        <p>A diferencia de otras herramientas, <strong>Sueldo Farmacia Pro</strong> aplica las tablas salariales del <strong>XXV Convenio Colectivo</strong> y los principales convenios provinciales, calculando de forma real la prorrata de las pagas extras y el impacto del MEI en tu nómina.</p>
-        
+        <div class="content-magic">
+            <h2><i class="fas fa-lightbulb"></i> Claves de tu nómina en 2026</h2>
+            <p>Entender tu salario en la oficina de farmacia no siempre es sencillo. Dependiendo de tu ubicación, puedes estar regido por el <strong>XXV Convenio Nacional</strong> o por acuerdos provinciales con condiciones superiores.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Pagas Extras</h3>
+                    <p>Mientras el convenio nacional establece 14 pagas, en zonas como <strong>Asturias</strong> se perciben hasta 15 pagas (incluyendo la de beneficios).</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Antigüedad</h3>
+                    <p>La mayoría computa por trienios, pero recuerda que el importe varía según tu categoría. En algunos convenios, la antigüedad se calcula como un porcentaje del salario base.</p>
+                </div>
+            </div>
+        </div>
+
         <div class="faq-container">
-            <div class="faq-item">
-                <h3><i class="fas fa-chart-line"></i> ¿Qué es el MEI?</h3>
-                <p>El Mecanismo de Equidad Intergeneracional es una cotización adicional que en 2024 es del 0,70% (el trabajador paga el 0,15%).</p>
-            </div>
-            <div class="faq-item">
-                <h3><i class="fas fa-clock"></i> Horas Nocturnas</h3>
-                <p>Se consideran horas nocturnas las realizadas entre las 22:00 y las 06:00. Cada convenio tiene un precio fijado por tabla.</p>
-            </div>
+            <h2>Preguntas Frecuentes (FAQ)</h2>
+            <details class="faq-item">
+                <summary>¿Qué es el MEI que aparece en mi nómina?</summary>
+                <p>Es el Mecanismo de Equidad Intergeneracional. En 2026, la cotización total sube ligeramente para asegurar las pensiones. Como trabajador, te corresponde un 0,15% aprox.</p>
+            </details>
+            <details class="faq-item">
+                <summary>¿Cómo afecta la mejora voluntaria al neto?</summary>
+                <p>La mejora voluntaria es un concepto "bruto". Al sumarla, tu base imponible sube y, por tanto, es posible que debas ajustar tu retención de IRPF para evitar sorpresas en la Renta.</p>
+            </details>
         </div>
     </section>
 
     <footer class="legal-info">
-        <p>© 2026 Sueldo Farmacia Pro. Datos informativos basados en convenios vigentes.</p>
+        <p>© 2026 Sueldo Farmacia Pro. Los cálculos son estimativos y no sustituyen a una nómina oficial.</p>
+        <p><a href="#">Aviso Legal</a> | <a href="#">Privacidad</a></p>
+        
         <div style="display: none;">
             <a href="https://librecounter.org/referer/show" target="_blank">
                 <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" />
@@ -132,7 +171,7 @@
 </main>
 
 <div id="cookie-banner" class="cookie-banner">
-    <p>Utilizamos cookies para mejorar tu experiencia. <button onclick="aceptarCookies()">Aceptar</button></p>
+    <p>Utilizamos cookies técnicas para que la calculadora funcione correctamente. <button onclick="aceptarCookies()">Entendido</button></p>
 </div>
 
 <script src="script.js"></script>
