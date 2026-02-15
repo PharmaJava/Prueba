@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sueldo Farmacia Pro | Calculadora Convenio 2022-2026</title>
-    <meta name="description" content="Calculadora de sueldo neto para farmacia comunitaria. Datos actualizados al XXV Convenio y provinciales. Calcula IRPF, trienios y mejoras.">
+    <title>Sueldo Farmacia Pro | Calculadora Multiconvenio 2026</title>
+    <meta name="description" content="Calculadora de sueldo neto para farmacia. Incluye Nacional XXV, Barcelona, País Vasco y Asturias. Calcula IRPF, trienios/quinquenios y mejoras.">
     
     <meta property="og:title" content="Calculadora Sueldo Farmacia 2026 🏥">
-    <meta property="og:description" content="Descubre tu sueldo neto real. Actualizado con tablas 2024-2026.">
+    <meta property="og:description" content="Calcula tu nómina real según tu convenio provincial.">
     <meta property="og:image" content="https://conveniodefarmacia.com/IMG_9941.png">
     <meta property="og:url" content="https://conveniodefarmacia.com">
 
@@ -29,13 +29,13 @@
     <div id="capture-area">
         <section class="calculator-grid">
             <div class="input-group full-width-input">
-                <label for="convenio" style="color: var(--primary); font-weight: bold;">Convenio Aplicable</label>
+                <label for="convenio" style="color: var(--primary); font-weight: bold;">Convenio Colectivo</label>
                 <select id="convenio">
                     <option value="nacional" selected>Nacional (XXV Convenio)</option>
                     <option value="barcelona">Barcelona (Provincial)</option>
                     <option value="gironatarragona">Girona y Tarragona</option>
-                    <option value="paisvasco">País Vasco</option>
-                    <option value="asturias">Asturias</option>
+                    <option value="paisvasco">País Vasco (Bizkaia/Gipuzkoa)</option>
+                    <option value="asturias">Asturias (Principado)</option>
                 </select>
             </div>
 
@@ -56,9 +56,11 @@
             <div class="input-group">
                 <label for="anio">Año</label>
                 <select id="anio">
-                    <option value="2024">2024</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024" selected>2024</option>
                     <option value="2025">2025</option>
-                    <option value="2026" selected>2026</option>
+                    <option value="2026">2026</option>
                 </select>
             </div>
 
@@ -70,8 +72,9 @@
             <div class="input-group">
                 <label for="numPagas">Nº Pagas</label>
                 <select id="numPagas">
-                    <option value="12">12 pagas (Prorrateadas)</option>
-                    <option value="extra" selected>Según Convenio (14/15)</option>
+                    <option value="12">12 Pagas (Prorrateadas)</option>
+                    <option value="14" selected>14 Pagas (Estándar)</option>
+                    <option value="15">15 Pagas (Asturias/Otros)</option>
                 </select>
             </div>
 
@@ -92,7 +95,7 @@
         </section>
 
         <details class="advanced-settings">
-            <summary>Cotizaciones (SS, MEI...) <i class="fas fa-cog"></i></summary>
+            <summary>Cotizaciones SS (Avanzado) <i class="fas fa-cog"></i></summary>
             <div class="settings-content">
                 <div class="input-group"><label>C. Comunes</label><input type="number" id="cotizacionContComu" value="4.80"></div>
                 <div class="input-group"><label>Desempleo</label><input type="number" id="cotizacionDesempleo" value="1.55"></div>
@@ -114,21 +117,21 @@
     </button>
 
     <section class="info-section">
-        <h2>Preguntas Frecuentes</h2>
+        <h2>Dudas Frecuentes</h2>
         <div class="faq-container">
             <details class="faq-item">
-                <summary>¿Cómo se calcula la antigüedad?</summary>
-                <p>En el convenio nacional y la mayoría de provinciales son Trienios (cada 3 años). En Asturias se calculan por Quinquenios (cada 5 años).</p>
+                <summary>¿Trienios o Quinquenios?</summary>
+                <p>El convenio Nacional usa Trienios (3 años). Asturias utiliza Quinquenios (5 años) que suponen un % del salario base.</p>
             </details>
             <details class="faq-item">
-                <summary>¿Qué incluye la mejora voluntaria?</summary>
-                <p>Es un importe bruto pactado que se suma a tu salario base. Recuerda que al aumentar el bruto, también sube la retención de IRPF.</p>
+                <summary>¿Mi convenio no aparece?</summary>
+                <p>Usa el "Nacional" como referencia mínima. Si tu provincia no tiene convenio propio vigente, se aplica el Nacional (XXV Convenio).</p>
             </details>
         </div>
     </section>
 
     <footer class="legal-info">
-        <p>© 2026 Sueldo Farmacia Pro. Datos informativos no vinculantes.</p>
+        <p>© 2026 Sueldo Farmacia Pro. Datos informativos.</p>
         <p><a href="privacidad.html">Política de Privacidad</a></p>
         
         <div style="display: none;">
@@ -140,7 +143,7 @@
 </main>
 
 <div id="cookie-banner" class="cookie-banner">
-    <p>Esta web utiliza cookies técnicas para guardar tus preferencias de cálculo. <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button></p>
+    <p>Utilizamos cookies técnicas para recordar tu configuración. <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button></p>
 </div>
 
 <script src="script.js"></script>
