@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sueldo Farmacia Pro | Calculadora XXV Convenio 2024-2026</title>
-    <meta name="description" content="Calcula tu sueldo neto real en farmacia según el XXV Convenio Nacional y convenios provinciales. Actualizado a 2026 con MEI e IRPF.">
-    
+    <title>Sueldo Farmacia Pro | Calculadora Oficial 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -27,7 +23,6 @@
 
     <div id="capture-area" class="capture-wrapper">
         <section class="calculator-grid">
-            
             <div class="input-group full-width-input">
                 <label for="convenio">Convenio Aplicable</label>
                 <select id="convenio">
@@ -35,7 +30,7 @@
                     <option value="barcelona">Barcelona (Provincial)</option>
                     <option value="gironatarragona">Girona / Tarragona</option>
                     <option value="euskadi">País Vasco (Euskadi)</option>
-                    <option value="asturias">Asturias (15 pagas)</option>
+                    <option value="asturias">Asturias</option>
                 </select>
             </div>
 
@@ -72,10 +67,7 @@
             <div class="input-group">
                 <label for="numPagas">Nº Pagas</label>
                 <select id="numPagas">
-                    <option value="12">12 pagas</option>
-                    <option value="14" selected>14 pagas</option>
-                    <option value="15">15 pagas (Asturias)</option>
-                </select>
+                    </select>
             </div>
 
             <div class="input-group">
@@ -108,9 +100,7 @@
             <canvas id="salaryChart"></canvas>
         </div>
 
-        <div id="resultados" class="results-container">
-            </div>
-
+        <div id="resultados" class="results-container"></div>
         <p class="watermark">conveniodefarmacia.com</p>
     </div>
 
@@ -146,12 +136,7 @@
     <footer class="legal-info">
         <p>Datos basados en el XXV Convenio de Oficinas de Farmacia.</p>
         <p><a href="privacidad.html" target="_blank" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
-        
-        <div style="display: none;">
-            <a href="https://librecounter.org/referer/show" target="_blank">
-                <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" />
-            </a>
-        </div>
+        <div style="display: none;"><a href="https://librecounter.org/referer/show" target="_blank"><img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" /></a></div>
     </footer>
 </main>
 
@@ -168,6 +153,5 @@
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
