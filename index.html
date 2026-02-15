@@ -3,20 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sueldo Farmacia Pro | Calculadora Multiconvenio 2026</title>
-    <meta name="description" content="Calculadora de sueldo neto para farmacia. Nacional, Barcelona, Euskadi, Asturias y Girona/Tarragona. Incluye trienios y convenio 2026.">
-    
-    <link rel="icon" type="image/png" href="IMG_9941.png">
-    <meta property="og:title" content="Calculadora Sueldo Farmacia 2026 🏥">
-    <meta property="og:description" content="Calcula tu sueldo neto según tu convenio provincial. Actualizado con trienios y mejoras brutas.">
-    <meta property="og:image" content="https://conveniodefarmacia.com/IMG_9941.png">
-    <meta property="og:url" content="https://conveniodefarmacia.com">
-    <meta property="fb:app_id" content="123456789" />
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Calculadora Sueldo Farmacia Multiconvenio 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -32,11 +22,11 @@
         <section class="calculator-grid">
             <div class="input-group full-width-input">
                 <label for="convenio" style="color: var(--primary); font-weight: bold;">Convenio Colectivo</label>
-                <select id="convenio" style="border: 2px solid var(--primary);">
+                <select id="convenio" onchange="actualizarAntiguedadLabel()">
                     <option value="nacional">Nacional (XXV Convenio)</option>
                     <option value="barcelona">Barcelona (Provincial)</option>
-                    <option value="gironatarragona">Girona y Tarragona</option>
-                    <option value="paisvasco">País Vasco (Euskadi)</option>
+                    <option value="gironatarragona">Girona, Tarragona y Lleida</option>
+                    <option value="euskadi">Euskadi (País Vasco)</option>
                     <option value="asturias">Asturias</option>
                 </select>
             </div>
@@ -51,8 +41,8 @@
             </div>
 
             <div class="input-group">
-                <label for="numTrienios">Nº Trienios</label>
-                <input type="number" id="numTrienios" value="0" min="0" max="15">
+                <label id="labelAntiguedad" for="antiguedad">Nº Trienios</label>
+                <input type="number" id="antiguedad" value="0" min="0">
             </div>
 
             <div class="input-group">
@@ -70,15 +60,15 @@
             </div>
 
             <div class="input-group">
-                <label for="numPagas">Nº Pagas</label>
+                <label for="numPagas">Nº Pagas (en nómina)</label>
                 <select id="numPagas">
-                    <option value="12">12 pagas (Prorrateadas)</option>
-                    <option value="14" selected>14 pagas</option>
+                    <option value="12">12 (Extras prorrateadas)</option>
+                    <option value="extra">Nº Pagas según convenio</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="numHoras">Horas Nocturnas</label>
+                <label for="numHoras">H. Nocturnas/mes</label>
                 <input type="number" id="numHoras" value="0">
             </div>
 
@@ -93,56 +83,17 @@
             </div>
         </section>
 
-        <details class="advanced-settings">
-            <summary>Configuración de Cotización (SS, MEI...) <i class="fas fa-cog"></i></summary>
-            <div class="settings-content">
-                <div class="input-group"><label>C. Comunes</label><input type="number" id="cotizacionContComu" value="4.80"></div>
-                <div class="input-group"><label>Desempleo</label><input type="number" id="cotizacionDesempleo" value="1.55"></div>
-                <div class="input-group"><label>MEI (2026)</label><input type="number" id="cotizacionMEI" value="0.15"></div>
-                <div class="input-group"><label>Formación</label><input type="number" id="cotizacionFormacion" value="0.10"></div>
-            </div>
-        </details>
-
         <div class="chart-container">
             <canvas id="salaryChart"></canvas>
         </div>
 
         <div id="resultados" class="results-container"></div>
-        <p class="watermark">Calculado en conveniodefarmacia.com</p>
     </div>
 
     <button onclick="exportarImagen()" class="btn-export">
-        <i class="fab fa-whatsapp"></i> Compartir con compañeros
+        <i class="fab fa-whatsapp"></i> Compartir Cálculo
     </button>
-
-    <section class="info-section">
-        <h2>Preguntas Frecuentes sobre Convenios</h2>
-        <div class="faq-container">
-            <details class="faq-item">
-                <summary>¿Qué convenio me corresponde?</summary>
-                <p>Por defecto se aplica el Nacional (XXV). Si trabajas en Barcelona, Asturias o Euskadi, tienes convenios propios con tablas salariales superiores.</p>
-            </details>
-            <details class="faq-item">
-                <summary>¿Cómo funcionan los Trienios?</summary>
-                <p>Es un plus por cada 3 años trabajados. En el Nacional 2026, un trienio de farmacéutico ronda los 48€ brutos al mes.</p>
-            </details>
-        </div>
-    </section>
-
-    <footer class="legal-info">
-        <p>© 2026 Sueldo Farmacia Pro. Datos informativos basados en convenios vigentes.</p>
-        <p><a href="privacidad.html">Privacidad</a></p>
-        <div style="display: none;">
-            <a href="https://librecounter.org/referer/show" target="_blank">
-                <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" />
-            </a>
-        </div>
-    </footer>
 </main>
-
-<div id="cookie-banner" class="cookie-banner">
-    <p>Usamos cookies técnicas para la calculadora. <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button></p>
-</div>
 
 <script src="script.js"></script>
 </body>
