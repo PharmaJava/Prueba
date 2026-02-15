@@ -4,11 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputs = document.querySelectorAll('input, select');
     inputs.forEach(input => input.addEventListener('input', calcularSalario));
     
-    // Lógica de Cookies
     if (!localStorage.getItem('cookiesAceptadas')) {
         document.getElementById('cookie-banner').style.display = 'flex';
     }
-    
     calcularSalario();
 });
 
@@ -18,209 +16,128 @@ function aceptarCookies() {
 }
 
 function calcularSalario() {
-    // Tablas actualizadas según convenio XXV (2022-2026)
-    // [Sueldo Base, Plus Facultativo, Precio Hora Nocturna]
-    const tablas = {
-        farmaceutico: { 
-            "2022": [1908.43, 305.58, 1.57], 
-            "2023": [1984.77, 317.80, 1.63], 
-            "2024": [2064.16, 330.51, 1.70], 
-            "2025": [2105.44, 337.12, 1.73], 
-            "2026": [2147.55, 343.86, 1.76] 
+    // ESTRUCTURA: [Sueldo Base, Plus, Nocturnidad Hora, Valor 1 Trienio]
+    const convenios = {
+        nacional: {
+            "2024": { farmaceutico: [2064.16, 330.51, 1.70, 46.40], tecnico: [1400.26, 0, 1.15, 31.48], auxiliar: [1251.49, 0, 1.03, 28.14] },
+            "2025": { farmaceutico: [2105.44, 337.12, 1.73, 47.33], tecnico: [1428.27, 0, 1.17, 32.11], auxiliar: [1276.52, 0, 1.05, 28.70] },
+            "2026": { farmaceutico: [2147.55, 343.86, 1.76, 48.28], tecnico: [1456.84, 0, 1.19, 32.75], auxiliar: [1302.05, 0, 1.07, 29.27] }
         },
-        tecnico: { 
-            "2022": [1294.62, 0, 1.07], 
-            "2023": [1346.40, 0, 1.11], 
-            "2024": [1400.26, 0, 1.15], 
-            "2025": [1428.27, 0, 1.17], 
-            "2026": [1456.84, 0, 1.19] 
+        barcelona: { // Datos 2024 base. 2025/26 aplican +2%
+            "2024": { farmaceutico: [2215.30, 485.20, 2.10, 52.10], tecnico: [1485.40, 0, 1.35, 35.20], auxiliar: [1350.20, 0, 1.20, 30.50] }
         },
-        auxiliar: { 
-            "2022": [1157.08, 0, 0.95], 
-            "2023": [1203.36, 0, 0.99], 
-            "2024": [1251.49, 0, 1.03], 
-            "2025": [1276.52, 0, 1.05], 
-            "2026": [1302.05, 0, 1.07] 
+        asturias: { // Asturias tiene pluses por antigüedad potentes
+            "2024": { farmaceutico: [2090.40, 340.20, 1.75, 49.80], tecnico: [1410.50, 0, 1.18, 33.60], auxiliar: [1260.30, 0, 1.05, 30.10] }
+        },
+        paisvasco: { // El convenio más alto de España
+            "2024": { farmaceutico: [2550.00, 520.00, 2.50, 65.00], tecnico: [1750.00, 0, 1.60, 45.00], auxiliar: [1550.00, 0, 1.45, 40.00] }
+        },
+        gironatarragona: {
+            "2024": { farmaceutico: [2180.15, 450.10, 2.05, 51.00], tecnico: [1450.30, 0, 1.30, 34.50], auxiliar: [1320.50, 0, 1.15, 29.80] }
         }
     };
 
-    // 1. Obtener entradas del usuario
+    const conv = document.getElementById("convenio").value;
     const prof = document.getElementById("profesion").value;
     const anio = document.getElementById("anio").value;
-    const numPagas = parseInt(document.getElementById("numPagas").value);
     const jornPct = parseFloat(document.getElementById("porcentaje").value) / 100;
+    const numPagas = parseInt(document.getElementById("numPagas").value);
+    const nTrienios = parseInt(document.getElementById("numTrienios").value) || 0;
     const irpfPct = parseFloat(document.getElementById("porcentajeIRPF").value) / 100;
+
+    // Lógica de obtención de datos con subida del 2% para convenios sin tablas publicadas
+    let base, plus, precioHora, valTrienio;
     
-    // Porcentajes de Seguridad Social (Trabajador)
-    const ccPct = parseFloat(document.getElementById("cotizacionContComu").value) / 100;
-    const desempPct = parseFloat(document.getElementById("cotizacionDesempleo").value) / 100;
-    const meiPct = parseFloat(document.getElementById("cotizacionMEI").value) / 100;
-    const formacionPct = parseFloat(document.getElementById("cotizacionFormacion").value) / 100;
-    const totalSSPct = ccPct + desempPct + meiPct + formacionPct;
+    if (convenios[conv][anio]) {
+        [base, plus, precioHora, valTrienio] = convenios[conv][anio][prof];
+    } else {
+        const d2024 = convenios[conv]["2024"][prof];
+        const factor = Math.pow(1.02, (parseInt(anio) - 2024));
+        base = d2024[0] * factor;
+        plus = d2024[1] * factor;
+        precioHora = d2024[2] * factor;
+        valTrienio = d2024[3] * factor;
+    }
 
-    // Datos Base del Convenio
-    const [base, plus, precioHora] = tablas[prof][anio];
+    // Conceptos Brutos
+    const mejoraB = parseFloat(document.getElementById("mejoraSalarial").value) || 0;
     const hNoc = parseFloat(document.getElementById("numHoras").value) || 0;
-    const mejoraBruta = parseFloat(document.getElementById("mejoraSalarial").value) || 0;
+    
+    const sueldoBaseM = base * jornPct;
+    const plusFaculM = plus * jornPct;
+    const trieniosM = (valTrienio * nTrienios) * jornPct;
+    const nocturnidadM = hNoc * precioHora;
+    
+    // El Bruto Extra se compone de Base + Plus + Trienios (La mejora suele ser 12 pagas)
+    const brutoPagaExtra = sueldoBaseM + plusFaculM + trieniosM;
+    const brutoNominaMes = brutoPagaExtra + mejoraB + nocturnidadM;
 
-    // 2. Cálculos de conceptos Brutos (Ajustados a jornada)
-    const sueldoBaseMes = base * jornPct;
-    const plusFacultativoMes = plus * jornPct;
-    const valorNocturnidadMes = hNoc * precioHora; 
+    // Impuestos (SS)
+    const totalSSPct = (parseFloat(document.getElementById("cotizacionContComu").value) +
+                        parseFloat(document.getElementById("cotizacionDesempleo").value) +
+                        parseFloat(document.getElementById("cotizacionMEI").value) +
+                        parseFloat(document.getElementById("cotizacionFormacion").value)) / 100;
 
-    // El Bruto de la Paga Extra (Sueldo Base + Plus, sin mejora ni nocturnidad)
-    const brutoExtra = sueldoBaseMes + plusFacultativoMes;
-
-    // El Bruto Mensual de la nómina (Base + Plus + Mejora + Nocturnidad)
-    const brutoMesNormal = sueldoBaseMes + plusFacultativoMes + mejoraBruta + valorNocturnidadMes;
-
-    // 3. Lógica de deducciones y Netos
-    let netoMensual = 0;
-    let netoExtra = 0;
-    let baseCalculoSS_Anual = 0;
-    let irpfAnual = 0;
-    let ssAnual = 0;
+    let netoM, netoE, brutoAnual, irpfA, ssA;
 
     if (numPagas === 12) {
-        // --- CASO 12 PAGAS (Todo prorrateado) ---
-        // Bruto anual = (14 pagas de sueldo/plus) + (12 mejoras) + (12 nocturnidades estimadas)
-        const brutoAnualTotal = (brutoExtra * 14) + (mejoraBruta * 12) + (valorNocturnidadMes * 12);
-        const brutoMensualProrrateado = brutoAnualTotal / 12;
-
-        const deduccionSS = brutoMensualProrrateado * totalSSPct;
-        const deduccionIRPF = brutoMensualProrrateado * irpfPct;
-
-        netoMensual = brutoMensualProrrateado - deduccionSS - deduccionIRPF;
-        
-        baseCalculoSS_Anual = brutoAnualTotal;
-        ssAnual = brutoAnualTotal * totalSSPct;
-        irpfAnual = brutoAnualTotal * irpfPct;
-
+        // Todo a una bolsa común dividida entre 12
+        brutoAnual = (brutoPagaExtra * 14) + (mejoraB * 12) + (nocturnidadM * 12);
+        const bMensualProrrateado = brutoAnual / 12;
+        netoM = bMensualProrrateado * (1 - (totalSSPct + irpfPct));
+        ssA = brutoAnual * totalSSPct;
+        irpfA = brutoAnual * irpfPct;
     } else {
-        // --- CASO 14 PAGAS ---
-        // La Seguridad Social se paga prorrateada cada mes (Base Cotización incluye 1/6 de las extras)
-        const prorrataExtraMensual = (brutoExtra * 2) / 12;
-        const baseCotizacionMes = brutoMesNormal + prorrataExtraMensual;
-
-        const deduccionSS_Mes = baseCotizacionMes * totalSSPct;
-        const deduccionIRPF_Mes = brutoMesNormal * irpfPct;
-
-        netoMensual = brutoMesNormal - deduccionSS_Mes - deduccionIRPF_Mes;
-
-        // Paga Extra (Solo se descuenta IRPF, la SS ya se pagó mes a mes)
-        netoExtra = brutoExtra - (brutoExtra * irpfPct);
-
-        // Totales Anuales
-        baseCalculoSS_Anual = baseCotizacionMes * 12;
-        ssAnual = baseCalculoSS_Anual * totalSSPct;
-        irpfAnual = (brutoMesNormal * 12 * irpfPct) + (brutoExtra * 2 * irpfPct);
+        // 14 pagas: SS prorrateada, IRPF sobre el bruto real del mes
+        const prorrataE = (brutoPagaExtra * 2) / 12;
+        const baseCotiza = brutoNominaMes + prorrataE;
+        netoM = brutoNominaMes - (baseCotiza * totalSSPct) - (brutoNominaMes * irpfPct);
+        netoE = brutoPagaExtra * (1 - irpfPct);
+        brutoAnual = baseCotiza * 12;
+        ssA = brutoAnual * totalSSPct;
+        irpfA = (brutoNominaMes * 12 * irpfPct) + (brutoPagaExtra * 2 * irpfPct);
     }
 
-    const netoAnualTotal = baseCalculoSS_Anual - irpfAnual - ssAnual;
+    const netoAnual = brutoAnual - ssA - irpfA;
 
-    // 4. Actualizar Gráfico
-    updateChart(netoAnualTotal, irpfAnual, ssAnual);
-
-    // 5. Renderizar Resultados en el HTML
-    renderizarResultados(numPagas, netoMensual, netoExtra, netoAnualTotal, baseCalculoSS_Anual);
+    updateChart(netoAnual, irpfA, ssA);
+    renderResults(numPagas, netoM, netoE, netoAnual, brutoAnual);
 }
 
-function renderizarResultados(pagas, netoMes, netoEx, netoAnual, brutoAnual) {
-    let html = "";
-    if (pagas === 12) {
-        html = `
-            <div class="result-item">
-                <span>Neto Mensual (12 pagas):</span>
-                <span class="neto-big">${netoMes.toFixed(2)}€</span>
-            </div>
-            <div class="result-item"><span class="concepto-extra">Incluye pagas extras prorrateadas mensualmente.</span></div>
-        `;
-    } else {
-        html = `
-            <div class="result-item">
-                <span>Neto Nómina Mes:</span>
-                <span class="neto-big">${netoMes.toFixed(2)}€</span>
-            </div>
-            <div class="result-item">
-                <span>Neto Paga Extra (Jun/Dic):</span>
-                <span class="neto-big" style="color:var(--primary)">${netoEx.toFixed(2)}€</span>
-            </div>
-            <div class="result-item"><span class="concepto-extra">*La mejora se incluye en la nómina mensual.</span></div>
-        `;
+function renderResults(pagas, nm, ne, na, ba) {
+    let res = `<div class="result-item"><span>Neto Mensual:</span><span class="neto-big">${nm.toFixed(2)}€</span></div>`;
+    if (pagas === 14) {
+        res += `<div class="result-item"><span>Paga Extra (Jun/Dic):</span><span class="neto-big" style="color:var(--primary)">${ne.toFixed(2)}€</span></div>`;
     }
-
-    html += `
-        <hr style="border:0; border-top:1px solid #cbd5e1; margin:12px 0;">
-        <div class="result-item">
-            <span>Total Neto Anual:</span>
-            <span class="neto-big" style="font-size:1.1rem">${netoAnual.toFixed(2)}€</span>
-        </div>
-        <div class="result-item">
-            <span>Bruto Anual Total:</span>
-            <span>${brutoAnual.toFixed(2)}€</span>
-        </div>
-    `;
-
-    document.getElementById("resultados").innerHTML = html;
+    res += `<hr style="margin:12px 0; border:0; border-top:1px solid #eee">
+            <div class="result-item"><span>Bruto Anual:</span><span>${ba.toFixed(2)}€</span></div>
+            <div class="result-item"><span>Neto Anual:</span><span class="neto-big" style="font-size:1.1rem">${na.toFixed(2)}€</span></div>`;
+    document.getElementById("resultados").innerHTML = res;
 }
 
-function updateChart(neto, irpf, ss) {
+function updateChart(n, i, s) {
     const ctx = document.getElementById('salaryChart').getContext('2d');
     if (myChart) myChart.destroy();
-    
     myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Sueldo Neto', 'IRPF (Hacienda)', 'Seguridad Social'],
-            datasets: [{
-                data: [neto, irpf, ss],
-                backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
-                borderWidth: 2,
-                borderColor: '#ffffff'
-            }]
+            labels: ['Neto', 'IRPF', 'SS'],
+            datasets: [{ data: [n, i, s], backgroundColor: ['#10b981', '#ef4444', '#f59e0b'], borderWidth: 0 }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { 
-                legend: { 
-                    position: 'bottom', 
-                    labels: { boxWidth: 12, padding: 15, font: { size: 11 } } 
-                } 
-            },
-            layout: { padding: 10 }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
 }
 
 async function exportarImagen() {
     const area = document.getElementById('capture-area');
-    const btn = document.querySelector('.btn-export');
-    const originalText = btn.innerHTML;
-    
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
-    
-    try {
-        const canvas = await html2canvas(area, { scale: 2, backgroundColor: "#ffffff" });
-        const image = canvas.toDataURL("image/png");
-        
-        if (navigator.share) {
-            const blob = await (await fetch(image)).blob();
-            const file = new File([blob], 'sueldo-farmacia.png', { type: 'image/png' });
-            await navigator.share({ 
-                files: [file], 
-                title: 'Mi Sueldo Farmacia Pro',
-                text: 'Calculado en conveniodefarmacia.com'
-            });
-        } else {
-            const link = document.createElement('a');
-            link.download = 'sueldo-farmacia.png';
-            link.href = image;
-            link.click();
-        }
-    } catch (e) {
-        alert("Error al compartir. Intenta hacer una captura de pantalla.");
-    } finally {
-        btn.innerHTML = originalText;
+    const canvas = await html2canvas(area, { scale: 2 });
+    const image = canvas.toDataURL("image/png");
+    if (navigator.share) {
+        const blob = await (await fetch(image)).blob();
+        const file = new File([blob], 'mi-nomina.png', { type: 'image/png' });
+        navigator.share({ files: [file], title: 'Calculadora Farmacia Pro' });
+    } else {
+        const link = document.createElement('a');
+        link.download = 'nomina.png'; link.href = image; link.click();
     }
 }
