@@ -3,18 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sueldo Farmacia Pro | Calculadora Multiconvenio 2026</title>
-    <meta name="description" content="Calculadora de sueldo neto para farmacia. Incluye Nacional XXV, Barcelona, País Vasco y Asturias. Calcula IRPF, trienios/quinquenios y mejoras.">
+    <title>Sueldo Farmacia Pro | Calculadora Convenio 2024-2026</title>
+    <meta name="description" content="Calcula tu sueldo neto real en farmacia según el XXV Convenio Nacional y convenios provinciales como Barcelona, País Vasco y Asturias.">
     
-    <meta property="og:title" content="Calculadora Sueldo Farmacia 2026 🏥">
-    <meta property="og:description" content="Calcula tu nómina real según tu convenio provincial.">
-    <meta property="og:image" content="https://conveniodefarmacia.com/IMG_9941.png">
-    <meta property="og:url" content="https://conveniodefarmacia.com">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -29,13 +23,12 @@
     <div id="capture-area">
         <section class="calculator-grid">
             <div class="input-group full-width-input">
-                <label for="convenio" style="color: var(--primary); font-weight: bold;">Convenio Colectivo</label>
+                <label for="convenio" style="color: var(--primary); font-weight: bold;">Convenio Aplicable</label>
                 <select id="convenio">
                     <option value="nacional" selected>Nacional (XXV Convenio)</option>
                     <option value="barcelona">Barcelona (Provincial)</option>
-                    <option value="gironatarragona">Girona y Tarragona</option>
-                    <option value="paisvasco">País Vasco (Bizkaia/Gipuzkoa)</option>
-                    <option value="asturias">Asturias (Principado)</option>
+                    <option value="euskadi">País Vasco (Euskadi)</option>
+                    <option value="asturias">Asturias (15 pagas)</option>
                 </select>
             </div>
 
@@ -56,11 +49,9 @@
             <div class="input-group">
                 <label for="anio">Año</label>
                 <select id="anio">
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024" selected>2024</option>
+                    <option value="2024">2024</option>
                     <option value="2025">2025</option>
-                    <option value="2026">2026</option>
+                    <option value="2026" selected>2026</option>
                 </select>
             </div>
 
@@ -72,14 +63,13 @@
             <div class="input-group">
                 <label for="numPagas">Nº Pagas</label>
                 <select id="numPagas">
-                    <option value="12">12 Pagas (Prorrateadas)</option>
-                    <option value="14" selected>14 Pagas (Estándar)</option>
-                    <option value="15">15 Pagas (Asturias/Otros)</option>
+                    <option value="12">12 pagas (Prorrateadas)</option>
+                    <option value="extra" selected>Según Convenio</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="numHoras">H. Nocturnas (mes)</label>
+                <label for="numHoras">H. Nocturnas/mes</label>
                 <input type="number" id="numHoras" value="0">
             </div>
 
@@ -95,7 +85,7 @@
         </section>
 
         <details class="advanced-settings">
-            <summary>Cotizaciones SS (Avanzado) <i class="fas fa-cog"></i></summary>
+            <summary>Configuración de Cotizaciones (MEI, SS...) <i class="fas fa-cog"></i></summary>
             <div class="settings-content">
                 <div class="input-group"><label>C. Comunes</label><input type="number" id="cotizacionContComu" value="4.80"></div>
                 <div class="input-group"><label>Desempleo</label><input type="number" id="cotizacionDesempleo" value="1.55"></div>
@@ -109,7 +99,6 @@
         </div>
 
         <div id="resultados" class="results-container"></div>
-        <p class="watermark">Calculado en conveniodefarmacia.com</p>
     </div>
 
     <button onclick="exportarImagen()" class="btn-export">
@@ -117,23 +106,23 @@
     </button>
 
     <section class="info-section">
-        <h2>Dudas Frecuentes</h2>
+        <h2>¿Por qué usar esta calculadora?</h2>
+        <p>A diferencia de otras herramientas, <strong>Sueldo Farmacia Pro</strong> aplica las tablas salariales del <strong>XXV Convenio Colectivo</strong> y los principales convenios provinciales, calculando de forma real la prorrata de las pagas extras y el impacto del MEI en tu nómina.</p>
+        
         <div class="faq-container">
-            <details class="faq-item">
-                <summary>¿Trienios o Quinquenios?</summary>
-                <p>El convenio Nacional usa Trienios (3 años). Asturias utiliza Quinquenios (5 años) que suponen un % del salario base.</p>
-            </details>
-            <details class="faq-item">
-                <summary>¿Mi convenio no aparece?</summary>
-                <p>Usa el "Nacional" como referencia mínima. Si tu provincia no tiene convenio propio vigente, se aplica el Nacional (XXV Convenio).</p>
-            </details>
+            <div class="faq-item">
+                <h3><i class="fas fa-chart-line"></i> ¿Qué es el MEI?</h3>
+                <p>El Mecanismo de Equidad Intergeneracional es una cotización adicional que en 2024 es del 0,70% (el trabajador paga el 0,15%).</p>
+            </div>
+            <div class="faq-item">
+                <h3><i class="fas fa-clock"></i> Horas Nocturnas</h3>
+                <p>Se consideran horas nocturnas las realizadas entre las 22:00 y las 06:00. Cada convenio tiene un precio fijado por tabla.</p>
+            </div>
         </div>
     </section>
 
     <footer class="legal-info">
-        <p>© 2026 Sueldo Farmacia Pro. Datos informativos.</p>
-        <p><a href="privacidad.html">Política de Privacidad</a></p>
-        
+        <p>© 2026 Sueldo Farmacia Pro. Datos informativos basados en convenios vigentes.</p>
         <div style="display: none;">
             <a href="https://librecounter.org/referer/show" target="_blank">
                 <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" />
@@ -143,7 +132,7 @@
 </main>
 
 <div id="cookie-banner" class="cookie-banner">
-    <p>Utilizamos cookies técnicas para recordar tu configuración. <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button></p>
+    <p>Utilizamos cookies para mejorar tu experiencia. <button onclick="aceptarCookies()">Aceptar</button></p>
 </div>
 
 <script src="script.js"></script>
