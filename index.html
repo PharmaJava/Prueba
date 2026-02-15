@@ -3,33 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sueldo Farmacia Pro | Calculadora Oficial Convenio 2024-2026</title>
-    <meta name="description" content="Calcula tu sueldo neto real en farmacia según el XXV Convenio Nacional y provinciales como Barcelona, Girona, Tarragona y Asturias.">
+    <title>Sueldo Farmacia Pro | Calculadora XXV Convenio 2024-2026</title>
+    <meta name="description" content="Calcula tu sueldo neto real en farmacia según el XXV Convenio Nacional y convenios provinciales. Actualizado a 2026 con MEI e IRPF.">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <main class="container">
     <header class="header">
-        <i class="fas fa-hand-holding-medical"></i>
-        <h1>Sueldo Farmacia Pro</h1>
+        <div class="logo-area">
+            <i class="fas fa-hand-holding-medical"></i>
+            <h1>Sueldo Farmacia Pro</h1>
+        </div>
         <p>Calculadora Multiconvenio Actualizada 2026</p>
     </header>
 
-    <div id="capture-area">
+    <div id="capture-area" class="capture-wrapper">
         <section class="calculator-grid">
+            
             <div class="input-group full-width-input">
-                <label for="convenio" style="color: var(--primary); font-weight: bold;">Selecciona tu Convenio</label>
+                <label for="convenio">Convenio Aplicable</label>
                 <select id="convenio">
                     <option value="nacional" selected>Nacional (XXV Convenio)</option>
                     <option value="barcelona">Barcelona (Provincial)</option>
-                    <option value="gironatarragona">Girona y Tarragona</option>
+                    <option value="gironatarragona">Girona / Tarragona</option>
                     <option value="euskadi">País Vasco (Euskadi)</option>
                     <option value="asturias">Asturias (15 pagas)</option>
                 </select>
@@ -68,7 +72,7 @@
             <div class="input-group">
                 <label for="numPagas">Nº Pagas</label>
                 <select id="numPagas">
-                    <option value="12">12 pagas (Prorrateadas)</option>
+                    <option value="12">12 pagas</option>
                     <option value="14" selected>14 pagas</option>
                     <option value="15">15 pagas (Asturias)</option>
                 </select>
@@ -85,13 +89,13 @@
             </div>
 
             <div class="input-group full-width-input">
-                <label for="porcentajeIRPF" style="color: var(--primary);">Retención IRPF (%)</label>
+                <label for="porcentajeIRPF" style="color: #10b981; font-weight: 700;">Retención IRPF (%)</label>
                 <input type="number" id="porcentajeIRPF" value="15.00" step="0.5">
             </div>
         </section>
 
         <details class="advanced-settings">
-            <summary>Ajustes de Cotización (MEI, SS...) <i class="fas fa-cog"></i></summary>
+            <summary>Configuración de Cotización (SS / MEI) <i class="fas fa-chevron-down"></i></summary>
             <div class="settings-content">
                 <div class="input-group"><label>C. Comunes (%)</label><input type="number" id="cotizacionContComu" value="4.80"></div>
                 <div class="input-group"><label>Desempleo (%)</label><input type="number" id="cotizacionDesempleo" value="1.55"></div>
@@ -104,7 +108,9 @@
             <canvas id="salaryChart"></canvas>
         </div>
 
-        <div id="resultados" class="results-container"></div>
+        <div id="resultados" class="results-container">
+            </div>
+
         <p class="watermark">conveniodefarmacia.com</p>
     </div>
 
@@ -113,21 +119,34 @@
     </button>
 
     <section class="info-section">
-        <h2>Información sobre tu convenio</h2>
+        <h2>Información sobre el Salario en Farmacia</h2>
         <div class="faq-container">
-            <details class="faq-item" open>
-                <summary>¿Cómo se calcula la antigüedad?</summary>
-                <p>En el Convenio Nacional y Cataluña se usan <strong>Trienios</strong> (importes fijos). En Asturias se usan <strong>Quinquenios</strong> que equivalen al 5% del salario base de tu categoría.</p>
+            <details class="faq-item">
+                <summary>¿Qué conceptos incluye el sueldo base en 2026?</summary>
+                <p>Según el XXV Convenio Colectivo, incluye el salario base por categoría, Plus de Facultativo y nocturnidad según tablas vigentes.</p>
             </details>
             <details class="faq-item">
-                <summary>¿Qué incluye la paga extra?</summary>
-                <p>Normalmente incluye el Salario Base y el Plus de Facultativo (si corresponde) junto con la antigüedad. Las mejoras voluntarias suelen cobrarse solo en las 12 mensualidades ordinarias.</p>
+                <summary>¿Cómo se calculan las horas nocturnas?</summary>
+                <p>La nocturnidad se abona por cada hora trabajada entre las 22:00 y las 06:00. El valor varía según categoría y no se incluye en las pagas extras.</p>
+            </details>
+            <details class="faq-item">
+                <summary>¿Qué es el MEI que aparece en mi nómina?</summary>
+                <p>Es el Mecanismo de Equidad Intergeneracional, una cotización para la sostenibilidad de las pensiones (0,15% para el trabajador en 2026).</p>
+            </details>
+            <details class="faq-item">
+                <summary>¿Diferencia entre 12 y 14 pagas?</summary>
+                <p>En 12 pagas se prorratean las extras mensualmente. En 14 pagas se cobran completas en junio y diciembre.</p>
             </details>
         </div>
+        <article class="seo-text">
+            <p>Esta calculadora está actualizada con las tablas salariales del XXV Convenio de Oficinas de Farmacia para el periodo 2022-2026. Nuestra misión es ayudar a los profesionales del sector farmacéutico a entender sus deducciones de IRPF y Seguridad Social de forma gratuita y transparente.</p>
+        </article>
     </section>
 
     <footer class="legal-info">
-        <p>© 2026 Sueldo Farmacia Pro. Datos basados en tablas oficiales.</p>
+        <p>Datos basados en el XXV Convenio de Oficinas de Farmacia.</p>
+        <p><a href="privacidad.html" target="_blank" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
+        
         <div style="display: none;">
             <a href="https://librecounter.org/referer/show" target="_blank">
                 <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" />
@@ -137,9 +156,18 @@
 </main>
 
 <div id="cookie-banner" class="cookie-banner">
-    <p>Usamos cookies técnicas para guardar tu configuración. <button onclick="aceptarCookies()">Aceptar</button></p>
+    <p>Utilizamos cookies técnicas para el funcionamiento de la calculadora.
+        <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button>
+    </p>
+</div>
+
+<div class="donation-banner">
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR" target="_blank">
+        <i class="fas fa-coffee"></i> Cómprame un café
+    </a>
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
