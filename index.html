@@ -2,100 +2,159 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Salarial Farmacia 2026 | Convenio Colectivo</title>
-    <meta name="description" content="Calcula tu sueldo neto real en oficina de farmacia según el XXV convenio. Actualizado para 2022-2026.">
-    <link rel="canonical" href="https://conveniodefarmacia.com/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sueldo Farmacia Pro | Calculadora XXV Convenio 2026</title>
+    <meta name="description" content="Calculadora gratuita de sueldo neto para farmacia. Actualizada al XXV Convenio (2024-2026). Calcula IRPF, MEI y horas nocturnas.">
+    
+    <link rel="icon" type="image/png" href="IMG_9941.png">
+    
+    <meta property="og:title" content="Calculadora Sueldo Farmacia 2026 🏥">
+    <meta property="og:description" content="Calcula tu sueldo neto real según el XXV Convenio. Herramienta gratuita para farmacéuticos y técnicos.">
+    <meta property="og:image" content="https://conveniodefarmacia.com/IMG_9941.png">
+    <meta property="og:url" content="https://conveniodefarmacia.com">
+    <meta property="og:type" content="website">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-</head>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    </head>
 <body>
 
 <main class="container">
     <header class="header">
         <i class="fas fa-calculator"></i>
-        <h1>Sueldo Farmacia</h1>
+        <h1>Sueldo Farmacia Pro</h1>
     </header>
 
-    <section class="calculator-grid">
-        <div class="input-group">
-            <label for="profesion">Profesión</label>
-            <select id="profesion">
-                <option value="farmaceutico">Farmacéutico/a</option>
-                <option value="tecnico">Técnico/a</option>
-                <option value="auxiliar">Auxiliar</option>
-            </select>
-        </div>
+    <div id="capture-area">
+        <section class="calculator-grid">
+            <div class="input-group">
+                <label for="profesion">Profesión</label>
+                <select id="profesion">
+                    <option value="farmaceutico">Farmacéutico/a</option>
+                    <option value="tecnico">Técnico/a</option>
+                    <option value="auxiliar">Auxiliar</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="anio">Año</label>
+                <select id="anio">
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026" selected>2026</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="numPagas">Distribución</label>
+                <select id="numPagas">
+                    <option value="12">12 pagas</option>
+                    <option value="14" selected>14 pagas</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="porcentaje">Jornada (%)</label>
+                <input type="number" id="porcentaje" value="100" inputmode="decimal">
+            </div>
+            
+            <div class="input-group">
+                <label for="numHoras">Nocturnas (este mes)</label>
+                <input type="number" id="numHoras" value="0" inputmode="decimal">
+            </div>
+            <div class="input-group">
+                <label for="mejoraSalarial">Mejora (€/mes)</label>
+                <input type="number" id="mejoraSalarial" value="0" step="0.01" inputmode="decimal">
+            </div>
 
-        <div class="input-group">
-            <label for="anio">Año del convenio</label>
-            <select id="anio">
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026" selected>2026</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label for="numPagas">Distribución de pagas</label>
-            <select id="numPagas">
-                <option value="12" selected>12 pagas (Prorrateadas)</option>
-                <option value="14">14 pagas (Con extras)</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label for="porcentaje">Jornada laboral (%)</label>
-            <input type="number" id="porcentaje" value="100" min="1" max="100" inputmode="decimal">
-        </div>
-
-        <div class="input-group">
-            <label for="numHoras">Horas nocturnas/mes</label>
-            <input type="number" id="numHoras" value="0" min="0" inputmode="decimal">
-        </div>
-
-        <div class="input-group">
-            <label for="mejoraSalarial">Mejora salarial mensual (€)</label>
-            <input type="number" id="mejoraSalarial" value="0" step="0.01" inputmode="decimal">
-        </div>
+            <div class="input-group full-width-input">
+                <label for="porcentajeIRPF" style="color: var(--primary);">Retención IRPF (%)</label>
+                <input type="number" id="porcentajeIRPF" value="15.86" step="0.01" inputmode="decimal" style="border-color: var(--primary);">
+            </div>
+        </section>
 
         <details class="advanced-settings">
-            <summary>Configuración de impuestos y SS <i class="fas fa-cog"></i></summary>
+            <summary>Ajustes Técnicos (SS, Desempleo, MEI) <i class="fas fa-sliders-h"></i></summary>
             <div class="settings-content">
                 <div class="input-group">
-                    <label for="porcentajeIRPF">Retención IRPF (%)</label>
-                    <input type="number" id="porcentajeIRPF" value="15.86" step="0.01" inputmode="decimal">
+                    <label>C. Comunes (%)</label>
+                    <input type="number" id="cotizacionContComu" value="4.80" step="0.01">
                 </div>
                 <div class="input-group">
-                    <label for="cotizacionContComu">Contingencias Comunes (%)</label>
-                    <input type="number" id="cotizacionContComu" value="4.80" step="0.01" inputmode="decimal">
+                    <label>Desempleo (%)</label>
+                    <input type="number" id="cotizacionDesempleo" value="1.55" step="0.01">
                 </div>
                 <div class="input-group">
-                    <label for="cotizacionDesempleo">Desempleo (%)</label>
-                    <input type="number" id="cotizacionDesempleo" value="1.55" step="0.01" inputmode="decimal">
+                    <label>MEI (%)</label>
+                    <input type="number" id="cotizacionMEI" value="0.15" step="0.01">
                 </div>
                 <div class="input-group">
-                    <label for="cotizacionMEI">MEI (%)</label>
-                    <input type="number" id="cotizacionMEI" value="0.15" step="0.01" inputmode="decimal">
-                </div>
-                <div class="input-group" style="display:none">
-                    <input type="number" id="cotizacionFormacion" value="0.10">
+                    <label>Formación (%)</label>
+                    <input type="number" id="cotizacionFormacion" value="0.10" step="0.01">
                 </div>
             </div>
         </details>
-    </section>
 
-    <div id="resultados" class="results-container">
-        <p class="placeholder-text">Introduce tus datos para ver el cálculo</p>
+        <div class="chart-container">
+            <canvas id="salaryChart"></canvas>
+        </div>
+
+        <div id="resultados" class="results-container"></div>
+        
+        <p class="watermark">Generado en conveniodefarmacia.com</p>
     </div>
 
+    <button onclick="exportarImagen()" class="btn-export">
+        <i class="fab fa-whatsapp"></i> Compartir Resultado
+    </button>
+
+    <section class="info-section">
+        <h2>Información sobre el Salario en Farmacia</h2>
+        <div class="faq-container">
+            <details class="faq-item">
+                <summary>¿Qué conceptos incluye el sueldo base en 2026?</summary>
+                <p>Según el XXV Convenio Colectivo, incluye el salario base por categoría, Plus de Facultativo y nocturnidad según tablas vigentes.</p>
+            </details>
+            <details class="faq-item">
+                <summary>¿Cómo se calculan las horas nocturnas?</summary>
+                <p>La nocturnidad se abona por cada hora trabajada entre las 22:00 y las 06:00. El valor varía según categoría y no se incluye en las pagas extras.</p>
+            </details>
+            <details class="faq-item">
+                <summary>¿Qué es el MEI que aparece en mi nómina?</summary>
+                <p>Es el Mecanismo de Equidad Intergeneracional, una cotización para la sostenibilidad de las pensiones (0,15% para el trabajador en 2026).</p>
+            </details>
+            <details class="faq-item">
+                <summary>¿Diferencia entre 12 y 14 pagas?</summary>
+                <p>En 12 pagas se prorratean las extras mensualmente. En 14 pagas se cobran completas en junio y diciembre.</p>
+            </details>
+        </div>
+        <article class="seo-text">
+            <p>Esta calculadora está actualizada con las tablas salariales del XXV Convenio de Oficinas de Farmacia para el periodo 2022-2026. Nuestra misión es ayudar a los profesionales del sector farmacéutico a entender sus deducciones de IRPF y Seguridad Social de forma gratuita y transparente.</p>
+        </article>
+    </section>
+
     <footer class="legal-info">
-        <p>Datos basados en el <strong>XXV Convenio Colectivo de Oficinas de Farmacia</strong>.</p>
+        <p>Datos basados en el XXV Convenio de Oficinas de Farmacia.</p>
+        <p><a href="privacidad.html" target="_blank" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
+        
+        <div style="display: none;">
+    <a href="https://librecounter.org/referer/show" target="_blank">
+        <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" />
+    </a>
+</div>
+
     </footer>
 </main>
+
+<div id="cookie-banner" class="cookie-banner">
+    <p>Utilizamos cookies técnicas para el funcionamiento de la calculadora.
+        <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button>
+    </p>
+</div>
 
 <div class="donation-banner">
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR" target="_blank">
