@@ -1,141 +1,129 @@
 :root {
-    --primary-color: #4f46e5;
-    --secondary-color: #6366f1;
-    --text-color: #1f2937;
-    --bg-color: #f9fafb;
-    --accent-color: #10b981;
-    --error-color: #ef4444;
-    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --primary: #4f46e5;
+    --text: #1f2937;
+    --neto: #10b981;
+    --irpf: #ef4444;
+    --ss: #f59e0b;
+    --bg: #f8fafc;
 }
 
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    background: #f0f2f5;
     margin: 0;
+    padding: 10px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
 }
 
 .container {
     background: white;
-    padding: 2rem;
+    padding: 1.25rem;
     border-radius: 1.5rem;
-    box-shadow: var(--shadow);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     max-width: 32rem;
-    width: 90%;
-    margin: 20px;
+    width: 100%;
+    margin-bottom: 80px;
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
+#capture-area { background: white; padding: 5px; border-radius: 1rem; }
 
-h1 {
-    font-size: 1.5rem;
-    color: var(--text-color);
-    margin: 0.5rem 0;
-}
+.header { text-align: center; margin-bottom: 1rem; }
+.header h1 { font-size: 1.3rem; color: var(--primary); margin: 0.5rem; }
 
 .calculator-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 0.6rem;
 }
 
-.input-group {
-    display: flex;
-    flex-direction: column;
+/* Para que el IRPF ocupe todo el ancho si queremos destacarlo */
+.full-width-input {
+    grid-column: 1 / -1;
 }
 
-@media (max-width: 480px) {
-    .calculator-grid { grid-template-columns: 1fr; }
+label { font-size: 0.65rem; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; display: block; }
+input, select { 
+    width: 100%;
+    padding: 0.6rem; 
+    border: 1px solid #e5e7eb; 
+    border-radius: 0.4rem; 
+    font-size: 0.9rem;
+    box-sizing: border-box;
 }
 
-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #6b7280;
-    margin-bottom: 0.25rem;
-}
-
-select, input {
-    padding: 0.6rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    font-size: 0.95rem;
-    background: #fff;
-}
-
-/* Ajustes avanzados */
 .advanced-settings {
     grid-column: 1 / -1;
-    background: #f8fafc;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #e2e8f0;
+    margin-top: 1rem;
+    background: #f1f5f9;
+    padding: 0.8rem;
+    border-radius: 0.6rem;
 }
 
-.advanced-settings summary {
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    color: var(--primary-color);
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-}
+.advanced-settings summary { font-size: 0.75rem; font-weight: 600; color: var(--text); cursor: pointer; }
 
 .settings-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-top: 1rem;
-}
-
-/* Resultados */
-.results-container {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: #f3f4f6;
-    border-radius: 1rem;
-    border-left: 4px solid var(--primary-color);
-}
-
-.result-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-}
-
-.neto { color: var(--accent-color); font-weight: 700; font-size: 1.1rem; }
-.bruto-anual { font-weight: 600; }
-.diferencia {
-    font-size: 0.8rem;
-    color: var(--primary-color);
-    background: #e0e7ff;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    gap: 0.5rem;
     margin-top: 0.5rem;
-    display: inline-block;
 }
 
-.legal-info {
-    text-align: center;
-    font-size: 0.7rem;
-    color: #9ca3af;
-    margin-top: 1.5rem;
+.chart-container { height: 220px; margin: 1.5rem 0; position: relative; }
+
+.results-container {
+    background: var(--bg);
+    padding: 1rem;
+    border-radius: 0.8rem;
+    border-left: 4px solid var(--primary);
 }
+
+.result-item { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; align-items: center; }
+.neto-big { color: var(--neto); font-weight: 800; font-size: 1.2rem; }
+.concepto-extra { font-size: 0.8rem; color: #64748b; font-style: italic; }
+
+.btn-export {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.9rem;
+    background: #25D366;
+    color: white;
+    border: none;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.info-section { margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
+.info-section h2 { font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem; }
+.faq-container { display: flex; flex-direction: column; gap: 0.5rem; }
+.faq-item { background: #fff; border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.6rem; }
+.faq-item summary { font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--text); }
+.faq-item p { font-size: 0.75rem; color: #64748b; margin-top: 0.4rem; line-height: 1.4; }
+.seo-text { margin-top: 1rem; font-size: 0.7rem; color: #94a3b8; text-align: justify; }
+
+.watermark { text-align: center; font-size: 0.6rem; color: #cbd5e1; margin-top: 10px; }
+.legal-info { text-align: center; font-size: 0.7rem; color: #9ca3af; margin-top: 1.5rem; }
 
 .donation-banner {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
     background: white;
-    padding: 10px;
-    border-radius: 50px;
-    box-shadow: var(--shadow);
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 100;
+    white-space: nowrap;
 }
+.donation-banner a { text-decoration: none; color: var(--primary); font-size: 0.85rem; font-weight: 600; }
+
+.cookie-banner {
+    position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2937; color: white; padding: 10px; font-size: 0.75rem; display: none; justify-content: center; align-items: center; z-index: 9999;
+}
+.btn-cookie { background: var(--primary); color: white; border: none; padding: 4px 12px; border-radius: 4px; margin-left: 10px; cursor: pointer; }
