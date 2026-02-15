@@ -1,113 +1,137 @@
 let myChart = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const inputs = document.querySelectorAll('input, select');
-    inputs.forEach(input => input.addEventListener('input', calcularSalario));
-    
-    if (!localStorage.getItem('cookiesAceptadas')) {
-        document.getElementById('cookie-banner').style.display = 'flex';
+const conveniosData = {
+    nacional: {
+        pagas: 14,
+        antiguedadTipo: 'trienio', // Cada 3 años
+        "2024": {
+            farmaceutico: { base: 2137.03, plus: 330.51, nocturna: 1.70, antiguedad: 46.40 },
+            tecnico: { base: 1448.74, plus: 0, nocturna: 1.15, antiguedad: 31.48 },
+            auxiliar: { base: 1317.42, plus: 0, nocturna: 1.03, antiguedad: 28.14 }
+        }
+    },
+    barcelona: {
+        pagas: 14,
+        antiguedadTipo: 'trienio',
+        "2024": {
+            farmaceutico: { base: 2297.21, plus: 0, nocturna: 2.10, antiguedad: 52.10 }, // Incluye plus sustituto medio
+            tecnico: { base: 1515.20, plus: 0, nocturna: 1.35, antiguedad: 35.20 },
+            auxiliar: { base: 1365.40, plus: 0, nocturna: 1.20, antiguedad: 30.50 }
+        }
+    },
+    asturias: {
+        pagas: 15, // 12 + Junio + Diciembre + Beneficios (Marzo)
+        antiguedadTipo: 'quinquenio', // Cada 5 años = 6% del salario base
+        "2024": {
+            farmaceutico: { base: 2137.03, plus: 330.51, nocturna: 1.70, antiguedad: 0.06 }, // 6%
+            tecnico: { base: 1448.74, plus: 0, nocturna: 1.15, antiguedad: 0.06 },
+            auxiliar: { base: 1317.42, plus: 0, nocturna: 1.03, antiguedad: 0.06 }
+        }
+    },
+    euskadi: {
+        pagas: 14,
+        antiguedadTipo: 'trienio',
+        "2024": {
+            farmaceutico: { base: 2350.00, plus: 350.00, nocturna: 2.50, antiguedad: 55.00 },
+            tecnico: { base: 1600.00, plus: 0, nocturna: 1.60, antiguedad: 38.00 },
+            auxiliar: { base: 1450.00, plus: 0, nocturna: 1.45, antiguedad: 32.00 }
+        }
+    },
+    gironatarragona: {
+        pagas: 14,
+        antiguedadTipo: 'trienio',
+        "2024": {
+            farmaceutico: { base: 2180.15, plus: 335.00, nocturna: 1.85, antiguedad: 48.00 },
+            tecnico: { base: 1465.30, plus: 0, nocturna: 1.20, antiguedad: 32.50 },
+            auxiliar: { base: 1335.50, plus: 0, nocturna: 1.10, antiguedad: 29.20 }
+        }
     }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('input, select').forEach(input => input.addEventListener('input', calcularSalario));
     calcularSalario();
 });
 
-function aceptarCookies() {
-    localStorage.setItem('cookiesAceptadas', 'true');
-    document.getElementById('cookie-banner').style.display = 'none';
+function actualizarAntiguedadLabel() {
+    const conv = document.getElementById("convenio").value;
+    const label = document.getElementById("labelAntiguedad");
+    label.innerText = (conveniosData[conv].antiguedadTipo === 'quinquenio') ? "Nº Quinquenios" : "Nº Trienios";
+    calcularSalario();
 }
 
 function calcularSalario() {
-    // ESTRUCTURA: [Sueldo Base, Plus, Nocturnidad Hora, Valor 1 Trienio]
-    const convenios = {
-        nacional: {
-            "2024": { farmaceutico: [2064.16, 330.51, 1.70, 46.40], tecnico: [1400.26, 0, 1.15, 31.48], auxiliar: [1251.49, 0, 1.03, 28.14] },
-            "2025": { farmaceutico: [2105.44, 337.12, 1.73, 47.33], tecnico: [1428.27, 0, 1.17, 32.11], auxiliar: [1276.52, 0, 1.05, 28.70] },
-            "2026": { farmaceutico: [2147.55, 343.86, 1.76, 48.28], tecnico: [1456.84, 0, 1.19, 32.75], auxiliar: [1302.05, 0, 1.07, 29.27] }
-        },
-        barcelona: { // Datos 2024 base. 2025/26 aplican +2%
-            "2024": { farmaceutico: [2215.30, 485.20, 2.10, 52.10], tecnico: [1485.40, 0, 1.35, 35.20], auxiliar: [1350.20, 0, 1.20, 30.50] }
-        },
-        asturias: { // Asturias tiene pluses por antigüedad potentes
-            "2024": { farmaceutico: [2090.40, 340.20, 1.75, 49.80], tecnico: [1410.50, 0, 1.18, 33.60], auxiliar: [1260.30, 0, 1.05, 30.10] }
-        },
-        paisvasco: { // El convenio más alto de España
-            "2024": { farmaceutico: [2550.00, 520.00, 2.50, 65.00], tecnico: [1750.00, 0, 1.60, 45.00], auxiliar: [1550.00, 0, 1.45, 40.00] }
-        },
-        gironatarragona: {
-            "2024": { farmaceutico: [2180.15, 450.10, 2.05, 51.00], tecnico: [1450.30, 0, 1.30, 34.50], auxiliar: [1320.50, 0, 1.15, 29.80] }
-        }
-    };
-
     const conv = document.getElementById("convenio").value;
     const prof = document.getElementById("profesion").value;
-    const anio = document.getElementById("anio").value;
+    const anio = parseInt(document.getElementById("anio").value);
     const jornPct = parseFloat(document.getElementById("porcentaje").value) / 100;
-    const numPagas = parseInt(document.getElementById("numPagas").value);
-    const nTrienios = parseInt(document.getElementById("numTrienios").value) || 0;
+    const nAntiguedad = parseInt(document.getElementById("antiguedad").value) || 0;
     const irpfPct = parseFloat(document.getElementById("porcentajeIRPF").value) / 100;
+    const modoPagas = document.getElementById("numPagas").value;
 
-    // Lógica de obtención de datos con subida del 2% para convenios sin tablas publicadas
-    let base, plus, precioHora, valTrienio;
-    
-    if (convenios[conv][anio]) {
-        [base, plus, precioHora, valTrienio] = convenios[conv][anio][prof];
-    } else {
-        const d2024 = convenios[conv]["2024"][prof];
-        const factor = Math.pow(1.02, (parseInt(anio) - 2024));
-        base = d2024[0] * factor;
-        plus = d2024[1] * factor;
-        precioHora = d2024[2] * factor;
-        valTrienio = d2024[3] * factor;
+    let { base, plus, nocturna, antiguedad } = conveniosData[conv]["2024"][prof];
+    const pagasConvenio = conveniosData[conv].pagas;
+
+    // Aplicar subida del 2% anual si el año es > 2024
+    if (anio > 2024) {
+        const factor = Math.pow(1.02, anio - 2024);
+        base *= factor;
+        plus *= factor;
+        nocturna *= factor;
+        if (conveniosData[conv].antiguedadTipo === 'trienio') antiguedad *= factor;
     }
 
-    // Conceptos Brutos
-    const mejoraB = parseFloat(document.getElementById("mejoraSalarial").value) || 0;
-    const hNoc = parseFloat(document.getElementById("numHoras").value) || 0;
-    
+    // Cálculos mensuales
     const sueldoBaseM = base * jornPct;
-    const plusFaculM = plus * jornPct;
-    const trieniosM = (valTrienio * nTrienios) * jornPct;
-    const nocturnidadM = hNoc * precioHora;
-    
-    // El Bruto Extra se compone de Base + Plus + Trienios (La mejora suele ser 12 pagas)
-    const brutoPagaExtra = sueldoBaseM + plusFaculM + trieniosM;
-    const brutoNominaMes = brutoPagaExtra + mejoraB + nocturnidadM;
+    const plusM = plus * jornPct;
+    const nocturnidadM = (parseFloat(document.getElementById("numHoras").value) || 0) * nocturna;
+    const mejoraM = parseFloat(document.getElementById("mejoraSalarial").value) || 0;
 
-    // Impuestos (SS)
-    const totalSSPct = (parseFloat(document.getElementById("cotizacionContComu").value) +
-                        parseFloat(document.getElementById("cotizacionDesempleo").value) +
-                        parseFloat(document.getElementById("cotizacionMEI").value) +
-                        parseFloat(document.getElementById("cotizacionFormacion").value)) / 100;
-
-    let netoM, netoE, brutoAnual, irpfA, ssA;
-
-    if (numPagas === 12) {
-        // Todo a una bolsa común dividida entre 12
-        brutoAnual = (brutoPagaExtra * 14) + (mejoraB * 12) + (nocturnidadM * 12);
-        const bMensualProrrateado = brutoAnual / 12;
-        netoM = bMensualProrrateado * (1 - (totalSSPct + irpfPct));
-        ssA = brutoAnual * totalSSPct;
-        irpfA = brutoAnual * irpfPct;
+    let antiguedadM;
+    if (conveniosData[conv].antiguedadTipo === 'quinquenio') {
+        antiguedadM = (sueldoBaseM * antiguedad) * nAntiguedad; // 6% por quinquenio
     } else {
-        // 14 pagas: SS prorrateada, IRPF sobre el bruto real del mes
-        const prorrataE = (brutoPagaExtra * 2) / 12;
-        const baseCotiza = brutoNominaMes + prorrataE;
-        netoM = brutoNominaMes - (baseCotiza * totalSSPct) - (brutoNominaMes * irpfPct);
-        netoE = brutoPagaExtra * (1 - irpfPct);
-        brutoAnual = baseCotiza * 12;
-        ssA = brutoAnual * totalSSPct;
-        irpfA = (brutoNominaMes * 12 * irpfPct) + (brutoPagaExtra * 2 * irpfPct);
+        antiguedadM = antiguedad * nAntiguedad * jornPct;
     }
 
-    const netoAnual = brutoAnual - ssA - irpfA;
+    // El bruto de las pagas extras suele ser Base + Plus + Antigüedad
+    const brutoPagaExtra = sueldoBaseM + plusM + antiguedadM;
+    const brutoNominaMes = brutoPagaExtra + nocturnidadM + mejoraM;
 
-    updateChart(netoAnual, irpfA, ssA);
-    renderResults(numPagas, netoM, netoE, netoAnual, brutoAnual);
+    // Cotizaciones SS (Ajustadas 2026: 4.8 + 1.55 + 0.15 + 0.1)
+    const ssPct = 0.066; 
+
+    let netoM, netoExtra, brutoAnual, ssAnual, irpfAnual;
+
+    if (modoPagas === "12") {
+        brutoAnual = (brutoPagaExtra * pagasConvenio) + ((nocturnidadM + mejoraM) * 12);
+        const mensualProrrateado = brutoAnual / 12;
+        ssAnual = brutoAnual * ssPct;
+        irpfAnual = brutoAnual * irpfPct;
+        netoM = mensualProrrateado - (mensualProrrateado * ssPct) - (mensualProrrateado * irpfPct);
+    } else {
+        // Prorrata de extras para cotización (Las extras cotizan mes a mes)
+        const prorrataExtraM = (brutoPagaExtra * (pagasConvenio - 12)) / 12;
+        const baseCotizacion = brutoNominaMes + prorrataExtraM;
+        
+        ssAnual = baseCotizacion * 12 * ssPct;
+        irpfAnual = ((brutoNominaMes * 12) + (brutoPagaExtra * (pagasConvenio - 12))) * irpfPct;
+        
+        netoM = brutoNominaMes - (baseCotizacion * ssPct) - (brutoNominaMes * irpfPct);
+        netoExtra = brutoPagaExtra * (1 - irpfPct);
+        brutoAnual = (brutoNominaMes * 12) + (brutoPagaExtra * (pagasConvenio - 12));
+    }
+
+    const netoAnual = brutoAnual - ssAnual - irpfAnual;
+
+    updateChart(netoAnual, irpfAnual, ssAnual);
+    renderResults(modoPagas, pagasConvenio, netoM, netoExtra, netoAnual, brutoAnual);
 }
 
-function renderResults(pagas, nm, ne, na, ba) {
-    let res = `<div class="result-item"><span>Neto Mensual:</span><span class="neto-big">${nm.toFixed(2)}€</span></div>`;
-    if (pagas === 14) {
-        res += `<div class="result-item"><span>Paga Extra (Jun/Dic):</span><span class="neto-big" style="color:var(--primary)">${ne.toFixed(2)}€</span></div>`;
+function renderResults(modo, totalPagas, nm, ne, na, ba) {
+    let res = `<div class="result-item"><span>Neto Nómina Mensual:</span><span class="neto-big">${nm.toFixed(2)}€</span></div>`;
+    if (modo === "extra") {
+        res += `<div class="result-item"><span>Neto Paga Extra (${totalPagas - 12} al año):</span><span class="neto-big" style="color:var(--primary)">${ne.toFixed(2)}€</span></div>`;
     }
     res += `<hr style="margin:12px 0; border:0; border-top:1px solid #eee">
             <div class="result-item"><span>Bruto Anual:</span><span>${ba.toFixed(2)}€</span></div>
@@ -132,12 +156,6 @@ async function exportarImagen() {
     const area = document.getElementById('capture-area');
     const canvas = await html2canvas(area, { scale: 2 });
     const image = canvas.toDataURL("image/png");
-    if (navigator.share) {
-        const blob = await (await fetch(image)).blob();
-        const file = new File([blob], 'mi-nomina.png', { type: 'image/png' });
-        navigator.share({ files: [file], title: 'Calculadora Farmacia Pro' });
-    } else {
-        const link = document.createElement('a');
-        link.download = 'nomina.png'; link.href = image; link.click();
-    }
+    const link = document.createElement('a');
+    link.download = 'mi-sueldo-farmacia.png'; link.href = image; link.click();
 }
