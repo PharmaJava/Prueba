@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sueldo Farmacia Pro | Calculadora Oficial 2026</title>
+    <meta name="description" content="Calculadora de salario para farmacias con múltiples convenios: Nacional, Barcelona, Girona, Tarragona, País Vasco y Asturias. Actualizada 2026.">
+    <meta name="keywords" content="sueldo farmacia, calculadora salario farmacia, convenio farmacia, nómina farmacia 2026">
+    <link rel="canonical" href="https://conveniodefarmacia.com">
+    
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -23,19 +32,25 @@
 
     <div id="capture-area" class="capture-wrapper">
         <section class="calculator-grid">
+            <!-- Convenio -->
             <div class="input-group full-width-input">
-                <label for="convenio">Convenio Aplicable</label>
+                <label for="convenio">
+                    <i class="fas fa-file-contract"></i> Convenio Aplicable
+                </label>
                 <select id="convenio">
                     <option value="nacional" selected>Nacional (XXV Convenio)</option>
                     <option value="barcelona">Barcelona (Provincial)</option>
                     <option value="gironatarragona">Girona / Tarragona</option>
                     <option value="euskadi">País Vasco (Euskadi)</option>
-                    <option value="asturias">Asturias</option>
+                    <option value="asturias">Asturias (15 pagas)</option>
                 </select>
             </div>
 
+            <!-- Categoría Profesional -->
             <div class="input-group">
-                <label for="profesion">Categoría</label>
+                <label for="profesion">
+                    <i class="fas fa-user-md"></i> Categoría
+                </label>
                 <select id="profesion">
                     <option value="farmaceutico">Farmacéutico/a</option>
                     <option value="tecnico">Técnico/a</option>
@@ -43,13 +58,19 @@
                 </select>
             </div>
 
+            <!-- Antigüedad -->
             <div class="input-group">
-                <label id="labelAntiguedad" for="antiguedad">Nº Trienios</label>
-                <input type="number" id="antiguedad" value="0" min="0">
+                <label id="labelAntiguedad" for="antiguedad">
+                    <i class="fas fa-award"></i> Nº Trienios
+                </label>
+                <input type="number" id="antiguedad" value="0" min="0" max="20" step="1">
             </div>
 
+            <!-- Año -->
             <div class="input-group">
-                <label for="anio">Año</label>
+                <label for="anio">
+                    <i class="fas fa-calendar-alt"></i> Año
+                </label>
                 <select id="anio">
                     <option value="2022">2022</option>
                     <option value="2023">2023</option>
@@ -59,96 +80,231 @@
                 </select>
             </div>
 
+            <!-- Jornada -->
             <div class="input-group">
-                <label for="porcentaje">Jornada (%)</label>
-                <input type="number" id="porcentaje" value="100">
+                <label for="porcentaje">
+                    <i class="fas fa-clock"></i> Jornada (%)
+                </label>
+                <input type="number" id="porcentaje" value="100" min="1" max="100" step="1">
             </div>
 
+            <!-- Número de Pagas (se rellena dinámicamente) -->
             <div class="input-group">
-                <label for="numPagas">Nº Pagas</label>
+                <label for="numPagas">
+                    <i class="fas fa-money-bill-wave"></i> Nº Pagas
+                </label>
                 <select id="numPagas">
-                    </select>
+                    <option value="12">12 pagas</option>
+                    <option value="14" selected>14 pagas</option>
+                </select>
             </div>
 
+            <!-- Horas Nocturnas -->
             <div class="input-group">
-                <label for="numHoras">H. Nocturnas/mes</label>
-                <input type="number" id="numHoras" value="0">
+                <label for="numHoras">
+                    <i class="fas fa-moon"></i> H. Nocturnas/mes
+                </label>
+                <input type="number" id="numHoras" value="0" min="0" max="200" step="1">
             </div>
 
+            <!-- Mejora Voluntaria -->
             <div class="input-group full-width-input">
-                <label for="mejoraSalarial">Mejora Voluntaria Bruta (€/mes)</label>
-                <input type="number" id="mejoraSalarial" value="0" step="10">
+                <label for="mejoraSalarial">
+                    <i class="fas fa-hand-holding-usd"></i> Mejora Voluntaria Bruta (€/mes)
+                </label>
+                <input type="number" id="mejoraSalarial" value="0" step="10" min="0">
             </div>
 
+            <!-- IRPF -->
             <div class="input-group full-width-input">
-                <label for="porcentajeIRPF" style="color: #10b981; font-weight: 700;">Retención IRPF (%)</label>
-                <input type="number" id="porcentajeIRPF" value="15.00" step="0.5">
+                <label for="porcentajeIRPF" style="color: #10b981; font-weight: 700;">
+                    <i class="fas fa-percentage"></i> Retención IRPF (%)
+                </label>
+                <input type="number" id="porcentajeIRPF" value="15.00" step="0.5" min="0" max="47">
             </div>
         </section>
 
+        <!-- Configuración Avanzada SS -->
         <details class="advanced-settings">
-            <summary>Configuración de Cotización (SS / MEI) <i class="fas fa-chevron-down"></i></summary>
+            <summary>
+                <i class="fas fa-cog"></i> Configuración de Cotización (SS / MEI) 
+                <i class="fas fa-chevron-down"></i>
+            </summary>
             <div class="settings-content">
-                <div class="input-group"><label>C. Comunes (%)</label><input type="number" id="cotizacionContComu" value="4.80"></div>
-                <div class="input-group"><label>Desempleo (%)</label><input type="number" id="cotizacionDesempleo" value="1.55"></div>
-                <div class="input-group"><label>MEI (%)</label><input type="number" id="cotizacionMEI" value="0.15"></div>
-                <div class="input-group"><label>Formación (%)</label><input type="number" id="cotizacionFormacion" value="0.10"></div>
+                <div class="input-group">
+                    <label for="cotizacionContComu">Contingencias Comunes (%)</label>
+                    <input type="number" id="cotizacionContComu" value="4.80" step="0.01" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="cotizacionDesempleo">Desempleo (%)</label>
+                    <input type="number" id="cotizacionDesempleo" value="1.55" step="0.01" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="cotizacionMEI">MEI - Mecanismo Equidad (%)</label>
+                    <input type="number" id="cotizacionMEI" value="0.15" step="0.01" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="cotizacionFormacion">Formación Profesional (%)</label>
+                    <input type="number" id="cotizacionFormacion" value="0.10" step="0.01" min="0">
+                </div>
+                <p style="font-size: 0.75rem; color: #64748b; margin-top: 8px;">
+                    💡 Valores por defecto actualizados para 2026. Solo modifica si tienes bases especiales.
+                </p>
             </div>
         </details>
 
+        <!-- Gráfico -->
         <div class="chart-container">
             <canvas id="salaryChart"></canvas>
         </div>
 
+        <!-- Resultados -->
         <div id="resultados" class="results-container"></div>
+        
+        <!-- Watermark -->
         <p class="watermark">conveniodefarmacia.com</p>
     </div>
 
+    <!-- Botón Exportar -->
     <button onclick="exportarImagen()" class="btn-export">
         <i class="fab fa-whatsapp"></i> Compartir mi cálculo
     </button>
 
+    <!-- Sección Informativa -->
     <section class="info-section">
-        <h2>Información sobre el Salario en Farmacia</h2>
+        <h2>📚 Información sobre el Salario en Farmacia</h2>
+        
         <div class="faq-container">
             <details class="faq-item">
                 <summary>¿Qué conceptos incluye el sueldo base en 2026?</summary>
-                <p>Según el XXV Convenio Colectivo, incluye el salario base por categoría, Plus de Facultativo y nocturnidad según tablas vigentes.</p>
+                <p>Según el <strong>XXV Convenio Colectivo Nacional</strong>, incluye:</p>
+                <ul>
+                    <li>✓ Salario base por categoría profesional</li>
+                    <li>✓ Plus de Facultativo (solo farmacéuticos)</li>
+                    <li>✓ Plus de convenio provincial (si aplica)</li>
+                    <li>✓ Complemento de antigüedad (trienios o quinquenios)</li>
+                    <li>✓ Nocturnidad por horas trabajadas 22:00-06:00</li>
+                    <li>✓ Mejoras voluntarias pactadas con la empresa</li>
+                </ul>
             </details>
+
             <details class="faq-item">
                 <summary>¿Cómo se calculan las horas nocturnas?</summary>
-                <p>La nocturnidad se abona por cada hora trabajada entre las 22:00 y las 06:00. El valor varía según categoría y no se incluye en las pagas extras.</p>
+                <p>La <strong>nocturnidad</strong> se abona por cada hora trabajada entre las <strong>22:00 y las 06:00</strong> según el convenio.</p>
+                <p>El valor por hora varía según categoría profesional y convenio aplicable. Por ejemplo, en 2026:</p>
+                <ul>
+                    <li>Farmacéutico Nacional: <strong>2,66€/hora</strong></li>
+                    <li>Técnico Nacional: <strong>1,83€/hora</strong></li>
+                    <li>Auxiliar Nacional: <strong>1,80€/hora</strong></li>
+                </ul>
+                <p><strong>⚠️ Importante:</strong> La nocturnidad NO se incluye en las pagas extras.</p>
             </details>
+
             <details class="faq-item">
                 <summary>¿Qué es el MEI que aparece en mi nómina?</summary>
-                <p>Es el Mecanismo de Equidad Intergeneracional, una cotización para la sostenibilidad de las pensiones (0,15% para el trabajador en 2026).</p>
+                <p>El <strong>MEI (Mecanismo de Equidad Intergeneracional)</strong> es una cotización adicional establecida desde 2023 para garantizar la sostenibilidad del sistema público de pensiones.</p>
+                <p><strong>En 2026:</strong></p>
+                <ul>
+                    <li>Trabajador: <strong>0,15%</strong></li>
+                    <li>Empresa: <strong>0,60%</strong></li>
+                </ul>
+                <p>Se descuenta directamente de tu base de cotización junto con las demás cotizaciones a la Seguridad Social.</p>
             </details>
+
             <details class="faq-item">
-                <summary>¿Diferencia entre 12 y 14 pagas?</summary>
-                <p>En 12 pagas se prorratean las extras mensualmente. En 14 pagas se cobran completas en junio y diciembre.</p>
+                <summary>¿Diferencia entre 12, 14 y 15 pagas?</summary>
+                <p><strong>Sistema de 12 pagas:</strong> Las pagas extraordinarias (extras) se <strong>prorratean mensualmente</strong>. Cobras la misma cantidad todos los meses del año, pero no tienes pagas extras separadas en junio/diciembre.</p>
+                
+                <p><strong>Sistema de 14 pagas:</strong> El más común. Cobras <strong>2 pagas extras completas</strong> (junio y diciembre) además de las 12 nóminas ordinarias. La Seguridad Social se descuenta prorrateada cada mes, pero el IRPF solo se aplica cuando las cobras.</p>
+                
+                <p><strong>Sistema de 15 pagas (Asturias):</strong> Específico del convenio de Asturias. Se cobran <strong>3 pagas extras</strong> al año.</p>
+                
+                <p>💡 <strong>Tip:</strong> El bruto anual es idéntico en ambos sistemas, solo cambia cómo se distribuye a lo largo del año.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Qué son los trienios y quinquenios?</summary>
+                <p><strong>Trienios:</strong> Complemento de antigüedad que se cobra por cada <strong>3 años trabajados</strong> en la empresa. Es el sistema usado por la mayoría de convenios (Nacional, Barcelona, Girona/Tarragona, País Vasco).</p>
+                <p>Es un <strong>importe fijo mensual</strong> que SÍ se incluye en las pagas extras. Ejemplo Nacional 2026:</p>
+                <ul>
+                    <li>Farmacéutico: 48,28€/trienio</li>
+                    <li>Técnico: 32,75€/trienio</li>
+                    <li>Auxiliar: 29,27€/trienio</li>
+                </ul>
+                
+                <p><strong>Quinquenios (Asturias):</strong> Sistema del convenio asturiano. Se cobra cada <strong>5 años</strong> y equivale al <strong>5% del salario base</strong>.</p>
+                
+                <p>⚠️ La antigüedad se empieza a contar desde tu fecha de alta en la empresa, no desde que trabajas en el sector.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Qué convenios están disponibles en esta calculadora?</summary>
+                <p>Actualmente incluimos los siguientes convenios colectivos de oficinas de farmacia:</p>
+                <ul>
+                    <li><strong>Nacional (XXV Convenio):</strong> Aplicable en toda España si no hay convenio provincial</li>
+                    <li><strong>Barcelona:</strong> Convenio provincial de Barcelona</li>
+                    <li><strong>Girona / Tarragona:</strong> Convenio provincial conjunto</li>
+                    <li><strong>País Vasco (Euskadi):</strong> Convenio del País Vasco</li>
+                    <li><strong>Asturias:</strong> Con sistema de 15 pagas y quinquenios</li>
+                </ul>
+                <p>Todos actualizados con las tablas salariales 2022-2026.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Cómo funciona la jornada parcial?</summary>
+                <p>Si trabajas a <strong>jornada parcial</strong>, tu salario se calcula proporcionalmente.</p>
+                <p>Ejemplo: Al 50% de jornada cobras el 50% del salario base, plus, trienios, etc.</p>
+                <p><strong>⚠️ Atención:</strong> La nocturnidad NO se reduce proporcionalmente. Se paga el precio/hora completo por cada hora nocturna trabajada, independientemente de tu jornada.</p>
             </details>
         </div>
+
         <article class="seo-text">
-            <p>Esta calculadora está actualizada con las tablas salariales del XXV Convenio de Oficinas de Farmacia para el periodo 2022-2026. Nuestra misión es ayudar a los profesionales del sector farmacéutico a entender sus deducciones de IRPF y Seguridad Social de forma gratuita y transparente.</p>
+            <h3>🧮 Calculadora de Sueldo para Oficinas de Farmacia 2026</h3>
+            <p>Esta calculadora profesional está actualizada con las <strong>tablas salariales oficiales</strong> de múltiples convenios colectivos del sector farmacéutico: el XXV Convenio Nacional de Oficinas de Farmacia, y los convenios provinciales de Barcelona, Girona/Tarragona, País Vasco (Euskadi) y Asturias, todos vigentes para el periodo 2022-2026.</p>
+            
+            <p>Nuestra herramienta te permite calcular de forma <strong>precisa y gratuita</strong> tu salario neto mensual y anual, conocer las deducciones exactas de IRPF y Seguridad Social (incluyendo el nuevo MEI - Mecanismo de Equidad Intergeneracional), y comparar diferentes escenarios como jornadas parciales, trabajo nocturno, mejoras voluntarias y diferentes sistemas de pagas.</p>
+            
+            <p><strong>Características principales:</strong></p>
+            <ul>
+                <li>✅ Cálculo exacto según convenio colectivo oficial</li>
+                <li>✅ Múltiples convenios provinciales disponibles</li>
+                <li>✅ Soporte para trienios y quinquenios</li>
+                <li>✅ Cálculo de horas nocturnas</li>
+                <li>✅ Sistemas de 12, 14 y 15 pagas</li>
+                <li>✅ Visualización gráfica de deducciones</li>
+                <li>✅ Exportación y compartición de resultados</li>
+                <li>✅ 100% gratuito y sin registro</li>
+            </ul>
+            
+            <p>Todos los cálculos son transparentes y basados en la normativa laboral vigente. <strong>No recopilamos ni almacenamos datos personales.</strong> Esta herramienta es de uso orientativo; consulta siempre tu nómina oficial para datos exactos.</p>
         </article>
     </section>
 
+    <!-- Footer Legal -->
     <footer class="legal-info">
-        <p>Datos basados en el XXV Convenio de Oficinas de Farmacia.</p>
-        <p><a href="privacidad.html" target="_blank" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
-        <div style="display: none;"><a href="https://librecounter.org/referer/show" target="_blank"><img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" /></a></div>
+        <p>📋 Datos basados en el XXV Convenio Nacional de Oficinas de Farmacia y convenios provinciales aplicables.</p>
+        <p>⚖️ Uso orientativo. Consulta tu nómina oficial para datos contractuales exactos.</p>
+        <p><a href="privacidad.html" target="_blank" rel="noopener" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
+        <div style="display: none;">
+            <a href="https://librecounter.org/referer/show" target="_blank" rel="noopener">
+                <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" alt="Contador de visitas" />
+            </a>
+        </div>
     </footer>
 </main>
 
+<!-- Cookie Banner -->
 <div id="cookie-banner" class="cookie-banner">
-    <p>Utilizamos cookies técnicas para el funcionamiento de la calculadora.
+    <p>
+        🍪 Utilizamos cookies técnicas para el funcionamiento de la calculadora. No recopilamos datos personales.
         <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button>
     </p>
 </div>
 
+<!-- Donation Banner -->
 <div class="donation-banner">
-    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR" target="_blank">
-        <i class="fas fa-coffee"></i> Cómprame un café
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR" target="_blank" rel="noopener">
+        <i class="fas fa-coffee"></i> ¿Te ayudó? Cómprame un café ☕
     </a>
 </div>
 
