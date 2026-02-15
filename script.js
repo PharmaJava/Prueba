@@ -57,7 +57,7 @@ const DATA_CONVENIOS = {
     },
     asturias: {
         nombre: "Asturias",
-        tipoAnt: 'quinquenio', // 5% del base
+        tipoAnt: 'quinquenio',
         pagasDefecto: 15,
         tablas: {
             farmaceutico: { "2024": [2110.00, 330.51, 1.75, 0.05], "2025": [2152.20, 337.12, 1.78, 0.05], "2026": [2195.24, 343.86, 1.81, 0.05] },
@@ -161,8 +161,8 @@ function calcularSalario() {
     // Bruto Mensual (Nomina normal)
     const brutoMes = sueldoBaseMes + valorNocturnidadMes;
 
-    // Bruto Paga Extra (Normalmente Sueldo Base + Plus + Antigüedad)
-    const brutoExtra = sueldoBaseMes - mejora; 
+    // Bruto Paga Extra (Sin nocturnidad, pero CON mejora y antigüedad) - CORREGIDO
+    const brutoExtra = sueldoBaseMes;
 
     let baseCalculoSS = 0;
     let netoMensual = 0;
