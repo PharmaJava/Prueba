@@ -8,97 +8,97 @@ let myChart = null;
 const DATA_CONVENIOS = {
     nacional: { 
         nombre: "Nacional (XXV Convenio)", 
-        tipoAnt: 'trienio', 
+        tipoAnt: 'ninguno', 
         tablas: {
             farmaceutico: { 
-                "2022": [1985.35, 81.70, 2.48, 43.60], 
-                "2023": [2064.76, 84.97, 2.48, 45.00], 
-                "2024": [2137.03, 87.94, 2.56, 46.40], 
-                "2025": [2180.77, 89.70, 2.61, 47.33], 
-                "2026": [2224.39, 91.49, 2.66, 48.28] 
+                "2022": [1985.35, 81.70, 2.48, 0], 
+                "2023": [2064.76, 84.97, 2.48, 0], 
+                "2024": [2137.03, 87.94, 2.56, 0], 
+                "2025": [2180.77, 89.70, 2.61, 0], 
+                "2026": [2224.39, 91.49, 2.66, 0] 
             },
             tecnico: { 
-                "2022": [1345.92, 0, 1.62, 29.58], 
-                "2023": [1399.75, 0, 1.69, 30.50], 
-                "2024": [1448.74, 0, 1.75, 31.48], 
-                "2025": [1477.71, 0, 1.79, 32.11], 
-                "2026": [1507.26, 0, 1.83, 32.75] 
+                "2022": [1345.92, 0, 1.62, 0], 
+                "2023": [1399.75, 0, 1.69, 0], 
+                "2024": [1448.74, 0, 1.75, 0], 
+                "2025": [1477.71, 0, 1.79, 0], 
+                "2026": [1507.26, 0, 1.83, 0] 
             },
             auxiliar: { 
-                "2022": [1223.91, 0, 1.61, 26.44], 
-                "2023": [1272.87, 0, 1.68, 27.50], 
-                "2024": [1316.58, 0, 1.73, 28.14], 
-                "2025": [1342.91, 0, 1.76, 28.70], 
-                "2026": [1369.77, 0, 1.80, 29.27] 
+                "2022": [1223.91, 0, 1.61, 0], 
+                "2023": [1272.87, 0, 1.68, 0], 
+                "2024": [1316.58, 0, 1.73, 0], 
+                "2025": [1342.91, 0, 1.76, 0], 
+                "2026": [1369.77, 0, 1.80, 0] 
             }
         }
     },
     barcelona: { 
         nombre: "Barcelona (Provincial)", 
-        tipoAnt: 'trienio', 
+        tipoAnt: 'ninguno', 
         tablas: {
             farmaceutico: { 
-                "2024": [2297.21, 0, 2.15, 52.14], 
-                "2025": [2343.15, 0, 2.19, 53.18], 
-                "2026": [2390.01, 0, 2.23, 54.24] 
+                "2024": [2297.21, 0, 2.15, 0], 
+                "2025": [2343.15, 0, 2.19, 0], 
+                "2026": [2390.01, 0, 2.23, 0] 
             },
             tecnico: { 
-                "2024": [1515.20, 0, 1.40, 34.20], 
-                "2025": [1545.50, 0, 1.43, 34.88], 
-                "2026": [1576.41, 0, 1.46, 35.58] 
+                "2024": [1515.20, 0, 1.40, 0], 
+                "2025": [1545.50, 0, 1.43, 0], 
+                "2026": [1576.41, 0, 1.46, 0] 
             },
             auxiliar: { 
-                "2024": [1365.40, 0, 1.25, 30.15], 
-                "2025": [1392.71, 0, 1.28, 30.75], 
-                "2026": [1420.56, 0, 1.31, 31.37] 
+                "2024": [1365.40, 0, 1.25, 0], 
+                "2025": [1392.71, 0, 1.28, 0], 
+                "2026": [1420.56, 0, 1.31, 0] 
             }
         }
     },
     gironatarragona: { 
         nombre: "Girona / Tarragona", 
-        tipoAnt: 'trienio', 
+        tipoAnt: 'ninguno', 
         tablas: {
             farmaceutico: { 
-                "2024": [2180.50, 220.00, 1.95, 49.50], 
-                "2025": [2224.11, 224.40, 1.98, 50.49], 
-                "2026": [2268.59, 228.89, 2.02, 51.50] 
+                "2024": [2180.50, 220.00, 1.95, 0], 
+                "2025": [2224.11, 224.40, 1.98, 0], 
+                "2026": [2268.59, 228.89, 2.02, 0] 
             },
             tecnico: { 
-                "2024": [1460.30, 0, 1.30, 32.80], 
-                "2025": [1489.50, 0, 1.32, 33.45], 
-                "2026": [1519.29, 0, 1.35, 34.12] 
+                "2024": [1460.30, 0, 1.30, 0], 
+                "2025": [1489.50, 0, 1.32, 0], 
+                "2026": [1519.29, 0, 1.35, 0] 
             },
             auxiliar: { 
-                "2024": [1310.15, 0, 1.15, 29.20], 
-                "2025": [1336.35, 0, 1.17, 29.78], 
-                "2026": [1363.08, 0, 1.19, 30.38] 
+                "2024": [1310.15, 0, 1.15, 0], 
+                "2025": [1336.35, 0, 1.17, 0], 
+                "2026": [1363.08, 0, 1.19, 0] 
             }
         }
     },
     asturias: { 
         nombre: "Asturias", 
-        tipoAnt: 'quinquenio', 
+        tipoAnt: 'ninguno', 
         tablas: {
             farmaceutico: { 
-                "2024": [2110.00, 330.51, 1.75, 0.05], 
-                "2025": [2152.20, 337.12, 1.78, 0.05], 
-                "2026": [2195.24, 343.86, 1.81, 0.05] 
+                "2024": [2110.00, 330.51, 1.75, 0], 
+                "2025": [2152.20, 337.12, 1.78, 0], 
+                "2026": [2195.24, 343.86, 1.81, 0] 
             },
             tecnico: { 
-                "2024": [1430.00, 0, 1.18, 0.05], 
-                "2025": [1458.60, 0, 1.20, 0.05], 
-                "2026": [1487.77, 0, 1.22, 0.05] 
+                "2024": [1430.00, 0, 1.18, 0], 
+                "2025": [1458.60, 0, 1.20, 0], 
+                "2026": [1487.77, 0, 1.22, 0] 
             },
             auxiliar: { 
-                "2024": [1280.00, 0, 1.05, 0.05], 
-                "2025": [1305.60, 0, 1.07, 0.05], 
-                "2026": [1331.71, 0, 1.09, 0.05] 
+                "2024": [1280.00, 0, 1.05, 0], 
+                "2025": [1305.60, 0, 1.07, 0], 
+                "2026": [1331.71, 0, 1.09, 0] 
             }
         }
     },
     euskadi: { 
         nombre: "País Vasco (Euskadi)", 
-        tipoAnt: 'trienio', 
+        tipoAnt: 'quinquenio', 
         tablas: {
             farmaceutico: { 
                 "2024": [2450.00, 0, 2.50, 60.00], 
@@ -144,16 +144,29 @@ function updateUIForConvenio() {
     const convKey = document.getElementById('convenio').value;
     const config = DATA_CONVENIOS[convKey];
     const pagasSelect = document.getElementById('numPagas');
+    const antiguedadInput = document.getElementById('antiguedad');
+    const antiguedadGroup = antiguedadInput.closest('.input-group');
     const labelAnt = document.getElementById('labelAntiguedad');
 
-    // 1. Actualizar Texto de Antigüedad
-    if(labelAnt) {
-        labelAnt.innerText = config.tipoAnt === 'quinquenio' ? "Nº Quinquenios" : "Nº Trienios";
+    // 1. MOSTRAR/OCULTAR Y HABILITAR/DESHABILITAR campo de antigüedad
+    if (config.tipoAnt === 'ninguno') {
+        // Deshabilitar y atenuar visualmente
+        antiguedadInput.disabled = true;
+        antiguedadInput.value = 0;
+        antiguedadGroup.style.opacity = '0.5';
+        antiguedadGroup.style.pointerEvents = 'none';
+        if(labelAnt) labelAnt.innerText = "Antigüedad (No disponible)";
+    } else if (config.tipoAnt === 'quinquenio') {
+        // Habilitar para quinquenios (País Vasco)
+        antiguedadInput.disabled = false;
+        antiguedadGroup.style.opacity = '1';
+        antiguedadGroup.style.pointerEvents = 'auto';
+        if(labelAnt) labelAnt.innerText = "Nº Quinquenios";
     }
 
     // 2. RESTRINGIR PAGAS DINÁMICAMENTE según convenio
     const currentVal = pagasSelect.value;
-    pagasSelect.innerHTML = ''; // Limpiar opciones
+    pagasSelect.innerHTML = '';
 
     // Todos tienen 12 pagas como opción
     pagasSelect.options.add(new Option("12 pagas", "12"));
@@ -161,12 +174,10 @@ function updateUIForConvenio() {
     if (convKey === 'asturias') {
         // Asturias: 12 o 15 pagas
         pagasSelect.options.add(new Option("15 pagas", "15"));
-        // Mantener selección previa si es válida, sino default a 15
         pagasSelect.value = (currentVal === "12" || currentVal === "15") ? currentVal : "15";
     } else {
         // Resto de convenios: 12 o 14 pagas
         pagasSelect.options.add(new Option("14 pagas", "14"));
-        // Mantener selección previa si es válida, sino default a 14
         pagasSelect.value = (currentVal === "12" || currentVal === "14") ? currentVal : "14";
     }
 }
@@ -203,12 +214,10 @@ function calcularSalario() {
     // 4. Calcular antigüedad según tipo
     let importeAntiguedadMes = 0;
     if (convData.tipoAnt === 'quinquenio') {
-        // Quinquenio = % del base (Asturias)
-        importeAntiguedadMes = (base * valAnt * numAntiguedad) * jornPct;
-    } else {
-        // Trienio = importe fijo
+        // Quinquenio País Vasco = importe fijo por quinquenio
         importeAntiguedadMes = (valAnt * numAntiguedad) * jornPct;
     }
+    // Si es 'ninguno', importeAntiguedadMes queda en 0
 
     // 5. Cálculo de conceptos mensuales
     const sueldoBaseMes = (base * jornPct) + (plus * jornPct) + mejora + importeAntiguedadMes; 
