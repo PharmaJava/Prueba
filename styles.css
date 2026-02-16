@@ -1,335 +1,129 @@
-/* ========================================
-   ESTILOS RESPONSIVOS ADICIONALES
-   Para añadir al final de tu styles.css existente
-   o cargar como archivo separado
-   ======================================== */
-
-/* TABLET - Expandir ligeramente */
-@media screen and (min-width: 768px) and (max-width: 1024px) {
-    .container {
-        max-width: 700px;
-        padding: 30px 20px;
-    }
-    
-    .calculator-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-    
-    .full-width-input {
-        grid-column: 1 / -1;
-    }
-    
-    .header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .input-group label {
-        font-size: 0.95rem;
-    }
-    
-    .input-group input,
-    .input-group select {
-        font-size: 0.95rem;
-        padding: 12px;
-    }
+:root {
+    --primary: #4f46e5;
+    --text: #1f2937;
+    --neto: #10b981;
+    --irpf: #ef4444;
+    --ss: #f59e0b;
+    --bg: #f8fafc;
 }
 
-/* LAPTOP - Contenedor más amplio pero aún vertical */
-@media screen and (min-width: 1025px) and (max-width: 1440px) {
-    .container {
-        max-width: 900px;
-        padding: 40px 30px;
-    }
-    
-    .calculator-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-    
-    .full-width-input {
-        grid-column: 1 / -1;
-    }
-    
-    .header {
-        padding: 30px;
-    }
-    
-    .header h1 {
-        font-size: 2rem;
-    }
-    
-    .input-group label {
-        font-size: 1rem;
-    }
-    
-    .input-group input,
-    .input-group select {
-        font-size: 1rem;
-        padding: 14px;
-    }
-    
-    .results-container {
-        padding: 30px;
-        font-size: 1.05rem;
-    }
-    
-    .chart-container {
-        height: 400px;
-        margin-top: 30px;
-    }
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
 }
 
-/* DESKTOP GRANDE - Layout de 2 columnas */
-@media screen and (min-width: 1441px) {
-    body {
-        padding: 30px;
-    }
-    
-    .container {
-        max-width: 1400px;
-        padding: 40px;
-    }
-    
-    .header {
-        padding: 35px;
-        margin-bottom: 40px;
-    }
-    
-    .header h1 {
-        font-size: 2.2rem;
-    }
-    
-    .header p {
-        font-size: 1.1rem;
-    }
-    
-    /* Grid de 2 columnas para el área de captura */
-    .capture-wrapper {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 35px;
-        grid-template-areas:
-            "form results"
-            "form chart"
-            "advanced advanced"
-            "watermark watermark";
-    }
-    
-    /* Formulario - Columna izquierda */
-    .calculator-grid {
-        grid-area: form;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-    
-    /* Resultados - Columna derecha, sticky */
-    .results-container {
-        grid-area: results;
-        position: sticky;
-        top: 20px;
-        height: fit-content;
-        padding: 35px;
-        font-size: 1.1rem;
-    }
-    
-    /* Gráfica - Debajo de resultados en columna derecha */
-    .chart-container {
-        grid-area: chart;
-        position: sticky;
-        top: 380px;
-        height: 450px;
-        margin-top: 0;
-    }
-    
-    /* Configuración avanzada - Ancho completo */
-    .advanced-settings {
-        grid-area: advanced;
-        grid-column: 1 / -1;
-        margin-top: 20px;
-    }
-    
-    .advanced-settings .settings-content {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-    }
-    
-    /* Watermark */
-    .watermark {
-        grid-area: watermark;
-        margin-top: 20px;
-    }
-    
-    /* Estilos de inputs más grandes */
-    .input-group label {
-        font-size: 1.05rem;
-        margin-bottom: 10px;
-    }
-    
-    .input-group input,
-    .input-group select {
-        font-size: 1.05rem;
-        padding: 15px;
-    }
-    
-    .full-width-input {
-        grid-column: 1 / -1;
-    }
-    
-    /* Botón de exportar */
-    .btn-export {
-        font-size: 1.1rem;
-        padding: 16px 32px;
-    }
+.container {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    max-width: 32rem;
+    width: 100%;
+    margin-bottom: 80px;
 }
 
-/* DESKTOP XL - Pantallas muy grandes (1920px+) */
-@media screen and (min-width: 1920px) {
-    .container {
-        max-width: 1600px;
-        padding: 50px;
-    }
-    
-    .header {
-        padding: 40px;
-    }
-    
-    .header h1 {
-        font-size: 2.5rem;
-    }
-    
-    .capture-wrapper {
-        gap: 45px;
-    }
-    
-    .calculator-grid {
-        gap: 28px;
-    }
-    
-    .results-container {
-        padding: 40px;
-        font-size: 1.15rem;
-    }
-    
-    .chart-container {
-        height: 500px;
-        top: 420px;
-    }
-    
-    .input-group label {
-        font-size: 1.1rem;
-    }
-    
-    .input-group input,
-    .input-group select {
-        font-size: 1.1rem;
-        padding: 16px;
-    }
+#capture-area { background: white; padding: 5px; border-radius: 1rem; }
+
+.header { text-align: center; margin-bottom: 1rem; }
+.header h1 { font-size: 1.3rem; color: var(--primary); margin: 0.5rem; }
+
+.calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
 }
 
-/* Mejoras para FAQ en desktop */
-@media screen and (min-width: 1025px) {
-    .faq-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-    
-    .faq-item {
-        break-inside: avoid;
-    }
+/* Para que el IRPF ocupe todo el ancho si queremos destacarlo */
+.full-width-input {
+    grid-column: 1 / -1;
 }
 
-/* Landscape móvil - Ajustes especiales */
-@media screen and (max-width: 767px) and (orientation: landscape) {
-    .container {
-        padding: 15px;
-    }
-    
-    .header {
-        padding: 20px;
-    }
-    
-    .header h1 {
-        font-size: 1.3rem;
-    }
-    
-    .calculator-grid {
-        gap: 15px;
-    }
-    
-    .chart-container {
-        height: 250px;
-    }
+label { font-size: 0.65rem; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; display: block; }
+input, select { 
+    width: 100%;
+    padding: 0.6rem; 
+    border: 1px solid #e5e7eb; 
+    border-radius: 0.4rem; 
+    font-size: 0.9rem;
+    box-sizing: border-box;
 }
 
-/* Mejoras de accesibilidad */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
+.advanced-settings {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+    background: #f1f5f9;
+    padding: 0.8rem;
+    border-radius: 0.6rem;
 }
 
-/* Alto contraste */
-@media (prefers-contrast: high) {
-    .input-group input,
-    .input-group select {
-        border-width: 3px;
-    }
-    
-    .results-container {
-        border: 3px solid var(--primary-color, #667eea);
-    }
+.advanced-settings summary { font-size: 0.75rem; font-weight: 600; color: var(--text); cursor: pointer; }
+
+.settings-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
 }
 
-/* Impresión */
-@media print {
-    body {
-        background: white;
-    }
-    
-    .donation-banner,
-    .btn-export,
-    .cookie-banner,
-    .advanced-settings {
-        display: none !important;
-    }
-    
-    .capture-wrapper {
-        display: block !important;
-    }
-    
-    .container {
-        max-width: 100%;
-        box-shadow: none;
-    }
+.chart-container { height: 220px; margin: 1.5rem 0; position: relative; }
+
+.results-container {
+    background: var(--bg);
+    padding: 1rem;
+    border-radius: 0.8rem;
+    border-left: 4px solid var(--primary);
 }
 
-/* Asegurar que elementos sticky funcionen correctamente */
-@supports (position: sticky) {
-    @media screen and (min-width: 1441px) {
-        .results-container,
-        .chart-container {
-            position: sticky;
-        }
-    }
+.result-item { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; align-items: center; }
+.neto-big { color: var(--neto); font-weight: 800; font-size: 1.2rem; }
+.concepto-extra { font-size: 0.8rem; color: #64748b; font-style: italic; }
+
+.btn-export {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.9rem;
+    background: #25D366;
+    color: white;
+    border: none;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1rem;
 }
 
-/* Fallback para navegadores sin soporte de grid */
-@supports not (display: grid) {
-    .capture-wrapper {
-        display: block !important;
-    }
-    
-    .calculator-grid,
-    .faq-container {
-        display: block !important;
-    }
-    
-    .input-group {
-        margin-bottom: 20px;
-    }
+.info-section { margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
+.info-section h2 { font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem; }
+.faq-container { display: flex; flex-direction: column; gap: 0.5rem; }
+.faq-item { background: #fff; border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.6rem; }
+.faq-item summary { font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--text); }
+.faq-item p { font-size: 0.75rem; color: #64748b; margin-top: 0.4rem; line-height: 1.4; }
+.seo-text { margin-top: 1rem; font-size: 0.7rem; color: #94a3b8; text-align: justify; }
+
+.watermark { text-align: center; font-size: 0.6rem; color: #cbd5e1; margin-top: 10px; }
+.legal-info { text-align: center; font-size: 0.7rem; color: #9ca3af; margin-top: 1.5rem; }
+
+.donation-banner {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 100;
+    white-space: nowrap;
 }
+.donation-banner a { text-decoration: none; color: var(--primary); font-size: 0.85rem; font-weight: 600; }
+
+.cookie-banner {
+    position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2937; color: white; padding: 10px; font-size: 0.75rem; display: none; justify-content: center; align-items: center; z-index: 9999;
+}
+.btn-cookie { background: var(--primary); color: white; border: none; padding: 4px 12px; border-radius: 4px; margin-left: 10px; cursor: pointer; }
