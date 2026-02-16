@@ -7,32 +7,38 @@
     <meta name="description" content="Calculadora de salario para farmacias con múltiples convenios: Nacional, Barcelona, Girona, Tarragona, País Vasco y Asturias. Actualizada 2026.">
     <meta name="keywords" content="sueldo farmacia, calculadora salario farmacia, convenio farmacia, nómina farmacia 2026">
     <link rel="canonical" href="https://conveniodefarmacia.com">
-    
-    <!-- Fonts & Icons -->
+
+    <meta property="og:title" content="Sueldo Farmacia Pro | Calculadora 2026">
+    <meta property="og:description" content="Calcula tu sueldo neto real según el XXV Convenio y provinciales. Actualizado con MEI e IRPF 2026.">
+    <meta property="og:image" content="https://conveniodefarmacia.com/IMG_9941.png"> 
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://conveniodefarmacia.com">
+
+    <link rel="icon" type="image/png" href="IMG_9941.png">
+    <link rel="apple-touch-icon" href="IMG_9941.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <main class="container">
     <header class="header">
-    <div class="logo-area">
-        <img src="IMG_9941.png" alt="Sueldo Farmacia Pro Logo" class="main-logo">
-        <h1>Sueldo Farmacia Pro</h1>
-    </div>
-    <p>Calculadora Multiconvenio Actualizada 2026</p>
-</header>
+        <div class="logo-area">
+            <img src="IMG_9941.png" alt="Sueldo Farmacia Pro Logo" class="main-logo" style="height: 60px; width: auto; object-fit: contain;">
+            <h1>Sueldo Farmacia Pro</h1>
+        </div>
+        <p>Calculadora Multiconvenio Actualizada 2026</p>
+    </header>
 
     <div id="capture-area" class="capture-wrapper">
         <section class="calculator-grid">
-            <!-- Convenio -->
             <div class="input-group full-width-input">
                 <label for="convenio">
                     <i class="fas fa-file-contract"></i> Convenio Aplicable
@@ -46,7 +52,6 @@
                 </select>
             </div>
 
-            <!-- Categoría Profesional -->
             <div class="input-group">
                 <label for="profesion">
                     <i class="fas fa-user-md"></i> Categoría
@@ -58,7 +63,6 @@
                 </select>
             </div>
 
-            <!-- Antigüedad -->
             <div class="input-group">
                 <label id="labelAntiguedad" for="antiguedad">
                     <i class="fas fa-award"></i> Nº Trienios
@@ -66,7 +70,6 @@
                 <input type="number" id="antiguedad" value="0" min="0" max="20" step="1">
             </div>
 
-            <!-- Año -->
             <div class="input-group">
                 <label for="anio">
                     <i class="fas fa-calendar-alt"></i> Año
@@ -80,7 +83,6 @@
                 </select>
             </div>
 
-            <!-- Jornada -->
             <div class="input-group">
                 <label for="porcentaje">
                     <i class="fas fa-clock"></i> Jornada (%)
@@ -88,7 +90,6 @@
                 <input type="number" id="porcentaje" value="100" min="1" max="100" step="1">
             </div>
 
-            <!-- Número de Pagas (se rellena dinámicamente) -->
             <div class="input-group">
                 <label for="numPagas">
                     <i class="fas fa-money-bill-wave"></i> Nº Pagas
@@ -99,7 +100,6 @@
                 </select>
             </div>
 
-            <!-- Horas Nocturnas -->
             <div class="input-group">
                 <label for="numHoras">
                     <i class="fas fa-moon"></i> H. Nocturnas/mes
@@ -107,7 +107,6 @@
                 <input type="number" id="numHoras" value="0" min="0" max="200" step="1">
             </div>
 
-            <!-- Mejora Voluntaria -->
             <div class="input-group full-width-input">
                 <label for="mejoraSalarial">
                     <i class="fas fa-hand-holding-usd"></i> Mejora Voluntaria Bruta (€/mes)
@@ -115,7 +114,6 @@
                 <input type="number" id="mejoraSalarial" value="0" step="10" min="0">
             </div>
 
-            <!-- IRPF -->
             <div class="input-group full-width-input">
                 <label for="porcentajeIRPF" style="color: #10b981; font-weight: 700;">
                     <i class="fas fa-percentage"></i> Retención IRPF (%)
@@ -124,7 +122,6 @@
             </div>
         </section>
 
-        <!-- Configuración Avanzada SS -->
         <details class="advanced-settings">
             <summary>
                 <i class="fas fa-cog"></i> Configuración de Cotización (SS / MEI) 
@@ -153,24 +150,19 @@
             </div>
         </details>
 
-        <!-- Gráfico -->
         <div class="chart-container">
             <canvas id="salaryChart"></canvas>
         </div>
 
-        <!-- Resultados -->
         <div id="resultados" class="results-container"></div>
         
-        <!-- Watermark -->
         <p class="watermark">conveniodefarmacia.com</p>
     </div>
 
-    <!-- Botón Exportar -->
     <button onclick="exportarImagen()" class="btn-export">
         <i class="fab fa-whatsapp"></i> Compartir mi cálculo
     </button>
 
-    <!-- Sección Informativa -->
     <section class="info-section">
         <h2>📚 Información sobre el Salario en Farmacia</h2>
         
@@ -225,12 +217,8 @@
             <details class="faq-item">
                 <summary>¿Qué son los trienios y quinquenios?</summary>
                 <p><strong>Trienios:</strong> Complemento de antigüedad que se cobra por cada <strong>3 años trabajados</strong> en la empresa. Es el sistema usado por la mayoría de convenios (Nacional, Barcelona, Girona/Tarragona, País Vasco).</p>
-                <p>Es un <strong>importe fijo mensual</strong> que SÍ se incluye en las pagas extras. Ejemplo Nacional 2026:</p>
-                <ul>
-                    <li>Farmacéutico: 48,28€/trienio</li>
-                    <li>Técnico: 32,75€/trienio</li>
-                    <li>Auxiliar: 29,27€/trienio</li>
-                </ul>
+                <p>Es un <strong>importe fijo mensual</strong> que SÍ se incluye en las pagas extras.
+               
                 
                 <p><strong>Quinquenios (Asturias):</strong> Sistema del convenio asturiano. Se cobra cada <strong>5 años</strong> y equivale al <strong>5% del salario base</strong>.</p>
                 
@@ -280,7 +268,6 @@
         </article>
     </section>
 
-    <!-- Footer Legal -->
     <footer class="legal-info">
         <p>📋 Datos basados en el XXV Convenio Nacional de Oficinas de Farmacia y convenios provinciales aplicables.</p>
         <p>⚖️ Uso orientativo. Consulta tu nómina oficial para datos contractuales exactos.</p>
@@ -293,7 +280,6 @@
     </footer>
 </main>
 
-<!-- Cookie Banner -->
 <div id="cookie-banner" class="cookie-banner">
     <p>
         🍪 Utilizamos cookies técnicas para el funcionamiento de la calculadora. No recopilamos datos personales.
@@ -301,7 +287,6 @@
     </p>
 </div>
 
-<!-- Donation Banner -->
 <div class="donation-banner">
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR" target="_blank" rel="noopener">
         <i class="fas fa-coffee"></i> ¿Te ayudó? Cómprame un café ☕
