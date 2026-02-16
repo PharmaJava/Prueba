@@ -1,6 +1,6 @@
 /**
  * Sueldo Farmacia Pro - Motor de Cálculo Multiconvenio
- * Versión 2026 - Actualizado con cotizaciones oficiales
+ * Versión 2026.2 - Ajuste de Plus de Adjuntía (12 pagas)
  */
 
 let myChart = null;
@@ -56,22 +56,22 @@ const DATA_CONVENIOS = {
     },
     gironatarragona: {
         nombre: "Girona / Tarragona",
-        tipoAnt: "ninguno", // Según instrucciones previas, aunque sea trienio en realidad se calculaba integrado o no sumaba aparte en tu lógica anterior. Si necesitas que sume trienios cambia a 'trienio'.
+        tipoAnt: "ninguno",
         tablas: {
             farmaceutico: {
-                "2024": [2180.50, 220.00, 1.95, 49.50],
-                "2025": [1993.89, 180.00, 2.14, 51.00],
-                "2026": [2033.77, 183.60, 2.18, 52.02]
+                "2024": [2180.50, 220.00, 1.95, 0],
+                "2025": [2224.11, 224.40, 1.98, 0],
+                "2026": [2268.59, 228.89, 2.02, 0]
             },
             tecnico: {
-                "2024": [1460.30, 0, 1.30, 32.80],
-                "2025": [1437.80, 0, 1.42, 33.80],
-                "2026": [1466.56, 0, 1.45, 34.48]
+                "2024": [1460.30, 0, 1.30, 0],
+                "2025": [1489.50, 0, 1.32, 0],
+                "2026": [1519.29, 0, 1.35, 0]
             },
             auxiliar: {
-                "2024": [1310.15, 0, 1.15, 29.20],
-                "2025": [1307.46, 0, 1.31, 30.10],
-                "2026": [1333.61, 0, 1.34, 30.70]
+                "2024": [1310.15, 0, 1.15, 0],
+                "2025": [1336.35, 0, 1.17, 0],
+                "2026": [1363.08, 0, 1.19, 0]
             }
         }
     },
@@ -120,10 +120,8 @@ const DATA_CONVENIOS = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Establecer valores de Cotización según tu solicitud
     establecerCotizacionesOficiales();
 
-    // 2. Event Listeners
     document.querySelectorAll('input, select').forEach(input => {
         input.addEventListener('input', () => {
             if (input.id === 'convenio') updateUIForConvenio();
@@ -131,32 +129,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3. Cookies
     if (!localStorage.getItem('cookiesAceptadas')) {
-        document.getElementById('cookie-banner').style.display = 'flex';
+        const banner = document.getElementById('cookie-banner');
+        if (banner) banner.style.display = 'flex';
     }
 
-    // 4. Inicialización
     updateUIForConvenio();
     calcularSalario();
 });
 
 function establecerCotizacionesOficiales() {
-    // Forzamos los valores que me has pedido para asegurar el cálculo correcto
-    const setVal = (id, val) => {
-        const el = document.getElementById(id);
-        if(el) el.value = val;
+    const inputs = {
+        "cotizacionContComu": "4.70",
+        "cotizacionMEI": "0.15",
+        "cotizacionFormacion": "0.10",
+        "cotizacionDesempleo": "1.55"
     };
-
-    setVal("cotizacionContComu", "4.70"); // Contingencias comunes
-    setVal("cotizacionMEI", "0.15");      // MEI
-    setVal("cotizacionFormacion", "0.10"); // Formación
-    setVal("cotizacionDesempleo", "1.55"); // Desempleo
+    for (let id in inputs) {
+        let el = document.getElementById(id);
+        if (el) el.value = inputs[id];
+    }
 }
 
 function aceptarCookies() {
     localStorage.setItem('cookiesAceptadas', 'true');
-    document.getElementById('cookie-banner').style.display = 'none';
+    const banner = document.getElementById('cookie-banner');
+    if (banner) banner.style.display = 'none';
 }
 
 function updateUIForConvenio() {
@@ -167,49 +165,39 @@ function updateUIForConvenio() {
     const antiguedadGroup = antiguedadInput.closest('.input-group');
     const labelAnt = document.getElementById('labelAntiguedad');
 
-    // 1. MOSTRAR/OCULTAR Y HABILITAR/DESHABILITAR campo de antigüedad
     if (config.tipoAnt === 'ninguno') {
-        // Deshabilitar y atenuar visualmente
         antiguedadInput.disabled = true;
         antiguedadInput.value = 0;
         antiguedadGroup.style.opacity = '0.5';
         antiguedadGroup.style.pointerEvents = 'none';
         if (labelAnt) labelAnt.innerText = "Antigüedad (No disponible)";
-    } else if (config.tipoAnt === 'quinquenio') {
-        // Habilitar para quinquenios (País Vasco)
+    } else {
         antiguedadInput.disabled = false;
         antiguedadGroup.style.opacity = '1';
         antiguedadGroup.style.pointerEvents = 'auto';
         if (labelAnt) labelAnt.innerText = "Nº Quinquenios";
     }
 
-    // 2. RESTRINGIR PAGAS DINÁMICAMENTE según convenio
     const currentVal = pagasSelect.value;
     pagasSelect.innerHTML = '';
-
-    // Todos tienen 12 pagas como opción
     pagasSelect.options.add(new Option("12 pagas", "12"));
 
     if (convKey === 'asturias') {
-        // Asturias: 12 o 15 pagas
         pagasSelect.options.add(new Option("15 pagas", "15"));
         pagasSelect.value = (currentVal === "12" || currentVal === "15") ? currentVal : "15";
     } else {
-        // Resto de convenios: 12 o 14 pagas
         pagasSelect.options.add(new Option("14 pagas", "14"));
         pagasSelect.value = (currentVal === "12" || currentVal === "14") ? currentVal : "14";
     }
 }
 
 function calcularSalario() {
-    // 1. Capturar inputs
     const convKey = document.getElementById("convenio").value;
     const prof = document.getElementById("profesion").value;
     const anio = document.getElementById("anio").value;
     const numPagas = parseInt(document.getElementById("numPagas").value);
     const irpfPct = parseFloat(document.getElementById("porcentajeIRPF").value) / 100;
 
-    // Seguridad Social total (Suma de los inputs)
     const totalSSPct = (
         parseFloat(document.getElementById("cotizacionContComu").value) +
         parseFloat(document.getElementById("cotizacionDesempleo").value) +
@@ -217,101 +205,68 @@ function calcularSalario() {
         parseFloat(document.getElementById("cotizacionFormacion").value)
     ) / 100;
 
-    // 2. Obtener datos del convenio
     const convData = DATA_CONVENIOS[convKey];
     const tablaCat = convData.tablas[prof];
-
-    // Fallback a 2024 si el año no existe en convenios provinciales
     const [base, plus, precioHora, valAnt] = tablaCat[anio] || tablaCat["2024"];
 
-    // 3. Variables de usuario
     const jornPct = parseFloat(document.getElementById("porcentaje").value) / 100;
     const hNoc = parseFloat(document.getElementById("numHoras").value) || 0;
     const mejora = parseFloat(document.getElementById("mejoraSalarial").value) || 0;
     const numAntiguedad = parseInt(document.getElementById("antiguedad").value) || 0;
 
-    // 4. Calcular antigüedad según tipo
     let importeAntiguedadMes = 0;
     if (convData.tipoAnt === 'quinquenio') {
-        // Quinquenio País Vasco = importe fijo por quinquenio
         importeAntiguedadMes = (valAnt * numAntiguedad) * jornPct;
     }
-    // Si es 'ninguno', importeAntiguedadMes queda en 0
 
-    // 5. Cálculo de conceptos mensuales
-    // Sueldo Base Mes (Ordinaria)
+    // CONCEPTOS MENSUALES (Incluye Plus de Adjuntía)
     const sueldoBaseMes = (base * jornPct) + (plus * jornPct) + mejora + importeAntiguedadMes;
     const valorNocturnidadMes = hNoc * precioHora;
-    
-    // Bruto de una nómina normal
-    const brutoMes = sueldoBaseMes + valorNocturnidadMes;
-    
-    // Bruto de una paga extra (Normalmente no incluye nocturnidad)
-    const brutoExtra = sueldoBaseMes; 
+    const brutoMesNomina = sueldoBaseMes + valorNocturnidadMes;
 
-    // 6. Determinar número real de pagas del convenio para prorrateo
+    // BASE DE PAGA EXTRA (Excluye Plus de Adjuntía según nómina real)
+    const brutoExtraPura = (base * jornPct) + mejora + importeAntiguedadMes;
+
     const pagasRealesConvenio = (convKey === 'asturias') ? 15 : 14;
-
-    let netoMensual, netoExtra, baseCalculoSS, irpfAnual, ssAnual, brutoAnual;
+    let netoMensual, netoExtra, baseCalculoSS, irpfAnual, ssAnual, brutoAnualTotal;
 
     if (numPagas === 12) {
-        // --- CASO 12 PAGAS (Prorrateo Total) ---
-        // Se suma la parte proporcional de las extras a la nómina mensual
-        const parteProporcionalExtra = (brutoExtra * (pagasRealesConvenio - 12)) / 12;
-        const brutoMesProrrateado = brutoMes + parteProporcionalExtra;
+        // Todo prorrateado: la prorrata de extra se basa en brutoExtraPura
+        const prorrataExtra = (brutoExtraPura * (pagasRealesConvenio - 12)) / 12;
+        const baseMensualTotal = brutoMesNomina + prorrataExtra;
 
-        // La base de cotización coincide con el bruto mensual (salvo topes máximos que no aplicamos aquí)
-        const descuentoSS = brutoMesProrrateado * totalSSPct;
-        const descuentoIRPF = brutoMesProrrateado * irpfPct;
+        const descuentoSS = baseMensualTotal * totalSSPct;
+        const descuentoIRPF = baseMensualTotal * irpfPct;
 
-        netoMensual = brutoMesProrrateado - descuentoSS - descuentoIRPF;
-        netoExtra = 0; // No hay pagas separadas
-
-        baseCalculoSS = brutoMesProrrateado * 12;
-        brutoAnual = baseCalculoSS;
-        irpfAnual = baseCalculoSS * irpfPct;
-        ssAnual = baseCalculoSS * totalSSPct;
-
+        netoMensual = baseMensualTotal - descuentoSS - descuentoIRPF;
+        netoExtra = 0;
+        baseCalculoSS = baseMensualTotal * 12;
+        brutoAnualTotal = baseCalculoSS;
     } else {
-        // --- CASO 14 o 15 PAGAS (Pagas Separadas) ---
-        
-        // 1. Calcular la Base de Cotización Mensual (SIEMPRE incluye prorrata de extras)
-        // Aunque cobres las extras en Junio/Dic, la SS se paga mes a mes prorrateada.
-        const prorrataExtra = (brutoExtra * (pagasRealesConvenio - 12)) / 12;
-        const baseCotizacion = brutoMes + prorrataExtra;
+        // Pagas separadas: la base de cotización mensual incluye la prorrata de la extra
+        const prorrataExtraBaseSS = (brutoExtraPura * (pagasRealesConvenio - 12)) / 12;
+        const baseCotizacionMensual = brutoMesNomina + prorrataExtraBaseSS;
 
-        // Descuento SS mensual (se resta de la nómina ordinaria)
-        const descuentoSS = baseCotizacion * totalSSPct;
-        
-        // Descuento IRPF mensual (sobre el bruto real del mes)
-        const descuentoIRPF_Mes = brutoMes * irpfPct;
+        const descuentoSS = baseCotizacionMensual * totalSSPct;
+        const descuentoIRPF_Mes = brutoMesNomina * irpfPct;
 
-        // NETO NOMINA NORMAL
-        netoMensual = brutoMes - descuentoSS - descuentoIRPF_Mes;
+        netoMensual = brutoMesNomina - descuentoSS - descuentoIRPF_Mes;
+        netoExtra = brutoExtraPura * (1 - irpfPct);
 
-        // NETO PAGA EXTRA
-        // Las pagas extras NO cotizan a SS (ya se prorrateó), solo tributan IRPF
-        netoExtra = brutoExtra - (brutoExtra * irpfPct);
-
-        // Totales Anuales
-        // Bruto anual real = (12 nóminas) + (N pagas extras)
-        brutoAnual = (brutoMes * 12) + (brutoExtra * (numPagas - 12));
-        
-        baseCalculoSS = baseCotizacion * 12;
-        irpfAnual = brutoAnual * irpfPct;
-        ssAnual = baseCalculoSS * totalSSPct;
+        brutoAnualTotal = (brutoMesNomina * 12) + (brutoExtraPura * (numPagas - 12));
+        baseCalculoSS = baseCotizacionMensual * 12;
     }
 
-    const netoAnual = brutoAnual - ssAnual - irpfAnual;
+    ssAnual = baseCalculoSS * totalSSPct;
+    irpfAnual = brutoAnualTotal * irpfPct;
+    const netoAnual = brutoAnualTotal - ssAnual - irpfAnual;
 
-    // 7. Actualizar UI
     updateChart(netoAnual, irpfAnual, ssAnual);
-    renderizarResultados(numPagas, netoMensual, netoExtra, netoAnual, brutoAnual, pagasRealesConvenio);
+    renderizarResultados(numPagas, netoMensual, netoExtra, netoAnual, brutoAnualTotal, pagasRealesConvenio);
 }
 
 function renderizarResultados(numPagas, netoMensual, netoExtra, netoAnual, brutoAnual, pagasConvenio) {
     let html = "";
-
     if (numPagas === 12) {
         html = `
             <div class="result-item">
@@ -319,7 +274,7 @@ function renderizarResultados(numPagas, netoMensual, netoExtra, netoAnual, bruto
                 <span class="neto-big">${netoMensual.toFixed(2)}€</span>
             </div>
             <div class="result-item">
-                <span class="concepto-extra">✓ Incluye ${pagasConvenio} pagas prorrateadas</span>
+                <span class="concepto-extra">✓ Incluye ${pagasConvenio} pagas (Plus Adjuntía 12 pagas)</span>
             </div>
         `;
     } else {
@@ -333,7 +288,7 @@ function renderizarResultados(numPagas, netoMensual, netoExtra, netoAnual, bruto
                 <span class="neto-big" style="color:var(--primary)">${netoExtra.toFixed(2)}€</span>
             </div>
             <div class="result-item">
-                <span class="concepto-extra">*Son ${numPagas} pagas anuales</span>
+                <span class="concepto-extra">*Son ${numPagas} pagas (Plus Adjuntía excluido de extras)</span>
             </div>
         `;
     }
@@ -350,11 +305,14 @@ function renderizarResultados(numPagas, netoMensual, netoExtra, netoAnual, bruto
         </div>
     `;
 
-    document.getElementById("resultados").innerHTML = html;
+    const resDiv = document.getElementById("resultados");
+    if (resDiv) resDiv.innerHTML = html;
 }
 
 function updateChart(neto, irpf, ss) {
-    const ctx = document.getElementById('salaryChart').getContext('2d');
+    const canvas = document.getElementById('salaryChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (myChart) myChart.destroy();
 
     myChart = new Chart(ctx, {
@@ -374,66 +332,9 @@ function updateChart(neto, irpf, ss) {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: {
-                        boxWidth: 12,
-                        padding: 15,
-                        font: { size: 11 }
-                    }
+                    labels: { boxWidth: 12, padding: 15, font: { size: 11 } }
                 }
             }
         }
     });
-}
-
-async function exportarImagen() {
-    const area = document.getElementById('capture-area');
-    const btn = document.querySelector('.btn-export');
-    const originalText = btn.innerHTML;
-
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
-    btn.disabled = true;
-
-    try {
-        const canvas = await html2canvas(area, {
-            scale: 2,
-            backgroundColor: "#ffffff",
-            logging: false
-        });
-
-        const image = canvas.toDataURL("image/png");
-
-        // Intentar compartir si está disponible (móviles)
-        if (navigator.share && navigator.canShare) {
-            try {
-                const blob = await (await fetch(image)).blob();
-                const file = new File([blob], 'mi-sueldo-farmacia.png', { type: 'image/png' });
-
-                await navigator.share({
-                    files: [file],
-                    title: 'Mi Sueldo Farmacia Pro',
-                    text: 'Calcula tu sueldo neto en farmacia'
-                });
-            } catch (shareError) {
-                // Si falla el share, descargar
-                descargarImagen(image);
-            }
-        } else {
-            // Navegadores de escritorio: descargar directamente
-            descargarImagen(image);
-        }
-
-    } catch (error) {
-        console.error('Error al exportar:', error);
-        alert("Error al generar la imagen. Intenta hacer una captura de pantalla.");
-    } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }
-}
-
-function descargarImagen(dataURL) {
-    const link = document.createElement('a');
-    link.download = 'mi-sueldo-farmacia-' + new Date().getTime() + '.png';
-    link.href = dataURL;
-    link.click();
 }
