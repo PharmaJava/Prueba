@@ -1,477 +1,270 @@
-/* ============================================
-   ESTILOS RESPONSIVOS MEJORADOS
-   Calculadora de Convenio de Farmacia
-   ============================================ */
+/* ========================================
+   ESTILOS RESPONSIVOS ADICIONALES
+   Para añadir al final de tu styles.css existente
+   o cargar como archivo separado
+   ======================================== */
 
-/* Estilos base - Móvil First (mantiene tu diseño actual) */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.calculator-container {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    padding: 30px;
-    width: 100%;
-    max-width: 450px; /* Tamaño móvil por defecto */
-    margin: 0 auto;
-}
-
-.calculator-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.calculator-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 40px;
-}
-
-.calculator-title {
-    color: #667eea;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.calculator-subtitle {
-    color: #666;
-    font-size: 14px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-label {
-    display: block;
-    color: #333;
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-.form-control {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-select.form-control {
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 15px center;
-    padding-right: 40px;
-}
-
-.collapse-header {
-    background: #f5f5f5;
-    padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-}
-
-.collapse-header:hover {
-    background: #e8e8e8;
-}
-
-.collapse-title {
-    font-weight: 600;
-    color: #333;
-    font-size: 14px;
-}
-
-.collapse-icon {
-    transition: transform 0.3s ease;
-}
-
-.collapse-icon.active {
-    transform: rotate(180deg);
-}
-
-.results-section {
-    margin-top: 30px;
-    padding: 25px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    border-radius: 15px;
-}
-
-.result-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.result-item:last-child {
-    border-bottom: none;
-    font-weight: 700;
-    font-size: 18px;
-    color: #667eea;
-}
-
-.result-label {
-    color: #555;
-}
-
-.result-value {
-    font-weight: 600;
-    color: #333;
-}
-
-.chart-container {
-    margin-top: 25px;
-    height: 300px;
-}
-
-.help-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    background: #667eea;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    transition: all 0.3s ease;
-}
-
-.help-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-}
-
-/* ============================================
-   TABLET - 768px a 1024px
-   Expansión moderada del contenedor
-   ============================================ */
-@media screen and (min-width: 768px) {
-    .calculator-container {
-        max-width: 600px;
-        padding: 40px;
+/* TABLET - Expandir ligeramente */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        max-width: 700px;
+        padding: 30px 20px;
     }
-
-    .calculator-icon {
-        width: 90px;
-        height: 90px;
-        font-size: 45px;
+    
+    .calculator-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
-
-    .calculator-title {
-        font-size: 28px;
+    
+    .full-width-input {
+        grid-column: 1 / -1;
     }
-
-    .calculator-subtitle {
-        font-size: 15px;
+    
+    .header h1 {
+        font-size: 1.8rem;
     }
-
-    .form-label {
-        font-size: 15px;
+    
+    .input-group label {
+        font-size: 0.95rem;
     }
-
-    .form-control {
-        padding: 14px 18px;
-        font-size: 15px;
-    }
-
-    .chart-container {
-        height: 350px;
+    
+    .input-group input,
+    .input-group select {
+        font-size: 0.95rem;
+        padding: 12px;
     }
 }
 
-/* ============================================
-   LAPTOP - 1025px a 1440px
-   Diseño más amplio con mejor espaciado
-   ============================================ */
-@media screen and (min-width: 1025px) {
-    body {
-        padding: 40px;
+/* LAPTOP - Contenedor más amplio pero aún vertical */
+@media screen and (min-width: 1025px) and (max-width: 1440px) {
+    .container {
+        max-width: 900px;
+        padding: 40px 30px;
     }
-
-    .calculator-container {
-        max-width: 750px;
-        padding: 50px;
+    
+    .calculator-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
     }
-
-    .calculator-icon {
-        width: 100px;
-        height: 100px;
-        font-size: 50px;
-        margin-bottom: 20px;
+    
+    .full-width-input {
+        grid-column: 1 / -1;
     }
-
-    .calculator-title {
-        font-size: 32px;
-        margin-bottom: 12px;
-    }
-
-    .calculator-subtitle {
-        font-size: 16px;
-    }
-
-    .form-group {
-        margin-bottom: 25px;
-    }
-
-    .form-label {
-        font-size: 16px;
-        margin-bottom: 10px;
-    }
-
-    .form-control {
-        padding: 16px 20px;
-        font-size: 16px;
-        border-radius: 12px;
-    }
-
-    .collapse-header {
-        padding: 18px 20px;
-        border-radius: 12px;
-    }
-
-    .collapse-title {
-        font-size: 16px;
-    }
-
-    .results-section {
+    
+    .header {
         padding: 30px;
-        border-radius: 18px;
     }
-
-    .result-item {
-        padding: 15px 0;
-        font-size: 16px;
+    
+    .header h1 {
+        font-size: 2rem;
     }
-
-    .result-item:last-child {
-        font-size: 20px;
+    
+    .input-group label {
+        font-size: 1rem;
     }
-
+    
+    .input-group input,
+    .input-group select {
+        font-size: 1rem;
+        padding: 14px;
+    }
+    
+    .results-container {
+        padding: 30px;
+        font-size: 1.05rem;
+    }
+    
     .chart-container {
         height: 400px;
         margin-top: 30px;
     }
 }
 
-/* ============================================
-   DESKTOP GRANDE - 1441px+
-   Diseño de dos columnas para pantallas grandes
-   ============================================ */
+/* DESKTOP GRANDE - Layout de 2 columnas */
 @media screen and (min-width: 1441px) {
-    .calculator-container {
-        max-width: 1200px;
-        padding: 60px;
+    body {
+        padding: 30px;
     }
-
-    .calculator-header {
-        margin-bottom: 40px;
-    }
-
-    .calculator-icon {
-        width: 110px;
-        height: 110px;
-        font-size: 55px;
-    }
-
-    .calculator-title {
-        font-size: 36px;
-    }
-
-    .calculator-subtitle {
-        font-size: 18px;
-    }
-
-    /* Layout de dos columnas para formulario y resultados */
-    .calculator-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-    }
-
-    .form-section {
-        /* Columna izquierda - formulario */
-    }
-
-    .results-section {
-        /* Columna derecha - resultados */
-        margin-top: 0;
-        padding: 35px;
-        height: fit-content;
-        position: sticky;
-        top: 20px;
-    }
-
-    .form-group {
-        margin-bottom: 28px;
-    }
-
-    .form-label {
-        font-size: 17px;
-        margin-bottom: 12px;
-    }
-
-    .form-control {
-        padding: 18px 22px;
-        font-size: 17px;
-        border-radius: 14px;
-    }
-
-    .collapse-header {
-        padding: 20px 25px;
-        border-radius: 14px;
-    }
-
-    .collapse-title {
-        font-size: 17px;
-    }
-
-    .result-item {
-        padding: 16px 0;
-        font-size: 17px;
-    }
-
-    .result-item:last-child {
-        font-size: 22px;
-        padding-top: 20px;
-        margin-top: 10px;
-    }
-
-    .chart-container {
-        height: 450px;
-        margin-top: 35px;
-    }
-}
-
-/* ============================================
-   PANTALLAS EXTRA GRANDES - 1920px+
-   Máximo aprovechamiento del espacio
-   ============================================ */
-@media screen and (min-width: 1920px) {
-    .calculator-container {
+    
+    .container {
         max-width: 1400px;
-        padding: 70px 80px;
-    }
-
-    .calculator-icon {
-        width: 120px;
-        height: 120px;
-        font-size: 60px;
-    }
-
-    .calculator-title {
-        font-size: 40px;
-    }
-
-    .calculator-subtitle {
-        font-size: 20px;
-    }
-
-    .calculator-content {
-        gap: 50px;
-    }
-
-    .form-label {
-        font-size: 18px;
-    }
-
-    .form-control {
-        padding: 20px 25px;
-        font-size: 18px;
-    }
-
-    .results-section {
         padding: 40px;
     }
-
-    .result-item {
-        font-size: 18px;
+    
+    .header {
+        padding: 35px;
+        margin-bottom: 40px;
     }
-
-    .result-item:last-child {
-        font-size: 24px;
+    
+    .header h1 {
+        font-size: 2.2rem;
     }
-
+    
+    .header p {
+        font-size: 1.1rem;
+    }
+    
+    /* Grid de 2 columnas para el área de captura */
+    .capture-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 35px;
+        grid-template-areas:
+            "form results"
+            "form chart"
+            "advanced advanced"
+            "watermark watermark";
+    }
+    
+    /* Formulario - Columna izquierda */
+    .calculator-grid {
+        grid-area: form;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+    
+    /* Resultados - Columna derecha, sticky */
+    .results-container {
+        grid-area: results;
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+        padding: 35px;
+        font-size: 1.1rem;
+    }
+    
+    /* Gráfica - Debajo de resultados en columna derecha */
     .chart-container {
-        height: 500px;
+        grid-area: chart;
+        position: sticky;
+        top: 380px;
+        height: 450px;
+        margin-top: 0;
+    }
+    
+    /* Configuración avanzada - Ancho completo */
+    .advanced-settings {
+        grid-area: advanced;
+        grid-column: 1 / -1;
+        margin-top: 20px;
+    }
+    
+    .advanced-settings .settings-content {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    
+    /* Watermark */
+    .watermark {
+        grid-area: watermark;
+        margin-top: 20px;
+    }
+    
+    /* Estilos de inputs más grandes */
+    .input-group label {
+        font-size: 1.05rem;
+        margin-bottom: 10px;
+    }
+    
+    .input-group input,
+    .input-group select {
+        font-size: 1.05rem;
+        padding: 15px;
+    }
+    
+    .full-width-input {
+        grid-column: 1 / -1;
+    }
+    
+    /* Botón de exportar */
+    .btn-export {
+        font-size: 1.1rem;
+        padding: 16px 32px;
     }
 }
 
-/* ============================================
-   MODO LANDSCAPE MÓVIL
-   ============================================ */
-@media screen and (max-width: 767px) and (orientation: landscape) {
-    body {
-        padding: 10px;
+/* DESKTOP XL - Pantallas muy grandes (1920px+) */
+@media screen and (min-width: 1920px) {
+    .container {
+        max-width: 1600px;
+        padding: 50px;
     }
+    
+    .header {
+        padding: 40px;
+    }
+    
+    .header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .capture-wrapper {
+        gap: 45px;
+    }
+    
+    .calculator-grid {
+        gap: 28px;
+    }
+    
+    .results-container {
+        padding: 40px;
+        font-size: 1.15rem;
+    }
+    
+    .chart-container {
+        height: 500px;
+        top: 420px;
+    }
+    
+    .input-group label {
+        font-size: 1.1rem;
+    }
+    
+    .input-group input,
+    .input-group select {
+        font-size: 1.1rem;
+        padding: 16px;
+    }
+}
 
-    .calculator-container {
+/* Mejoras para FAQ en desktop */
+@media screen and (min-width: 1025px) {
+    .faq-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .faq-item {
+        break-inside: avoid;
+    }
+}
+
+/* Landscape móvil - Ajustes especiales */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+    .container {
+        padding: 15px;
+    }
+    
+    .header {
         padding: 20px;
     }
-
-    .calculator-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 30px;
+    
+    .header h1 {
+        font-size: 1.3rem;
     }
-
-    .calculator-title {
-        font-size: 20px;
+    
+    .calculator-grid {
+        gap: 15px;
     }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
+    
     .chart-container {
         height: 250px;
     }
 }
 
-/* ============================================
-   MEJORAS DE ACCESIBILIDAD
-   ============================================ */
+/* Mejoras de accesibilidad */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -480,35 +273,63 @@ select.form-control {
     }
 }
 
-/* Mejorar contraste en modo alto contraste */
+/* Alto contraste */
 @media (prefers-contrast: high) {
-    .form-control {
+    .input-group input,
+    .input-group select {
         border-width: 3px;
     }
-
-    .calculator-container {
-        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+    
+    .results-container {
+        border: 3px solid var(--primary-color, #667eea);
     }
 }
 
-/* ============================================
-   PRINT STYLES
-   ============================================ */
+/* Impresión */
 @media print {
     body {
         background: white;
     }
-
-    .calculator-container {
-        box-shadow: none;
+    
+    .donation-banner,
+    .btn-export,
+    .cookie-banner,
+    .advanced-settings {
+        display: none !important;
+    }
+    
+    .capture-wrapper {
+        display: block !important;
+    }
+    
+    .container {
         max-width: 100%;
+        box-shadow: none;
     }
+}
 
-    .help-button {
-        display: none;
+/* Asegurar que elementos sticky funcionen correctamente */
+@supports (position: sticky) {
+    @media screen and (min-width: 1441px) {
+        .results-container,
+        .chart-container {
+            position: sticky;
+        }
     }
+}
 
-    .collapse-header {
-        cursor: default;
+/* Fallback para navegadores sin soporte de grid */
+@supports not (display: grid) {
+    .capture-wrapper {
+        display: block !important;
+    }
+    
+    .calculator-grid,
+    .faq-container {
+        display: block !important;
+    }
+    
+    .input-group {
+        margin-bottom: 20px;
     }
 }
