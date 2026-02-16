@@ -25,6 +25,80 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ESTILOS RESPONSIVOS ADICIONALES */
+        
+        /* Layout de dos columnas para desktop */
+        @media screen and (min-width: 1441px) {
+            .container {
+                max-width: 1400px !important;
+            }
+            
+            .capture-wrapper {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+                grid-template-areas:
+                    "form results"
+                    "form chart"
+                    "advanced advanced"
+                    "watermark watermark";
+            }
+            
+            .calculator-grid {
+                grid-area: form;
+            }
+            
+            .results-container {
+                grid-area: results;
+                position: sticky;
+                top: 20px;
+                height: fit-content;
+            }
+            
+            .chart-container {
+                grid-area: chart;
+                position: sticky;
+                top: 320px;
+                height: fit-content;
+            }
+            
+            .advanced-settings {
+                grid-area: advanced;
+                grid-column: 1 / -1;
+            }
+            
+            .watermark {
+                grid-area: watermark;
+            }
+        }
+        
+        /* Mejoras para laptop */
+        @media screen and (min-width: 1025px) and (max-width: 1440px) {
+            .container {
+                max-width: 900px;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .full-width-input {
+                grid-column: 1 / -1;
+            }
+        }
+        
+        /* Tablet */
+        @media screen and (min-width: 768px) and (max-width: 1024px) {
+            .container {
+                max-width: 700px;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -38,6 +112,7 @@
     </header>
 
     <div id="capture-area" class="capture-wrapper">
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
         <section class="calculator-grid">
             <div class="input-group full-width-input">
                 <label for="convenio">
@@ -122,6 +197,15 @@
             </div>
         </section>
 
+        <!-- COLUMNA DERECHA: RESULTADOS (en desktop se posiciona al lado) -->
+        <div id="resultados" class="results-container"></div>
+        
+        <!-- GRÁFICA (en desktop se posiciona debajo de resultados) -->
+        <div class="chart-container">
+            <canvas id="salaryChart"></canvas>
+        </div>
+
+        <!-- CONFIGURACIÓN AVANZADA (ocupa todo el ancho) -->
         <details class="advanced-settings">
             <summary>
                 <i class="fas fa-cog"></i> Configuración de Cotización (SS / MEI) 
@@ -149,12 +233,6 @@
                 </p>
             </div>
         </details>
-
-        <div class="chart-container">
-            <canvas id="salaryChart"></canvas>
-        </div>
-
-        <div id="resultados" class="results-container"></div>
         
         <p class="watermark">conveniodefarmacia.com</p>
     </div>
