@@ -190,7 +190,7 @@ function calcularSalario() {
     const numPagas = parseInt(document.getElementById("numPagas").value);
     const irpfPct = parseFloat(document.getElementById("porcentajeIRPF").value) / 100;
     
-    // Seguridad Social total
+    // Seguridad Social total - VALORES CORRECTOS SEGÚN NÓMINA
     const totalSSPct = (
         parseFloat(document.getElementById("cotizacionContComu").value) + 
         parseFloat(document.getElementById("cotizacionDesempleo").value) + 
