@@ -58,14 +58,14 @@ mes: “€/mes”,
 ano: “€/año”,
 inversion_inicial: “Inversión Inicial”,
 flujo_mensual: “Cashflow Mensual”,
-tir_anualizada: “Rentabilidad anual compuesta estimada”,
+tir_anualizada: “TIR Anualizada”,
 roi_anual: “ROI Anual”,
 beneficio_total: “Beneficio Total”,
 valor_final: “Valor Neto al Vender”,
 flujo_acumulado: “Flujo Acumulado”,
 capital_necesario: “Capital necesario para empezar”,
-cashflow_mensual_neto: “Cashflow mensual NETO (tras impuestos, año 1)”,
-rentabilidad_anual_compuesta: “Estimación basada en flujos proyectados”,
+cashflow_mensual_neto: “Cashflow mensual neto (Año 1)”,
+rentabilidad_anual_compuesta: “Rentabilidad anual compuesta”,
 basado_flujo_anual: “Basado en flujo de caja año 1”,
 en_anos: “en”,
 anos_text: “años”,
@@ -122,11 +122,6 @@ anual_considera: “% anual considera si otras alternativas (fondos indexados, R
 cashflow_negativo: “Cashflow Negativo: Necesitarás aportar”,
 mensuales_adicionales: “€ mensuales adicionales de tu bolsillo.”,
 excelente_rentabilidad: “Excelente Rentabilidad: Esta inversión supera significativamente la media del mercado inmobiliario español (4-6% anual).”,
-comunidad_autonoma: “Comunidad Autónoma”,
-ccaa_selecciona: “— Selecciona para ajustar el ITP —”,
-itp_hint_default: “El ITP se calcula automáticamente según el tipo de vivienda (7% por defecto)”,
-itp_hint_ccaa: “ITP ajustado al tipo de tu comunidad autónoma”,
-itp_hint_nueva: “Vivienda nueva: 10% IVA + 1.2% AJD (no aplica ITP)”,
 disclaimer_titulo: “Aviso Legal”,
 disclaimer_texto: “Esta calculadora proporciona estimaciones orientativas con fines informativos. Los resultados <strong>no constituyen asesoramiento financiero, fiscal ni jurídico</strong>. Las rentabilidades pasadas no garantizan rentabilidades futuras. Consulta siempre con un profesional cualificado antes de tomar decisiones de inversión.”,
 disclaimer_acepto: “He leído y acepto que esta herramienta es orientativa y no sustituye al asesoramiento profesional”,
@@ -138,16 +133,7 @@ seo_tir_texto: “La Tasa Interna de Retorno (TIR) mide la rentabilidad anual co
 seo_cashflow_titulo: “Cashflow positivo vs negativo”,
 seo_cashflow_texto: “Un cashflow positivo significa que el alquiler cubre todos los gastos e hipoteca con dinero de sobra cada mes. Un cashflow negativo implica que debes aportar dinero mensualmente, apostando por la revalorización futura del inmueble.”,
 seo_aviso_titulo: “Aviso importante”,
-seo_aviso_texto: “Esta calculadora es una herramienta orientativa. Los resultados dependen de las hipótesis introducidas. La fiscalidad, los tipos de interés y el mercado inmobiliario pueden cambiar significativamente. Consulta siempre con un asesor financiero o fiscal antes de invertir.”,
-footer_texto: “Herramienta gratuita, hecha con ❤️ para inversores como tú”,
-footer_cafe: “¿Te ha sido útil? Invítame a un café”,
-footer_disclaimer: “Esta herramienta es orientativa y no constituye asesoramiento financiero.”,
-chart_titulo: “📊 Distribución de costes mensuales”,
-chart_hipoteca: “Hipoteca”,
-chart_gastos_fijos: “Gastos fijos”,
-chart_impuestos: “Impuestos”,
-chart_cashflow: “Cashflow neto”,
-reset_confirm: “¿Restablecer todos los valores por defecto?”
+seo_aviso_texto: “Esta calculadora es una herramienta orientativa. Los resultados dependen de las hipótesis introducidas. La fiscalidad, los tipos de interés y el mercado inmobiliario pueden cambiar significativamente. Consulta siempre con un asesor financiero o fiscal antes de invertir.”
 },
 en: {
 calculadora_inversion: “🏠 Real Estate Investment Calculator”,
@@ -205,14 +191,14 @@ mes: “€/month”,
 ano: “€/year”,
 inversion_inicial: “Initial Investment”,
 flujo_mensual: “Monthly Cashflow”,
-tir_anualizada: “Estimated compound annual return”,
+tir_anualizada: “Annualized IRR”,
 roi_anual: “Annual ROI”,
 beneficio_total: “Total Profit”,
 valor_final: “Net Sale Value”,
 flujo_acumulado: “Accumulated Cashflow”,
 capital_necesario: “Capital needed to start”,
-cashflow_mensual_neto: “NET monthly cashflow (after taxes, year 1)”,
-rentabilidad_anual_compuesta: “Estimate based on projected cashflows”,
+cashflow_mensual_neto: “Net monthly cashflow (Year 1)”,
+rentabilidad_anual_compuesta: “Compound annual return”,
 basado_flujo_anual: “Based on year 1 cash flow”,
 en_anos: “in”,
 anos_text: “years”,
@@ -269,11 +255,6 @@ anual_considera: “% annual return, consider whether alternatives like index fu
 cashflow_negativo: “Negative Cashflow: You will need to contribute”,
 mensuales_adicionales: “€ monthly out of pocket.”,
 excelente_rentabilidad: “Excellent Return: This investment significantly outperforms the Spanish real estate market average (4-6% annually).”,
-comunidad_autonoma: “Autonomous Community”,
-ccaa_selecciona: “— Select to adjust Transfer Tax —”,
-itp_hint_default: “Transfer Tax calculated automatically based on property type (7% default)”,
-itp_hint_ccaa: “Transfer Tax adjusted for your region”,
-itp_hint_nueva: “New property: 10% VAT + 1.2% Stamp Duty (no Transfer Tax)”,
 disclaimer_titulo: “Legal Notice”,
 disclaimer_texto: “This calculator provides indicative estimates for informational purposes only. Results <strong>do not constitute financial, tax, or legal advice</strong>. Past returns do not guarantee future results. Always consult a qualified professional before making investment decisions.”,
 disclaimer_acepto: “I have read and accept that this tool is indicative and does not replace professional advice”,
@@ -285,16 +266,7 @@ seo_tir_texto: “The Internal Rate of Return (IRR) measures compound annual pro
 seo_cashflow_titulo: “Positive vs negative cashflow”,
 seo_cashflow_texto: “A positive cashflow means rental income covers all expenses and mortgage with money to spare each month. A negative cashflow means you need to contribute monthly, betting on future property appreciation.”,
 seo_aviso_titulo: “Important notice”,
-seo_aviso_texto: “This calculator is a guideline tool. Results depend on the assumptions entered. Tax law, interest rates, and the property market can change significantly. Always consult a financial or tax advisor before investing.”,
-footer_texto: “Free tool, made with ❤️ for investors like you”,
-footer_cafe: “Was it useful? Buy me a coffee”,
-footer_disclaimer: “This tool is indicative and does not constitute financial advice.”,
-chart_titulo: “📊 Monthly cost breakdown”,
-chart_hipoteca: “Mortgage”,
-chart_gastos_fijos: “Fixed expenses”,
-chart_impuestos: “Taxes”,
-chart_cashflow: “Net cashflow”,
-reset_confirm: “Reset all values to defaults?”
+seo_aviso_texto: “This calculator is a guideline tool. Results depend on the assumptions entered. Tax law, interest rates, and the property market can change significantly. Always consult a financial or tax advisor before investing.”
 }
 };
 
@@ -303,8 +275,6 @@ let currentLanguage = ‘es’;
 // ============================================================
 // DISCLAIMER
 // ============================================================
-const DISCLAIMER_VERSION = ‘v1’;
-
 function initDisclaimer() {
 const overlay = document.getElementById(‘disclaimerOverlay’);
 const check = document.getElementById(‘disclaimerCheck’);
@@ -313,8 +283,8 @@ const btn = document.getElementById(‘disclaimerBtn’);
 ```
 if (!overlay || !check || !btn) return;
 
-// localStorage con versión — persiste entre sesiones
-if (localStorage.getItem(`disclaimerAccepted_${DISCLAIMER_VERSION}`) === 'true') {
+// Si ya aceptó en esta sesión, no mostrar
+if (sessionStorage.getItem('disclaimerAccepted') === 'true') {
     overlay.classList.add('hidden');
     return;
 }
@@ -325,7 +295,7 @@ check.addEventListener('change', () => {
 
 btn.addEventListener('click', () => {
     if (check.checked) {
-        localStorage.setItem(`disclaimerAccepted_${DISCLAIMER_VERSION}`, 'true');
+        sessionStorage.setItem('disclaimerAccepted', 'true');
         overlay.style.opacity = '0';
         overlay.style.transition = 'opacity 0.4s ease';
         setTimeout(() => overlay.classList.add('hidden'), 400);
@@ -413,7 +383,7 @@ realista: {
 incrementoAlquiler: 2,
 mesesVacio: 1,
 incrementoGastos: 1,
-revalorizacion: 3.5,
+revalorizacion: 2.5,
 taxAlquiler: 21
 },
 optimista: {
@@ -528,60 +498,6 @@ toggleFinanciacionInputs();
 calcular();
 ```
 
-}
-
-// ============================================================
-// VALIDACIONES — warnings visuales en campos
-// ============================================================
-function validarEntradas({ mesesVacio, entradaEuros, precio }) {
-// Meses vacío > 6
-const mesesInput = document.getElementById(‘mesesVacio’);
-if (mesesInput) {
-if (mesesVacio > 6) {
-setFieldWarning(mesesInput, currentLanguage === ‘es’
-? ‘⚠️ Más de 6 meses vacío es inusual. Verifica que es correcto.’
-: ‘⚠️ More than 6 vacant months is unusual. Please verify.’);
-} else {
-clearFieldWarning(mesesInput);
-}
-}
-
-```
-// Entrada > 50% del precio
-const entradaInput = document.getElementById('entradaEuros');
-const porcentajeEntrada = precio > 0 ? (entradaEuros / precio) * 100 : 0;
-if (entradaInput) {
-    if (porcentajeEntrada > 50 && porcentajeEntrada < 100) {
-        setFieldWarning(entradaInput, currentLanguage === 'es'
-            ? '✅ Entrada conservadora (+50%). El apalancamiento es bajo.'
-            : '✅ Conservative down payment (+50%). Low leverage.');
-    } else {
-        clearFieldWarning(entradaInput);
-    }
-}
-```
-
-}
-
-function setFieldWarning(input, message) {
-clearFieldWarning(input);
-const group = input.closest(’.form-group’);
-if (!group) return;
-const existing = group.querySelector(’.field-warning’);
-if (existing) { existing.textContent = message; return; }
-const div = document.createElement(‘div’);
-div.className = ‘field-warning’;
-div.textContent = message;
-group.appendChild(div);
-input.classList.add(‘input-warning’);
-}
-
-function clearFieldWarning(input) {
-const group = input.closest(’.form-group’);
-if (!group) return;
-const existing = group.querySelector(’.field-warning’);
-if (existing) existing.remove();
-input.classList.remove(‘input-warning’);
 }
 
 // ============================================================
@@ -721,10 +637,7 @@ const irpfVenta = parseFloat(document.getElementById(‘irpfVenta’).value) || 
     };
 
     document.getElementById('resultados').innerHTML = mostrarResultados(datos);
-    // Renderizar gráfico DESPUÉS de inyectar el HTML (el canvas ya existe en el DOM)
-    requestAnimationFrame(() => renderizarDoughnut(datos));
     actualizarResumenFlotante(datos);
-    validarEntradas({ mesesVacio, entradaEuros, precio });
 
 } catch (err) {
     console.error(err);
@@ -782,119 +695,11 @@ function calcularImpuestos(precio, tipo) {
 if (tipo === ‘nueva’) {
 return precio * 0.10 + precio * 0.012;
 }
-// Usar el tipo de la CC.AA. si está seleccionado
-const ccaaSelector = document.getElementById(‘ccaaSelector’);
-const ccaaVal = ccaaSelector ? parseFloat(ccaaSelector.value) : NaN;
-const itpRate = (!isNaN(ccaaVal) && ccaaVal > 0) ? ccaaVal / 100 : 0.07;
-return precio * itpRate;
+return precio * 0.07;
 }
 
 function fmt(num) {
 return num.toLocaleString(currentLanguage === ‘es’ ? ‘es-ES’ : ‘en-US’, { maximumFractionDigits: 0 });
-}
-
-// ============================================================
-// RESET — valores por defecto
-// ============================================================
-const defaultValues = {
-precio: 95000, gastosCompra: 2500, reforma: 4000,
-tipoVivienda: ‘segunda’, financiacionTipo: ‘con_hipoteca’,
-entradaEuros: 19000, interes: 3.2, anos: 25, gastosHipoteca: 1800,
-alquiler: 700, mesesVacio: 0.5, incrementoAlquiler: 2, anosAnalisis: 20,
-ibi: 380, comunidad: 55, seguro: 220, seguroImpago: 160,
-mantenimiento: 400, administracion: 0, incrementoGastos: 0, taxAlquiler: 19,
-revalorizacion: 3.5, gastosVenta: 8, plusvalia: 2000, irpfVenta: 19
-};
-
-function resetCalculadora() {
-if (!confirm(translations[currentLanguage].reset_confirm)) return;
-for (const [id, val] of Object.entries(defaultValues)) {
-const el = document.getElementById(id);
-if (el) el.value = val;
-}
-const ccaa = document.getElementById(‘ccaaSelector’);
-if (ccaa) ccaa.value = ‘’;
-actualizarEntradaSlider();
-actualizarITPHint();
-toggleFinanciacionInputs();
-// Marcar escenario realista
-document.querySelectorAll(’.btn-scenario’).forEach(b => b.classList.remove(‘active’));
-const realista = document.querySelector(”[onclick="aplicarEscenario(‘realista’)"]”);
-if (realista) realista.classList.add(‘active’);
-calcular();
-}
-
-// ============================================================
-// DOUGHNUT CHART
-// ============================================================
-let doughnutInstance = null;
-
-function generarDoughnutHTML(datos) {
-return `<div class="chart-card" id="chartCard"> <div class="chart-title" id="chartTitleEl"></div> <div class="chart-layout"> <div class="chart-canvas-wrap"> <canvas id="doughnutChart" width="220" height="220"></canvas> </div> <div class="chart-legend" id="chartLegend"></div> </div> </div>`;
-}
-
-function renderizarDoughnut(datos) {
-const t = translations[currentLanguage];
-const titleEl = document.getElementById(‘chartTitleEl’);
-if (titleEl) titleEl.textContent = t.chart_titulo;
-
-```
-const ingresos = datos.ingresosMensuales;
-const hipoteca = datos.financiacionTipo === 'con_hipoteca' ? datos.cuotaHipoteca : 0;
-const gastosFijos = datos.comunidad + datos.ibi / 12 + datos.seguro / 12 +
-                    datos.seguroImpago / 12 + datos.mantenimiento / 12 + datos.administracion;
-const impuestos = datos.taxMensual;
-const cashflow = Math.max(0, datos.flujoMensual);
-
-const values = [hipoteca, gastosFijos, impuestos, cashflow].map(v => Math.max(0, v));
-const labels = [t.chart_hipoteca, t.chart_gastos_fijos, t.chart_impuestos, t.chart_cashflow];
-const colors = ['#667eea', '#f59e0b', '#ef4444', '#10b981'];
-
-const canvas = document.getElementById('doughnutChart');
-if (!canvas) return;
-
-if (doughnutInstance) { doughnutInstance.destroy(); doughnutInstance = null; }
-
-doughnutInstance = new Chart(canvas, {
-    type: 'doughnut',
-    data: {
-        labels,
-        datasets: [{
-            data: values,
-            backgroundColor: colors,
-            borderWidth: 3,
-            borderColor: '#fff',
-            hoverOffset: 8
-        }]
-    },
-    options: {
-        cutout: '68%',
-        responsive: true,
-        plugins: {
-            legend: { display: false },
-            tooltip: {
-                callbacks: {
-                    label: ctx => ` ${ctx.parsed.toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', { maximumFractionDigits: 0 })} €/mes`
-                }
-            }
-        },
-        animation: { animateRotate: true, duration: 600 }
-    }
-});
-
-// Leyenda manual
-const legend = document.getElementById('chartLegend');
-if (legend) {
-    legend.innerHTML = labels.map((lbl, i) => `
-        <div class="legend-item">
-            <div class="legend-dot" style="background:${colors[i]}"></div>
-            <span>${lbl}</span>
-            <span class="legend-value">${values[i].toLocaleString(currentLanguage === 'es' ? 'es-ES' : 'en-US', { maximumFractionDigits: 0 })} €</span>
-        </div>
-    `).join('');
-}
-```
-
 }
 
 // ============================================================
@@ -1015,7 +820,6 @@ return `
             </div>
             <div class="metric-value ${flujoClass}">${fmt(datos.flujoMensual)} €</div>
             <div class="metric-subtitle">${t.cashflow_mensual_neto}</div>
-            <div class="metric-microcopy">👉 Para renta pasiva mensual, prioriza este dato</div>
         </div>
 
         <div class="metric-card">
@@ -1025,7 +829,6 @@ return `
             </div>
             <div class="metric-value ${roiClass}">${datos.roiAnual.toFixed(2)}%</div>
             <div class="metric-subtitle">${t.basado_flujo_anual}</div>
-            <div class="metric-microcopy">ROI alto + cashflow negativo = riesgo de liquidez</div>
         </div>
 
         <div class="metric-card">
@@ -1035,7 +838,6 @@ return `
             </div>
             <div class="metric-value ${rentabilidadClass}">${datos.rentabilidadAnual.toFixed(2)}%</div>
             <div class="metric-subtitle">${t.rentabilidad_anual_compuesta}</div>
-            <div class="metric-microcopy">👉 Para acumulación de patrimonio a largo plazo</div>
         </div>
 
         <div class="metric-card">
@@ -1058,7 +860,6 @@ return `
     </div>
 
     <!-- DESGLOSE + CASHFLOW LADO A LADO -->
-    ${generarDoughnutHTML(datos)}
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.25rem; margin-bottom:1.25rem;">
         <div class="detail-card">
             <div class="detail-card-title">${t.desglose_inversion}</div>
@@ -1311,89 +1112,6 @@ if (financiacionTipo) {
     financiacionTipo.addEventListener('change', toggleFinanciacionInputs);
 }
 
-// Selector CC.AA. — ajusta el ITP automáticamente
-const ccaaSelector = document.getElementById('ccaaSelector');
-const tipoViviendaSel = document.getElementById('tipoVivienda');
-const itpHint = document.getElementById('itpHint');
-const ccaaGroup = document.getElementById('ccaaGroup');
-
-function actualizarITPHint() {
-    if (!itpHint) return;
-    const t = translations[currentLanguage];
-    const tipoVivienda = tipoViviendaSel ? tipoViviendaSel.value : 'segunda';
-    if (tipoVivienda === 'nueva') {
-        itpHint.textContent = t.itp_hint_nueva;
-        if (ccaaGroup) ccaaGroup.style.display = 'none';
-    } else {
-        if (ccaaGroup) ccaaGroup.style.display = 'block';
-        const ccaaVal = ccaaSelector ? ccaaSelector.value : '';
-        if (ccaaVal) {
-            itpHint.textContent = `${t.itp_hint_ccaa}: ${ccaaVal}%`;
-        } else {
-            itpHint.textContent = t.itp_hint_default;
-        }
-    }
-}
-
-if (ccaaSelector) {
-    ccaaSelector.addEventListener('change', () => {
-        actualizarITPHint();
-        calcular();
-    });
-}
-
-if (tipoViviendaSel) {
-    tipoViviendaSel.addEventListener('change', () => {
-        actualizarITPHint();
-        calcular();
-    });
-}
-
-actualizarITPHint();
-
-// ── Cookie banner ──
-const cookieBanner  = document.getElementById('cookieBanner');
-const cookieAccept  = document.getElementById('cookieAccept');
-const cookieReject  = document.getElementById('cookieReject');
-const privacyLink   = document.getElementById('privacyLink');
-const privacyOverlay= document.getElementById('privacyOverlay');
-const privacyClose  = document.getElementById('privacyClose');
-const privacyClose2 = document.getElementById('privacyClose2');
-
-// Mostrar banner solo si no se ha aceptado antes
-if (localStorage.getItem('cookiesAccepted')) {
-    if (cookieBanner) cookieBanner.classList.add('hidden');
-}
-
-if (cookieAccept) cookieAccept.addEventListener('click', () => {
-    localStorage.setItem('cookiesAccepted', 'true');
-    cookieBanner.classList.add('hidden');
-});
-
-if (cookieReject) cookieReject.addEventListener('click', () => {
-    localStorage.setItem('cookiesAccepted', 'essential');
-    cookieBanner.classList.add('hidden');
-});
-
-// Abrir modal privacidad
-if (privacyLink) privacyLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (privacyOverlay) privacyOverlay.classList.remove('hidden');
-});
-
-const closePrivacy = () => { if (privacyOverlay) privacyOverlay.classList.add('hidden'); };
-if (privacyClose)  privacyClose.addEventListener('click', closePrivacy);
-if (privacyClose2) privacyClose2.addEventListener('click', closePrivacy);
-if (privacyOverlay) privacyOverlay.addEventListener('click', (e) => {
-    if (e.target === privacyOverlay) closePrivacy();
-});
-
-// Botón reset
-const resetBtn = document.getElementById('resetBtn');
-if (resetBtn) {
-    resetBtn.addEventListener('click', resetCalculadora);
-}
-
 // Botón calcular
 const calcularBtn = document.getElementById('calcularBtn');
 if (calcularBtn) {
@@ -1421,6 +1139,6 @@ cargarDesdeURL();
 
 // Calcular automáticamente al cargar
 calcular();
-
+```
 
 });
