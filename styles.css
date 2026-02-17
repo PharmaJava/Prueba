@@ -492,6 +492,7 @@ body {
     line-height: 1.4;
 }
 
+
 .input-warning {
     border-color: var(--warning) !important;
 }
