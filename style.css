@@ -1544,3 +1544,50 @@ body {
     }
     .btn-cookie { margin-left: 0; width: 100%; }
 }
+
+/* ============================================================
+   PARCHE DE EMERGENCIA PARA MÓVIL (Pegar al final de style.css)
+   ============================================================ */
+@media (max-width: 850px) {
+    /* 1. Forzar una sola columna en la estructura principal */
+    .content-grid {
+        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        width: 100% !important;
+    }
+
+    /* 2. Que los inputs que están lado a lado se pongan uno bajo otro */
+    .input-row, .form-row, .input-group-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    /* 3. Evitar que la tabla rompa el ancho */
+    .table-container, .card-body {
+        width: 100% !important;
+        overflow-x: auto !important; /* Scroll horizontal si no cabe */
+        display: block;
+    }
+
+    /* 4. Ajustar márgenes para ganar espacio */
+    .app-container {
+        padding: 10px !important;
+        overflow-x: hidden;
+    }
+    
+    .glass-card {
+        padding: 15px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 5. Ajustar el gráfico para que no se salga */
+    canvas#distributionChart {
+        max-height: 250px !important;
+        width: 100% !important;
+    }
+}
+
