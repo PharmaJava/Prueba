@@ -23,7 +23,44 @@
 </head>
 <body>
 
-<!-- Disclaimer modal -->
+<!-- Cookie consent banner -->
+
+<div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-content">
+        <span class="cookie-icon">🍪</span>
+        <p>Usamos cookies propias para mejorar tu experiencia. No compartimos datos con terceros.
+            <a href="#privacidad" class="cookie-link" id="privacyLink">Política de privacidad</a>
+        </p>
+    </div>
+    <div class="cookie-actions">
+        <button class="btn-cookie-accept" id="cookieAccept">Aceptar</button>
+        <button class="btn-cookie-reject" id="cookieReject">Solo esenciales</button>
+    </div>
+</div>
+
+<!-- Modal política de privacidad -->
+
+<div class="privacy-overlay hidden" id="privacyOverlay">
+    <div class="privacy-modal">
+        <button class="privacy-close" id="privacyClose">✕</button>
+        <h2>🔒 Política de Privacidad</h2>
+        <div class="privacy-content">
+            <h3>¿Qué datos recogemos?</h3>
+            <p>Esta herramienta <strong>no recoge datos personales</strong>. Todos los cálculos se realizan en tu dispositivo (lado cliente). No enviamos ningún dato a servidores.</p>
+            <h3>Cookies</h3>
+            <p>Usamos únicamente cookies técnicas esenciales para recordar tus preferencias locales (aceptación de este aviso y los parámetros de la calculadora). No usamos cookies de rastreo ni publicidad de terceros.</p>
+            <h3>Almacenamiento local</h3>
+            <p>Guardamos en el <code>localStorage</code> de tu navegador las preferencias de la calculadora y la aceptación de los avisos legales. Puedes borrarlos en cualquier momento desde los ajustes de tu navegador.</p>
+            <h3>Google AdSense</h3>
+            <p>En el futuro esta herramienta puede mostrar publicidad de Google AdSense. En ese caso, Google puede usar cookies para mostrar anuncios relevantes. Podrás gestionar tus preferencias en ese momento.</p>
+            <h3>Tus derechos</h3>
+            <p>Tienes derecho de acceso, rectificación, supresión y portabilidad de tus datos. Al no recoger datos personales, no existe información que gestionar. Para cualquier consulta: <strong>boarding87@gmail.com</strong></p>
+            <h3>Ley aplicable</h3>
+            <p>Esta política se rige por el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 de Protección de Datos Personales (LOPDGDD).</p>
+        </div>
+        <button class="btn btn-primary" id="privacyClose2">Entendido</button>
+    </div>
+</div>
 
 <div class="disclaimer-overlay" id="disclaimerOverlay">
     <div class="disclaimer-modal">
@@ -41,7 +78,7 @@
 <div class="bg-particles" id="particles"></div>
 <div class="app-container">
 
-
+```
 <header class="header">
     <div class="language-selector">
         <select id="langSelector">
@@ -471,7 +508,7 @@
         </p>
     </div>
 </footer>
-
+```
 
 </div>
 
