@@ -47,6 +47,7 @@ const translations = {
         escenario_realista: "😐 Realista",
         escenario_optimista: "🚀 Optimista",
         btn_compartir: "🔗 Compartir análisis",
+        btn_exportar_pdf: "📄 Exportar PDF", // <-- NUEVA CLAVE
         analizar_inversion: "🧮 Analizar Inversión",
         analisis_rentabilidad: "📊 Análisis de Rentabilidad",
         resultados_completos: "Resultados completos de tu inversión a largo plazo",
@@ -194,6 +195,7 @@ const translations = {
         escenario_realista: "😐 Realistic",
         escenario_optimista: "🚀 Optimistic",
         btn_compartir: "🔗 Share analysis",
+        btn_exportar_pdf: "📄 Export PDF", // <-- NUEVA CLAVE
         analizar_inversion: "🧮 Analyze Investment",
         analisis_rentabilidad: "📊 Profitability Analysis",
         resultados_completos: "Complete results of your long-term investment",
@@ -1225,6 +1227,41 @@ function switchTab(tabName) {
 }
 
 // ============================================================
+// EXPORTAR A PDF
+// ============================================================
+function exportToPDF() {
+    const resultados = document.querySelector('.results-panel .card-body');
+    if (!resultados) return;
+
+    // Mostrar un indicador de carga (opcional)
+    resultados.style.opacity = '0.5';
+
+    html2canvas(resultados, {
+        scale: 2,
+        logging: false,
+        allowTaint: false,
+        useCORS: true
+    }).then(canvas => {
+        resultados.style.opacity = '1';
+
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'px',
+            format: [canvas.width * 0.75, canvas.height * 0.75] // Ajuste para que quepa
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width * 0.75, canvas.height * 0.75);
+        pdf.save('inmobiliaria.pdf');
+    }).catch(error => {
+        resultados.style.opacity = '1';
+        console.error('Error al generar PDF:', error);
+        alert('No se pudo generar el PDF. Inténtalo de nuevo.');
+    });
+}
+
+// ============================================================
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -1335,6 +1372,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareBtn = document.getElementById('shareBtn');
     if (shareBtn) {
         shareBtn.addEventListener('click', compartirAnalisis);
+    }
+
+    // Botón PDF
+    const pdfBtn = document.getElementById('pdfBtn');
+    if (pdfBtn) {
+        pdfBtn.addEventListener('click', exportToPDF);
     }
 
     // Autocálculo en tiempo real para todos los inputs EXCEPTO slider y precio
@@ -1449,4 +1492,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Carga inicial
     setTimeout(updateChart, 1000);
 });
-
