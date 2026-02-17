@@ -1377,3 +1377,76 @@ document.addEventListener('DOMContentLoaded', () => {
     mostrarBannerCookies();
     // ... aquí va el resto de tu código de inicialización de la calculadora ...
 });
+
+// ============================================================
+// LÓGICA DEL GRÁFICO (Pegar al final de app.js)
+// ============================================================
+
+// Variable global para el gráfico
+let myChart = null;
+
+function updateChart() {
+    const ctx = document.getElementById('distributionChart');
+    if (!ctx) return; // Si no encuentra el canvas, no hace nada
+
+    // Intentamos coger los valores de TUS inputs actuales
+    // Usamos parseFloat y || 0 para evitar errores si el campo está vacío
+    const getVal = (id) => {
+        const el = document.getElementById(id);
+        return el ? (parseFloat(el.value) || 0) : 0;
+    };
+
+    // Recogemos datos (ajusta los IDs si cambiaste alguno en tu HTML original)
+    const alquiler = getVal('alquiler') || getVal('alquilerMensual'); 
+    const gastosFijos = (getVal('comunidad') + (getVal('ibi')/12) + (getVal('seguros')/12));
+    
+    // Cálculo aproximado de cuota (simplificado para el gráfico)
+    const precio = getVal('precio') || getVal('precioCompra');
+    const financiacion = getVal('financiacion') || 80;
+    const capital = precio * (financiacion/100);
+    const interes = (getVal('interes') || 3.5) / 100 / 12;
+    const plazo = (getVal('plazo') || 30) * 12;
+    const cuota = capital > 0 ? (capital * interes * Math.pow(1+interes, plazo)) / (Math.pow(1+interes, plazo) - 1) : 0;
+
+    const impuestos = (alquiler - gastosFijos - cuota) * 0.19; // Est. 19%
+    const cashflow = alquiler - gastosFijos - cuota - impuestos;
+    const cashflowPositivo = Math.max(0, cashflow);
+
+    // Si ya existe gráfico, lo destruimos para actualizar
+    if (myChart) myChart.destroy();
+
+    myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Hipoteca', 'Gastos', 'Impuestos', 'Tu Beneficio'],
+            datasets: [{
+                data: [cuota.toFixed(0), gastosFijos.toFixed(0), Math.max(0, impuestos).toFixed(0), cashflowPositivo.toFixed(0)],
+                backgroundColor: ['#64748b', '#ef4444', '#f59e0b', '#10b981'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#fff' } }
+            }
+        }
+    });
+}
+
+// Conectar con tu botón de calcular existente
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('calcularBtn');
+    if (btn) {
+        // Añadimos nuestro gráfico a tu evento de click existente
+        btn.addEventListener('click', () => {
+            setTimeout(updateChart, 500); // Esperamos 0.5s a que tus cálculos terminen
+        });
+    }
+    
+    // Carga inicial
+    setTimeout(updateChart, 1000);
+});
+
