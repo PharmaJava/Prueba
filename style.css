@@ -1545,31 +1545,29 @@ body {
     .btn-cookie { margin-left: 0; width: 100%; }
 }
 
+/* ... todo el código anterior se mantiene igual hasta la línea donde empieza el parche ... */
+
 /* ============================================================
-   PARCHE DE EMERGENCIA PARA MÓVIL (Pegar al final de style.css)
+   PARCHE DE EMERGENCIA PARA MÓVIL (mejorado)
    ============================================================ */
 @media (max-width: 850px) {
     /* 1. Forzar una sola columna en la estructura principal */
     .content-grid {
         grid-template-columns: 1fr !important;
-        display: flex !important;
-        flex-direction: column !important;
         gap: 20px !important;
-        width: 100% !important;
     }
 
-    /* 2. Que los inputs que están lado a lado se pongan uno bajo otro */
+    /* 2. Los inputs que estaban en fila ahora se apilan */
     .input-row, .form-row, .input-group-row {
-        display: flex !important;
         flex-direction: column !important;
         gap: 15px !important;
     }
 
-    /* 3. Evitar que la tabla rompa el ancho */
-    .table-container, .card-body {
-        width: 100% !important;
-        overflow-x: auto !important; /* Scroll horizontal si no cabe */
+    /* 3. La tabla se hace scroll horizontal si es necesario */
+    .projection-table-container {
+        overflow-x: auto !important;
         display: block;
+        width: 100%;
     }
 
     /* 4. Ajustar márgenes para ganar espacio */
@@ -1577,7 +1575,7 @@ body {
         padding: 10px !important;
         overflow-x: hidden;
     }
-    
+
     .glass-card {
         padding: 15px !important;
         width: 100% !important;
@@ -1585,9 +1583,19 @@ body {
     }
 
     /* 5. Ajustar el gráfico para que no se salga */
-    canvas#distributionChart {
+    canvas#doughnutChart {
         max-height: 250px !important;
         width: 100% !important;
+        height: auto !important;
+    }
+
+    /* 6. Los botones de acción se apilan correctamente */
+    .action-buttons {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    .action-buttons .btn {
+        flex: 1 1 auto;
+        min-width: 120px;
     }
 }
-
