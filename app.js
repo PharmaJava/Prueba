@@ -277,29 +277,21 @@ let currentLanguage = ‘es’;
 // ============================================================
 function initDisclaimer() {
 const overlay = document.getElementById(‘disclaimerOverlay’);
-const check = document.getElementById(‘disclaimerCheck’);
 const btn = document.getElementById(‘disclaimerBtn’);
 
 ```
-if (!overlay || !check || !btn) return;
+if (!overlay || !btn) return;
 
-// Si ya aceptó en esta sesión, no mostrar
 if (sessionStorage.getItem('disclaimerAccepted') === 'true') {
     overlay.classList.add('hidden');
     return;
 }
 
-check.addEventListener('change', () => {
-    btn.disabled = !check.checked;
-});
-
 btn.addEventListener('click', () => {
-    if (check.checked) {
-        sessionStorage.setItem('disclaimerAccepted', 'true');
-        overlay.style.opacity = '0';
-        overlay.style.transition = 'opacity 0.4s ease';
-        setTimeout(() => overlay.classList.add('hidden'), 400);
-    }
+    sessionStorage.setItem('disclaimerAccepted', 'true');
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.4s ease';
+    setTimeout(() => overlay.classList.add('hidden'), 400);
 });
 ```
 
