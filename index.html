@@ -8,74 +8,26 @@
     <meta name="keywords" content="calculadora rentabilidad alquiler, inversión inmobiliaria españa, calcular ROI piso, TIR inmobiliaria, cashflow alquiler, ITP vivienda"/>
     <meta name="author" content="Calculadora Inversión Inmobiliaria"/>
     <meta property="og:title" content="Calculadora de Inversión Inmobiliaria | España"/>
-    <meta property="og:description" content="Calcula GRATIS el cashflow, ROI y rentabilidad neta de tu inversión inmobiliaria en España."/>
+    <meta property="og:description" content="Analiza la rentabilidad de tu inversión en alquiler: TIR, ROI, cashflow y proyección a 20 años."/>
     <meta property="og:type" content="website"/>
-    <meta property="og:image" content="https://tudominio.com/og-preview.jpg"/>
-    <meta property="og:url" content="https://tudominio.com"/>
-    <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="twitter:title" content="Calculadora de Inversión Inmobiliaria | España"/>
-    <meta name="twitter:description" content="Calcula GRATIS el cashflow, ROI y rentabilidad neta de tu inversión inmobiliaria en España."/>
-    <meta name="twitter:image" content="https://tudominio.com/og-preview.jpg"/>
     <title>Calculadora de Inversión Inmobiliaria | Rentabilidad Alquiler España</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
-<!-- Cookie consent banner -->
-
-<div class="cookie-banner" id="cookieBanner">
-    <div class="cookie-content">
-        <span class="cookie-icon">🍪</span>
-        <p>Usamos cookies propias para mejorar tu experiencia. No compartimos datos con terceros.
-            <a href="#privacidad" class="cookie-link" id="privacyLink">Política de privacidad</a>
-        </p>
-    </div>
-    <div class="cookie-actions">
-        <button class="btn-cookie-accept" id="cookieAccept">Aceptar</button>
-        <button class="btn-cookie-reject" id="cookieReject">Solo esenciales</button>
-    </div>
-</div>
-
-<!-- Modal política de privacidad -->
-
-<div class="privacy-overlay hidden" id="privacyOverlay">
-    <div class="privacy-modal">
-        <button class="privacy-close" id="privacyClose">✕</button>
-        <h2>🔒 Política de Privacidad</h2>
-        <div class="privacy-content">
-            <h3>¿Qué datos recogemos?</h3>
-            <p>Esta herramienta <strong>no recoge datos personales</strong>. Todos los cálculos se realizan en tu dispositivo (lado cliente). No enviamos ningún dato a servidores.</p>
-            <h3>Cookies</h3>
-            <p>Usamos únicamente cookies técnicas esenciales para recordar tus preferencias locales (aceptación de este aviso y los parámetros de la calculadora). No usamos cookies de rastreo ni publicidad de terceros.</p>
-            <h3>Almacenamiento local</h3>
-            <p>Guardamos en el <code>localStorage</code> de tu navegador las preferencias de la calculadora y la aceptación de los avisos legales. Puedes borrarlos en cualquier momento desde los ajustes de tu navegador.</p>
-            <h3>Google AdSense</h3>
-            <p>En el futuro esta herramienta puede mostrar publicidad de Google AdSense. En ese caso, Google puede usar cookies para mostrar anuncios relevantes. Podrás gestionar tus preferencias en ese momento.</p>
-            <h3>Tus derechos</h3>
-            <p>Tienes derecho de acceso, rectificación, supresión y portabilidad de tus datos. Al no recoger datos personales, no existe información que gestionar. Para cualquier consulta: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3c5e535d4e5855525b040b7c5b515d5550125f5351">[email&#160;protected]</a></strong></p>
-            <h3>Ley aplicable</h3>
-            <p>Esta política se rige por el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 de Protección de Datos Personales (LOPDGDD).</p>
-        </div>
-        <button class="btn btn-primary" id="privacyClose2">Entendido</button>
-    </div>
-</div>
+<!-- Disclaimer modal -->
 
 <div class="disclaimer-overlay" id="disclaimerOverlay">
     <div class="disclaimer-modal">
-        <div class="disclaimer-scrollable">
-            <div class="disclaimer-icon">⚖️</div>
-            <h2 data-i18n="disclaimer_titulo">Aviso Legal</h2>
-            <p data-i18n="disclaimer_texto">Esta calculadora proporciona estimaciones orientativas con fines informativos. Los resultados <strong>no constituyen asesoramiento financiero, fiscal ni jurídico</strong>. Las rentabilidades pasadas no garantizan rentabilidades futuras. Consulta siempre con un profesional cualificado antes de tomar decisiones de inversión.</p>
-            <label class="disclaimer-check">
-                <input type="checkbox" id="disclaimerCheck"/>
-                <span data-i18n="disclaimer_acepto">He leído y acepto que esta herramienta es orientativa y no sustituye al asesoramiento profesional</span>
-            </label>
-        </div>
-        <div class="disclaimer-footer">
-            <button class="btn btn-primary btn-block" id="disclaimerBtn" disabled data-i18n="disclaimer_continuar">Continuar a la calculadora</button>
-        </div>
+        <div class="disclaimer-icon">⚖️</div>
+        <h2 data-i18n="disclaimer_titulo">Aviso Legal</h2>
+        <p data-i18n="disclaimer_texto">Esta calculadora proporciona estimaciones orientativas con fines informativos. Los resultados <strong>no constituyen asesoramiento financiero, fiscal ni jurídico</strong>. Las rentabilidades pasadas no garantizan rentabilidades futuras. Consulta siempre con un profesional cualificado antes de tomar decisiones de inversión.</p>
+        <label class="disclaimer-check">
+            <input type="checkbox" id="disclaimerCheck"/>
+            <span data-i18n="disclaimer_acepto">He leído y acepto que esta herramienta es orientativa y no sustituye al asesoramiento profesional</span>
+        </label>
+        <button class="btn btn-primary btn-block" id="disclaimerBtn" disabled data-i18n="disclaimer_continuar">Continuar a la calculadora</button>
     </div>
 </div>
 
@@ -108,11 +60,11 @@
             </div>
             <div class="card-body">
                 <div class="nav-tabs">
-                    <button class="nav-tab active" data-tab="propiedad"><span class="tab-icon">🏠</span><span class="tab-text" data-i18n="propiedad"> Propiedad</span></button>
-                    <button class="nav-tab" data-tab="financiacion"><span class="tab-icon">💰</span><span class="tab-text" data-i18n="financiacion"> Financiación</span></button>
-                    <button class="nav-tab" data-tab="ingresos"><span class="tab-icon">📈</span><span class="tab-text" data-i18n="ingresos"> Ingresos</span></button>
-                    <button class="nav-tab" data-tab="gastos"><span class="tab-icon">📊</span><span class="tab-text" data-i18n="gastos"> Gastos</span></button>
-                    <button class="nav-tab" data-tab="revalorizacion"><span class="tab-icon">💎</span><span class="tab-text" data-i18n="revalorizacion"> Revalorización</span></button>
+                    <button class="nav-tab active" data-tab="propiedad"><span data-i18n="propiedad">🏠 Propiedad</span></button>
+                    <button class="nav-tab" data-tab="financiacion"><span data-i18n="financiacion">💰 Financiación</span></button>
+                    <button class="nav-tab" data-tab="ingresos"><span data-i18n="ingresos">📈 Ingresos</span></button>
+                    <button class="nav-tab" data-tab="gastos"><span data-i18n="gastos">📊 Gastos</span></button>
+                    <button class="nav-tab" data-tab="revalorizacion"><span data-i18n="revalorizacion">💎 Revalorización</span></button>
                 </div>
 
                 <!-- Tab: Propiedad -->
@@ -120,57 +72,28 @@
                     <div class="form-group">
                         <label class="form-label" data-i18n="precio_compra">Precio de compra</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="precio" min="0" step="1000" type="number" inputmode="decimal" value="95000"/>
+                            <input class="form-input with-suffix" id="precio" min="0" step="1000" type="number" value="140000"/>
                             <span class="input-suffix">€</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" data-i18n="tipo_vivienda">Tipo de vivienda
-                            <span class="help-tooltip" title="El ITP varía por región. Selecciona la tuya para aplicar el tipo correcto automáticamente.">ℹ️</span>
-                        </label>
+                        <label class="form-label" data-i18n="tipo_vivienda">Tipo de vivienda</label>
                         <select class="form-select" id="tipoVivienda">
                             <option value="segunda" data-i18n="segunda_vivienda">Segunda vivienda (7% ITP)</option>
                             <option value="nueva" data-i18n="vivienda_nueva">Vivienda nueva (10% IVA + 1.2% AJD)</option>
                         </select>
                     </div>
-                    <div class="form-group" id="ccaaGroup">
-                        <label class="form-label" data-i18n="comunidad_autonoma">
-                            Comunidad Autónoma
-                            <span class="help-tooltip" title="El ITP varía por región. Selecciona la tuya para aplicar el tipo correcto automáticamente.">ℹ️</span>
-                        </label>
-                        <select class="form-select" id="ccaaSelector">
-                            <option value="" data-i18n="ccaa_selecciona">— Selecciona para ajustar el ITP —</option>
-                            <option value="6">Madrid (6%)</option>
-                            <option value="7">Andalucía (7%)</option>
-                            <option value="7">Aragón (7%)</option>
-                            <option value="7">Asturias (7%)</option>
-                            <option value="7">Baleares (7%)</option>
-                            <option value="6.5">Canarias (6.5%)</option>
-                            <option value="6">Cantabria (6%)</option>
-                            <option value="9">Castilla-La Mancha (9%)</option>
-                            <option value="8">Castilla y León (8%)</option>
-                            <option value="10">Cataluña (10%)</option>
-                            <option value="8">Extremadura (8%)</option>
-                            <option value="10">Galicia (10%)</option>
-                            <option value="6">La Rioja (6%)</option>
-                            <option value="6">Navarra (6%)</option>
-                            <option value="10">C. Valenciana (10%)</option>
-                            <option value="7">País Vasco (7%)</option>
-                            <option value="7">Murcia (7%)</option>
-                        </select>
-                        <div class="field-hint" id="itpHint" data-i18n="itp_hint_default">El ITP se calcula automáticamente según el tipo de vivienda (7% por defecto)</div>
-                    </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="gastos_compra">Gastos de compra-venta</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="gastosCompra" min="0" step="100" type="number" inputmode="decimal" value="3000"/>
+                            <input class="form-input with-suffix" id="gastosCompra" min="0" step="100" type="number" value="3500"/>
                             <span class="input-suffix">€</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="gastos_reforma">Gastos de reforma</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="reforma" min="0" step="100" type="number" inputmode="decimal" value="4000"/>
+                            <input class="form-input with-suffix" id="reforma" min="0" step="100" type="number" value="5000"/>
                             <span class="input-suffix">€</span>
                         </div>
                     </div>
@@ -188,28 +111,28 @@
                     <div class="form-group" id="entradaGroup">
                         <label class="form-label" data-i18n="ahorro_aportado">Ahorro aportado</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="entradaEuros" min="0" step="1000" type="number" inputmode="decimal" value="19000"/>
+                            <input class="form-input with-suffix" id="entradaEuros" min="0" step="1000" type="number" value="28000"/>
                             <span class="input-suffix" id="entradaPorcentajeDisplay">20%</span>
                         </div>
                         <div class="slider-container">
-                            <input type="range" id="entradaSlider" class="form-slider" min="0" max="95000" step="1000" value="19000"/>
+                            <input type="range" id="entradaSlider" class="form-slider" min="0" max="140000" step="1000" value="28000"/>
                         </div>
                     </div>
                     <div class="form-group" id="interesGroup">
                         <label class="form-label" data-i18n="interes_hipoteca">Tipo de interés hipoteca</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="interes" max="15" min="0" step="0.1" type="number" inputmode="decimal" value="3.2"/>
+                            <input class="form-input with-suffix" id="interes" max="15" min="0" step="0.1" type="number" value="2.5"/>
                             <span class="input-suffix">%</span>
                         </div>
                     </div>
                     <div class="form-group" id="anosGroup">
                         <label class="form-label" data-i18n="anos_hipoteca">Años de hipoteca</label>
-                        <input class="form-input" id="anos" max="40" min="5" step="1" type="number" inputmode="decimal" value="25"/>
+                        <input class="form-input" id="anos" max="40" min="5" step="1" type="number" value="25"/>
                     </div>
                     <div class="form-group" id="gastosHipGroup">
                         <label class="form-label" data-i18n="gastos_hipoteca">Gastos de hipoteca</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="gastosHipoteca" min="0" step="100" type="number" inputmode="decimal" value="1800"/>
+                            <input class="form-input with-suffix" id="gastosHipoteca" min="0" step="100" type="number" value="2500"/>
                             <span class="input-suffix">€</span>
                         </div>
                     </div>
@@ -220,24 +143,24 @@
                     <div class="form-group">
                         <label class="form-label" data-i18n="alquiler_mensual">Alquiler mensual</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="alquiler" min="0" step="50" type="number" inputmode="decimal" value="700"/>
+                            <input class="form-input with-suffix" id="alquiler" min="0" step="50" type="number" value="800"/>
                             <span class="input-suffix" data-i18n="mes">€/mes</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="meses_vacios">Meses vacío al año</label>
-                        <input class="form-input" id="mesesVacio" max="12" min="0" step="0.5" type="number" inputmode="decimal" value="0.5"/>
+                        <input class="form-input" id="mesesVacio" max="12" min="0" step="0.5" type="number" value="1"/>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="incremento_alquiler">Incremento anual del alquiler</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="incrementoAlquiler" max="10" min="0" step="0.1" type="number" inputmode="decimal" value="2"/>
+                            <input class="form-input with-suffix" id="incrementoAlquiler" max="10" min="0" step="0.1" type="number" value="2"/>
                             <span class="input-suffix">%</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="anos_analisis">Años de análisis</label>
-                        <input class="form-input" id="anosAnalisis" max="40" min="1" step="1" type="number" inputmode="decimal" value="20"/>
+                        <input class="form-input" id="anosAnalisis" max="40" min="1" step="1" type="number" value="20"/>
                     </div>
                 </div>
 
@@ -246,95 +169,88 @@
                     <div class="form-group">
                         <label class="form-label" data-i18n="ibi_anual">IBI anual</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="ibi" min="0" step="50" type="number" inputmode="decimal" value="380"/>
+                            <input class="form-input with-suffix" id="ibi" min="0" step="50" type="number" value="500"/>
                             <span class="input-suffix" data-i18n="ano">€/año</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="gastos_comunidad">Gastos de comunidad</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="comunidad" min="0" step="10" type="number" inputmode="decimal" value="55"/>
+                            <input class="form-input with-suffix" id="comunidad" min="0" step="10" type="number" value="80"/>
                             <span class="input-suffix" data-i18n="mes">€/mes</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="seguro_hogar">Seguro de hogar</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="seguro" min="0" step="50" type="number" inputmode="decimal" value="220"/>
+                            <input class="form-input with-suffix" id="seguro" min="0" step="50" type="number" value="300"/>
                             <span class="input-suffix" data-i18n="ano">€/año</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="seguro_impago">Seguro de impago</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="seguroImpago" min="0" step="50" type="number" inputmode="decimal" value="160"/>
+                            <input class="form-input with-suffix" id="seguroImpago" min="0" step="50" type="number" value="200"/>
                             <span class="input-suffix" data-i18n="ano">€/año</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="mantenimiento">Mantenimiento y reparaciones</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="mantenimiento" min="0" step="50" type="number" inputmode="decimal" value="400"/>
+                            <input class="form-input with-suffix" id="mantenimiento" min="0" step="50" type="number" value="500"/>
                             <span class="input-suffix" data-i18n="ano">€/año</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="administracion">Administración/Gestión</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="administracion" min="0" step="10" type="number" inputmode="decimal" value="0"/>
+                            <input class="form-input with-suffix" id="administracion" min="0" step="10" type="number" value="60"/>
                             <span class="input-suffix" data-i18n="mes">€/mes</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="incremento_gastos">Incremento anual de gastos</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="incrementoGastos" max="10" min="0" step="0.1" type="number" inputmode="decimal" value="0"/>
+                            <input class="form-input with-suffix" id="incrementoGastos" max="10" min="0" step="0.1" type="number" value="0"/>
                             <span class="input-suffix">%</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" data-i18n="tasa_impositiva">
-                            Tasa impositiva sobre alquiler neto
-                            <span class="help-tooltip" title="Modelo fiscal simplificado. La fiscalidad real depende de tu tramo IRPF, la reducción del 60% por alquiler de vivienda habitual y tus deducciones reales (intereses, amortización). Consulta con un asesor fiscal.">ℹ️</span>
-                        </label>
+                        <label class="form-label" data-i18n="tasa_impositiva">Tasa impositiva sobre alquiler neto</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="taxAlquiler" max="47" min="0" step="0.1" type="number" inputmode="decimal" value="19"/>
+                            <input class="form-input with-suffix" id="taxAlquiler" max="47" min="0" step="0.1" type="number" value="21"/>
                             <span class="input-suffix">%</span>
                         </div>
-                        <div class="field-hint">Tipo orientativo. Tramos reales IRPF: 19% (&lt;6.000€), 21% (6-50k€), 23% (50-200k€), 26% (&gt;200k€). Reduce el 60% si es vivienda habitual.</div>
                     </div>
                 </div>
 
                 <!-- Tab: Revalorización -->
                 <div class="tab-content" id="revalorizacion-tab">
                     <div class="form-group">
-                        <label class="form-label" data-i18n="revalorizacion_anual">
-                            Revalorización anual del inmueble
-                            <span class="help-tooltip" title="Asunción de crecimiento constante anual. El mercado real no es lineal: incluye caídas y subidas bruscas. Usa este campo para comparar escenarios, no como predicción.">ℹ️</span>
-                        </label>
+                        <label class="form-label" data-i18n="revalorizacion_anual">Revalorización anual del inmueble</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="revalorizacion" max="15" min="-5" step="0.1" type="number" inputmode="decimal" value="3.5"/>
+                            <input class="form-input with-suffix" id="revalorizacion" max="15" min="-5" step="0.1" type="number" value="2.5"/>
                             <span class="input-suffix">%</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="gastos_venta">Gastos de venta futura</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="gastosVenta" max="15" min="0" step="0.1" type="number" inputmode="decimal" value="8"/>
+                            <input class="form-input with-suffix" id="gastosVenta" max="15" min="0" step="0.1" type="number" value="8"/>
                             <span class="input-suffix">%</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="plusvalia">Impuesto plusvalía municipal</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="plusvalia" min="0" step="100" type="number" inputmode="decimal" value="2000"/>
+                            <input class="form-input with-suffix" id="plusvalia" min="0" step="100" type="number" value="2000"/>
                             <span class="input-suffix">€</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" data-i18n="irpf_venta">IRPF por venta (19-23%)</label>
                         <div class="input-group">
-                            <input class="form-input with-suffix" id="irpfVenta" max="47" min="0" step="0.1" type="number" inputmode="decimal" value="19"/>
+                            <input class="form-input with-suffix" id="irpfVenta" max="47" min="0" step="0.1" type="number" value="19"/>
                             <span class="input-suffix">%</span>
                         </div>
                     </div>
@@ -352,9 +268,6 @@
 
                 <!-- Botones de acción -->
                 <div class="action-buttons">
-                    <button class="btn btn-reset" id="resetBtn" title="Restablecer valores por defecto">
-                        🔄
-                    </button>
                     <button class="btn btn-share" id="shareBtn">
                         <span data-i18n="btn_compartir">🔗 Compartir análisis</span>
                     </button>
@@ -386,104 +299,31 @@
         </div>
     </div>
 
-    <!-- Sección SEO — contenido semántico indexable -->
-    <section class="seo-section" aria-label="Guía de inversión inmobiliaria">
-
-        <!-- Bloque intro + guía métricas -->
-        <div class="seo-intro">
-            <h2>Cómo calcular la rentabilidad de un piso en alquiler en España</h2>
-            <p>Invertir en vivienda para alquilar es una de las decisiones financieras más importantes que puedes tomar. Esta calculadora gratuita te ayuda a analizar todos los factores que determinan si una inversión inmobiliaria es rentable: desde el precio de compra y los impuestos hasta el cashflow mensual, la TIR y el valor neto al vender tras años de alquiler.</p>
-            <p>A diferencia de otras calculadoras básicas, aquí puedes modelar la hipoteca real con amortización, el ITP según tu comunidad autónoma, los gastos operativos anuales, la fiscalidad sobre rentas del alquiler y la revalorización del inmueble a lo largo del tiempo. El resultado es una proyección año a año que te permite comparar tu inversión con alternativas como depósitos, bonos o el S&P 500.</p>
-        </div>
-
-        <!-- Guía de métricas con microcopy -->
-        <div class="seo-metrics-guide">
-            <h2>Qué métrica mirar según tu objetivo inversor</h2>
-            <p>La calculadora genera varios indicadores. Aquí te explicamos cuándo priorizar cada uno:</p>
-            <div class="seo-grid">
-                <div class="seo-card">
-                    <div class="seo-icon">💧</div>
-                    <h3>Cashflow mensual neto</h3>
-                    <p>Lo que te queda en el bolsillo cada mes después de pagar hipoteca, gastos e impuestos. <strong>Si buscas vivir del alquiler o complementar ingresos hoy, este es tu número clave.</strong> Un cashflow positivo desde el primer año da tranquilidad financiera. Negativo no significa mala inversión, pero implica que necesitarás aportaciones mensuales.</p>
-                    <div class="metric-guide-tag">👉 Ideal para: renta pasiva mensual</div>
-                </div>
-                <div class="seo-card">
-                    <div class="seo-icon">⚡</div>
-                    <h3>Rentabilidad anual compuesta (TIR estimada)</h3>
-                    <p>Mide el rendimiento total de tu dinero teniendo en cuenta tanto los alquileres cobrados como la ganancia por venta futura. <strong>Si inviertes a largo plazo y priorizas el patrimonio final, este indicador lo resume todo.</strong> Una TIR superior al 6-7% supera históricamente al mercado inmobiliario español medio.</p>
-                    <div class="metric-guide-tag">👉 Ideal para: acumulación de patrimonio</div>
-                </div>
-                <div class="seo-card">
-                    <div class="seo-icon">📊</div>
-                    <h3>ROI anual sobre capital invertido</h3>
-                    <p>Relaciona el cashflow anual con el capital que pusiste de tu bolsillo (entrada + impuestos + gastos). <strong>Un ROI alto con cashflow negativo es señal de alerta: significa que el número queda bien sobre el papel pero que cada mes necesitas aportar dinero.</strong> Valora siempre ambos juntos.</p>
-                    <div class="metric-guide-tag">👉 Ojo: ROI alto + cashflow negativo = riesgo de liquidez</div>
-                </div>
-                <div class="seo-card">
-                    <div class="seo-icon">🏠</div>
-                    <h3>Valor neto al vender</h3>
-                    <p>Lo que recibirías si vendieras el inmueble al final del período de análisis, descontando gastos de venta, plusvalía municipal e IRPF sobre la ganancia de capital. <strong>Si tu estrategia es comprar, alquilar y vender en 10-15 años, esta cifra más el flujo acumulado define tu beneficio real total.</strong></p>
-                    <div class="metric-guide-tag">👉 Ideal para: estrategia buy-to-let a plazo fijo</div>
-                </div>
+    <!-- Sección SEO / Guía -->
+    <section class="seo-section">
+        <div class="seo-grid">
+            <div class="seo-card">
+                <div class="seo-icon">🏠</div>
+                <h3 data-i18n="seo_itp_titulo">¿Qué es el ITP?</h3>
+                <p data-i18n="seo_itp_texto">El Impuesto de Transmisiones Patrimoniales grava la compra de vivienda de segunda mano. En España oscila entre el 6% y el 10% según la comunidad autónoma. Para la calculadora usamos el valor medio del 7%.</p>
+            </div>
+            <div class="seo-card">
+                <div class="seo-icon">📊</div>
+                <h3 data-i18n="seo_tir_titulo">¿Cómo interpretar la TIR?</h3>
+                <p data-i18n="seo_tir_texto">La Tasa Interna de Retorno (TIR) mide la rentabilidad anual compuesta considerando tanto los flujos de caja por alquiler como la ganancia por revalorización al vender. Una TIR superior al 6-7% supera la media histórica del mercado inmobiliario español.</p>
+            </div>
+            <div class="seo-card">
+                <div class="seo-icon">💧</div>
+                <h3 data-i18n="seo_cashflow_titulo">Cashflow positivo vs negativo</h3>
+                <p data-i18n="seo_cashflow_texto">Un cashflow positivo significa que el alquiler cubre todos los gastos e hipoteca con dinero de sobra cada mes. Un cashflow negativo implica que debes aportar dinero mensualmente, apostando por la revalorización futura del inmueble.</p>
+            </div>
+            <div class="seo-card">
+                <div class="seo-icon">⚖️</div>
+                <h3 data-i18n="seo_aviso_titulo">Aviso importante</h3>
+                <p data-i18n="seo_aviso_texto">Esta calculadora es una herramienta orientativa. Los resultados dependen de las hipótesis introducidas. La fiscalidad, los tipos de interés y el mercado inmobiliario pueden cambiar significativamente. Consulta siempre con un asesor financiero o fiscal antes de invertir.</p>
             </div>
         </div>
-
-        <!-- Artículo largo con keywords -->
-        <div class="seo-article">
-            <h2>Errores comunes al calcular el ROI de un piso en alquiler</h2>
-
-            <h3>1. Ignorar los meses sin inquilino</h3>
-            <p>La mayoría de calculadoras asumen 12 meses de alquiler al año. En la práctica, entre rotaciones de inquilinos, reformas entre contratos y períodos de búsqueda, lo habitual en España es perder entre 3 y 6 semanas al año. Esta calculadora te permite configurar los meses vacíos exactos para obtener un resultado realista. Un inmueble con 1 mes de vacío al año pierde un 8,3% de sus ingresos brutos.</p>
-
-            <h3>2. Olvidar los gastos que no se ven</h3>
-            <p>El IBI, los gastos de comunidad, el seguro de hogar, el seguro de impago, el mantenimiento y la gestión si tienes agencia: todos estos gastos pueden sumar fácilmente entre 2.000 y 4.000 euros al año en un piso de precio medio. Ignorarlos puede hacer que un piso que parece rentable en papel dé pérdidas reales.</p>
-
-            <h3>3. No tener en cuenta la fiscalidad</h3>
-            <p>Los rendimientos de capital inmobiliario tributan en el IRPF. La legislación española permite deducir los intereses de la hipoteca, el IBI, la comunidad, los seguros y la amortización del inmueble (generalmente el 3% del valor de construcción). Esta calculadora aplica un modelo fiscal simplificado sobre el alquiler neto. <em>No sustituye un cálculo IRPF real con todas tus deducciones personales.</em> Para una planificación fiscal precisa, consulta con un asesor.</p>
-
-            <h3>4. Asumir revalorización constante</h3>
-            <p>El modelo de esta calculadora asume un crecimiento anual constante del precio del inmueble. En la realidad, el mercado inmobiliario en España ha mostrado períodos de caídas (2008-2014), estancamiento y fuertes subidas (2015-2024). La revalorización constante es una simplificación útil para comparar escenarios, no una predicción. Úsala para ver el rango de resultados, no como certeza.</p>
-
-            <h3>5. Confundir rentabilidad bruta con rentabilidad neta</h3>
-            <p>La <strong>rentabilidad bruta</strong> es simplemente alquiler anual dividido entre precio de compra. La <strong>rentabilidad neta</strong> descuenta todos los gastos. En España, una rentabilidad bruta del 6% puede convertirse en una neta del 3-4% al incluir todos los costes. Esta calculadora trabaja siempre con rentabilidad neta real, que es el único dato que importa para tomar decisiones.</p>
-
-            <h3>¿Qué es un buen cashflow inmobiliario en España?</h3>
-            <p>En el mercado español actual, con precios elevados en las principales ciudades, conseguir un cashflow positivo con hipoteca es cada vez más difícil en Madrid, Barcelona o Valencia. Lo habitual es cashflow ligeramente negativo o cercano a cero en grandes urbes, apostando por revalorización, y cashflows positivos más claros en ciudades medianas o zonas de playa con alta demanda turística. Un cashflow de +200 a +400 €/mes se considera un resultado muy bueno en el contexto actual de tipos de interés.</p>
-        </div>
-
-        <!-- Aviso legal explícito -->
-        <div class="seo-disclaimer-box">
-            <span class="seo-disclaimer-icon">⚖️</span>
-            <div>
-                <strong>Modelo fiscal simplificado.</strong> Esta herramienta aplica una tasa impositiva fija sobre el alquiler neto. La fiscalidad real del alquiler en España depende de tu tramo de IRPF, las deducciones aplicables (intereses, amortización, gastos reales) y tu situación personal. Los resultados son orientativos y no sustituyen el asesoramiento de un profesional fiscal. La rentabilidad anual compuesta mostrada es una estimación basada en flujos de caja proyectados, no una TIR financiera auditada.
-            </div>
-        </div>
-
     </section>
-
-    <!--
-    ══════════════════════════════════════════════════
-    BLOQUE PUBLICITARIO — Google AdSense
-    Para activarlo cuando tengas cuenta aprobada:
-    1. Sustituye ca-pub-XXXXXXXXXXXXXXXXX por tu Publisher ID
-    2. Sustituye XXXXXXXXXX por tu Ad Unit ID
-    3. Descomenta todo este bloque
-
-    <div class="ad-banner-container">
-        <div class="ad-label">Publicidad</div>
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-             data-ad-slot="XXXXXXXXXX"
-             data-ad-format="auto"
-             data-full-width-responsive="true">
-        </ins>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-    ══════════════════════════════════════════════════
-    -->
-
 </main>
 
 <!-- Resumen flotante (mobile) -->
@@ -492,21 +332,11 @@
     <div id="floatingValue" class="floating-value">-</div>
     <div class="floating-tir" id="floatingTir"></div>
 </div>
-
-<!-- ══════════════════════════════════════════════════
-     FOOTER — Invítame a un café ☕
-══════════════════════════════════════════════════ -->
-<footer class="site-footer">
-    <div class="footer-inner">
-        <p class="footer-text" data-i18n="footer_texto">
-            Herramienta gratuita, hecha con ❤️ para inversores como tú
-        </p>
-        <a class="btn-coffee"
-           href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR"
-           target="_blank"
-           rel="noopener noreferrer">
-            ☕ <span data-i18n="footer_cafe">¿Te ha sido útil? Invítame a un café</span>
-        </a>
-        <p class="footer-disclaimer" data-i18n="footer_disclaimer">
-            Esta herramienta es orientativa y no constituye aseso
 ```
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
