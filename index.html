@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
     <meta property="og:image" content="https://pisorentable.org/piso.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://pisorentable.org/piso.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://pisorentable.org/piso.png" />
 
-<link rel="icon" type="image/png" href="https://pisorentable.org/piso.png" />
+    <link rel="icon" type="image/png" href="https://pisorentable.org/piso.png" />
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content="Calculadora gratuita de rentabilidad de alquiler en España. Calcula TIR, ROI, cashflow mensual, ITP, hipoteca y proyección año a año de tu inversión inmobiliaria."/>
@@ -27,9 +27,11 @@
     <title>Calculadora de Inversión Inmobiliaria | Rentabilidad Alquiler España</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
+    <!-- Librerías para exportar a PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 <body>
 
@@ -318,16 +320,11 @@
                     </div>
 
                     <!-- Botones de acción -->
-                    <div class="action-buttons">
-                        <button class="btn btn-reset" id="resetBtn" title="Restablecer valores por defecto">
-                            🔄
-                        </button>
-                        <button class="btn btn-share" id="shareBtn">
-                            <span data-i18n="btn_compartir">🔗 Compartir análisis</span>
-                        </button>
-                        <button class="btn btn-primary btn-block" id="calcularBtn">
-                            <span data-i18n="analizar_inversion">🧮 Analizar Inversión</span>
-                        </button>
+                    <div class="action-buttons" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button class="btn btn-reset" id="resetBtn" title="Restablecer valores por defecto">🔄</button>
+                        <button class="btn btn-share" id="shareBtn"><span data-i18n="btn_compartir">🔗 Compartir análisis</span></button>
+                        <button class="btn btn-primary" id="pdfBtn" style="background: var(--gradient-main);"><span data-i18n="btn_exportar_pdf">📄 Exportar PDF</span></button>
+                        <button class="btn btn-primary btn-block" id="calcularBtn" style="flex: 1 1 auto;"><span data-i18n="analizar_inversion">🧮 Analizar Inversión</span></button>
                     </div>
 
                     <!-- Notificación de enlace copiado -->
@@ -459,8 +456,8 @@
         <div id="floatingValue" class="floating-value">-</div>
         <div class="floating-tir" id="floatingTir"></div>
     </div>
+
     <footer class="legal-info">
-        
         <p><a href="privacidad.html" target="_blank" rel="noopener" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
         <div style="display: none;">
             <a href="https://librecounter.org/referer/show" target="_blank" rel="noopener">
@@ -468,7 +465,7 @@
             </a>
         </div>
     </footer>
-</main>
+</div>
 
 <div id="cookie-banner" class="cookie-banner">
     <p>
@@ -476,27 +473,26 @@
         <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button>
     </p>
 </div>
-    <!-- ══════════════════════════════════════════════════
-         FOOTER — Invítame a un café ☕
-    ══════════════════════════════════════════════════ -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <p class="footer-text" data-i18n="footer_texto">
-                Herramienta gratuita, hecha con ❤️ para inversores como tú
-            </p>
-            <a class="btn-coffee"
-               href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR"
-               target="_blank"
-               rel="noopener noreferrer">
-                ☕ <span data-i18n="footer_cafe">¿Te ha sido útil? Invítame a un café</span>
-            </a>
-            <p class="footer-disclaimer" data-i18n="footer_disclaimer">
-                Esta herramienta es orientativa y no constituye asesoramiento financiero.
-            </p>
-        </div>
-    </footer>
 
-</div>
+<!-- ══════════════════════════════════════════════════
+     FOOTER — Invítame a un café ☕
+══════════════════════════════════════════════════ -->
+<footer class="site-footer">
+    <div class="footer-inner">
+        <p class="footer-text" data-i18n="footer_texto">
+            Herramienta gratuita, hecha con ❤️ para inversores como tú
+        </p>
+        <a class="btn-coffee"
+           href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR"
+           target="_blank"
+           rel="noopener noreferrer">
+            ☕ <span data-i18n="footer_cafe">¿Te ha sido útil? Invítame a un café</span>
+        </a>
+        <p class="footer-disclaimer" data-i18n="footer_disclaimer">
+            Esta herramienta es orientativa y no constituye asesoramiento financiero.
+        </p>
+    </div>
+</footer>
 
 <script src="app.js"></script>
 </body>
