@@ -28,10 +28,15 @@
 –radius: 20px;
 }
 
+html {
+/* Gradiente en html garantiza que iOS Safari lo renderice siempre */
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+min-height: 100%;
+}
+
 body {
 font-family: ‘DM Sans’, system-ui, -apple-system, sans-serif;
-background: var(–gradient-main);
-background-attachment: fixed;
+background: transparent;
 min-height: 100vh;
 color: var(–text);
 line-height: 1.6;
@@ -135,6 +140,7 @@ BACKGROUND PARTICLES
 .app-container {
 min-height: 100vh;
 position: relative;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .bg-particles {
@@ -1309,9 +1315,11 @@ RESPONSIVE
 ============================================================ */
 @media (max-width: 768px) {
 
-/* ── Header: selector de idioma en línea, no flotando ── */
+```
+/* ── Header: fondo explícito en móvil (iOS no renderiza glass bien) ── */
 .header {
     padding: 1.25rem 1rem 1.75rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .header-content {
@@ -1330,14 +1338,28 @@ RESPONSIVE
     margin-left: auto;
 }
 
-/* ── Tabs: mostrar solo emoji en móvil, texto oculto ── */
+/* ── Tabs: emoji sólo, grid simplificado en móvil ── */
+.nav-tabs {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.3rem;
+}
+
+/* Resetear los column spans del grid de 6 columnas */
+.nav-tab:nth-child(1),
+.nav-tab:nth-child(2),
+.nav-tab:nth-child(3),
+.nav-tab:nth-child(4),
+.nav-tab:nth-child(5) {
+    grid-column: auto;
+}
+
 .nav-tab {
     padding: 0.85rem 0.3rem;
-    font-size: 0.75rem;  /* texto más pequeño pero visible */
+    font-size: 0.75rem;
 }
 
 .tab-text {
-    display: none;       /* ocultar texto, dejar solo emoji */
+    display: none;
 }
 
 .tab-icon {
@@ -1442,6 +1464,7 @@ RESPONSIVE
 .chart-canvas-wrap {
     max-width: 180px;
 }
+```
 
 }
 
@@ -1451,6 +1474,7 @@ RESPONSIVE
 font-size: 1.5rem;
 }
 
+```
 .nav-tab span {
     font-size: 1.2rem;
 }
@@ -1466,6 +1490,7 @@ font-size: 1.5rem;
 .btn-reset {
     display: none; /* en pantallas muy pequeñas se oculta para no saturar */
 }
+```
 
 }
 
