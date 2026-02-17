@@ -122,11 +122,8 @@ line-height: 1.5;
 font-weight: 500;
 }
 
-#disclaimerBtn:disabled {
-opacity: 0.5;
-cursor: not-allowed;
-transform: none !important;
-box-shadow: none !important;
+#disclaimerBtn {
+margin-top: 0.5rem;
 }
 
 /* ============================================================
