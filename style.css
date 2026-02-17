@@ -29,18 +29,26 @@
 }
 
 html {
-/* Gradiente en html garantiza que iOS Safari lo renderice siempre */
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 min-height: 100%;
 }
 
 body {
 font-family: ‘DM Sans’, system-ui, -apple-system, sans-serif;
-background: transparent;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+background-attachment: fixed;
 min-height: 100vh;
 color: var(–text);
 line-height: 1.6;
 overflow-x: hidden;
+}
+
+/* iOS Safari: background-attachment fixed no funciona, usamos pseudo-elemento */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+z-index: -2;
 }
 
 /* ============================================================
@@ -140,7 +148,6 @@ BACKGROUND PARTICLES
 .app-container {
 min-height: 100vh;
 position: relative;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .bg-particles {
@@ -1316,10 +1323,10 @@ RESPONSIVE
 @media (max-width: 768px) {
 
 ```
-/* ── Header: fondo explícito en móvil (iOS no renderiza glass bien) ── */
+/* ── Header: fondo semisólido para que se vea aunque el glass falle en iOS ── */
 .header {
     padding: 1.25rem 1rem 1.75rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: rgba(102, 126, 234, 0.95);
 }
 
 .header-content {
@@ -1492,6 +1499,226 @@ font-size: 1.5rem;
 }
 ```
 
+}
+
+/* ============================================================
+COOKIE BANNER
+============================================================ */
+.cookie-banner {
+position: fixed;
+bottom: 0;
+left: 0;
+right: 0;
+z-index: 9000;
+background: rgba(15, 23, 42, 0.97);
+backdrop-filter: blur(20px);
+border-top: 1px solid rgba(255,255,255,0.12);
+padding: 1rem 1.5rem;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 1.25rem;
+flex-wrap: wrap;
+animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+color: white;
+}
+
+.cookie-banner.hidden {
+display: none;
+}
+
+.cookie-content {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+flex: 1;
+min-width: 200px;
+}
+
+.cookie-icon {
+font-size: 1.4rem;
+flex-shrink: 0;
+}
+
+.cookie-content p {
+font-size: 0.88rem;
+line-height: 1.5;
+color: rgba(255,255,255,0.85);
+margin: 0;
+}
+
+.cookie-link {
+color: #a5b4fc;
+text-decoration: underline;
+cursor: pointer;
+font-weight: 600;
+margin-left: 0.25rem;
+}
+
+.cookie-link:hover {
+color: white;
+}
+
+.cookie-actions {
+display: flex;
+gap: 0.6rem;
+flex-shrink: 0;
+}
+
+.btn-cookie-accept {
+background: var(–gradient-main);
+color: white;
+border: none;
+padding: 0.6rem 1.25rem;
+border-radius: 10px;
+font-weight: 700;
+font-size: 0.88rem;
+cursor: pointer;
+font-family: inherit;
+transition: opacity 0.2s;
+}
+
+.btn-cookie-accept:hover { opacity: 0.9; }
+
+.btn-cookie-reject {
+background: transparent;
+color: rgba(255,255,255,0.6);
+border: 1px solid rgba(255,255,255,0.2);
+padding: 0.6rem 1rem;
+border-radius: 10px;
+font-weight: 500;
+font-size: 0.85rem;
+cursor: pointer;
+font-family: inherit;
+transition: all 0.2s;
+}
+
+.btn-cookie-reject:hover {
+color: white;
+border-color: rgba(255,255,255,0.5);
+}
+
+@media (max-width: 600px) {
+.cookie-banner {
+flex-direction: column;
+align-items: flex-start;
+padding: 1rem;
+/* en móvil sube sobre el floating summary */
+bottom: 70px;
+}
+
+```
+.cookie-actions {
+    width: 100%;
+}
+
+.btn-cookie-accept,
+.btn-cookie-reject {
+    flex: 1;
+    text-align: center;
+}
+```
+
+}
+
+/* ============================================================
+PRIVACY MODAL
+============================================================ */
+.privacy-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.8);
+backdrop-filter: blur(8px);
+z-index: 10001;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1.5rem;
+animation: fadeIn 0.25s ease;
+}
+
+.privacy-overlay.hidden {
+display: none;
+}
+
+.privacy-modal {
+background: white;
+border-radius: 24px;
+padding: 2.5rem;
+max-width: 600px;
+width: 100%;
+max-height: 85vh;
+overflow-y: auto;
+position: relative;
+box-shadow: 0 32px 64px rgba(0,0,0,0.4);
+}
+
+.privacy-close {
+position: absolute;
+top: 1.25rem;
+right: 1.25rem;
+background: var(–light);
+border: none;
+width: 36px;
+height: 36px;
+border-radius: 50%;
+font-size: 1rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(–text);
+transition: background 0.2s;
+}
+
+.privacy-close:hover {
+background: var(–border);
+}
+
+.privacy-modal h2 {
+font-size: 1.5rem;
+font-weight: 800;
+color: var(–dark);
+margin-bottom: 1.5rem;
+padding-right: 2.5rem;
+}
+
+.privacy-content h3 {
+font-size: 1rem;
+font-weight: 700;
+color: var(–dark);
+margin: 1.25rem 0 0.4rem;
+}
+
+.privacy-content h3:first-child {
+margin-top: 0;
+}
+
+.privacy-content p {
+font-size: 0.92rem;
+line-height: 1.7;
+color: var(–text);
+}
+
+.privacy-content code {
+background: var(–light);
+padding: 0.1rem 0.4rem;
+border-radius: 4px;
+font-size: 0.85rem;
+font-family: ‘Inter’, monospace;
+}
+
+.privacy-modal .btn {
+margin-top: 1.75rem;
+width: 100%;
+}
+
+@media (max-width: 600px) {
+.privacy-modal {
+padding: 1.75rem 1.25rem;
+border-radius: 20px;
+max-height: 90vh;
+}
 }
 
 /* ============================================================
