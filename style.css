@@ -1309,7 +1309,6 @@ RESPONSIVE
 ============================================================ */
 @media (max-width: 768px) {
 
-```
 /* ── Header: selector de idioma en línea, no flotando ── */
 .header {
     padding: 1.25rem 1rem 1.75rem;
