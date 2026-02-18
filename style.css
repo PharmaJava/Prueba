@@ -41,12 +41,23 @@ verde esmeralda y grises elegantes
 
 body {
 font-family: ‘DM Sans’, system-ui, -apple-system, sans-serif;
-background: var(–gradient-main);
+background: #1a5fa8; /* fallback sólido */
+background: linear-gradient(135deg, #1a5fa8 0%, #2e9fd8 60%, #4db8c8 100%);
 background-attachment: fixed;
 min-height: 100vh;
 color: var(–text);
 line-height: 1.6;
 overflow-x: hidden;
+}
+
+/* iOS Safari no soporta background-attachment: fixed en el body */
+@supports (-webkit-touch-callout: none) {
+body {
+background-attachment: scroll;
+}
+.bg-particles {
+position: absolute;
+}
 }
 
 /* ============================================================
