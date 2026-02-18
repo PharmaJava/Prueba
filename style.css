@@ -1599,3 +1599,179 @@ body {
         min-width: 120px;
     }
 }
+/* ============================================================
+   TABLA DE PROYECCIONES — Vista doble (resumen + modal detalle)
+============================================================ */
+
+.projection-hint {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    text-align: center;
+    padding: 0.6rem 1rem 0;
+    margin: 0;
+    letter-spacing: 0.01em;
+}
+
+.projection-table-summary th,
+.projection-table-summary td {
+    padding: 0.85rem 0.9rem;
+}
+
+.projection-row-clickable {
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.projection-row-clickable:hover {
+    background: rgba(59, 130, 246, 0.07) !important;
+}
+
+.projection-row-clickable:hover td:first-child {
+    color: var(--primary);
+}
+
+/* ── Modal overlay ── */
+.proyeccion-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 9000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.proyeccion-modal-overlay.active {
+    display: flex;
+}
+
+.proyeccion-modal-box {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 2rem;
+    animation: modalSlideIn 0.22s ease;
+}
+
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.proyeccion-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--light);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: background 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.proyeccion-modal-close:hover {
+    background: var(--border);
+    color: var(--dark);
+}
+
+.proyeccion-modal-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.proyeccion-modal-year {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+}
+
+.proyeccion-modal-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+}
+
+.proyeccion-modal-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.proyeccion-modal-section {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.proyeccion-modal-section-title {
+    background: var(--light);
+    padding: 0.5rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+    font-family: 'DM Sans', sans-serif;
+}
+
+.proyeccion-modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    border-top: 1px solid var(--border);
+    font-family: 'Inter', sans-serif;
+}
+
+.proyeccion-modal-row:first-of-type {
+    border-top: none;
+}
+
+.proyeccion-modal-row--highlight {
+    background: rgba(59, 130, 246, 0.04);
+}
+
+/* ── Navegación entre años ── */
+.proyeccion-modal-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+}
+
+.proyeccion-nav-btn {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--primary);
+    transition: background 0.15s, border-color 0.15s;
+    font-family: 'Inter', sans-serif;
+}
+
+.proyeccion-nav-btn:hover {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: var(--primary);
+}
