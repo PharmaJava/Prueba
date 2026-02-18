@@ -28,20 +28,19 @@
 –radius: 20px;
 }
 
+html {
+min-height: 100%;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+background-attachment: scroll;
+}
+
 body {
 font-family: ‘DM Sans’, system-ui, -apple-system, sans-serif;
 min-height: 100vh;
+background: transparent;
 color: var(–text);
 line-height: 1.6;
 overflow-x: hidden;
-}
-
-body::before {
-content: ‘’;
-position: fixed;
-inset: 0;
-z-index: -2;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* ============================================================
@@ -1741,8 +1740,8 @@ html.dark {
 –shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
 –shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
 –shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.5);
+background: #020617;
 }
-html.dark body::before { background: #020617; }
 html.dark body { color: var(–text); }
 html.dark .glass-card, html.dark .detail-card, html.dark .chart-card,
 html.dark .line-chart-card, html.dark .inverse-calc-card,
