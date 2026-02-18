@@ -5,44 +5,32 @@
   }
 
 :root {
-/* ── Paleta PisoRentable ──────────────────────────────────
-Extraída del logo: azul marino, azul medio, verde lima,
-verde esmeralda y grises elegantes
-─────────────────────────────────────────────────────── */
-–primary:        #1a5fa8;   /* azul marino del logo */
-–primary-dark:   #0f3d72;   /* azul más oscuro */
-–primary-mid:    #2176c7;   /* azul medio acento */
-–secondary:      #3ab5b0;   /* cian-turquesa */
-–accent-green:   #4db848;   /* verde lima vivo del logo */
-–accent-lime:    #a3d422;   /* verde amarillento del logo */
-–success:        #22a84a;   /* verde éxito */
-–danger:         #e53e3e;
-–warning:        #f59e0b;
-–dark:           #0d2444;   /* azul marino muy oscuro */
-–dark-light:     #163560;
-–light:          #f0f6ff;   /* azul muy pálido */
-–white:          #ffffff;
-–border:         #c8daf0;   /* borde azulado suave */
-–text:           #1a3a5c;
-–text-light:     #5a7fa0;
-–glass:          rgba(255, 255, 255, 0.12);
-–glass-border:   rgba(255, 255, 255, 0.25);
-–shadow:         0 4px 6px -1px rgba(10, 40, 90, 0.12), 0 2px 4px -1px rgba(10, 40, 90, 0.07);
-–shadow-lg:      0 10px 15px -3px rgba(10, 40, 90, 0.14), 0 4px 6px -2px rgba(10, 40, 90, 0.07);
-–shadow-xl:      0 20px 25px -5px rgba(10, 40, 90, 0.15), 0 10px 10px -5px rgba(10, 40, 90, 0.08);
-/* Gradiente principal: azul marino → azul cielo (como el fondo del logo) */
-–gradient-main:  linear-gradient(135deg, #1a5fa8 0%, #2e9fd8 60%, #4db8c8 100%);
-/* Gradiente oscuro para headers de cards */
-–gradient-dark:  linear-gradient(135deg, #0d2444 0%, #163560 100%);
-/* Gradiente verde del logo para acentos */
-–gradient-green: linear-gradient(135deg, #22a84a 0%, #a3d422 100%);
+–primary: #3b82ff;
+–primary-dark: #1d4ed8;
+–secondary: #06b6d4;
+–success: #10b981;
+–danger: #ef4444;
+–warning: #f59e0b;
+–dark: #0f172a;
+–dark-light: #1e293b;
+–light: #f8fafc;
+–white: #ffffff;
+–border: #e2e8f0;
+–text: #334155;
+–text-light: #64748b;
+–glass: rgba(255, 255, 255, 0.1);
+–glass-border: rgba(255, 255, 255, 0.2);
+–shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+–shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+–shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+–gradient-main: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+–gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 –radius: 20px;
 }
 
 body {
 font-family: ‘DM Sans’, system-ui, -apple-system, sans-serif;
-background: #1a5fa8; /* fallback sólido */
-background: linear-gradient(135deg, #1a5fa8 0%, #2e9fd8 60%, #4db8c8 100%);
+background: var(–gradient-main);
 background-attachment: fixed;
 min-height: 100vh;
 color: var(–text);
@@ -442,8 +430,8 @@ font-family: ‘DM Sans’, sans-serif;
 
 .form-input:focus, .form-select:focus {
 outline: none;
-border-color: var(–primary-mid);
-box-shadow: 0 0 0 4px rgba(33, 118, 199, 0.12);
+border-color: var(–primary);
+box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 transform: translateY(-1px);
 }
 
@@ -546,7 +534,7 @@ cursor: pointer;
 
 .form-slider::-webkit-slider-runnable-track {
 height: 8px;
-background: linear-gradient(to right, var(–accent-green) 0%, var(–accent-green) var(–progress, 0%), var(–border) var(–progress, 0%), var(–border) 100%);
+background: linear-gradient(to right, #a3e635 0%, #a3e635 var(–progress, 0%), var(–border) var(–progress, 0%), var(–border) 100%);
 border-radius: 5px;
 }
 
@@ -554,7 +542,7 @@ border-radius: 5px;
 -webkit-appearance: none;
 width: 24px;
 height: 24px;
-background: var(–accent-green);
+background: #a3e635;
 border-radius: 50%;
 cursor: pointer;
 margin-top: -8px;
@@ -575,14 +563,14 @@ border: none;
 
 .form-slider::-moz-range-progress {
 height: 8px;
-background: var(–accent-green);
+background: #a3e635;
 border-radius: 5px;
 }
 
 .form-slider::-moz-range-thumb {
 width: 24px;
 height: 24px;
-background: var(–accent-green);
+background: #a3e635;
 border-radius: 50%;
 cursor: pointer;
 border: none;
@@ -1867,29 +1855,27 @@ border-color: var(–primary);
 DARK MODE
 ============================================================ */
 html.dark {
-–primary:      #5ba3e0;
-–primary-dark: #2e7abf;
-–secondary:    #3ab5b0;
-–success:      #4cd07a;
-–danger:       #f87171;
-–warning:      #fbbf24;
-–accent-green: #6dcc5a;
-–accent-lime:  #c5e847;
-–dark:         #e0eeff;
-–dark-light:   #c5daee;
-–light:        #0d2036;
-–white:        #071528;
-–border:       #1e3a5f;
-–text:         #b8d4ef;
-–text-light:   #5a7fa0;
-–glass:        rgba(0, 20, 50, 0.3);
-–shadow:       0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
-–shadow-lg:    0 10px 15px -3px rgba(0,0,0,0.4);
-–shadow-xl:    0 20px 25px -5px rgba(0,0,0,0.5);
+–primary:    #818cf8;
+–primary-dark: #6366f1;
+–secondary:  #22d3ee;
+–success:    #34d399;
+–danger:     #f87171;
+–warning:    #fbbf24;
+–dark:       #f1f5f9;
+–dark-light: #e2e8f0;
+–light:      #1e293b;
+–white:      #0f172a;
+–border:     #334155;
+–text:       #cbd5e1;
+–text-light: #64748b;
+–glass:      rgba(0,0,0,0.2);
+–shadow:     0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
+–shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.4);
+–shadow-xl:  0 20px 25px -5px rgba(0,0,0,0.5);
 }
 
 html.dark body {
-background: #040f1e;
+background: #020617;
 color: var(–text);
 }
 
@@ -1900,26 +1886,26 @@ html.dark .line-chart-card,
 html.dark .inverse-calc-card,
 html.dark .saved-scenarios-panel,
 html.dark .projection-table-container {
-background: #071528;
-border-color: #1e3a5f;
+background: #0f172a;
+border-color: #334155;
 }
 
-html.dark .nav-tabs       { background: #0d2036; }
-html.dark .nav-tab.active { background: #071528; }
-html.dark .projection-table th { background: #0d2036; }
+html.dark .nav-tabs       { background: #1e293b; }
+html.dark .nav-tab.active { background: #0f172a; }
+html.dark .projection-table th { background: #1e293b; }
 html.dark .projection-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
 html.dark .form-input,
-html.dark .form-select    { background: #0d2036; border-color: #1e3a5f; color: #b8d4ef; }
-html.dark .seo-card       { background: #071528; border-color: #1e3a5f; }
-html.dark .metric-card    { background: #071528; border-color: #1e3a5f; }
-html.dark .disclaimer-modal { background: #071528; color: #b8d4ef; }
-html.dark .proyeccion-modal-box { background: #071528; }
-html.dark .proyeccion-modal-section { border-color: #1e3a5f; }
-html.dark .proyeccion-modal-section-title { background: #0d2036; }
-html.dark .btn-scenario   { background: #0d2036; border-color: #1e3a5f; }
-html.dark .seo-disclaimer-box { background: #0d2036; }
-html.dark .inversa-row    { border-color: #1e3a5f; }
-html.dark .inversa-row:nth-child(even) { background: #0d2036; }
+html.dark .form-select    { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+html.dark .seo-card       { background: #0f172a; border-color: #334155; }
+html.dark .metric-card    { background: #0f172a; border-color: #334155; }
+html.dark .disclaimer-modal { background: #0f172a; color: #e2e8f0; }
+html.dark .proyeccion-modal-box { background: #0f172a; }
+html.dark .proyeccion-modal-section { border-color: #334155; }
+html.dark .proyeccion-modal-section-title { background: #1e293b; }
+html.dark .btn-scenario   { background: #1e293b; border-color: #334155; }
+html.dark .seo-disclaimer-box { background: #1e293b; }
+html.dark .inversa-row    { border-color: #334155; }
+html.dark .inversa-row:nth-child(even) { background: #1e293b; }
 
 /* ── Header controls (dark toggle + lang selector) ── */
 .header-controls {
