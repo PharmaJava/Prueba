@@ -38,16 +38,6 @@ line-height: 1.6;
 overflow-x: hidden;
 }
 
-/* iOS Safari no soporta background-attachment: fixed en el body */
-@supports (-webkit-touch-callout: none) {
-body {
-background-attachment: scroll;
-}
-.bg-particles {
-position: absolute;
-}
-}
-
 /* ============================================================
 DISCLAIMER MODAL
 ============================================================ */
