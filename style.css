@@ -764,6 +764,66 @@ body {
 }
 
 @media (max-width: 480px) {
+    /* Nav tabs: en móvil 5 columnas iguales, icono arriba + texto abajo */
+    .nav-tabs {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.25rem;
+        padding: 0.35rem;
+    }
+
+    .nav-tab:nth-child(1),
+    .nav-tab:nth-child(2),
+    .nav-tab:nth-child(3),
+    .nav-tab:nth-child(4),
+    .nav-tab:nth-child(5) {
+        grid-column: auto;  /* reset: cada tab ocupa 1 columna */
+    }
+
+    .nav-tab {
+        padding: 0.5rem 0.2rem;
+        font-size: 0;           /* oculta el texto inline del span */
+        white-space: normal;
+    }
+
+    /* Separar emoji y texto en dos líneas */
+    .nav-tab span {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        font-size: 0;           /* el span completo en tamaño 0 */
+    }
+
+    /* Primera parte del span (emoji) visible */
+    .nav-tab span::before {
+        font-size: 1.3rem;
+        line-height: 1;
+    }
+
+    /* Hack: usamos data-tab para mostrar icono y label via CSS */
+    .nav-tab[data-tab="propiedad"] span::before    { content: "🏠"; }
+    .nav-tab[data-tab="financiacion"] span::before { content: "💰"; }
+    .nav-tab[data-tab="ingresos"] span::before     { content: "📈"; }
+    .nav-tab[data-tab="gastos"] span::before       { content: "📊"; }
+    .nav-tab[data-tab="revalorizacion"] span::before { content: "💎"; }
+
+    .nav-tab[data-tab="propiedad"] span::after    { content: "Propiedad"; }
+    .nav-tab[data-tab="financiacion"] span::after { content: "Financ."; }
+    .nav-tab[data-tab="ingresos"] span::after     { content: "Ingresos"; }
+    .nav-tab[data-tab="gastos"] span::after       { content: "Gastos"; }
+    .nav-tab[data-tab="revalorizacion"] span::after { content: "Revalor."; }
+
+    .nav-tab span::after {
+        font-size: 0.6rem;
+        font-weight: 600;
+        line-height: 1;
+        color: inherit;
+    }
+
+    .nav-tab.active {
+        transform: scale(1);  /* sin escala en móvil para no desbordar */
+    }
+}
     .chart-layout {
         grid-template-columns: 1fr;
     }
