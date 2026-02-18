@@ -305,35 +305,6 @@ let currentLanguage = 'es';
 // ============================================================
 // DISCLAIMER
 // ============================================================
-const DISCLAIMER_VERSION = 'v1';
-
-function initDisclaimer() {
-    const overlay = document.getElementById('disclaimerOverlay');
-    const check = document.getElementById('disclaimerCheck');
-    const btn = document.getElementById('disclaimerBtn');
-
-    if (!overlay || !check || !btn) return;
-
-    // localStorage con versión — persiste entre sesiones
-    if (localStorage.getItem(`disclaimerAccepted_${DISCLAIMER_VERSION}`) === 'true') {
-        overlay.classList.add('hidden');
-        return;
-    }
-
-    check.addEventListener('change', () => {
-        btn.disabled = !check.checked;
-    });
-
-    btn.addEventListener('click', () => {
-        if (check.checked) {
-            localStorage.setItem(`disclaimerAccepted_${DISCLAIMER_VERSION}`, 'true');
-            overlay.style.opacity = '0';
-            overlay.style.transition = 'opacity 0.4s ease';
-            setTimeout(() => overlay.classList.add('hidden'), 400);
-        }
-    });
-}
-
 // ============================================================
 // IDIOMA
 // ============================================================
@@ -702,8 +673,11 @@ function calcular() {
 
         window._lastDatos = datos; // Guardamos para exportar PDF
         document.getElementById('resultados').innerHTML = mostrarResultados(datos);
-        // Renderizar gráfico DESPUÉS de inyectar el HTML (el canvas ya existe en el DOM)
-        requestAnimationFrame(() => renderizarDoughnut(datos));
+        // Renderizar gráficos DESPUÉS de inyectar el HTML
+        requestAnimationFrame(() => {
+            renderizarDoughnut(datos);
+            renderizarLineChart(datos);
+        });
         actualizarResumenFlotante(datos);
         validarEntradas({ mesesVacio, entradaEuros, precio });
 
@@ -1080,7 +1054,7 @@ function mostrarResultados(datos) {
                 <div class="metric-subtitle">${t.capital_necesario}</div>
             </div>
 
-            <div class="metric-card">
+            <div class="metric-card" data-tooltip-key="cashflow">
                 <div class="metric-header">
                     <div class="metric-title">${t.flujo_mensual}</div>
                     <div class="metric-icon">${datos.flujoMensual >= 0 ? '📈' : '📉'}</div>
@@ -1090,7 +1064,7 @@ function mostrarResultados(datos) {
                 <div class="metric-microcopy">👉 Para renta pasiva mensual, prioriza este dato</div>
             </div>
 
-            <div class="metric-card">
+            <div class="metric-card" data-tooltip-key="roi">
                 <div class="metric-header">
                     <div class="metric-title">${t.roi_anual}</div>
                     <div class="metric-icon">📊</div>
@@ -1100,7 +1074,7 @@ function mostrarResultados(datos) {
                 <div class="metric-microcopy">ROI alto + cashflow negativo = riesgo de liquidez</div>
             </div>
 
-            <div class="metric-card">
+            <div class="metric-card" data-tooltip-key="tir">
                 <div class="metric-header">
                     <div class="metric-title">${t.tir_anualizada}</div>
                     <div class="metric-icon">⚡</div>
@@ -1110,7 +1084,7 @@ function mostrarResultados(datos) {
                 <div class="metric-microcopy">👉 Para acumulación de patrimonio a largo plazo</div>
             </div>
 
-            <div class="metric-card">
+            <div class="metric-card" data-tooltip-key="beneficio">
                 <div class="metric-header">
                     <div class="metric-title">${t.beneficio_total}</div>
                     <div class="metric-icon">${datos.beneficioTotal >= 0 ? '🎯' : '⚠️'}</div>
@@ -1119,7 +1093,7 @@ function mostrarResultados(datos) {
                 <div class="metric-subtitle">${t.en_anos} ${datos.anosAnalisis} ${t.anos_text}</div>
             </div>
 
-            <div class="metric-card">
+            <div class="metric-card" data-tooltip-key="neto">
                 <div class="metric-header">
                     <div class="metric-title">${t.flujo_acumulado}</div>
                     <div class="metric-icon">💧</div>
@@ -1237,6 +1211,12 @@ function mostrarResultados(datos) {
             <div class="comparison-table">${comparacionHTML}</div>
             <p style="font-size:0.75rem; color:var(--text-light); margin-top:0.75rem;">* ${currentLanguage === 'es' ? 'Rentabilidades de referencia a feb 2026. No constituyen garantía de rentabilidad futura.' : 'Reference returns as of Feb 2026. Do not constitute a guarantee of future performance.'}</p>
         </div>
+
+        <!-- GRÁFICO DE EVOLUCIÓN TEMPORAL -->
+        ${generarLineChartHTML()}
+
+        <!-- CALCULADORA INVERSA -->
+        ${generarCalculadoraInversaHTML()}
 
         <!-- TABLA DE PROYECCIONES AÑO A AÑO -->
         <div class="detail-card">
@@ -1806,6 +1786,128 @@ function exportToPDF() {
         y += rowH;
     });
 
+    // ── CALCULADORA INVERSA EN PDF ────────────────────────────
+    // Solo la incluimos si el usuario ha ejecutado calcularInversa()
+    const invResEl = document.getElementById('inversaResultadoBody');
+    const invNotaEl = document.getElementById('inversaResultadoNota');
+    const invResVisible = document.getElementById('inversaResultado');
+    if (invResVisible && invResVisible.style.display !== 'none' && invResEl && invResEl.innerHTML.trim()) {
+        newPage();
+        sectionTitle(esEs ? 'Analisis Inverso — Precio Maximo del Inmueble' : 'Reverse Analysis — Maximum Property Price');
+
+        // Leer los valores calculados directamente del DOM
+        const precioActualPDF = parseFloat(document.getElementById('precio')?.value) || 0;
+        const entradaPctPDF = datos.montoEntrada > 0 && precioActualPDF > 0 ? datos.montoEntrada / precioActualPDF : 0.2;
+        const entradaPctDispPDF = Math.round(entradaPctPDF * 100);
+        const targetCFPDF = parseFloat(document.getElementById('inverseCashflow')?.value) || 0;
+        const interesPDF = parseFloat(document.getElementById('interes')?.value) || 0;
+        const anosPDF = parseFloat(document.getElementById('anos')?.value) || 25;
+        const alquilerPDF = parseFloat(document.getElementById('alquiler')?.value) || 0;
+
+        // Recalcular el precio máximo para el PDF (bisección)
+        const ibiPDF = parseFloat(document.getElementById('ibi')?.value) || 0;
+        const comunidadPDF = parseFloat(document.getElementById('comunidad')?.value) || 0;
+        const seguroPDF = parseFloat(document.getElementById('seguro')?.value) || 0;
+        const seguroImpagoPDF = parseFloat(document.getElementById('seguroImpago')?.value) || 0;
+        const mantenimientoPDF = parseFloat(document.getElementById('mantenimiento')?.value) || 0;
+        const adminPDF = parseFloat(document.getElementById('administracion')?.value) || 0;
+        const taxAlquilerPDF = parseFloat(document.getElementById('taxAlquiler')?.value) || 19;
+        const mesesVacioPDF = parseFloat(document.getElementById('mesesVacio')?.value) || 0;
+        const impuestosTipoPDF = document.getElementById('tipoVivienda')?.value || 'segunda';
+        const ccaaValPDF = parseFloat(document.getElementById('ccaaSelector')?.value) || NaN;
+        const itpRatePDF = impuestosTipoPDF === 'nueva' ? 0.112 : (!isNaN(ccaaValPDF) && ccaaValPDF > 0 ? ccaaValPDF / 100 : 0.07);
+        const gastosCompraFijosPDF = parseFloat(document.getElementById('gastosCompra')?.value) || 0;
+        const reformaPDF = parseFloat(document.getElementById('reforma')?.value) || 0;
+        const gastosHipPDF = parseFloat(document.getElementById('gastosHipoteca')?.value) || 0;
+        const financiacionPDF = document.getElementById('financiacionTipo')?.value || 'con_hipoteca';
+
+        const ingresosPDF = alquilerPDF * 12 * (1 - mesesVacioPDF / 12);
+        const gastosFijosAnualesPDF = ibiPDF + comunidadPDF * 12 + seguroPDF + seguroImpagoPDF + mantenimientoPDF + adminPDF * 12;
+        const gastosFijosMensPDF = gastosFijosAnualesPDF / 12;
+
+        function cfParaPrecioPDF(precio) {
+            const ent = precio * entradaPctPDF;
+            const prest = financiacionPDF === 'con_hipoteca' ? precio - ent : 0;
+            const cuota = calcularCuotaHipoteca(prest, interesPDF, anosPDF);
+            const intAnu = prest * (interesPDF / 100);
+            const alqNeto = ingresosPDF - gastosFijosAnualesPDF - intAnu;
+            const tax = Math.max(0, alqNeto) * (taxAlquilerPDF / 100) / 12;
+            return (ingresosPDF / 12) - cuota - gastosFijosMensPDF - tax;
+        }
+        let loPDF = 10000, hiPDF = 2000000, midPDF = loPDF;
+        for (let i = 0; i < 80; i++) {
+            midPDF = (loPDF + hiPDF) / 2;
+            if (cfParaPrecioPDF(midPDF) > targetCFPDF) loPDF = midPDF; else hiPDF = midPDF;
+        }
+        const precioMaxPDF = Math.round(midPDF / 500) * 500;
+        const cfRealPDF = cfParaPrecioPDF(precioMaxPDF);
+        const entradaMaxPDF = Math.round(precioMaxPDF * entradaPctPDF);
+        const impuestosMaxPDF = Math.round(precioMaxPDF * itpRatePDF);
+        const extrasMaxPDF = gastosCompraFijosPDF + reformaPDF + (financiacionPDF === 'con_hipoteca' ? gastosHipPDF : 0);
+        const invMaxPDF = entradaMaxPDF + impuestosMaxPDF + extrasMaxPDF;
+        const prestamoMaxPDF = financiacionPDF === 'con_hipoteca' ? precioMaxPDF - entradaMaxPDF : 0;
+        const cuotaMaxPDF = Math.round(calcularCuotaHipoteca(prestamoMaxPDF, interesPDF, anosPDF));
+        const margenPDF = precioMaxPDF - precioActualPDF;
+
+        // Bloque explicativo
+        setFont('normal', 8.5, C.text || C.grey);
+        const introLines = doc.splitTextToSize(s(esEs
+            ? 'Dado un cashflow mensual objetivo de ' + f(targetCFPDF) + ' EUR/mes, manteniendo los mismos parametros de hipoteca, gastos e impuestos, el precio maximo que puedes pagar por el inmueble es:'
+            : 'Given a target monthly cashflow of ' + f(targetCFPDF) + ' EUR/month, keeping the same mortgage, cost and tax parameters, the maximum price you can pay is:'), CW);
+        introLines.forEach(line => { text(line, ML, y); y += 5; });
+        y += 3;
+
+        // Precio máximo — caja destacada
+        checkPageBreak(18);
+        fillRect(ML, y, CW, 14, C.primary);
+        setFont('bold', 10, C.white);
+        text(s(esEs ? 'PRECIO MAXIMO DEL INMUEBLE' : 'MAXIMUM PROPERTY PRICE'), ML + 4, y + 5.5);
+        setFont('bold', 14, C.white);
+        text(f(precioMaxPDF) + ' EUR', ML + CW - 4, y + 10, { align: 'right' });
+        const margenTxt = (margenPDF >= 0 ? '+' : '') + f(margenPDF) + ' EUR ' + s(esEs ? 'vs. precio actual' : 'vs. current price');
+        setFont('normal', 8, [180, 210, 255]);
+        text(margenTxt, ML + 4, y + 11.5);
+        y += 18;
+
+        // Sección desembolso
+        sectionTitle(esEs ? 'Desembolso inicial necesario' : 'Required upfront payment');
+        metricRow(s(esEs ? 'Entrada (' + entradaPctDispPDF + '%)' : 'Down payment (' + entradaPctDispPDF + '%)'), f(entradaMaxPDF) + ' EUR', C.text || C.dark);
+        metricRow(s('Impuestos (ITP/IVA+AJD)'), f(impuestosMaxPDF) + ' EUR', C.danger, C.greyXLight);
+        metricRow(s(esEs ? 'Gastos compra + reforma' : 'Purchase costs + renovation'), f(extrasMaxPDF) + ' EUR', C.danger);
+        // Total
+        checkPageBreak(10);
+        fillRect(ML, y, CW, 8, C.primaryDark);
+        setFont('bold', 9, C.white);
+        text(s(esEs ? 'CAPITAL TOTAL A DESEMBOLSAR' : 'TOTAL CAPITAL REQUIRED'), ML + 4, y + 5.5);
+        text(f(invMaxPDF) + ' EUR', ML + CW - 4, y + 5.5, { align: 'right' });
+        y += 12;
+
+        // Sección resultado mensual
+        sectionTitle(esEs ? 'Resultado mensual con este precio' : 'Monthly result at this price');
+        if (financiacionPDF === 'con_hipoteca') {
+            metricRow(s(esEs ? 'Cuota hipoteca mensual' : 'Monthly mortgage'), f(cuotaMaxPDF) + ' EUR/mes', C.danger, C.greyXLight);
+        }
+        metricRow(s(esEs ? 'Ingresos alquiler mensuales' : 'Monthly rent income'), f(Math.round(ingresosPDF / 12)) + ' EUR/mes', C.accent);
+        metricRow(s(esEs ? 'Gastos fijos mensuales' : 'Monthly fixed costs'), f(Math.round(gastosFijosMensPDF)) + ' EUR/mes', C.danger, C.greyXLight);
+
+        // Cashflow resultado
+        checkPageBreak(10);
+        const cfColor = cfRealPDF >= 0 ? C.accent : C.danger;
+        fillRect(ML, y, CW, 8, cfColor);
+        setFont('bold', 9, C.white);
+        text(s(esEs ? 'CASHFLOW MENSUAL NETO RESULTANTE' : 'RESULTING NET MONTHLY CASHFLOW'), ML + 4, y + 5.5);
+        text(f(cfRealPDF) + ' EUR/mes', ML + CW - 4, y + 5.5, { align: 'right' });
+        y += 12;
+
+        // Nota explicativa
+        setFont('normal', 7.5, C.grey);
+        const notaLines = doc.splitTextToSize(s(esEs
+            ? '* Calculo por biseccion numerica con los parametros actuales: ' + interesPDF + '% de interes, ' + anosPDF + ' anos de hipoteca, ' + alquilerPDF + ' EUR/mes de alquiler y ' + entradaPctDispPDF + '% de entrada.'
+            : '* Numerical bisection calculation using current parameters: ' + interesPDF + '% interest, ' + anosPDF + '-year mortgage, ' + alquilerPDF + ' EUR/month rent, ' + entradaPctDispPDF + '% down payment.'), CW);
+        notaLines.forEach(line => { text(line, ML, y); y += 4.5; });
+        y += 4;
+    }
+
     // ── ÚLTIMA PÁGINA: COMPARATIVA DE RENTABILIDADES ─────────
     newPage();
     sectionTitle(esEs ? 'Comparativa con Otras Inversiones' : 'Comparison with Other Investments');
@@ -1893,12 +1995,10 @@ function exportToPDF() {
 }
 
 // ============================================================
-// INIT
+// ============================================================
+// ARRANQUE GLOBAL — único DOMContentLoaded
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Disclaimer
-    initDisclaimer();
-
     // Partículas
     createParticles();
 
@@ -2040,100 +2140,334 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Calcular automáticamente al cargar
     calcular();
+
+    // Nuevas funcionalidades
+    mostrarBannerCookies();
+    initDarkMode();
+    initTooltips();
 });
-// --- Lógica de Cookies ---
+// ============================================================
+// COOKIES
+// ============================================================
 function mostrarBannerCookies() {
     const banner = document.getElementById('cookie-banner');
-    const cookiesAceptadas = localStorage.getItem('cookiesAceptadas');
-
-    if (!cookiesAceptadas) {
-        // Un pequeño retraso para que el usuario vea primero la web
-        setTimeout(() => {
-            banner.classList.add('visible');
-        }, 1500);
+    if (!banner) return;
+    if (localStorage.getItem('cookiesAceptadas') !== 'true') {
+        setTimeout(() => banner.classList.add('visible'), 800);
     }
 }
 
 function aceptarCookies() {
     const banner = document.getElementById('cookie-banner');
+    if (banner) banner.classList.remove('visible');
     localStorage.setItem('cookiesAceptadas', 'true');
-    banner.classList.remove('visible');
 }
 
-// Ejecutar al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    mostrarBannerCookies();
-    // ... aquí va el resto de tu código de inicialización de la calculadora ...
-});
-
 // ============================================================
-// LÓGICA DEL GRÁFICO (Pegar al final de app.js)
+// GRÁFICO DE EVOLUCIÓN TEMPORAL (línea - beneficio acumulado)
 // ============================================================
+let lineChartInstance = null;
 
-// Variable global para el gráfico
-let myChart = null;
+function generarLineChartHTML() {
+    return `
+    <div class="line-chart-card">
+        <div class="line-chart-title">📈 Evolución del beneficio acumulado año a año</div>
+        <div class="line-chart-wrap">
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>`;
+}
 
-function updateChart() {
-    const ctx = document.getElementById('distributionChart');
-    if (!ctx) return; // Si no encuentra el canvas, no hace nada
+function renderizarLineChart(datos) {
+    const canvas = document.getElementById('lineChart');
+    if (!canvas) return;
+    if (lineChartInstance) { lineChartInstance.destroy(); lineChartInstance = null; }
 
-    // Intentamos coger los valores de TUS inputs actuales
-    // Usamos parseFloat y || 0 para evitar errores si el campo está vacío
-    const getVal = (id) => {
-        const el = document.getElementById(id);
-        return el ? (parseFloat(el.value) || 0) : 0;
-    };
+    const labels = datos.proyecciones.map(p => `Año ${p.year}`);
+    const beneficios = datos.proyecciones.map(p => Math.round(p.beneficioAcumulado));
+    const netosVenta = datos.proyecciones.map(p => Math.round(p.precioVentaNeto));
 
-    // Recogemos datos (ajusta los IDs si cambiaste alguno en tu HTML original)
-    const alquiler = getVal('alquiler') || getVal('alquilerMensual'); 
-    const gastosFijos = (getVal('comunidad') + (getVal('ibi')/12) + (getVal('seguros')/12));
-    
-    // Cálculo aproximado de cuota (simplificado para el gráfico)
-    const precio = getVal('precio') || getVal('precioCompra');
-    const financiacion = getVal('financiacion') || 80;
-    const capital = precio * (financiacion/100);
-    const interes = (getVal('interes') || 3.5) / 100 / 12;
-    const plazo = (getVal('plazo') || 30) * 12;
-    const cuota = capital > 0 ? (capital * interes * Math.pow(1+interes, plazo)) / (Math.pow(1+interes, plazo) - 1) : 0;
+    const isDark = document.documentElement.classList.contains('dark');
+    const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+    const textColor = isDark ? '#94a3b8' : '#64748b';
 
-    const impuestos = (alquiler - gastosFijos - cuota) * 0.19; // Est. 19%
-    const cashflow = alquiler - gastosFijos - cuota - impuestos;
-    const cashflowPositivo = Math.max(0, cashflow);
-
-    // Si ya existe gráfico, lo destruimos para actualizar
-    if (myChart) myChart.destroy();
-
-    myChart = new Chart(ctx, {
-        type: 'doughnut',
+    lineChartInstance = new Chart(canvas, {
+        type: 'line',
         data: {
-            labels: ['Hipoteca', 'Gastos', 'Impuestos', 'Tu Beneficio'],
-            datasets: [{
-                data: [cuota.toFixed(0), gastosFijos.toFixed(0), Math.max(0, impuestos).toFixed(0), cashflowPositivo.toFixed(0)],
-                backgroundColor: ['#64748b', '#ef4444', '#f59e0b', '#10b981'],
-                borderWidth: 0,
-                hoverOffset: 10
-            }]
+            labels,
+            datasets: [
+                {
+                    label: 'Beneficio acumulado total',
+                    data: beneficios,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(103,126,234,0.12)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    borderWidth: 2.5,
+                },
+                {
+                    label: 'Neto si vendes ese año',
+                    data: netosVenta,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16,185,129,0.08)',
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    borderWidth: 2,
+                    borderDash: [6, 3],
+                }
+            ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { position: 'bottom', labels: { color: '#fff' } }
+                legend: {
+                    position: 'top',
+                    labels: { color: textColor, font: { family: 'Inter', size: 12 }, boxWidth: 14 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('es-ES')} €`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: textColor, font: { size: 11 }, maxRotation: 45 },
+                    grid: { color: gridColor }
+                },
+                y: {
+                    ticks: {
+                        color: textColor,
+                        font: { size: 11 },
+                        callback: v => v.toLocaleString('es-ES') + ' €'
+                    },
+                    grid: { color: gridColor }
+                }
             }
         }
     });
 }
 
-// Conectar con tu botón de calcular existente
-document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('calcularBtn');
-    if (btn) {
-        // Añadimos nuestro gráfico a tu evento de click existente
-        btn.addEventListener('click', () => {
-            setTimeout(updateChart, 500); // Esperamos 0.5s a que tus cálculos terminen
-        });
+// ============================================================
+// TOOLTIPS EN MÉTRICAS DE RESULTADO
+// ============================================================
+const METRIC_TOOLTIPS = {
+    tir: {
+        es: 'Tasa Interna de Retorno: mide el rendimiento anual compuesto total de tu inversión, incluyendo alquileres cobrados y ganancia estimada al vender. Por encima del 6-7% supera la media histórica del inmobiliario español.',
+        en: 'Internal Rate of Return: measures the total compound annual return of your investment, including rent collected and estimated gain on sale. Above 6-7% beats the Spanish real estate historical average.'
+    },
+    roi: {
+        es: 'Return on Investment: relaciona el cashflow anual con el capital que pusiste de tu bolsillo. Un ROI alto con cashflow negativo es señal de alerta.',
+        en: 'Return on Investment: relates annual cashflow to the capital you put in. A high ROI with negative cashflow is a warning sign.'
+    },
+    cashflow: {
+        es: 'Lo que te queda en el bolsillo cada mes después de pagar hipoteca, gastos e impuestos. El indicador clave si buscas renta pasiva inmediata.',
+        en: 'What you keep each month after paying mortgage, costs and taxes. The key indicator if you seek immediate passive income.'
+    },
+    beneficio: {
+        es: 'Ganancia total al final del período: suma del cashflow acumulado durante todos los años más el neto que recibirías al vender, menos tu inversión inicial.',
+        en: 'Total gain at end of period: sum of cumulative cashflow plus net proceeds from sale, minus your initial investment.'
+    },
+    neto: {
+        es: 'Lo que recibirías neto si vendieras el inmueble al final del período, descontando gastos de venta, plusvalía municipal e IRPF sobre la ganancia.',
+        en: 'Net amount you would receive if you sold the property at end of period, after deducting sale costs, municipal tax and income tax on gain.'
     }
-    
-    // Carga inicial
-    setTimeout(updateChart, 1000);
-});
+};
+
+function initTooltips() {
+    document.body.addEventListener('mouseenter', e => {
+        const el = e.target.closest('[data-tooltip-key]');
+        if (!el) return;
+        const key = el.dataset.tooltipKey;
+        const tip = METRIC_TOOLTIPS[key];
+        if (!tip) return;
+        showTooltip(el, tip[currentLanguage] || tip.es);
+    }, true);
+    document.body.addEventListener('mouseleave', e => {
+        if (e.target.closest('[data-tooltip-key]')) hideTooltip();
+    }, true);
+}
+
+let tooltipEl = null;
+function showTooltip(anchor, text) {
+    hideTooltip();
+    tooltipEl = document.createElement('div');
+    tooltipEl.className = 'metric-tooltip-popup';
+    tooltipEl.textContent = text;
+    document.body.appendChild(tooltipEl);
+    const rect = anchor.getBoundingClientRect();
+    const top = rect.top + window.scrollY - tooltipEl.offsetHeight - 10;
+    const left = Math.min(rect.left + window.scrollX, window.innerWidth - 320);
+    tooltipEl.style.top = Math.max(8, top) + 'px';
+    tooltipEl.style.left = Math.max(8, left) + 'px';
+}
+function hideTooltip() {
+    if (tooltipEl) { tooltipEl.remove(); tooltipEl = null; }
+}
+
+// ============================================================
+// CALCULADORA INVERSA
+// ============================================================
+function initCalculadoraInversa() {
+    // Se inyecta en el panel de resultados cuando hay datos calculados
+}
+
+function generarCalculadoraInversaHTML() {
+    var esEs = (currentLanguage || "es") === "es";
+    var titulo = esEs ? "Calculadora inversa" : "Reverse calculator";
+    var subtitulo = esEs
+        ? "Introduce el cashflow mensual minimo que quieres y calculamos el precio maximo que puedes pagar manteniendo el resto de parametros."
+        : "Enter the minimum monthly cashflow you want and we calculate the maximum price you can pay keeping all other parameters.";
+    var labelCF = esEs ? "Cashflow mensual minimo deseado" : "Minimum monthly cashflow target";
+    var hint = esEs ? "Pon 0 para cashflow neutro, o negativo si lo aceptas." : "Use 0 for break-even, negative if acceptable.";
+    var btnText = esEs ? "Calcular precio maximo del inmueble" : "Calculate max property price";
+    var resHeader = esEs ? "Resultado del analisis inverso" : "Reverse analysis result";
+    return '<div class="inverse-calc-card">' +
+        '<div class="inverse-calc-header">' +
+            '<div class="inverse-calc-title">' + titulo + '</div>' +
+            '<div class="inverse-calc-subtitle">' + subtitulo + '</div>' +
+        '</div>' +
+        '<div class="inverse-calc-body">' +
+            '<div class="inverse-field">' +
+                '<label>' + labelCF + '</label>' +
+                '<div class="input-group">' +
+                    '<input type="number" id="inverseCashflow" class="form-input with-suffix" value="200" min="-9999" step="50"/>' +
+                    '<span class="input-suffix">€/mes</span>' +
+                '</div>' +
+                '<div class="field-hint">' + hint + '</div>' +
+            '</div>' +
+            '<button class="btn btn-primary" style="width:100%; margin-top:0.75rem;" onclick="calcularInversa()">' + btnText + '</button>' +
+            '<div id="inversaResultado" style="display:none;">' +
+                '<div class="inversa-resultado-header">' + resHeader + '</div>' +
+                '<div class="inversa-resultado-body" id="inversaResultadoBody"></div>' +
+                '<p class="inversa-nota" id="inversaResultadoNota"></p>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+}
+
+window.calcularInversa = function() {
+    var targetCF = parseFloat(document.getElementById("inverseCashflow").value) || 0;
+    var d = window._lastDatos;
+    if (!d) return;
+
+    var precioActual = parseFloat(document.getElementById("precio").value) || 0;
+    var interes = parseFloat(document.getElementById("interes").value) || 0;
+    var anos = parseFloat(document.getElementById("anos").value) || 25;
+    var entradaPct = precioActual > 0 ? d.montoEntrada / precioActual : 0.2;
+    var entradaPctDisplay = Math.round(entradaPct * 100);
+    var alquiler = parseFloat(document.getElementById("alquiler").value) || 0;
+    var mesesVacio = parseFloat(document.getElementById("mesesVacio").value) || 0;
+    var ibi = parseFloat(document.getElementById("ibi").value) || 0;
+    var comunidad = parseFloat(document.getElementById("comunidad").value) || 0;
+    var seguro = parseFloat(document.getElementById("seguro").value) || 0;
+    var seguroImpago = parseFloat(document.getElementById("seguroImpago").value) || 0;
+    var mantenimiento = parseFloat(document.getElementById("mantenimiento").value) || 0;
+    var admin = parseFloat(document.getElementById("administracion").value) || 0;
+    var taxAlquiler = parseFloat(document.getElementById("taxAlquiler").value) || 19;
+    var impuestosTipo = document.getElementById("tipoVivienda").value || "segunda";
+    var ccaaEl = document.getElementById("ccaaSelector");
+    var ccaaVal = ccaaEl ? parseFloat(ccaaEl.value) : NaN;
+    var itpRate = impuestosTipo === "nueva" ? 0.112 : (!isNaN(ccaaVal) && ccaaVal > 0 ? ccaaVal / 100 : 0.07);
+    var gastosCompraFijos = parseFloat(document.getElementById("gastosCompra").value) || 0;
+    var reforma = parseFloat(document.getElementById("reforma").value) || 0;
+    var gastosHip = parseFloat(document.getElementById("gastosHipoteca").value) || 0;
+    var financiacion = document.getElementById("financiacionTipo").value || "con_hipoteca";
+
+    var ingresosAnuales = alquiler * 12 * (1 - mesesVacio / 12);
+    var gastosFijosAnuales = ibi + comunidad * 12 + seguro + seguroImpago + mantenimiento + admin * 12;
+    var gastosFijosMensuales = gastosFijosAnuales / 12;
+
+    function cfParaPrecio(precio) {
+        var entrada = precio * entradaPct;
+        var prestamo = financiacion === "con_hipoteca" ? precio - entrada : 0;
+        var cuota = calcularCuotaHipoteca(prestamo, interes, anos);
+        var interesesAnuales = prestamo * (interes / 100);
+        var alquilerNeto = ingresosAnuales - gastosFijosAnuales - interesesAnuales;
+        var tax = Math.max(0, alquilerNeto) * (taxAlquiler / 100) / 12;
+        return (ingresosAnuales / 12) - cuota - gastosFijosMensuales - tax;
+    }
+
+    var lo = 10000, hi = 2000000, mid = lo;
+    for (var i = 0; i < 80; i++) {
+        mid = (lo + hi) / 2;
+        if (cfParaPrecio(mid) > targetCF) lo = mid; else hi = mid;
+    }
+    var precioMax = Math.round(mid / 500) * 500;
+    var cfReal = cfParaPrecio(precioMax);
+    var entradaMax = Math.round(precioMax * entradaPct);
+    var impuestosMax = Math.round(precioMax * itpRate);
+    var extrasMax = gastosCompraFijos + reforma + (financiacion === "con_hipoteca" ? gastosHip : 0);
+    var invMax = entradaMax + impuestosMax + extrasMax;
+    var prestamoMax = financiacion === "con_hipoteca" ? precioMax - entradaMax : 0;
+    var cuotaMax = Math.round(calcularCuotaHipoteca(prestamoMax, interes, anos));
+    var margen = precioMax - precioActual;
+    var esEs = currentLanguage === "es";
+
+    var body = document.getElementById("inversaResultadoBody");
+    var nota = document.getElementById("inversaResultadoNota");
+    var res = document.getElementById("inversaResultado");
+    if (!res || !body || !nota) return;
+
+    var margenSign = margen >= 0 ? "+" : "";
+    var margenClass = margen >= 0 ? "metric-positive" : "metric-negative";
+    var cfClass = cfReal >= 0 ? "metric-positive" : "metric-negative";
+    var labelEntrada = esEs ? "Entrada (" + entradaPctDisplay + "%)" : "Down payment (" + entradaPctDisplay + "%)";
+    var labelImp = esEs ? "Impuestos (ITP/IVA+AJD)" : "Taxes (ITP/VAT)";
+    var labelExtras = esEs ? "Gastos compra + reforma" : "Purchase costs + renovation";
+    var labelTotal = esEs ? "Capital total a desembolsar" : "Total capital required";
+    var labelDesembolso = esEs ? "Desembolso inicial necesario" : "Required upfront payment";
+    var labelResultado = esEs ? "Resultado mensual con este precio" : "Monthly result at this price";
+    var labelCuota = esEs ? "Cuota hipoteca mensual" : "Monthly mortgage payment";
+    var labelCF = esEs ? "Cashflow mensual neto" : "Net monthly cashflow";
+    var labelVsPrecio = esEs ? " vs. tu precio actual" : " vs. current price";
+    var labelPrecioMax = esEs ? "Precio maximo del inmueble" : "Max property price";
+
+    body.innerHTML =
+        '<div class="inversa-row inversa-row--main">' +
+            '<div class="inversa-main-label">' + labelPrecioMax + '</div>' +
+            '<div class="inversa-main-value metric-info">' + fmt(precioMax) + ' €</div>' +
+            '<div class="inversa-main-sub ' + margenClass + '">' + margenSign + fmt(margen) + ' €' + labelVsPrecio + '</div>' +
+        '</div>' +
+        '<div class="inversa-divider">' + labelDesembolso + '</div>' +
+        '<div class="inversa-row"><span>' + labelEntrada + '</span><strong>' + fmt(entradaMax) + ' €</strong></div>' +
+        '<div class="inversa-row"><span>' + labelImp + '</span><strong class="metric-negative">' + fmt(impuestosMax) + ' €</strong></div>' +
+        '<div class="inversa-row"><span>' + labelExtras + '</span><strong class="metric-negative">' + fmt(extrasMax) + ' €</strong></div>' +
+        '<div class="inversa-row inversa-row--total"><span><strong>' + labelTotal + '</strong></span><strong>' + fmt(invMax) + ' €</strong></div>' +
+        '<div class="inversa-divider">' + labelResultado + '</div>' +
+        (financiacion === "con_hipoteca" ? '<div class="inversa-row"><span>' + labelCuota + '</span><strong class="metric-negative">' + fmt(cuotaMax) + ' €/mes</strong></div>' : '') +
+        '<div class="inversa-row inversa-row--highlight"><span><strong>' + labelCF + '</strong></span><strong class="' + cfClass + '">' + fmt(cfReal) + ' €/mes</strong></div>';
+
+    nota.textContent = esEs
+        ? "* Calculo basado en: " + interes + "% de interes, " + anos + " anos de hipoteca, " + alquiler + " EUR/mes de alquiler y " + entradaPctDisplay + "% de entrada."
+        : "* Based on: " + interes + "% interest, " + anos + "-year mortgage, " + alquiler + " EUR/month rent, " + entradaPctDisplay + "% down payment.";
+
+    res.style.display = "block";
+};
+
+// ============================================================
+// COOKIES
+// ============================================================
+function mostrarBannerCookies() {
+    const banner = document.getElementById('cookie-banner');
+    if (!banner) return;
+    if (localStorage.getItem('cookiesAceptadas') !== 'true') {
+        setTimeout(() => banner.classList.add('visible'), 800);
+    }
+}
+
+function aceptarCookies() {
+    const banner = document.getElementById('cookie-banner');
+    if (banner) banner.classList.remove('visible');
+    localStorage.setItem('cookiesAceptadas', 'true');
+}
+
+// ============================================================
+// COOKIES
+// ============================================================
