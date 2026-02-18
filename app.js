@@ -700,6 +700,7 @@ function calcular() {
             financiacionTipo
         };
 
+        window._lastDatos = datos; // Guardamos para exportar PDF
         document.getElementById('resultados').innerHTML = mostrarResultados(datos);
         // Renderizar gráfico DESPUÉS de inyectar el HTML (el canvas ya existe en el DOM)
         requestAnimationFrame(() => renderizarDoughnut(datos));
@@ -898,21 +899,21 @@ function mostrarResultados(datos) {
     const flujoClass = datos.flujoMensual >= 0 ? 'metric-positive' : 'metric-negative';
     const beneficioClass = datos.beneficioTotal >= 0 ? 'metric-positive' : 'metric-negative';
 
-    // Tabla de proyecciones
+    // Tabla de proyecciones — Vista doble: resumen + detalle al clic
+    // Guardamos los datos en un objeto global para acceso desde el modal
+    window._proyeccionesData = datos.proyecciones;
+    window._proyeccionesFmt = fmt;
+
     let tablaProyecciones = `
         <div class="projection-table-container">
-            <table class="projection-table">
+            <p class="projection-hint">👆 Haz clic en cualquier fila para ver el desglose completo de ese año</p>
+            <table class="projection-table projection-table-summary">
                 <thead>
                     <tr>
                         <th>${t.ano_header}</th>
-                        <th>${t.ingresos_alquiler_header}</th>
-                        <th>${t.gastos_header}</th>
-                        <th>${t.hipoteca_header}</th>
-                        <th>${t.impuestos_header}</th>
                         <th>${t.flujo_caja}</th>
                         <th>${t.rentabilidad_flujo_header}</th>
                         <th>${t.valor_inmueble}</th>
-                        <th>${t.prestamo_restante}</th>
                         <th>${t.neto_si_vende}</th>
                         <th>${t.beneficio_acumulado}</th>
                     </tr>
@@ -921,23 +922,112 @@ function mostrarResultados(datos) {
     `;
 
     datos.proyecciones.forEach(proy => {
+        const flujoClass = proy.flujoAnual >= 0 ? 'metric-positive' : 'metric-negative';
+        const rentClass = proy.rentabilidadFlujo >= 0 ? 'metric-positive' : 'metric-negative';
+        const benClass = proy.beneficioAcumulado >= 0 ? 'metric-positive' : 'metric-negative';
         tablaProyecciones += `
-            <tr>
-                <td><strong>${proy.year}</strong></td>
-                <td class="metric-positive">+${fmt(proy.ingresosAlquiler)} €</td>
-                <td class="metric-negative">-${fmt(proy.gastosFijos)} €</td>
-                <td class="metric-negative">-${fmt(proy.cuotaHipoteca)} €</td>
-                <td class="metric-negative">-${fmt(proy.tax)} €</td>
-                <td class="${proy.flujoAnual >= 0 ? 'metric-positive' : 'metric-negative'}">${fmt(proy.flujoAnual)} €</td>
-                <td class="${proy.rentabilidadFlujo >= 0 ? 'metric-positive' : 'metric-negative'}">${proy.rentabilidadFlujo.toFixed(2)}%</td>
+            <tr class="projection-row-clickable" onclick="abrirDetalleProyeccion(${proy.year - 1})" title="Ver desglose del año ${proy.year}">
+                <td><strong>Año ${proy.year}</strong></td>
+                <td class="${flujoClass}">${fmt(proy.flujoAnual)} €</td>
+                <td class="${rentClass}">${proy.rentabilidadFlujo.toFixed(2)}%</td>
                 <td>${fmt(proy.valorVivienda)} €</td>
-                <td>${fmt(proy.saldoPendiente)} €</td>
                 <td class="metric-info">${fmt(proy.precioVentaNeto)} €</td>
-                <td class="${proy.beneficioAcumulado >= 0 ? 'metric-positive' : 'metric-negative'}">${fmt(proy.beneficioAcumulado)} €</td>
+                <td class="${benClass}">${fmt(proy.beneficioAcumulado)} €</td>
             </tr>
         `;
     });
-    tablaProyecciones += `</tbody></table></div>`;
+    tablaProyecciones += `</tbody></table></div>
+
+    <!-- Modal de detalle de año -->
+    <div id="proyeccionModal" class="proyeccion-modal-overlay" onclick="cerrarDetalleProyeccion(event)">
+        <div class="proyeccion-modal-box">
+            <button class="proyeccion-modal-close" onclick="cerrarDetalleProyeccion(null)">✕</button>
+            <div id="proyeccionModalContent"></div>
+        </div>
+    </div>`;
+
+    // Inyectamos las funciones de modal en el scope global
+    window.abrirDetalleProyeccion = function(idx) {
+        const p = window._proyeccionesData[idx];
+        const f = window._proyeccionesFmt;
+        const lang = document.getElementById('langSelector')?.value || 'es';
+        const esEs = lang === 'es';
+
+        const flujoClass = p.flujoAnual >= 0 ? 'metric-positive' : 'metric-negative';
+        const benClass = p.beneficioAcumulado >= 0 ? 'metric-positive' : 'metric-negative';
+
+        document.getElementById('proyeccionModalContent').innerHTML = `
+            <div class="proyeccion-modal-header">
+                <span class="proyeccion-modal-year">Año ${p.year}</span>
+                <span class="proyeccion-modal-subtitle">${esEs ? 'Desglose completo' : 'Full breakdown'}</span>
+            </div>
+            <div class="proyeccion-modal-grid">
+                <div class="proyeccion-modal-section">
+                    <div class="proyeccion-modal-section-title">📥 ${esEs ? 'Ingresos' : 'Income'}</div>
+                    <div class="proyeccion-modal-row">
+                        <span>${esEs ? 'Alquiler anual' : 'Annual rent'}</span>
+                        <span class="metric-positive">+${f(p.ingresosAlquiler)} €</span>
+                    </div>
+                </div>
+                <div class="proyeccion-modal-section">
+                    <div class="proyeccion-modal-section-title">📤 ${esEs ? 'Gastos' : 'Expenses'}</div>
+                    <div class="proyeccion-modal-row">
+                        <span>${esEs ? 'Gastos fijos' : 'Fixed costs'}</span>
+                        <span class="metric-negative">-${f(p.gastosFijos)} €</span>
+                    </div>
+                    <div class="proyeccion-modal-row">
+                        <span>${esEs ? 'Cuota hipoteca' : 'Mortgage payment'}</span>
+                        <span class="metric-negative">-${f(p.cuotaHipoteca)} €</span>
+                    </div>
+                    <div class="proyeccion-modal-row">
+                        <span>${esEs ? 'Impuestos (IRPF)' : 'Taxes (income)'}</span>
+                        <span class="metric-negative">-${f(p.tax)} €</span>
+                    </div>
+                </div>
+                <div class="proyeccion-modal-section">
+                    <div class="proyeccion-modal-section-title">📊 ${esEs ? 'Resultado' : 'Result'}</div>
+                    <div class="proyeccion-modal-row proyeccion-modal-row--highlight">
+                        <span><strong>${esEs ? 'Flujo de caja anual' : 'Annual cash flow'}</strong></span>
+                        <span class="${flujoClass}"><strong>${f(p.flujoAnual)} €</strong></span>
+                    </div>
+                    <div class="proyeccion-modal-row">
+                        <span>${esEs ? 'Rentabilidad sobre capital' : 'Return on equity'}</span>
+                        <span class="${p.rentabilidadFlujo >= 0 ? 'metric-positive' : 'metric-negative'}">${p.rentabilidadFlujo.toFixed(2)}%</span>
+                    </div>
+                </div>
+                <div class="proyeccion-modal-section">
+                    <div class="proyeccion-modal-section-title">🏠 ${esEs ? 'Patrimonio' : 'Net Worth'}</div>
+                    <div class="proyeccion-modal-row">
+                        <span>${esEs ? 'Valor del inmueble' : 'Property value'}</span>
+                        <span>${f(p.valorVivienda)} €</span>
+                    </div>
+                    <div class="proyeccion-modal-row">
+                        <span>${esEs ? 'Préstamo restante' : 'Remaining loan'}</span>
+                        <span class="metric-negative">-${f(p.saldoPendiente)} €</span>
+                    </div>
+                    <div class="proyeccion-modal-row proyeccion-modal-row--highlight">
+                        <span><strong>${esEs ? 'Neto si vendes hoy' : 'Net if you sell today'}</strong></span>
+                        <span class="metric-info"><strong>${f(p.precioVentaNeto)} €</strong></span>
+                    </div>
+                    <div class="proyeccion-modal-row proyeccion-modal-row--highlight">
+                        <span><strong>${esEs ? 'Beneficio acumulado' : 'Cumulative profit'}</strong></span>
+                        <span class="${benClass}"><strong>${f(p.beneficioAcumulado)} €</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="proyeccion-modal-nav">
+                ${idx > 0 ? `<button class="proyeccion-nav-btn" onclick="abrirDetalleProyeccion(${idx - 1})">← ${esEs ? 'Año anterior' : 'Previous year'}</button>` : '<span></span>'}
+                ${idx < window._proyeccionesData.length - 1 ? `<button class="proyeccion-nav-btn" onclick="abrirDetalleProyeccion(${idx + 1})">${esEs ? 'Año siguiente' : 'Next year'} →</button>` : '<span></span>'}
+            </div>
+        `;
+        document.getElementById('proyeccionModal').classList.add('active');
+    };
+
+    window.cerrarDetalleProyeccion = function(event) {
+        if (event === null || event.target === document.getElementById('proyeccionModal')) {
+            document.getElementById('proyeccionModal').classList.remove('active');
+        }
+    };
 
     // Comparación de inversiones con barras
     const maxComparacion = 10;
@@ -1227,38 +1317,579 @@ function switchTab(tabName) {
 }
 
 // ============================================================
-// EXPORTAR A PDF
+// ============================================================
+// EXPORTAR A PDF — Generación elegante con jsPDF
 // ============================================================
 function exportToPDF() {
-    const resultados = document.querySelector('.results-panel .card-body');
-    if (!resultados) return;
+    if (!window._lastDatos) {
+        alert('Primero debes calcular la inversion antes de exportar.');
+        return;
+    }
 
-    // Mostrar un indicador de carga (opcional)
-    resultados.style.opacity = '0.5';
+    const { jsPDF } = window.jspdf;
+    const datos = window._lastDatos;
+    const f = (n) => n.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+    const fp = (n) => n.toFixed(2) + '%';
+    const lang = currentLanguage || 'es';
+    const esEs = lang === 'es';
 
-    html2canvas(resultados, {
-        scale: 2,
-        logging: false,
-        allowTaint: false,
-        useCORS: true
-    }).then(canvas => {
-        resultados.style.opacity = '1';
+    // Normaliza texto para PDF: convierte solo lo que jsPDF/Helvetica no puede mostrar
+    // latin-1 (U+0000-U+00FF) está soportado, incluyendo á é í ó ú ñ Ñ y tildes
+    // Lo que NO soporta: emojis, caracteres CJK, símbolos unicode fuera de latin-1
+    function s(str) {
+        return String(str)
+            .replace(/€/g, 'EUR')
+            .replace(/…/g, '...')
+            .replace(/–/g, '-').replace(/—/g, '-')
+            .replace(/[^\x00-\xFF]/g, '');  // elimina solo chars fuera de latin-1
+    }
 
-        const imgData = canvas.toDataURL('image/png');
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'px',
-            format: [canvas.width * 0.75, canvas.height * 0.75] // Ajuste para que quepa
+    // ── Paleta de colores ──────────────────────────────────────
+    const C = {
+        primary:    [103, 126, 234],   // indigo
+        primaryDark:[29,  78,  216],
+        accent:     [16,  185, 129],   // verde éxito
+        danger:     [239, 68,  68],
+        warning:    [245, 158, 11],
+        info:       [6,   182, 212],
+        dark:       [15,  23,  42],
+        darkMid:    [30,  41,  59],
+        grey:       [100, 116, 139],
+        greyLight:  [226, 232, 240],
+        greyXLight: [248, 250, 252],
+        white:      [255, 255, 255],
+    };
+
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const PW = 210; // page width mm
+    const PH = 297;
+    const ML = 14;  // margin left
+    const MR = 14;  // margin right
+    const CW = PW - ML - MR; // content width
+    let y = 0;
+
+    // ── Helpers ────────────────────────────────────────────────
+    function setFont(style, size, color) {
+        doc.setFont('helvetica', style);
+        doc.setFontSize(size);
+        doc.setTextColor(...(color || C.dark));
+    }
+
+    function fillRect(x, yy, w, h, color) {
+        doc.setFillColor(...color);
+        doc.rect(x, yy, w, h, 'F');
+    }
+
+    function text(str, x, yy, opts) {
+        doc.text(s(String(str)), x, yy, opts || {});
+    }
+
+    function newPage() {
+        doc.addPage();
+        y = 18;
+        // Línea decorativa superior
+        fillRect(0, 0, PW, 3, C.primary);
+    }
+
+    function checkPageBreak(needed) {
+        if (y + needed > PH - 14) { newPage(); }
+    }
+
+    function sectionTitle(title, _icon) {
+        checkPageBreak(14);
+        fillRect(ML, y, CW, 8, C.greyXLight);
+        doc.setDrawColor(...C.greyLight);
+        doc.setLineWidth(0.3);
+        doc.rect(ML, y, CW, 8, 'D');
+        // Cuadrado de acento en lugar de emoji
+        fillRect(ML + 2, y + 2, 3, 4, C.primary);
+        setFont('bold', 9, C.primaryDark);
+        text(title.toUpperCase(), ML + 8, y + 5.5);
+        y += 12;
+    }
+
+    function metricRow(label, value, color, bg, isLast) {
+        const rowH = 7.2;
+        checkPageBreak(rowH + 1);
+        if (bg) fillRect(ML, y, CW, rowH, bg);
+        doc.setDrawColor(...C.greyLight);
+        doc.setLineWidth(0.2);
+        if (!isLast) doc.line(ML, y + rowH, ML + CW, y + rowH);
+        setFont('normal', 8.5, C.grey);
+        text(label, ML + 3, y + 5);
+        setFont('bold', 8.5, color || C.dark);
+        text(value, ML + CW - 3, y + 5, { align: 'right' });
+        y += rowH;
+    }
+
+    function twoColMetrics(pairs) {
+        const colW = CW / 2 - 1;
+        const rowH = 7;
+        const perRow = 2;
+        for (let i = 0; i < pairs.length; i += perRow) {
+            checkPageBreak(rowH + 2);
+            for (let j = 0; j < perRow && i + j < pairs.length; j++) {
+                const { label, value, color, bg } = pairs[i + j];
+                const x0 = ML + j * (colW + 2);
+                if (bg) fillRect(x0, y, colW, rowH, bg);
+                doc.setDrawColor(...C.greyLight);
+                doc.setLineWidth(0.2);
+                doc.rect(x0, y, colW, rowH, 'D');
+                setFont('normal', 7.5, C.grey);
+                text(label, x0 + 3, y + 3.5);
+                setFont('bold', 9, color || C.dark);
+                text(value, x0 + colW - 3, y + 6.5, { align: 'right' });
+            }
+            y += rowH + 2;
+        }
+    }
+
+    // ── PORTADA ────────────────────────────────────────────────
+    // Fondo degradado simulado con rectángulos
+    fillRect(0, 0, PW, 90, C.dark);
+    fillRect(0, 60, PW, 35, C.darkMid);
+
+    // Franja de acento
+    fillRect(0, 88, PW, 4, C.primary);
+
+    // Logo / Icono — cuadrado con iniciales
+    doc.setFillColor(...C.primary);
+    doc.roundedRect(ML, 18, 22, 22, 3, 3, 'F');
+    setFont('bold', 14, C.white);
+    text('PI', ML + 4.5, 32);
+
+    // Título principal
+    setFont('bold', 22, C.white);
+    text(esEs ? 'Análisis de Inversión' : 'Investment Analysis', ML + 28, 28);
+    setFont('normal', 11, [148, 163, 184]);
+    text(esEs ? 'Informe de Rentabilidad Inmobiliaria' : 'Real Estate Return Report', ML + 28, 36);
+
+    // Badge fecha
+    const fecha = new Date().toLocaleDateString(esEs ? 'es-ES' : 'en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+    setFont('normal', 8, [148, 163, 184]);
+    text((esEs ? 'Generado el ' : 'Generated on ') + fecha, ML + 28, 44);
+
+    // URL / branding
+    setFont('normal', 8, [71, 85, 105]);
+    text('pisorentable.org', PW - MR, 84, { align: 'right' });
+
+    // Tarjetas KPI en portada
+    y = 100;
+    const kpis = [
+        {
+            label: esEs ? 'Cashflow mensual neto' : 'Monthly net cashflow',
+            value: f(datos.flujoMensual) + ' /mes',
+            color: datos.flujoMensual >= 0 ? C.accent : C.danger,
+            tag: 'CF'
+        },
+        {
+            label: esEs ? 'Rentabilidad compuesta (TIR)' : 'Compound return (IRR)',
+            value: fp(datos.rentabilidadAnual),
+            color: datos.rentabilidadAnual >= 6 ? C.accent : datos.rentabilidadAnual >= 3 ? C.warning : C.danger,
+            tag: 'TIR'
+        },
+        {
+            label: esEs ? 'ROI anual sobre capital' : 'Annual ROI on capital',
+            value: fp(datos.roiAnual),
+            color: datos.roiAnual >= 6 ? C.accent : datos.roiAnual >= 3 ? C.warning : C.danger,
+            tag: 'ROI'
+        },
+        {
+            label: esEs ? `Beneficio total (${datos.anosAnalisis} años)` : `Total profit (${datos.anosAnalisis} yrs)`,
+            value: f(datos.beneficioTotal) + ' EUR',
+            color: datos.beneficioTotal >= 0 ? C.accent : C.danger,
+            tag: 'BEN'
+        },
+    ];
+
+    const kpiW = (CW - 6) / 4;
+    kpis.forEach((k, i) => {
+        const x0 = ML + i * (kpiW + 2);
+        fillRect(x0, y, kpiW, 28, C.white);
+        doc.setDrawColor(...k.color);
+        doc.setLineWidth(0.8);
+        doc.line(x0, y, x0 + kpiW, y);
+        doc.setLineWidth(0.2);
+        // Tag pequeño en lugar de emoji
+        fillRect(x0 + 2, y + 3, 8, 4.5, k.color);
+        setFont('bold', 5.5, C.white);
+        text(k.tag, x0 + 2.8, y + 6.5);
+        // Label (ambas líneas alineadas bajo el tag)
+        setFont('normal', 7, C.grey);
+        const lines = doc.splitTextToSize(s(k.label), kpiW - 4);
+        text(lines[0], x0 + 12, y + 6);
+        if (lines[1]) text(lines[1], x0 + 12, y + 10);
+        // Value
+        setFont('bold', 11, k.color);
+        text(k.value, x0 + kpiW / 2, y + 22, { align: 'center' });
+    });
+
+    y += 36;
+
+    // Aviso legal en portada
+    setFont('normal', 7, C.grey);
+    const aviso = esEs
+        ? 'Esta herramienta es orientativa y no constituye asesoramiento financiero, fiscal ni jurídico. Consulte con un profesional.'
+        : 'This tool is for guidance only and does not constitute financial, tax or legal advice. Consult a professional.';
+    const avisoLines = doc.splitTextToSize(s(aviso), CW);
+    avisoLines.forEach(line => { text(line, ML, y); y += 4; });
+
+    // ── GRÁFICO DE DISTRIBUCIÓN DE COSTES (capturado del canvas web) ──────
+    y += 4;
+    const chartCanvas = document.getElementById('doughnutChart');
+    if (chartCanvas) {
+        try {
+            const chartImg = chartCanvas.toDataURL('image/png');
+            const chartSize = 52; // mm
+
+            const boxW = CW;
+            const boxH = chartSize + 16;
+            fillRect(ML, y, boxW, boxH, C.white);
+            doc.setDrawColor(...C.greyLight);
+            doc.setLineWidth(0.3);
+            doc.rect(ML, y, boxW, boxH, 'D');
+
+            // Título
+            fillRect(ML, y, boxW, 7, C.greyXLight);
+            setFont('bold', 8, C.primaryDark);
+            text(s(esEs ? 'Distribución de costes mensuales' : 'Monthly cost breakdown'), ML + 4, y + 5);
+
+            // Gráfico
+            const chartX = ML + 4;
+            const chartY = y + 10;
+            doc.addImage(chartImg, 'PNG', chartX, chartY, chartSize, chartSize);
+
+            // Leyenda a la derecha
+            const hipotecaVal  = datos.financiacionTipo === 'con_hipoteca' ? datos.cuotaHipoteca : 0;
+            const gastosFijosVal = datos.comunidad + datos.ibi / 12 + datos.seguro / 12 +
+                                   (datos.seguroImpago || 0) / 12 + datos.mantenimiento / 12 +
+                                   (datos.administracion || 0);
+            const impuestosVal = datos.taxMensual;
+            const cashflowVal  = Math.max(0, datos.flujoMensual);
+            const legendItems = [
+                { label: esEs ? 'Hipoteca' : 'Mortgage',       value: hipotecaVal,   color: [103, 126, 234] },
+                { label: esEs ? 'Gastos fijos' : 'Fixed costs', value: gastosFijosVal,color: [245, 158,  11] },
+                { label: esEs ? 'Impuestos' : 'Taxes',          value: impuestosVal,  color: [239,  68,  68] },
+                { label: 'Cashflow',                             value: cashflowVal,   color: [ 16, 185, 129] },
+            ];
+
+            const legX = chartX + chartSize + 8;
+            let legY = chartY + 8;
+            legendItems.forEach(item => {
+                fillRect(legX, legY - 3.2, 4, 4, item.color);
+                setFont('normal', 8, C.grey);
+                text(s(item.label), legX + 6, legY);
+                setFont('bold', 9, item.color);
+                text(f(item.value) + ' EUR/mes', legX + 6, legY + 5.5);
+                legY += 14;
+            });
+
+            y += boxH + 4;
+        } catch(e) {
+            y += 2; // Si falla la captura del canvas, lo omitimos silenciosamente
+        }
+    }
+
+    // ── PÁGINA 2: PARÁMETROS DE LA INVERSIÓN ─────────────────
+    newPage();
+
+    sectionTitle(esEs ? 'Parámetros de la Inversión' : 'Investment Parameters');
+
+    // Recuperar inputs del DOM
+    const precio = parseFloat(document.getElementById('precio')?.value) || 0;
+    const entradaEuros = parseFloat(document.getElementById('entradaEuros')?.value) || 0;
+    const interes = parseFloat(document.getElementById('interes')?.value) || 0;
+    const anos = parseFloat(document.getElementById('anos')?.value) || 0;
+    const alquiler = parseFloat(document.getElementById('alquiler')?.value) || 0;
+    const mesesVacio = parseFloat(document.getElementById('mesesVacio')?.value) || 0;
+    const revalorizacion = parseFloat(document.getElementById('revalorizacion')?.value) || 0;
+    const anosAnalisis = datos.anosAnalisis;
+    const ibi = parseFloat(document.getElementById('ibi')?.value) || 0;
+    const comunidad = parseFloat(document.getElementById('comunidad')?.value) || 0;
+    const seguro = parseFloat(document.getElementById('seguro')?.value) || 0;
+    const mantenimiento = parseFloat(document.getElementById('mantenimiento')?.value) || 0;
+    const taxAlquiler = parseFloat(document.getElementById('taxAlquiler')?.value) || 19;
+    const gastosVenta = parseFloat(document.getElementById('gastosVenta')?.value) || 8;
+    const irpfVenta = parseFloat(document.getElementById('irpfVenta')?.value) || 19;
+
+    twoColMetrics([
+        { label: esEs ? 'Precio de compra' : 'Purchase price', value: f(precio) + ' €' },
+        { label: esEs ? 'Tipo de financiación' : 'Financing type', value: datos.financiacionTipo === 'con_hipoteca' ? (esEs ? 'Con hipoteca' : 'With mortgage') : (esEs ? 'Sin hipoteca' : 'Cash') },
+        { label: esEs ? 'Ahorro aportado (entrada)' : 'Equity (down payment)', value: f(entradaEuros) + ' € (' + (precio > 0 ? ((entradaEuros/precio)*100).toFixed(0) : 0) + '%)' },
+        { label: esEs ? 'Tipo de interés' : 'Interest rate', value: datos.financiacionTipo === 'con_hipoteca' ? interes.toFixed(1) + '%' : '—' },
+        { label: esEs ? 'Plazo hipoteca' : 'Mortgage term', value: datos.financiacionTipo === 'con_hipoteca' ? (anos + (esEs ? ' años' : ' yrs')) : '—' },
+        { label: esEs ? 'Alquiler mensual' : 'Monthly rent', value: f(alquiler) + ' €/mes' },
+        { label: esEs ? 'Meses vacío al año' : 'Vacant months/year', value: mesesVacio + (esEs ? ' mes(es)' : ' month(s)') },
+        { label: esEs ? 'Años de análisis' : 'Analysis period', value: anosAnalisis + (esEs ? ' años' : ' years') },
+        { label: esEs ? 'Revalorización anual' : 'Annual appreciation', value: revalorizacion.toFixed(1) + '%' },
+        { label: esEs ? 'IRPF sobre alquiler' : 'Income tax on rent', value: taxAlquiler + '%' },
+        { label: esEs ? 'Gastos venta futura' : 'Future sale costs', value: gastosVenta + '%' },
+        { label: esEs ? 'IRPF sobre plusvalía' : 'Capital gains tax', value: irpfVenta + '%' },
+    ]);
+
+    y += 4;
+    sectionTitle(esEs ? 'Inversión Inicial Detallada' : 'Initial Investment Breakdown');
+
+    metricRow(esEs ? 'Precio de compra' : 'Purchase price', f(precio) + ' €');
+    metricRow(esEs ? 'Impuestos (ITP/IVA+AJD)' : 'Taxes (ITP/VAT+AJD)', f(datos.impuestos) + ' €', C.danger, C.greyXLight);
+    metricRow(esEs ? 'Gastos de compraventa (notaría, registro…)' : 'Transaction costs (notary, registry…)', f(datos.gastosCompra) + ' €', C.danger);
+    metricRow(esEs ? 'Gastos de reforma' : 'Renovation costs', f(datos.reforma) + ' €', C.danger, C.greyXLight);
+    if (datos.financiacionTipo === 'con_hipoteca') {
+        metricRow(esEs ? 'Gastos de hipoteca' : 'Mortgage fees', f(datos.gastosHipoteca) + ' €', C.danger);
+    }
+    const bgTotal = [235, 245, 255];
+    checkPageBreak(9);
+    fillRect(ML, y, CW, 8, C.primary);
+    setFont('bold', 9, C.white);
+    text(esEs ? 'CAPITAL TOTAL INVERTIDO (dinero de bolsillo)' : 'TOTAL CAPITAL INVESTED (out of pocket)', ML + 3, y + 5.5);
+    setFont('bold', 10, C.white);
+    text(f(datos.inversionInicial) + ' €', ML + CW - 3, y + 5.5, { align: 'right' });
+    y += 12;
+
+    y += 4;
+    sectionTitle(esEs ? 'Gastos Operativos Anuales' : 'Annual Operating Costs');
+
+    metricRow('IBI', f(ibi) + ' €/año', C.danger);
+    metricRow(esEs ? 'Comunidad de vecinos' : 'HOA fees', f(comunidad * 12) + ' €/año', C.danger, C.greyXLight);
+    metricRow(esEs ? 'Seguro de hogar' : 'Home insurance', f(seguro) + ' €/año', C.danger);
+    metricRow(esEs ? 'Mantenimiento y reparaciones' : 'Maintenance & repairs', f(mantenimiento) + ' €/año', C.danger, C.greyXLight);
+    const seguroImpago = parseFloat(document.getElementById('seguroImpago')?.value) || 0;
+    const admin = parseFloat(document.getElementById('administracion')?.value) || 0;
+    if (seguroImpago > 0) metricRow(esEs ? 'Seguro de impago' : 'Rent default insurance', f(seguroImpago) + ' €/año', C.danger);
+    if (admin > 0) metricRow(esEs ? 'Administración / Agencia' : 'Management / Agency', f(admin * 12) + ' €/año', C.danger, C.greyXLight);
+
+    // ── PÁGINA 3: RESULTADOS PRINCIPALES ─────────────────────
+    newPage();
+
+    sectionTitle(esEs ? 'Resultados Económicos — Año 1' : 'Economic Results — Year 1');
+
+    twoColMetrics([
+        {
+            label: esEs ? 'Ingresos brutos alquiler' : 'Gross rental income',
+            value: f(datos.ingresosMensuales * 12) + ' €/año',
+            color: C.accent
+        },
+        {
+            label: esEs ? 'Cuota hipoteca mensual' : 'Monthly mortgage payment',
+            value: datos.financiacionTipo === 'con_hipoteca' ? f(datos.cuotaHipoteca) + ' €/mes' : '— €',
+            color: C.danger
+        },
+        {
+            label: esEs ? 'Cashflow mensual neto' : 'Monthly net cashflow',
+            value: f(datos.flujoMensual) + ' €/mes',
+            color: datos.flujoMensual >= 0 ? C.accent : C.danger,
+            bg: datos.flujoMensual >= 0 ? [240, 253, 244] : [254, 242, 242]
+        },
+        {
+            label: esEs ? 'Cashflow anual neto' : 'Annual net cashflow',
+            value: f(datos.flujoMensual * 12) + ' €/año',
+            color: datos.flujoMensual >= 0 ? C.accent : C.danger,
+            bg: datos.flujoMensual >= 0 ? [240, 253, 244] : [254, 242, 242]
+        },
+        {
+            label: esEs ? 'ROI sobre capital invertido' : 'ROI on invested capital',
+            value: fp(datos.roiAnual),
+            color: datos.roiAnual >= 6 ? C.accent : datos.roiAnual >= 3 ? C.warning : C.danger
+        },
+        {
+            label: esEs ? 'TIR / Rentab. compuesta total' : 'IRR / Total compound return',
+            value: fp(datos.rentabilidadAnual),
+            color: datos.rentabilidadAnual >= 6 ? C.accent : datos.rentabilidadAnual >= 3 ? C.warning : C.danger,
+            bg: [235, 245, 255]
+        },
+    ]);
+
+    y += 4;
+    sectionTitle(esEs ? `Proyección de Venta al Año ${datos.anosAnalisis}` : `Sale Projection at Year ${datos.anosAnalisis}`);
+
+    const pVenta = datos.precioVentaBruto;
+    metricRow(esEs ? 'Valor estimado del inmueble' : 'Estimated property value', f(pVenta) + ' €', C.info);
+    metricRow(esEs ? 'Gastos de venta' : 'Sale expenses', '-' + f(datos.gastosVentaEuros) + ' €', C.danger, C.greyXLight);
+    metricRow(esEs ? 'Plusvalía municipal' : 'Municipal capital gains tax', '-' + f(datos.plusvalia) + ' €', C.danger);
+    metricRow(esEs ? 'IRPF sobre ganancia de capital' : 'Income tax on capital gains', '-' + f(datos.impuestosGanancias) + ' €', C.danger, C.greyXLight);
+    metricRow(esEs ? 'Préstamo pendiente' : 'Remaining loan', '-' + f(datos.proyecciones[datos.anosAnalisis - 1].saldoPendiente) + ' €', C.danger);
+
+    checkPageBreak(9);
+    fillRect(ML, y, CW, 8, C.accent);
+    setFont('bold', 9, C.white);
+    text(esEs ? 'NETO RECIBIDO AL VENDER' : 'NET PROCEEDS FROM SALE', ML + 3, y + 5.5);
+    setFont('bold', 10, C.white);
+    text(f(datos.precioVentaNeto) + ' €', ML + CW - 3, y + 5.5, { align: 'right' });
+    y += 10;
+
+    checkPageBreak(9);
+    fillRect(ML, y, CW, 8, datos.beneficioTotal >= 0 ? C.primary : C.danger);
+    setFont('bold', 9, C.white);
+    text(esEs ? `BENEFICIO TOTAL ACUMULADO (${datos.anosAnalisis} AÑOS)` : `TOTAL ACCUMULATED PROFIT (${datos.anosAnalisis} YEARS)`, ML + 3, y + 5.5);
+    setFont('bold', 10, C.white);
+    text(f(datos.beneficioTotal) + ' €', ML + CW - 3, y + 5.5, { align: 'right' });
+    y += 14;
+
+    // ── PÁGINA 4+: PROYECCIÓN AÑO POR AÑO (TABLA COMPLETA) ───
+    newPage();
+
+    sectionTitle(esEs ? 'Proyección Año por Año — Tabla Completa' : 'Year-by-Year Projections — Full Table');
+
+    // Cabeceras de tabla
+    const cols = [
+        { h: esEs ? 'Año' : 'Year',       w: 10 },
+        { h: esEs ? 'Ingresos' : 'Income',   w: 24 },
+        { h: esEs ? 'G.Fijos' : 'Costs',     w: 22 },
+        { h: esEs ? 'Hipoteca' : 'Mortgage',  w: 22 },
+        { h: 'IRPF',                            w: 20 },
+        { h: 'Cashflow',                        w: 23 },
+        { h: '% ROI',                           w: 16 },
+        { h: esEs ? 'Val.Inmueble' : 'Prop.Val',w: 26 },
+        { h: esEs ? 'Neto Venta' : 'Net Sale', w: 24 },
+        { h: esEs ? 'B.Acumulado' : 'Tot.Profit',w: 27 },
+    ];
+
+    const rowH = 6.5;
+    const headerH = 8;
+
+    function drawTableHeader() {
+        checkPageBreak(headerH + 2);
+        fillRect(ML, y, CW, headerH, C.darkMid);
+        let cx = ML;
+        cols.forEach(col => {
+            setFont('bold', 7, C.white);
+            const lines = doc.splitTextToSize(s(col.h), col.w - 2);
+            text(lines[0], cx + col.w / 2, y + (lines[1] ? 4 : 5.5), { align: 'center' });
+            if (lines[1]) text(lines[1], cx + col.w / 2, y + 7, { align: 'center' });
+            cx += col.w;
+        });
+        y += headerH;
+    }
+
+    drawTableHeader();
+
+    datos.proyecciones.forEach((p, idx) => {
+        checkPageBreak(rowH + 1);
+        if (y > PH - 22) {
+            newPage();
+            drawTableHeader();
+        }
+
+        const isEven = idx % 2 === 0;
+        if (isEven) fillRect(ML, y, CW, rowH, C.greyXLight);
+
+        const flujoColor = p.flujoAnual >= 0 ? C.accent : C.danger;
+        const benColor = p.beneficioAcumulado >= 0 ? C.accent : C.danger;
+
+        const values = [
+            { v: p.year,                         color: C.dark, bold: true },
+            { v: '+' + f(p.ingresosAlquiler) + ' €', color: C.accent },
+            { v: '-' + f(p.gastosFijos) + ' €',      color: C.danger },
+            { v: '-' + f(p.cuotaHipoteca) + ' €',    color: C.danger },
+            { v: '-' + f(p.tax) + ' €',               color: C.danger },
+            { v: f(p.flujoAnual) + ' €',              color: flujoColor, bold: true },
+            { v: p.rentabilidadFlujo.toFixed(1) + '%', color: flujoColor },
+            { v: f(p.valorVivienda) + ' €',            color: C.info },
+            { v: f(p.precioVentaNeto) + ' €',          color: C.info },
+            { v: f(p.beneficioAcumulado) + ' €',       color: benColor, bold: true },
+        ];
+
+        let cx = ML;
+        values.forEach((cell, ci) => {
+            const col = cols[ci];
+            doc.setFont('helvetica', cell.bold ? 'bold' : 'normal');
+            doc.setFontSize(6.8);
+            doc.setTextColor(...cell.color);
+            text(String(cell.v), cx + col.w - 1, y + 4.5, { align: 'right' });
+            cx += col.w;
         });
 
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width * 0.75, canvas.height * 0.75);
-        pdf.save('inmobiliaria.pdf');
-    }).catch(error => {
-        resultados.style.opacity = '1';
-        console.error('Error al generar PDF:', error);
-        alert('No se pudo generar el PDF. Inténtalo de nuevo.');
+        // Línea separadora
+        doc.setDrawColor(...C.greyLight);
+        doc.setLineWidth(0.1);
+        doc.line(ML, y + rowH, ML + CW, y + rowH);
+        y += rowH;
     });
+
+    // ── ÚLTIMA PÁGINA: COMPARATIVA DE RENTABILIDADES ─────────
+    newPage();
+    sectionTitle(esEs ? 'Comparativa con Otras Inversiones' : 'Comparison with Other Investments');
+
+    const comparaciones = [
+        { label: esEs ? '>> Tu inversion inmobiliaria' : '>> Your real estate investment', value: datos.rentabilidadAnual },
+        { label: esEs ? '   Deposito bancario' : '   Bank deposit',       value: 2.8 },
+        { label: esEs ? '   Bono espanol 10 anos' : '   Spanish 10yr bond',value: 3.2 },
+        { label: esEs ? '   S&P 500 (media historica)' : '   S&P 500 (historical avg)', value: 10.5 },
+        { label: esEs ? '   EURO STOXX 50 (historico)' : '   EURO STOXX 50 (historical)', value: 7.1 },
+        { label: esEs ? '   Inmobiliario Espana (media)' : '   Spanish RE avg', value: 5.2 },
+    ];
+
+    const barMaxVal = Math.max(...comparaciones.map(c => c.value), 12);
+    const barAreaW = CW - 70;
+    comparaciones.forEach((comp, i) => {
+        checkPageBreak(9);
+        const isThis = i === 0;
+        const barW = Math.max(1, (comp.value / barMaxVal) * barAreaW);
+        const barColor = isThis
+            ? (comp.value >= 6 ? C.accent : comp.value >= 3 ? C.warning : C.danger)
+            : C.greyLight;
+
+        // Label
+        setFont(isThis ? 'bold' : 'normal', 8, isThis ? C.dark : C.grey);
+        text(comp.label, ML, y + 5.5);
+
+        // Barra
+        const barX = ML + 68;
+        fillRect(barX, y + 1, barAreaW, 6, [240, 240, 240]);
+        fillRect(barX, y + 1, barW, 6, barColor);
+
+        // Valor
+        setFont('bold', 8, isThis ? C.primary : C.grey);
+        text(fp(comp.value), ML + CW - 1, y + 5.5, { align: 'right' });
+        y += 10;
+    });
+
+    y += 6;
+    // Resumen final tipo tarjeta
+    checkPageBreak(35);
+    fillRect(ML, y, CW, 32, C.greyXLight);
+    doc.setDrawColor(...C.primary);
+    doc.setLineWidth(0.5);
+    doc.rect(ML, y, CW, 32, 'D');
+    setFont('bold', 10, C.primary);
+    text(esEs ? 'RESUMEN EJECUTIVO' : 'EXECUTIVE SUMMARY', ML + 5, y + 8);
+    setFont('normal', 8.5, C.dark);
+    const resumen = esEs
+        ? `Capital invertido: ${f(datos.inversionInicial)} €   |   TIR estimada: ${fp(datos.rentabilidadAnual)}   |   Cashflow mensual: ${f(datos.flujoMensual)} €/mes`
+        : `Capital invested: ${f(datos.inversionInicial)} €   |   Est. IRR: ${fp(datos.rentabilidadAnual)}   |   Monthly cashflow: ${f(datos.flujoMensual)} €/mes`;
+    text(resumen, ML + 5, y + 17);
+    setFont('normal', 8, C.grey);
+    const benefStr = esEs
+        ? `Beneficio total proyectado en ${datos.anosAnalisis} años: ${f(datos.beneficioTotal)} €   |   Neto si vendes al final: ${f(datos.precioVentaNeto)} €`
+        : `Total projected profit over ${datos.anosAnalisis} years: ${f(datos.beneficioTotal)} €   |   Net sale proceeds: ${f(datos.precioVentaNeto)} €`;
+    text(benefStr, ML + 5, y + 25);
+    y += 40;
+
+    // Aviso legal
+    setFont('normal', 6.5, C.grey);
+    const legalText = esEs
+        ? 'Aviso legal: Este informe es orientativo y no constituye asesoramiento financiero, fiscal ni jurídico. Los cálculos son estimaciones basadas en la normativa vigente y los parámetros introducidos. Consulte siempre con un profesional cualificado antes de tomar decisiones de inversión. pisorentable.org'
+        : 'Legal disclaimer: This report is for guidance only and does not constitute financial, tax or legal advice. Calculations are estimates based on current regulations and entered parameters. Always consult a qualified professional before making investment decisions. pisorentable.org';
+    const legalLines = doc.splitTextToSize(s(legalText), CW);
+    checkPageBreak(legalLines.length * 4 + 4);
+    fillRect(ML, y, CW, legalLines.length * 3.8 + 4, [248, 249, 250]);
+    y += 3;
+    legalLines.forEach(line => { text(line, ML + 2, y); y += 3.8; });
+
+    // Numeración de páginas
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        fillRect(0, PH - 8, PW, 8, C.darkMid);
+        setFont('normal', 7, [148, 163, 184]);
+        text('pisorentable.org  |  ' + (esEs ? 'Analisis de Inversion Inmobiliaria' : 'Real Estate Investment Analysis'), ML, PH - 3);
+        setFont('normal', 7, [148, 163, 184]);
+        text(`${i} / ${totalPages}`, PW - MR, PH - 3, { align: 'right' });
+        // Franja acento en todas las páginas (excepto portada que ya la tiene)
+        if (i > 1) fillRect(0, 0, PW, 2.5, C.primary);
+    }
+
+    doc.save('analisis-inversion-inmobiliaria.pdf');
 }
 
 // ============================================================
@@ -1377,7 +2008,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Botón PDF
     const pdfBtn = document.getElementById('pdfBtn');
     if (pdfBtn) {
-        pdfBtn.addEventListener('click', exportToPDF);
+        pdfBtn.addEventListener('click', () => {
+            const originalHTML = pdfBtn.innerHTML;
+            pdfBtn.innerHTML = '<span>⏳ Generando PDF…</span>';
+            pdfBtn.disabled = true;
+            setTimeout(() => {
+                try {
+                    exportToPDF();
+                } finally {
+                    setTimeout(() => {
+                        pdfBtn.innerHTML = originalHTML;
+                        pdfBtn.disabled = false;
+                    }, 1200);
+                }
+            }, 50);
+        });
     }
 
     // Autocálculo en tiempo real para todos los inputs EXCEPTO slider y precio
