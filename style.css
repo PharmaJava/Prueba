@@ -36,13 +36,12 @@ line-height: 1.6;
 overflow-x: hidden;
 }
 
-/* Fondo fijo con pseudo-elemento: funciona en iOS Safari Y desktop */
 body::before {
 content: ‘’;
 position: fixed;
 inset: 0;
 z-index: -2;
-background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* ============================================================
@@ -770,69 +769,6 @@ font-size: 0.9rem;
 }
 
 @media (max-width: 480px) {
-/* Nav tabs: en móvil 5 columnas iguales, icono arriba + texto abajo */
-.nav-tabs {
-grid-template-columns: repeat(5, 1fr);
-gap: 0.25rem;
-padding: 0.35rem;
-}
-
-```
-.nav-tab:nth-child(1),
-.nav-tab:nth-child(2),
-.nav-tab:nth-child(3),
-.nav-tab:nth-child(4),
-.nav-tab:nth-child(5) {
-    grid-column: auto;  /* reset: cada tab ocupa 1 columna */
-}
-
-.nav-tab {
-    padding: 0.5rem 0.2rem;
-    font-size: 0;           /* oculta el texto inline del span */
-    white-space: normal;
-}
-
-/* Separar emoji y texto en dos líneas */
-.nav-tab span {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.2rem;
-    font-size: 0;           /* el span completo en tamaño 0 */
-}
-
-/* Primera parte del span (emoji) visible */
-.nav-tab span::before {
-    font-size: 1.3rem;
-    line-height: 1;
-}
-
-/* Hack: usamos data-tab para mostrar icono y label via CSS */
-.nav-tab[data-tab="propiedad"] span::before    { content: "🏠"; }
-.nav-tab[data-tab="financiacion"] span::before { content: "💰"; }
-.nav-tab[data-tab="ingresos"] span::before     { content: "📈"; }
-.nav-tab[data-tab="gastos"] span::before       { content: "📊"; }
-.nav-tab[data-tab="revalorizacion"] span::before { content: "💎"; }
-
-.nav-tab[data-tab="propiedad"] span::after    { content: "Propiedad"; }
-.nav-tab[data-tab="financiacion"] span::after { content: "Financ."; }
-.nav-tab[data-tab="ingresos"] span::after     { content: "Ingresos"; }
-.nav-tab[data-tab="gastos"] span::after       { content: "Gastos"; }
-.nav-tab[data-tab="revalorizacion"] span::after { content: "Revalor."; }
-
-.nav-tab span::after {
-    font-size: 0.6rem;
-    font-weight: 600;
-    line-height: 1;
-    color: inherit;
-}
-
-.nav-tab.active {
-    transform: scale(1);  /* sin escala en móvil para no desbordar */
-}
-```
-
-}
 .chart-layout {
 grid-template-columns: 1fr;
 }
@@ -1373,6 +1309,9 @@ border-radius: 3px;
 background: var(–gradient-main);
 transition: width 0.5s ease;
 }
+
+/* ============================================================
+RESPONSIVE
 ============================================================ */
 @media (max-width: 768px) {
 .main-content {
@@ -1671,239 +1610,6 @@ canvas#doughnutChart {
 ```
 
 }
-/* ============================================================
-TABLA DE PROYECCIONES — Vista doble (resumen + modal detalle)
-============================================================ */
-
-.projection-hint {
-font-size: 0.82rem;
-color: var(–text-light);
-text-align: center;
-padding: 0.6rem 1rem 0;
-margin: 0;
-letter-spacing: 0.01em;
-}
-
-.projection-table-summary th,
-.projection-table-summary td {
-padding: 0.85rem 0.9rem;
-}
-
-.projection-row-clickable {
-cursor: pointer;
-transition: background 0.15s, transform 0.1s;
-}
-
-.projection-row-clickable:hover {
-background: rgba(59, 130, 246, 0.07) !important;
-}
-
-.projection-row-clickable:hover td:first-child {
-color: var(–primary);
-}
-
-/* ── Modal overlay ── */
-.proyeccion-modal-overlay {
-display: none;
-position: fixed;
-inset: 0;
-background: rgba(15, 23, 42, 0.55);
-backdrop-filter: blur(4px);
-z-index: 9000;
-align-items: center;
-justify-content: center;
-padding: 1rem;
-}
-
-.proyeccion-modal-overlay.active {
-display: flex;
-}
-
-.proyeccion-modal-box {
-background: var(–white);
-border-radius: 20px;
-box-shadow: var(–shadow-xl);
-width: 100%;
-max-width: 560px;
-max-height: 90vh;
-overflow-y: auto;
-position: relative;
-padding: 2rem;
-animation: modalSlideIn 0.22s ease;
-}
-
-@keyframes modalSlideIn {
-from { opacity: 0; transform: translateY(16px) scale(0.97); }
-to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.proyeccion-modal-close {
-position: absolute;
-top: 1rem;
-right: 1rem;
-background: var(–light);
-border: none;
-border-radius: 50%;
-width: 32px;
-height: 32px;
-font-size: 0.9rem;
-cursor: pointer;
-color: var(–text-light);
-transition: background 0.15s, color 0.15s;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.proyeccion-modal-close:hover {
-background: var(–border);
-color: var(–dark);
-}
-
-.proyeccion-modal-header {
-display: flex;
-align-items: baseline;
-gap: 0.75rem;
-margin-bottom: 1.5rem;
-}
-
-.proyeccion-modal-year {
-font-size: 1.6rem;
-font-weight: 800;
-color: var(–dark);
-font-family: ‘DM Sans’, sans-serif;
-}
-
-.proyeccion-modal-subtitle {
-font-size: 0.85rem;
-color: var(–text-light);
-font-family: ‘Inter’, sans-serif;
-}
-
-.proyeccion-modal-grid {
-display: flex;
-flex-direction: column;
-gap: 1rem;
-}
-
-.proyeccion-modal-section {
-border: 1px solid var(–border);
-border-radius: 12px;
-overflow: hidden;
-}
-
-.proyeccion-modal-section-title {
-background: var(–light);
-padding: 0.5rem 1rem;
-font-size: 0.78rem;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.5px;
-color: var(–text-light);
-font-family: ‘DM Sans’, sans-serif;
-}
-
-.proyeccion-modal-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 0.55rem 1rem;
-font-size: 0.9rem;
-color: var(–text);
-border-top: 1px solid var(–border);
-font-family: ‘Inter’, sans-serif;
-}
-
-.proyeccion-modal-row:first-of-type {
-border-top: none;
-}
-
-.proyeccion-modal-row–highlight {
-background: rgba(59, 130, 246, 0.04);
-}
-
-/* ── Navegación entre años ── */
-.proyeccion-modal-nav {
-display: flex;
-justify-content: space-between;
-margin-top: 1.5rem;
-gap: 0.5rem;
-}
-
-.proyeccion-nav-btn {
-background: var(–light);
-border: 1px solid var(–border);
-border-radius: 8px;
-padding: 0.5rem 1rem;
-font-size: 0.85rem;
-font-weight: 600;
-cursor: pointer;
-color: var(–primary);
-transition: background 0.15s, border-color 0.15s;
-font-family: ‘Inter’, sans-serif;
-}
-
-.proyeccion-nav-btn:hover {
-background: rgba(59, 130, 246, 0.08);
-border-color: var(–primary);
-}
-
-/* ============================================================
-DARK MODE
-============================================================ */
-html.dark {
-–primary:    #818cf8;
-–primary-dark: #6366f1;
-–secondary:  #22d3ee;
-–success:    #34d399;
-–danger:     #f87171;
-–warning:    #fbbf24;
-–dark:       #f1f5f9;
-–dark-light: #e2e8f0;
-–light:      #1e293b;
-–white:      #0f172a;
-–border:     #334155;
-–text:       #cbd5e1;
-–text-light: #64748b;
-–glass:      rgba(0,0,0,0.2);
-–shadow:     0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
-–shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.4);
-–shadow-xl:  0 20px 25px -5px rgba(0,0,0,0.5);
-}
-
-html.dark body {
-background: #020617;
-color: var(–text);
-}
-
-html.dark .glass-card,
-html.dark .detail-card,
-html.dark .chart-card,
-html.dark .line-chart-card,
-html.dark .inverse-calc-card,
-html.dark .saved-scenarios-panel,
-html.dark .projection-table-container {
-background: #0f172a;
-border-color: #334155;
-}
-
-html.dark .nav-tabs       { background: #1e293b; }
-html.dark .nav-tab.active { background: #0f172a; }
-html.dark .projection-table th { background: #1e293b; }
-html.dark .projection-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
-html.dark .form-input,
-html.dark .form-select    { background: #1e293b; border-color: #334155; color: #e2e8f0; }
-html.dark .seo-card       { background: #0f172a; border-color: #334155; }
-html.dark .metric-card    { background: #0f172a; border-color: #334155; }
-html.dark .disclaimer-modal { background: #0f172a; color: #e2e8f0; }
-html.dark .proyeccion-modal-box { background: #0f172a; }
-html.dark .proyeccion-modal-section { border-color: #334155; }
-html.dark .proyeccion-modal-section-title { background: #1e293b; }
-html.dark .btn-scenario   { background: #1e293b; border-color: #334155; }
-html.dark .seo-disclaimer-box { background: #1e293b; }
-html.dark .inversa-row    { border-color: #334155; }
-html.dark .inversa-row:nth-child(even) { background: #1e293b; }
-
 /* ── Header controls (dark toggle + lang selector) ── */
 .header-controls {
 display: flex;
@@ -1926,9 +1632,7 @@ line-height: 1;
 }
 .dark-mode-toggle:hover { background: rgba(255,255,255,0.25); }
 
-/* ============================================================
-GRÁFICO DE EVOLUCIÓN TEMPORAL (line chart)
-============================================================ */
+/* ── Gráfico de evolución temporal ── */
 .line-chart-card {
 background: var(–white);
 border: 1px solid var(–border);
@@ -1937,7 +1641,6 @@ padding: 1.25rem;
 margin-bottom: 1.25rem;
 box-shadow: var(–shadow);
 }
-
 .line-chart-title {
 font-weight: 700;
 font-size: 0.95rem;
@@ -1945,20 +1648,13 @@ color: var(–dark);
 margin-bottom: 1rem;
 font-family: ‘DM Sans’, sans-serif;
 }
-
 .line-chart-wrap {
 height: 260px;
 position: relative;
 }
 
-/* ============================================================
-TOOLTIPS EN MÉTRICAS
-============================================================ */
-[data-tooltip-key] {
-cursor: help;
-position: relative;
-}
-
+/* ── Tooltips en métricas ── */
+[data-tooltip-key] { cursor: help; position: relative; }
 [data-tooltip-key]::after {
 content: ’ ⓘ’;
 font-size: 0.75rem;
@@ -1968,7 +1664,6 @@ top: 0.6rem;
 right: 0.6rem;
 pointer-events: none;
 }
-
 .metric-tooltip-popup {
 position: absolute;
 z-index: 8000;
@@ -1983,20 +1678,12 @@ box-shadow: var(–shadow-xl);
 pointer-events: none;
 animation: tooltipFade 0.15s ease;
 }
-
-html.dark .metric-tooltip-popup {
-background: #1e293b;
-border: 1px solid #334155;
-}
-
 @keyframes tooltipFade {
 from { opacity: 0; transform: translateY(4px); }
 to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================================================
-CALCULADORA INVERSA
-============================================================ */
+/* ── Calculadora inversa ── */
 .inverse-calc-card {
 background: var(–white);
 border: 1px solid var(–border);
@@ -2005,167 +1692,10 @@ padding: 1.25rem;
 margin-bottom: 1.25rem;
 box-shadow: var(–shadow);
 }
-
-.inverse-calc-title {
-font-weight: 700;
-font-size: 0.95rem;
-color: var(–dark);
-font-family: ‘DM Sans’, sans-serif;
-margin-bottom: 0.25rem;
-}
-
-.inverse-calc-subtitle {
-font-size: 0.82rem;
-color: var(–text-light);
-margin-bottom: 1rem;
-}
-
-.inverse-field label {
-display: block;
-font-size: 0.85rem;
-font-weight: 600;
-color: var(–text);
-margin-bottom: 0.4rem;
-}
-
-.inversa-resultado {
-margin-top: 1rem;
-border: 1px solid var(–border);
-border-radius: 10px;
-overflow: hidden;
-}
-
-.inversa-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 0.6rem 0.9rem;
-font-size: 0.88rem;
-color: var(–text);
-border-bottom: 1px solid var(–border);
-}
-
-.inversa-row:last-of-type { border-bottom: none; }
-
-.inversa-row–highlight {
-background: rgba(59,130,246,0.05);
-font-size: 0.92rem;
-}
-
-.inversa-nota {
-font-size: 0.72rem;
-color: var(–text-light);
-padding: 0.4rem 0.9rem 0.6rem;
-border-top: 1px solid var(–border);
-}
-
-/* ============================================================
-ESCENARIOS GUARDADOS
-============================================================ */
-.saved-scenarios-panel {
-background: var(–light);
-border: 1px solid var(–border);
-border-radius: 14px;
-padding: 0.9rem 1rem;
-margin-bottom: 1rem;
-}
-
-.saved-scenarios-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 0.6rem;
-}
-
-.saved-scenarios-title {
-font-size: 0.85rem;
-font-weight: 700;
-color: var(–dark);
-font-family: ‘DM Sans’, sans-serif;
-}
-
-.btn-save-scenario {
-background: var(–primary);
-color: white;
-border: none;
-border-radius: 8px;
-padding: 0.3rem 0.75rem;
-font-size: 0.78rem;
-font-weight: 600;
-cursor: pointer;
-transition: opacity 0.15s;
-}
-.btn-save-scenario:hover { opacity: 0.85; }
-
-.saved-scenarios-empty {
-font-size: 0.8rem;
-color: var(–text-light);
-text-align: center;
-padding: 0.4rem 0;
-}
-
-.saved-scenario-item {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 0.4rem 0;
-border-bottom: 1px solid var(–border);
-gap: 0.5rem;
-}
-.saved-scenario-item:last-child { border-bottom: none; }
-
-.scenario-name {
-font-size: 0.85rem;
-font-weight: 600;
-color: var(–dark);
-truncate: ellipsis;
-overflow: hidden;
-white-space: nowrap;
-max-width: 140px;
-}
-
-.scenario-actions { display: flex; gap: 0.35rem; }
-
-.btn-scenario-load {
-background: var(–primary);
-color: white;
-border: none;
-border-radius: 6px;
-padding: 0.2rem 0.55rem;
-font-size: 0.75rem;
-font-weight: 600;
-cursor: pointer;
-transition: opacity 0.15s;
-}
-.btn-scenario-load:hover { opacity: 0.85; }
-
-.btn-scenario-delete {
-background: transparent;
-color: var(–danger);
-border: 1px solid var(–danger);
-border-radius: 6px;
-padding: 0.2rem 0.45rem;
-font-size: 0.75rem;
-cursor: pointer;
-transition: background 0.15s;
-}
-.btn-scenario-delete:hover { background: rgba(239,68,68,0.1); }
-
-/* ============================================================
-CALCULADORA INVERSA — estilos mejorados
-============================================================ */
-.inverse-calc-header {
-margin-bottom: 1rem;
-padding-bottom: 0.75rem;
-border-bottom: 1px solid var(–border);
-}
-
-.field-hint {
-font-size: 0.75rem;
-color: var(–text-light);
-margin-top: 0.3rem;
-}
-
+.inverse-calc-header { margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(–border); }
+.inverse-calc-title { font-weight: 700; font-size: 0.95rem; color: var(–dark); font-family: ‘DM Sans’, sans-serif; margin-bottom: 0.25rem; }
+.inverse-calc-subtitle { font-size: 0.82rem; color: var(–text-light); margin-bottom: 1rem; }
+.inverse-field label { display: block; font-size: 0.85rem; font-weight: 600; color: var(–text); margin-bottom: 0.4rem; }
 .inversa-resultado-header {
 background: var(–primary);
 color: white;
@@ -2175,14 +1705,17 @@ padding: 0.6rem 0.9rem;
 border-radius: 8px 8px 0 0;
 margin-top: 1rem;
 }
-
-.inversa-resultado-body {
-border: 1px solid var(–border);
-border-top: none;
-border-radius: 0 0 8px 8px;
-overflow: hidden;
+.inversa-resultado-body { border: 1px solid var(–border); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; }
+.inversa-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0.6rem 0.9rem;
+font-size: 0.88rem;
+color: var(–text);
+border-bottom: 1px solid var(–border);
 }
-
+.inversa-row:last-of-type { border-bottom: none; }
 .inversa-row–main {
 background: linear-gradient(135deg, rgba(103,126,234,0.05), rgba(103,126,234,0.1));
 padding: 1rem 0.9rem !important;
@@ -2190,47 +1723,40 @@ flex-direction: column;
 align-items: flex-start !important;
 gap: 0.2rem;
 }
+.inversa-main-label { font-size: 0.78rem; color: var(–text-light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+.inversa-main-value { font-size: 1.6rem; font-weight: 800; line-height: 1.1; font-family: ‘DM Sans’, sans-serif; }
+.inversa-main-sub { font-size: 0.8rem; font-weight: 600; }
+.inversa-divider { background: var(–light); color: var(–text-light); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.4rem 0.9rem; border-bottom: 1px solid var(–border); }
+.inversa-row–total { background: rgba(103,126,234,0.06); border-top: 2px solid var(–primary) !important; font-size: 0.92rem; }
+.inversa-row–highlight { background: rgba(16,185,129,0.06); border-top: 2px solid var(–success) !important; font-size: 0.95rem; padding: 0.8rem 0.9rem !important; }
+.inversa-nota { font-size: 0.72rem; color: var(–text-light); padding: 0.4rem 0.9rem 0.6rem; border-top: 1px solid var(–border); }
 
-.inversa-main-label {
-font-size: 0.78rem;
-color: var(–text-light);
-font-weight: 600;
-text-transform: uppercase;
-letter-spacing: 0.03em;
+/* ── Dark mode ── */
+html.dark {
+–primary: #818cf8; –primary-dark: #6366f1; –secondary: #22d3ee;
+–success: #34d399; –danger: #f87171; –warning: #fbbf24;
+–dark: #f1f5f9; –dark-light: #e2e8f0; –light: #1e293b;
+–white: #0f172a; –border: #334155; –text: #cbd5e1; –text-light: #64748b;
+–glass: rgba(0,0,0,0.2);
+–shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
+–shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
+–shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.5);
 }
-
-.inversa-main-value {
-font-size: 1.6rem;
-font-weight: 800;
-line-height: 1.1;
-font-family: ‘DM Sans’, sans-serif;
-}
-
-.inversa-main-sub {
-font-size: 0.8rem;
-font-weight: 600;
-}
-
-.inversa-divider {
-background: var(–light);
-color: var(–text-light);
-font-size: 0.72rem;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.05em;
-padding: 0.4rem 0.9rem;
-border-bottom: 1px solid var(–border);
-}
-
-.inversa-row–total {
-background: rgba(103,126,234,0.06);
-border-top: 2px solid var(–primary) !important;
-font-size: 0.92rem;
-}
-
-.inversa-row–highlight {
-background: rgba(16,185,129,0.06);
-border-top: 2px solid var(–success) !important;
-font-size: 0.95rem;
-padding: 0.8rem 0.9rem !important;
-}
+html.dark body::before { background: #020617; }
+html.dark body { color: var(–text); }
+html.dark .glass-card, html.dark .detail-card, html.dark .chart-card,
+html.dark .line-chart-card, html.dark .inverse-calc-card,
+html.dark .projection-table-container { background: #0f172a; border-color: #334155; }
+html.dark .nav-tabs { background: #1e293b; }
+html.dark .nav-tab.active { background: #0f172a; }
+html.dark .projection-table th { background: #1e293b; }
+html.dark .form-input, html.dark .form-select { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+html.dark .seo-card { background: #0f172a; border-color: #334155; }
+html.dark .metric-card { background: #0f172a; border-color: #334155; }
+html.dark .proyeccion-modal-box { background: #0f172a; }
+html.dark .proyeccion-modal-section { border-color: #334155; }
+html.dark .proyeccion-modal-section-title { background: #1e293b; }
+html.dark .btn-scenario { background: #1e293b; border-color: #334155; }
+html.dark .seo-disclaimer-box { background: #1e293b; }
+html.dark .inversa-row { border-color: #334155; }
+html.dark .metric-tooltip-popup { background: #1e293b; border: 1px solid #334155; }
