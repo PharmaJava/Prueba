@@ -1,59 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta property="og:image" content="https://pisorentable.org/piso.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://pisorentable.org/piso.png" />
-
-    <link rel="icon" type="image/png" href="https://pisorentable.org/piso.png" />
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- SEO -->
     <meta name="description" content="Calculadora gratuita de rentabilidad de alquiler en España. Calcula TIR, ROI, cashflow mensual, ITP, hipoteca y proyección año a año de tu inversión inmobiliaria."/>
     <meta name="keywords" content="calculadora rentabilidad alquiler, inversión inmobiliaria españa, calcular ROI piso, TIR inmobiliaria, cashflow alquiler, ITP vivienda"/>
     <meta name="author" content="Calculadora Inversión Inmobiliaria"/>
+
+    <!-- Open Graph / WhatsApp / redes -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://pisorentable.org"/>
     <meta property="og:title" content="Calculadora de Inversión Inmobiliaria | España"/>
     <meta property="og:description" content="Calcula GRATIS el cashflow, ROI y rentabilidad neta de tu inversión inmobiliaria en España."/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:image" content="https://tudominio.com/og-preview.jpg"/>
-    <meta property="og:url" content="https://tudominio.com"/>
+    <meta property="og:image" content="https://pisorentable.org/piso.png"/>
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <meta property="og:image:type" content="image/png"/>
+
+    <!-- Twitter card -->
     <meta name="twitter:card" content="summary_large_image"/>
     <meta name="twitter:title" content="Calculadora de Inversión Inmobiliaria | España"/>
     <meta name="twitter:description" content="Calcula GRATIS el cashflow, ROI y rentabilidad neta de tu inversión inmobiliaria en España."/>
-    <meta name="twitter:image" content="https://tudominio.com/og-preview.jpg"/>
+    <meta name="twitter:image" content="https://pisorentable.org/piso.png"/>
+
+    <link rel="icon" type="image/png" href="https://pisorentable.org/piso.png"/>
     <title>Calculadora de Inversión Inmobiliaria | Rentabilidad Alquiler España</title>
+
+    <!-- Fonts: preconnect primero para reducir latencia, display=swap evita FOUT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
     <link rel="stylesheet" href="style.css">
-    <!-- Librerías para exportar a PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-5TG9V5WN');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Librerías (Chart.js una sola vez) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<!-- Disclaimer modal -->
-<div class="disclaimer-overlay" id="disclaimerOverlay">
-    <div class="disclaimer-modal">
-        <div class="disclaimer-icon">⚖️</div>
-        <h2 data-i18n="disclaimer_titulo">Aviso Legal</h2>
-        <p data-i18n="disclaimer_texto">Esta calculadora proporciona estimaciones orientativas con fines informativos. Los resultados <strong>no constituyen asesoramiento financiero, fiscal ni jurídico</strong>. Las rentabilidades pasadas no garantizan rentabilidades futuras. Consulta siempre con un profesional cualificado antes de tomar decisiones de inversión.</p>
-        <label class="disclaimer-check">
-            <input type="checkbox" id="disclaimerCheck"/>
-            <span data-i18n="disclaimer_acepto">He leído y acepto que esta herramienta es orientativa y no sustituye al asesoramiento profesional</span>
-        </label>
-        <button class="btn btn-primary btn-block" id="disclaimerBtn" disabled data-i18n="disclaimer_continuar">Continuar a la calculadora</button>
-    </div>
-</div>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5TG9V5WN"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <div class="bg-particles" id="particles"></div>
 <div class="app-container">
 
     <header class="header">
-        <div class="language-selector">
+        <div class="header-controls">
+            <button class="dark-mode-toggle" id="darkModeToggle" title="Modo oscuro">🌙</button>
             <select id="langSelector">
                 <option value="es">🇪🇸 Español</option>
                 <option value="en">🇬🇧 English</option>
@@ -459,11 +465,9 @@
 
     <footer class="legal-info">
         <p><a href="privacidad.html" target="_blank" rel="noopener" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
-        <div style="display: none;">
-            <a href="https://librecounter.org/referer/show" target="_blank" rel="noopener">
-                <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" alt="Contador de visitas" />
-            </a>
-        </div>
+        <a href="https://librecounter.org/referer/show" target="_blank" rel="noopener">
+            <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" alt="Contador de visitas" style="width:1px;height:1px;opacity:0;position:absolute;" />
+        </a>
     </footer>
 </div>
 
