@@ -30,12 +30,19 @@
 
 body {
 font-family: ‘DM Sans’, system-ui, -apple-system, sans-serif;
-background: var(–gradient-main);
-background-attachment: fixed;
 min-height: 100vh;
 color: var(–text);
 line-height: 1.6;
 overflow-x: hidden;
+}
+
+/* Fondo fijo con pseudo-elemento: funciona en iOS Safari Y desktop */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+z-index: -2;
+background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
 }
 
 /* ============================================================
