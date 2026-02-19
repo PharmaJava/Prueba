@@ -49,131 +49,141 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </header>
 
     <div id="capture-area" class="capture-wrapper">
-        <section class="calculator-grid">
-            <div class="input-group full-width-input">
-                <label for="convenio">
-                    <i class="fas fa-file-contract"></i> Convenio Aplicable
-                </label>
-                <select id="convenio">
-                    <option value="nacional" selected>Nacional (XXV Convenio)</option>
-                    <option value="barcelona">Barcelona (Provincial)</option>
-                    <option value="gironatarragona">Girona / Tarragona</option>
-                    <option value="euskadi">País Vasco (Euskadi)</option>
-                    <option value="asturias">Asturias (15 pagas)</option>
-                </select>
-            </div>
+        <div class="desktop-layout">
 
-            <div class="input-group">
-                <label for="profesion">
-                    <i class="fas fa-user-md"></i> Categoría
-                </label>
-                <select id="profesion">
-                    <option value="farmaceutico">Farmacéutico/a</option>
-                    <option value="tecnico">Técnico/a</option>
-                    <option value="auxiliar">Auxiliar</option>
-                </select>
-            </div>
+            <!-- COLUMNA IZQUIERDA: Inputs -->
+            <div class="col-inputs">
+                <section class="calculator-grid">
+                    <div class="input-group full-width-input">
+                        <label for="convenio">
+                            <i class="fas fa-file-contract"></i> Convenio Aplicable
+                        </label>
+                        <select id="convenio">
+                            <option value="nacional" selected>Nacional (XXV Convenio)</option>
+                            <option value="barcelona">Barcelona (Provincial)</option>
+                            <option value="gironatarragona">Girona / Tarragona</option>
+                            <option value="euskadi">País Vasco (Euskadi)</option>
+                            <option value="asturias">Asturias (15 pagas)</option>
+                        </select>
+                    </div>
 
-            <div class="input-group">
-                <label id="labelAntiguedad" for="antiguedad">
-                    <i class="fas fa-award"></i> Nº Trienios
-                </label>
-                <input type="number" id="antiguedad" value="0" min="0" max="20" step="1">
-            </div>
+                    <div class="input-group">
+                        <label for="profesion">
+                            <i class="fas fa-user-md"></i> Categoría
+                        </label>
+                        <select id="profesion">
+                            <option value="farmaceutico">Farmacéutico/a</option>
+                            <option value="tecnico">Técnico/a</option>
+                            <option value="auxiliar">Auxiliar</option>
+                        </select>
+                    </div>
 
-            <div class="input-group">
-                <label for="anio">
-                    <i class="fas fa-calendar-alt"></i> Año
-                </label>
-                <select id="anio">
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026" selected>2026</option>
-                </select>
-            </div>
+                    <div class="input-group">
+                        <label id="labelAntiguedad" for="antiguedad">
+                            <i class="fas fa-award"></i> Nº Trienios
+                        </label>
+                        <input type="number" id="antiguedad" value="0" min="0" max="20" step="1">
+                    </div>
 
-            <div class="input-group">
-                <label for="porcentaje">
-                    <i class="fas fa-clock"></i> Jornada (%)
-                </label>
-                <input type="number" id="porcentaje" value="100" min="1" max="100" step="1">
-            </div>
+                    <div class="input-group">
+                        <label for="anio">
+                            <i class="fas fa-calendar-alt"></i> Año
+                        </label>
+                        <select id="anio">
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                        </select>
+                    </div>
 
-            <div class="input-group">
-                <label for="numPagas">
-                    <i class="fas fa-money-bill-wave"></i> Nº Pagas
-                </label>
-                <select id="numPagas">
-                    <option value="12">12 pagas</option>
-                    <option value="14" selected>14 pagas</option>
-                </select>
-            </div>
+                    <div class="input-group">
+                        <label for="porcentaje">
+                            <i class="fas fa-clock"></i> Jornada (%)
+                        </label>
+                        <input type="number" id="porcentaje" value="100" min="1" max="100" step="1">
+                    </div>
 
-            <div class="input-group">
-                <label for="numHoras">
-                    <i class="fas fa-moon"></i> H. Nocturnas/mes
-                </label>
-                <input type="number" id="numHoras" value="0" min="0" max="200" step="1">
-            </div>
+                    <div class="input-group">
+                        <label for="numPagas">
+                            <i class="fas fa-money-bill-wave"></i> Nº Pagas
+                        </label>
+                        <select id="numPagas">
+                            <option value="12">12 pagas</option>
+                            <option value="14" selected>14 pagas</option>
+                        </select>
+                    </div>
 
-            <div class="input-group full-width-input">
-                <label for="mejoraSalarial">
-                    <i class="fas fa-hand-holding-usd"></i> Mejora Voluntaria Bruta (€/mes)
-                </label>
-                <input type="number" id="mejoraSalarial" value="0" step="10" min="0">
-            </div>
+                    <div class="input-group">
+                        <label for="numHoras">
+                            <i class="fas fa-moon"></i> H. Nocturnas/mes
+                        </label>
+                        <input type="number" id="numHoras" value="0" min="0" max="200" step="1">
+                    </div>
 
-            <div class="input-group full-width-input">
-                <label for="porcentajeIRPF" style="color: #10b981; font-weight: 700;">
-                    <i class="fas fa-percentage"></i> Retención IRPF (%)
-                </label>
-                <input type="number" id="porcentajeIRPF" value="15.00" step="0.5" min="0" max="47">
-            </div>
-        </section>
+                    <div class="input-group full-width-input">
+                        <label for="mejoraSalarial">
+                            <i class="fas fa-hand-holding-usd"></i> Mejora Voluntaria Bruta (€/mes)
+                        </label>
+                        <input type="number" id="mejoraSalarial" value="0" step="10" min="0">
+                    </div>
 
-        <details class="advanced-settings">
-            <summary>
-                <i class="fas fa-cog"></i> Configuración de Cotización (SS / MEI) 
-                <i class="fas fa-chevron-down"></i>
-            </summary>
-            <div class="settings-content">
-                <div class="input-group">
-                    <label for="cotizacionContComu">Contingencias Comunes (%)</label>
-                    <input type="number" id="cotizacionContComu" value="4.70" step="0.01" min="0">
+                    <div class="input-group full-width-input">
+                        <label for="porcentajeIRPF" style="color: #10b981; font-weight: 700;">
+                            <i class="fas fa-percentage"></i> Retención IRPF (%)
+                        </label>
+                        <input type="number" id="porcentajeIRPF" value="15.00" step="0.5" min="0" max="47">
+                    </div>
+                </section>
+
+                <details class="advanced-settings">
+                    <summary>
+                        <i class="fas fa-cog"></i> Configuración de Cotización (SS / MEI) 
+                        <i class="fas fa-chevron-down"></i>
+                    </summary>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <label for="cotizacionContComu">Contingencias Comunes (%)</label>
+                            <input type="number" id="cotizacionContComu" value="4.70" step="0.01" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="cotizacionDesempleo">Desempleo (%)</label>
+                            <input type="number" id="cotizacionDesempleo" value="1.55" step="0.01" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="cotizacionMEI">MEI - Mecanismo Equidad (%)</label>
+                            <input type="number" id="cotizacionMEI" value="0.15" step="0.01" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="cotizacionFormacion">Formación Profesional (%)</label>
+                            <input type="number" id="cotizacionFormacion" value="0.10" step="0.01" min="0">
+                        </div>
+                        <p style="font-size: 0.75rem; color: #64748b; margin-top: 8px;">
+                            💡 Valores por defecto actualizados para 2026. Solo modifica si tienes bases especiales.
+                        </p>
+                    </div>
+                </details>
+            </div><!-- /col-inputs -->
+
+            <!-- COLUMNA DERECHA: Gráfico + Resultados -->
+            <div class="col-results">
+                <div class="chart-container">
+                    <canvas id="salaryChart"></canvas>
                 </div>
-                <div class="input-group">
-                    <label for="cotizacionDesempleo">Desempleo (%)</label>
-                    <input type="number" id="cotizacionDesempleo" value="1.55" step="0.01" min="0">
-                </div>
-                <div class="input-group">
-                    <label for="cotizacionMEI">MEI - Mecanismo Equidad (%)</label>
-                    <input type="number" id="cotizacionMEI" value="0.15" step="0.01" min="0">
-                </div>
-                <div class="input-group">
-                    <label for="cotizacionFormacion">Formación Profesional (%)</label>
-                    <input type="number" id="cotizacionFormacion" value="0.10" step="0.01" min="0">
-                </div>
-                <p style="font-size: 0.75rem; color: #64748b; margin-top: 8px;">
-                    💡 Valores por defecto actualizados para 2026. Solo modifica si tienes bases especiales.
-                </p>
-            </div>
-        </details>
 
-        <div class="chart-container">
-            <canvas id="salaryChart"></canvas>
-        </div>
+                <div id="resultados" class="results-container"></div>
+                <div id="comparativa-container"></div>
 
-        <div id="resultados" class="results-container"></div>
-        <div id="comparativa-container"></div>
-        
+                <button onclick="exportarImagen()" class="btn-export">
+                    <i class="fab fa-whatsapp"></i> Compartir mi cálculo
+                </button>
+            </div><!-- /col-results -->
+
+        </div><!-- /desktop-layout -->
+
         <p class="watermark">conveniodefarmacia.com</p>
     </div>
-
-    <button onclick="exportarImagen()" class="btn-export">
-        <i class="fab fa-whatsapp"></i> Compartir mi cálculo
-    </button>
 
     <section class="info-section">
         <h2>📚 Información sobre el Salario en Farmacia</h2>
