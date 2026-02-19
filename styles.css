@@ -324,3 +324,96 @@ input, select {
     position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2937; color: white; padding: 10px; font-size: 0.75rem; display: none; justify-content: center; align-items: center; z-index: 9999;
 }
 .btn-cookie { background: var(--primary); color: white; border: none; padding: 4px 12px; border-radius: 4px; margin-left: 10px; cursor: pointer; }
+
+/* ── Layout Desktop ── */
+.desktop-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Tablet y superior: cuerpo más ancho */
+@media (min-width: 768px) {
+    body {
+        padding: 20px;
+        align-items: flex-start;
+    }
+
+    .container {
+        max-width: 900px;
+        padding: 2rem;
+        margin-bottom: 40px;
+    }
+
+    .header h1 { font-size: 1.7rem; }
+
+    .desktop-layout {
+        flex-direction: row;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    .col-inputs {
+        flex: 1 1 380px;
+        min-width: 0;
+    }
+
+    .col-results {
+        flex: 1 1 380px;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* El gráfico más alto en desktop */
+    .chart-container {
+        height: 260px;
+        margin: 0 0 1rem 0;
+    }
+
+    /* El botón compartir dentro de col-results en desktop */
+    .btn-export {
+        margin-top: 1rem;
+    }
+
+    /* La sección info en 2 columnas en desktop */
+    .faq-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    /* El seo-text más legible */
+    .seo-text {
+        font-size: 0.78rem;
+        column-count: 2;
+        column-gap: 2rem;
+    }
+}
+
+/* Pantalla grande: aún más espacio */
+@media (min-width: 1100px) {
+    .container {
+        max-width: 1100px;
+        padding: 2.5rem;
+    }
+
+    .col-inputs { flex: 1 1 440px; }
+    .col-results { flex: 1 1 500px; }
+
+    .chart-container { height: 300px; }
+
+    /* Inputs en 3 columnas en desktop grande */
+    .calculator-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    /* Pero convenio y mejora siguen full-width */
+    .full-width-input {
+        grid-column: 1 / -1;
+    }
+
+    .result-card__value { font-size: 1.35rem; }
+    .result-anual__value { font-size: 1.6rem; }
+}
+/* ── Fin Layout Desktop ── */
