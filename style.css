@@ -325,8 +325,8 @@ body {
    ============================================================ */
 .nav-tabs {
     display: grid;
-    /* 6 equal columns so: row1 = cols 1-2 | 3-4 | 5-6 (3 tabs)
-                            row2 = cols 2-3 | 4-5     (2 tabs centred) */
+    /* 6 equal columns: row1 = 1-2 | 3-4 | 5-6  (3 tabs)
+                        row2 = 1-2 | 3-4 | 5-6  (3 tabs) */
     grid-template-columns: repeat(6, 1fr);
     gap: 0.4rem;
     background: var(--light);
@@ -336,14 +336,15 @@ body {
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
 }
 
-/* Row 1: three tabs fill pairs of columns */
+/* Row 1: tabs 1-3 (cada uno ocupa 2 cols) */
 .nav-tab:nth-child(1) { grid-column: 1 / 3; }
 .nav-tab:nth-child(2) { grid-column: 3 / 5; }
 .nav-tab:nth-child(3) { grid-column: 5 / 7; }
 
-/* Row 2: two tabs centred (cols 2-4 and 4-6) */
-.nav-tab:nth-child(4) { grid-column: 2 / 4; }
-.nav-tab:nth-child(5) { grid-column: 4 / 6; }
+/* Row 2: tabs 4-6 (cada uno ocupa 2 cols) */
+.nav-tab:nth-child(4) { grid-column: 1 / 3; }
+.nav-tab:nth-child(5) { grid-column: 3 / 5; }
+.nav-tab:nth-child(6) { grid-column: 5 / 7; }
 
 .nav-tab {
     width: 100%;
@@ -768,9 +769,9 @@ body {
 }
 
 @media (max-width: 480px) {
-    /* Nav tabs: en móvil 5 columnas iguales, icono arriba + texto abajo */
+    /* Nav tabs: en móvil 6 columnas iguales, 2 filas de 3 */
     .nav-tabs {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 0.25rem;
         padding: 0.35rem;
     }
@@ -779,8 +780,9 @@ body {
     .nav-tab:nth-child(2),
     .nav-tab:nth-child(3),
     .nav-tab:nth-child(4),
-    .nav-tab:nth-child(5) {
-        grid-column: auto;  /* reset: cada tab ocupa 1 columna */
+    .nav-tab:nth-child(5),
+    .nav-tab:nth-child(6) {
+        grid-column: span 2; /* cada tab: 2 de 6 columnas */
     }
 
     .nav-tab {
@@ -810,12 +812,14 @@ body {
     .nav-tab[data-tab="ingresos"] span::before     { content: "📈"; }
     .nav-tab[data-tab="gastos"] span::before       { content: "📊"; }
     .nav-tab[data-tab="revalorizacion"] span::before { content: "💎"; }
+    .nav-tab[data-tab="turistico"] span::before       { content: "🏖️"; }
 
     .nav-tab[data-tab="propiedad"] span::after    { content: "Propiedad"; }
     .nav-tab[data-tab="financiacion"] span::after { content: "Financ."; }
     .nav-tab[data-tab="ingresos"] span::after     { content: "Ingresos"; }
     .nav-tab[data-tab="gastos"] span::after       { content: "Gastos"; }
     .nav-tab[data-tab="revalorizacion"] span::after { content: "Revalor."; }
+    .nav-tab[data-tab="turistico"] span::after    { content: "Turístico"; }
 
     .nav-tab span::after {
         font-size: 0.6rem;
@@ -2410,6 +2414,76 @@ html.dark .hipoteca-row-amort { background: rgba(251,191,36,0.04) !important; }
     margin-top: 0.5rem;
 }
 
+/* Fila inline: CP + Superficie */
+.mercado-row-inline {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+.mercado-row-inline .form-group { margin-bottom: 0; }
+
+/* Tarjeta automática de datos de provincia */
+.mercado-card {
+    background: var(--white);
+    border: 1.5px solid var(--primary);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    animation: slideIn 0.25s ease;
+}
+@keyframes slideIn { from { opacity:0; transform:translateY(-6px) } to { opacity:1; transform:translateY(0) } }
+
+.mercado-card-provincia {
+    background: var(--primary);
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.4rem 0.85rem;
+}
+
+.mercado-card-precio {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0.85rem;
+    flex-wrap: wrap;
+}
+
+.mercado-precio-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.mercado-precio-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+}
+
+.mercado-precio-val {
+    font-size: 1.35rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.mercado-precio-item--edit {
+    margin-left: auto;
+}
+
+/* Dark mode */
+html.dark .mercado-card {
+    background: #071528;
+    border-color: #5ba3e0;
+}
+html.dark .mercado-card-provincia {
+    background: #1e3a5f;
+}
+
 .mercado-ref-header {
     display: flex;
     align-items: center;
@@ -2703,3 +2777,758 @@ html.dark .col-section {
     padding: 0;
     box-shadow: none;
 }
+
+/* ============================================================
+   MODALES GENÉRICOS (savedModal, compareModal, widgetModal)
+   ============================================================ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    z-index: 9500;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.modal-box {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    width: 100%;
+    max-width: 520px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalUp 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.modal-box--wide { max-width: 720px; }
+
+@keyframes modalUp {
+    from { transform: translateY(30px) scale(0.97); opacity: 0; }
+    to   { transform: translateY(0)     scale(1);    opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.4rem;
+    background: var(--light);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.modal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+.modal-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.modal-close:hover { background: var(--danger); color: white; }
+
+.modal-body {
+    padding: 1.25rem 1.4rem;
+    overflow-y: auto;
+    flex: 1;
+}
+.modal-hint {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+/* ── Botones nuevos ──────────────────────────────────────── */
+.btn-whatsapp {
+    background: #25D366;
+    color: white;
+    border: none;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.88rem;
+}
+.btn-whatsapp:hover { background: #1ebe5d; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,211,102,0.4); }
+
+.btn-save {
+    background: var(--white);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.88rem;
+}
+.btn-save:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+
+.btn-compare {
+    background: var(--white);
+    color: #7c3aed;
+    border: 2px solid #7c3aed;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.88rem;
+}
+.btn-compare:hover { background: #7c3aed; color: white; transform: translateY(-2px); }
+
+.btn-widget {
+    background: var(--white);
+    color: #0891b2;
+    border: 2px solid #0891b2;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.88rem;
+}
+.btn-widget:hover { background: #0891b2; color: white; transform: translateY(-2px); }
+
+/* ── Análisis guardados ──────────────────────────────────── */
+.save-new-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+.save-new-row .form-input { flex: 1; }
+
+.saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-height: 55vh;
+    overflow-y: auto;
+}
+.saved-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+.saved-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    transition: border-color 0.2s;
+}
+.saved-item:hover { border-color: var(--primary); }
+.saved-item-info { flex: 1; min-width: 0; }
+.saved-item-name { font-weight: 700; font-size: 0.92rem; color: var(--dark); display: block; }
+.saved-item-date { font-size: 0.75rem; color: var(--text-light); }
+.saved-item-kpis {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.3rem;
+}
+.saved-kpi {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--light);
+    border-radius: 6px;
+    padding: 0.15rem 0.5rem;
+    color: var(--text);
+}
+.kpi-pos { color: var(--success) !important; }
+.kpi-neg { color: var(--danger)  !important; }
+.saved-item-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+.btn-saved-load, .btn-saved-del {
+    width: 34px; height: 34px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+}
+.btn-saved-load:hover { border-color: var(--primary); background: rgba(26,95,168,0.08); }
+.btn-saved-del:hover  { border-color: var(--danger);  background: rgba(239,68,68,0.08); }
+
+/* ── Comparador ──────────────────────────────────────────── */
+.compare-selectors {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+.compare-vs {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--text-light);
+    text-align: center;
+    padding-bottom: 0.5rem;
+}
+.compare-result { margin-top: 1rem; }
+.cmp-verdict {
+    background: linear-gradient(135deg, rgba(26,95,168,0.08), rgba(46,159,216,0.08));
+    border: 1.5px solid rgba(26,95,168,0.2);
+    border-radius: 12px;
+    padding: 0.85rem 1.1rem;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.cmp-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.cmp-table th {
+    background: var(--light);
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+}
+.cmp-table th:first-child { text-align: left; }
+.cmp-table td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); }
+.cmp-label { color: var(--text-light); font-size: 0.85rem; }
+.cmp-val { text-align: center; font-weight: 600; font-family: 'Inter', sans-serif; }
+.cmp-winner { color: var(--success) !important; background: rgba(61,184,72,0.06); }
+.cmp-loser  { color: var(--text-light); opacity: 0.7; }
+.cmp-winner-header { color: var(--success) !important; }
+.cmp-note { font-size: 0.75rem; color: var(--text-light); margin-top: 0.75rem; }
+
+/* ── Tab turístico ───────────────────────────────────────── */
+.turistico-header {
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+}
+.turistico-badge {
+    display: inline-block;
+    font-weight: 800;
+    font-size: 1rem;
+    color: white;
+}
+.turistico-desc {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.82rem;
+    margin: 0.25rem 0 0;
+}
+.turistico-resultado {
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+.turistico-comparativa {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.turistico-col {
+    padding: 1rem;
+}
+.turistico-col--tur  { background: rgba(8,145,178,0.06);  border-right: 1px solid var(--border); }
+.turistico-col--ld   { background: rgba(26,95,168,0.04); }
+.tur-col-label  { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); margin-bottom: 0.5rem; }
+.tur-ing-bruto  { font-size: 0.88rem; color: var(--text); margin-bottom: 0.4rem; }
+.tur-detail     { font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.2rem; }
+.tur-neto       { font-size: 1rem; color: var(--dark); margin: 0.6rem 0 0.3rem; line-height: 1.4; }
+.tur-noches     { font-size: 0.75rem; color: var(--text-light); font-style: italic; }
+.turistico-diferencia {
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-top: 1px solid var(--border);
+    background: var(--light);
+}
+.turistico-nota {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    padding: 0.5rem 1rem 0;
+    margin: 0;
+}
+
+/* ── Simulador de tipos ──────────────────────────────────── */
+.tipos-wrap { padding: 0.25rem 0; }
+.tipos-controls { margin-bottom: 1rem; }
+.tipos-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+}
+.tipos-min, .tipos-max {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+.tipos-valor-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-top: 0.25rem;
+}
+.tipos-valor {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    color: var(--primary);
+    line-height: 1;
+}
+.tipos-base {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+.tipos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+.tipos-card {
+    background: var(--light);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    text-align: center;
+}
+.tipos-card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    margin-bottom: 0.4rem;
+}
+.tipos-card-val {
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+.tipos-card-dif {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+@media (max-width: 480px) {
+    .tipos-grid { grid-template-columns: 1fr 1fr; }
+    .turistico-comparativa { grid-template-columns: 1fr; }
+    .compare-selectors { grid-template-columns: 1fr; }
+    .compare-vs { display: none; }
+}
+
+/* ── Widget embebible ────────────────────────────────────── */
+.widget-options { margin-bottom: 1rem; }
+.widget-size-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.4rem;
+}
+.widget-size-btn {
+    padding: 0.4rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.83rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    font-family: inherit;
+}
+.widget-size-btn:hover { border-color: var(--primary); color: var(--primary); }
+.widget-size-btn.active { border-color: var(--primary); background: rgba(26,95,168,0.08); color: var(--primary); }
+.widget-preview-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+}
+.widget-code-wrap {
+    position: relative;
+    background: var(--light);
+    border-radius: 12px;
+    padding: 1rem;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+.widget-code {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    line-height: 1.6;
+    padding-right: 6rem;
+}
+.widget-copy-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.widget-copy-btn:hover { background: var(--primary-dark); }
+.widget-disclaimer {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    background: rgba(8,145,178,0.06);
+    border: 1px solid rgba(8,145,178,0.2);
+    border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    line-height: 1.5;
+}
+.widget-disclaimer code {
+    font-family: monospace;
+    background: var(--light);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+
+/* ── Dark mode nuevos componentes ───────────────────────── */
+html.dark .modal-box        { background: #071528; border: 1px solid #1e3a5f; }
+html.dark .modal-header     { background: #0d2036; border-color: #1e3a5f; }
+html.dark .saved-item       { background: #071528; border-color: #1e3a5f; }
+html.dark .saved-kpi        { background: #0d2036; }
+html.dark .cmp-table th     { background: #0d2036; }
+html.dark .cmp-table td     { border-color: #1e3a5f; }
+html.dark .cmp-table-wrap   { border-color: #1e3a5f; }
+html.dark .cmp-verdict      { background: rgba(91,163,224,0.08); border-color: rgba(91,163,224,0.2); }
+html.dark .tipos-card       { background: #0d2036; }
+html.dark .widget-code-wrap { background: #0d2036; }
+html.dark .widget-code      { color: #94c7f0; }
+html.dark .btn-save         { background: #071528; color: #5ba3e0; border-color: #5ba3e0; }
+html.dark .btn-compare      { background: #071528; color: #a78bfa; border-color: #a78bfa; }
+html.dark .btn-widget       { background: #071528; color: #38bdf8; border-color: #38bdf8; }
+html.dark .turistico-col--tur  { background: rgba(8,145,178,0.1); }
+html.dark .turistico-col--ld   { background: rgba(26,95,168,0.08); }
+html.dark .turistico-diferencia{ background: #0d2036; }
+
+/* ============================================================
+   HERRAMIENTAS ADICIONALES — Modal y secciones colapsables
+   ============================================================ */
+
+/* Botón herramientas */
+.btn-tools {
+    background: var(--white);
+    color: #d97706;
+    border: 2px solid #d97706;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.88rem;
+    font-family: inherit;
+}
+.btn-tools:hover { background: #d97706; color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(217,119,6,0.35); }
+
+/* Sección colapsable dentro del modal de herramientas */
+.tool-section {
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+.tool-section:hover { box-shadow: var(--shadow); }
+
+.tool-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    cursor: pointer;
+    background: var(--light);
+    transition: background 0.2s;
+    user-select: none;
+}
+.tool-section-header:hover { background: rgba(26,95,168,0.06); }
+
+.tool-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+.tool-info { flex: 1; min-width: 0; }
+.tool-title {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+.tool-desc {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.1rem;
+}
+.tool-chevron {
+    font-size: 1rem;
+    color: var(--text-light);
+    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    flex-shrink: 0;
+}
+
+/* Cuerpo colapsable */
+.tool-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.tool-inner {
+    overflow: hidden;
+    padding: 0 1rem;
+    transition: padding 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Estado abierto */
+.tool-section.tool-open .tool-body  { grid-template-rows: 1fr; }
+.tool-section.tool-open .tool-inner { padding: 1rem; }
+.tool-section.tool-open .tool-chevron { transform: rotate(-180deg); }
+.tool-section.tool-open { border-color: var(--primary); }
+
+/* Grid de inputs dentro de herramientas */
+.tools-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+@media (max-width: 560px) { .tools-row { grid-template-columns: 1fr; } }
+
+/* Resultado genérico de herramienta */
+.tool-resultado {
+    margin-top: 0.75rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+}
+
+/* ── Herramienta 1: Capacidad ───────────────────────────── */
+.capacidad-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+@media (max-width: 480px) { .capacidad-grid { grid-template-columns: 1fr; } }
+
+.capacidad-escenario {
+    padding: 1rem 1.1rem;
+    text-align: center;
+}
+.capacidad-escenario--conservador {
+    background: rgba(26,95,168,0.06);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.capacidad-escenario--moderado {
+    background: rgba(245,158,11,0.06);
+    border-bottom: 1px solid var(--border);
+}
+.cap-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    margin-bottom: 0.4rem;
+}
+.cap-precio {
+    font-size: 1.6rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    color: var(--dark);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+}
+.cap-detalle {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    margin-bottom: 0.15rem;
+}
+.cap-nota {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    padding: 0.6rem 1rem;
+    background: var(--light);
+    border-top: 1px solid var(--border);
+    font-style: italic;
+}
+
+/* ── Herramienta 2: Historial ───────────────────────────── */
+.historial-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.historial-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    transition: border-color 0.15s;
+}
+.historial-item:hover { border-color: var(--primary); }
+.historial-cp {
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    color: var(--primary);
+    min-width: 50px;
+}
+.historial-info { flex: 1; min-width: 0; }
+.historial-prov  { display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.historial-precio{ font-size: 0.78rem; color: var(--text-light); font-weight: 600; }
+.historial-fecha { font-size: 0.72rem; color: var(--text-light); white-space: nowrap; }
+
+/* ── Herramienta 3: Modo rápido ─────────────────────────── */
+.rapido-resultado {
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+    animation: slideIn 0.2s ease;
+}
+.rapido-veredicto {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+.rapido-verde   { background: rgba(16,185,129,0.08); color: var(--success); }
+.rapido-amarillo{ background: rgba(245,158,11,0.08); color: #b45309; }
+.rapido-rojo    { background: rgba(239,68,68,0.08);  color: var(--danger);  }
+.rapido-icon    { font-size: 1.5rem; line-height: 1; }
+.rapido-metricas{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-top: none;
+}
+.rapido-met {
+    padding: 0.65rem 0.85rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+}
+.rapido-met:last-child { border-right: none; }
+.rapido-met-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-light);
+    margin-bottom: 0.3rem;
+}
+.rapido-met-val {
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ── Herramienta 4: Reforma ─────────────────────────────── */
+.reforma-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+}
+@media (max-width: 480px) { .reforma-grid { grid-template-columns: 1fr 1fr; } }
+.reforma-card {
+    padding: 0.85rem 1rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.reforma-card:nth-child(2n) { border-right: none; }
+.reforma-card-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-light); margin-bottom: 0.35rem; }
+.reforma-card-val   { font-size: 1.25rem; font-weight: 800; font-family: 'Inter', sans-serif; color: var(--dark); margin-bottom: 0.2rem; line-height: 1; }
+.reforma-card-sub   { font-size: 0.72rem; color: var(--text-light); }
+
+/* ── Herramienta 5: Euríbor ─────────────────────────────── */
+.eur-summary {
+    padding: 0.65rem 1rem;
+    background: rgba(26,95,168,0.06);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--text);
+}
+.eur-table-wrap { overflow-x: auto; }
+.eur-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.eur-table th {
+    background: var(--light);
+    padding: 0.6rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-light);
+    text-align: left;
+    white-space: nowrap;
+}
+.eur-table td { padding: 0.55rem 0.85rem; border-bottom: 1px solid var(--border); }
+.eur-actual-row { background: rgba(26,95,168,0.06); font-weight: 700; }
+.eur-actual-row td { border-top: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
+
+/* ── Dark mode herramientas ─────────────────────────────── */
+html.dark .tool-section-header { background: #0d2036; }
+html.dark .tool-section-header:hover { background: rgba(91,163,224,0.08); }
+html.dark .tool-section { border-color: #1e3a5f; }
+html.dark .tool-section.tool-open { border-color: #5ba3e0; }
+html.dark .historial-item { background: #071528; border-color: #1e3a5f; }
+html.dark .historial-item:hover { border-color: #5ba3e0; }
+html.dark .eur-table th { background: #0d2036; }
+html.dark .eur-table td { border-color: #1e3a5f; }
+html.dark .eur-actual-row { background: rgba(91,163,224,0.08); }
+html.dark .capacidad-escenario--conservador { background: rgba(91,163,224,0.08); }
+html.dark .capacidad-escenario--moderado { background: rgba(245,158,11,0.08); }
+html.dark .reforma-card { border-color: #1e3a5f; }
+html.dark .btn-tools { background: #071528; border-color: #d97706; color: #fbbf24; }
+html.dark .rapido-resultado { border-color: #1e3a5f; }
+html.dark .rapido-met { border-color: #1e3a5f; }
