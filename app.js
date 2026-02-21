@@ -360,70 +360,73 @@ const PROVINCIA_DATA = {
     '51': { nombre: 'Ceuta',                  precioM2: 1100 },
     '52': { nombre: 'Melilla',                precioM2: 1000 },
 };
-
 // ============================================================
 // LÓGICA DE REFERENCIA DE MERCADO
 // ============================================================
-function actualizarMercado() {
-    const cp = (document.getElementById('codigoPostal')?.value || '').trim();
-    const precioRefEl = document.getElementById('precioRefM2');
-    const superficieEl = document.getElementById('superficieM2');
-    const resultado = document.getElementById('mercadoResultado');
-    const provinciaHint = document.getElementById('provinciaHint');
+let _mercadoPrecioManual = false;
 
-    // 1. Detectar provincia por los 2 primeros dígitos del CP
-    if (cp.length >= 2) {
-        const prefix = cp.substring(0, 2);
-        const prov = PROVINCIA_DATA[prefix];
-        if (prov) {
-            if (provinciaHint) {
-                provinciaHint.innerHTML = `📍 <strong>${prov.nombre}</strong> &nbsp;·&nbsp; Referencia media: <strong>${prov.precioM2.toLocaleString('es-ES')} €/m²</strong>`;
-                provinciaHint.style.display = 'block';
-            }
-            // Rellenar precio si está vacío o vino de provincia anterior
-            if (precioRefEl && (!precioRefEl.value || precioRefEl.dataset.autoFilled === 'true')) {
-                precioRefEl.value = prov.precioM2;
-                precioRefEl.dataset.autoFilled = 'true';
-            }
-        } else {
-            if (provinciaHint) provinciaHint.style.display = 'none';
+function actualizarMercado() {
+    const cpEl      = document.getElementById('codigoPostal');
+    const precioEl  = document.getElementById('precioRefM2');
+    const supEl     = document.getElementById('superficieM2');
+    const resultado = document.getElementById('mercadoResultado');
+    const card      = document.getElementById('mercadoCard');
+
+    if (!cpEl) return;
+
+    const cp     = cpEl.value.trim();
+    const prefix = cp.slice(0, 2);
+    const prov   = (prefix.length === 2) ? PROVINCIA_DATA[prefix] : null;
+
+    // ── 1. Mostrar tarjeta de provincia y rellenar €/m² automáticamente ──
+    if (prov) {
+        // Mostrar tarjeta con datos de la provincia
+        if (card) {
+            card.style.display = 'block';
+            const provEl = document.getElementById('mercadoCardProvincia');
+            const m2El   = document.getElementById('mercadoCardPrecioM2');
+            if (provEl) provEl.textContent = '📍 ' + prov.nombre;
+            if (m2El)   m2El.textContent   = prov.precioM2.toLocaleString('es-ES') + ' €/m²';
+        }
+        // Autorellenar campo editable si el usuario no lo ha tocado
+        if (precioEl && !_mercadoPrecioManual) {
+            precioEl.value = prov.precioM2;
         }
     } else {
-        if (provinciaHint) provinciaHint.style.display = 'none';
+        if (card) card.style.display = 'none';
+        if (precioEl && !_mercadoPrecioManual) precioEl.value = '';
     }
 
-    // 2. Calcular si tenemos precio/m² y superficie
-    const precioM2 = parseFloat(precioRefEl?.value) || 0;
-    const superficie = parseFloat(superficieEl?.value) || 0;
-    const precioCompra = parseFloat(document.getElementById('precio')?.value) || 0;
-    const descuento = parseFloat(document.getElementById('descuentoOferta')?.value) || 10;
+    // ── 2. Panel de comparativa (necesita CP + superficie) ──
+    const precioM2   = precioEl ? (parseFloat(precioEl.value) || 0) : (prov ? prov.precioM2 : 0);
+    const superficie = parseFloat(supEl ? supEl.value : 0) || 0;
+    const precio     = parseFloat((document.getElementById('precio') || {}).value) || 0;
+    const descuento  = parseFloat((document.getElementById('descuentoOferta') || {}).value) || 10;
 
     if (!resultado) return;
 
     if (precioM2 > 0 && superficie > 0) {
         const valorMercado = precioM2 * superficie;
-        const diferencia = precioCompra - valorMercado;
-        const diferenciaPct = valorMercado > 0 ? (diferencia / valorMercado) * 100 : 0;
-        const ofertaSugerida = precioCompra * (1 - descuento / 100);
-        const ahorro = precioCompra - ofertaSugerida;
+        const diferencia   = precio - valorMercado;
+        const difPct       = valorMercado > 0 ? (diferencia / valorMercado) * 100 : 0;
+        const oferta       = precio * (1 - descuento / 100);
 
-        document.getElementById('mrValorMercado').textContent = fmt(valorMercado) + ' €';
+        document.getElementById('mrValorMercado').textContent = fmt(Math.round(valorMercado)) + ' €';
 
         const vsEl = document.getElementById('mrVsTexto');
-        if (Math.abs(diferenciaPct) < 2) {
-            vsEl.textContent = '≈ Precio en línea con el mercado';
-            vsEl.className = 'metric-warning';
-        } else if (diferenciaPct > 0) {
-            vsEl.textContent = `+${fmt(diferencia)} € sobre mercado (+${diferenciaPct.toFixed(1)}%)`;
-            vsEl.className = 'metric-negative';
+        if (Math.abs(difPct) < 2) {
+            vsEl.textContent = '≈ En línea con el mercado';
+            vsEl.className   = 'metric-warning';
+        } else if (diferencia > 0) {
+            vsEl.textContent = '+' + fmt(Math.round(diferencia)) + ' € por encima (+' + difPct.toFixed(1) + '%)';
+            vsEl.className   = 'metric-negative';
         } else {
-            vsEl.textContent = `${fmt(diferencia)} € bajo mercado (${diferenciaPct.toFixed(1)}%)`;
-            vsEl.className = 'metric-positive';
+            vsEl.textContent = fmt(Math.round(diferencia)) + ' € por debajo (' + difPct.toFixed(1) + '%)';
+            vsEl.className   = 'metric-positive';
         }
 
-        document.getElementById('mrOferta').textContent = fmt(Math.round(ofertaSugerida)) + ' €';
-        document.getElementById('mrAhorro').textContent = fmt(Math.round(ahorro)) + ' €';
-
+        document.getElementById('mrOferta').textContent = fmt(Math.round(oferta)) + ' €';
+        document.getElementById('mrAhorro').textContent = fmt(Math.round(precio - oferta)) + ' €';
         resultado.style.display = 'block';
     } else {
         resultado.style.display = 'none';
@@ -1325,6 +1328,9 @@ function mostrarResultados(datos) {
         <!-- PROYECCIONES AÑO A AÑO — colapsable cerrado -->
         ${colapsable('proyecciones', '📅 ' + t.proyecciones_ano, `<div class="detail-card" style="margin-bottom:0;">${tablaProyecciones}</div>`, false)}
 
+        <!-- SIMULADOR TIPOS — colapsable -->
+        ${generarSimuladorTiposHTML(datos)}
+
         <!-- COMPARACIÓN — siempre visible -->
         <div class="detail-card" style="margin-bottom:1.25rem;">
             <div class="detail-card-title">${t.comparacion_inversiones}</div>
@@ -1680,6 +1686,58 @@ function exportToPDF() {
 
     // ── PÁGINA 2: PARÁMETROS DE LA INVERSIÓN ─────────────────
     newPage();
+
+    // ── BLOQUE REFERENCIA DE MERCADO (si se rellenó) ──────────
+    const _cpPDF  = (document.getElementById('codigoPostal')?.value || '').trim();
+    const _m2PDF  = parseFloat(document.getElementById('precioRefM2')?.value) || 0;
+    const _supPDF = parseFloat(document.getElementById('superficieM2')?.value) || 0;
+    const _descPDF= parseFloat(document.getElementById('descuentoOferta')?.value) || 10;
+    const _precioPDF = parseFloat(document.getElementById('precio')?.value) || 0;
+
+    if (_cpPDF && _m2PDF > 0) {
+        const _prefPDF = _cpPDF.slice(0, 2);
+        const _provPDF = PROVINCIA_DATA[_prefPDF];
+        const _vmPDF   = _m2PDF * (_supPDF || 0);
+        const _difPDF  = _precioPDF - _vmPDF;
+        const _difPctPDF = _vmPDF > 0 ? (_difPDF / _vmPDF) * 100 : 0;
+        const _ofertaPDF = _precioPDF * (1 - _descPDF / 100);
+
+        checkPageBreak(52);
+        fillRect(ML, y, CW, 8, C.primary);
+        setFont('bold', 9.5, C.white);
+        text(s(esEs ? '📍 Referencia de Mercado y Estrategia de Oferta' : '📍 Market Reference & Offer Strategy'), ML + 3, y + 5.5);
+        y += 12;
+
+        if (_provPDF) {
+            setFont('bold', 8, C.dark);
+            text(s(esEs ? 'Provincia detectada: ' + _provPDF.nombre : 'Province detected: ' + _provPDF.nombre), ML, y);
+            y += 5;
+        }
+
+        twoColMetrics([
+            { label: esEs ? 'Código postal' : 'Postal code',            value: _cpPDF },
+            { label: esEs ? 'Precio de referencia €/m²' : 'Ref. price €/m²', value: f(_m2PDF) + ' €/m²' },
+            ...(_supPDF > 0 ? [
+                { label: esEs ? 'Superficie del inmueble' : 'Property size', value: _supPDF + ' m²' },
+                { label: esEs ? 'Valor estimado de mercado' : 'Estimated market value', value: f(Math.round(_vmPDF)) + ' €', color: C.primary },
+            ] : []),
+            { label: esEs ? 'Precio de compra pactado' : 'Agreed purchase price', value: f(_precioPDF) + ' €' },
+            ...(_supPDF > 0 ? [
+                { label: esEs ? 'Diferencia vs. mercado' : 'Diff. vs. market',
+                  value: (_difPDF >= 0 ? '+' : '') + f(Math.round(_difPDF)) + ' € (' + (_difPDF >= 0 ? '+' : '') + _difPctPDF.toFixed(1) + '%)',
+                  color: _difPDF > 0 ? C.danger : C.accent },
+            ] : []),
+            { label: esEs ? 'Descuento de negociación' : 'Negotiation discount', value: _descPDF + '%' },
+            { label: esEs ? 'Oferta inicial sugerida' : 'Suggested initial offer', value: f(Math.round(_ofertaPDF)) + ' €', color: C.accent },
+            { label: esEs ? 'Ahorro potencial si aceptan' : 'Potential saving if accepted', value: f(Math.round(_precioPDF - _ofertaPDF)) + ' €', color: C.accent },
+        ]);
+
+        setFont('normal', 7, C.grey);
+        text(s(esEs
+            ? '* Precios de referencia basados en datos provinciales estimados (Tinsa/INE 2025). Consultar portales inmobiliarios para mayor precisión.'
+            : '* Reference prices based on estimated provincial data (Tinsa/INE 2025). Check property portals for greater accuracy.'), ML, y);
+        y += 10;
+    }
 
     sectionTitle(esEs ? 'Parámetros de la Inversión' : 'Investment Parameters');
 
@@ -2367,6 +2425,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initDarkMode();
     initTooltips();
 
+    // WhatsApp, Guardar, Comparar, Turístico
+    document.getElementById('whatsappBtn')?.addEventListener('click', compartirWhatsApp);
+    document.getElementById('saveBtn')?.addEventListener('click', openSavedModal);
+    document.getElementById('compareBtn')?.addEventListener('click', openCompareModal);
+    document.getElementById('calcTuristicoBtn')?.addEventListener('click', calcularTuristico);
+
     // ── Referencia de mercado ──
     const cpInput = document.getElementById('codigoPostal');
     const precioRefInput = document.getElementById('precioRefM2');
@@ -2374,20 +2438,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const descuentoInput = document.getElementById('descuentoOferta');
     const precioInputMercado = document.getElementById('precio');
 
-    // Cuando el usuario toca el precio/m² manualmente, marcamos que ya no es auto
+    // Precio de referencia: si el usuario escribe manualmente, desactivar autocompletado
     if (precioRefInput) {
         precioRefInput.addEventListener('input', () => {
-            precioRefInput.dataset.autoFilled = 'false';
+            _mercadoPrecioManual = true;
             actualizarMercado();
         });
+        // Si borra el campo, volver a modo automático
+        precioRefInput.addEventListener('blur', () => {
+            if (!precioRefInput.value) {
+                _mercadoPrecioManual = false;
+                actualizarMercado();
+            }
+        });
     }
-    if (cpInput) cpInput.addEventListener('input', actualizarMercado);
+    // Código postal: escuchar todas las formas de entrada
+    if (cpInput) {
+        ['input', 'change'].forEach(ev => cpInput.addEventListener(ev, actualizarMercado));
+        cpInput.addEventListener('paste', () => setTimeout(actualizarMercado, 20));
+    }
     if (superficieInput) superficieInput.addEventListener('input', actualizarMercado);
     if (descuentoInput) descuentoInput.addEventListener('input', actualizarMercado);
-    // Recalcular vs-mercado si cambia el precio de compra
-    if (precioInputMercado) {
-        precioInputMercado.addEventListener('input', actualizarMercado);
-    }
+    if (precioInputMercado) precioInputMercado.addEventListener('input', actualizarMercado);
 });
 // ============================================================
 // COOKIES
@@ -2935,3 +3007,844 @@ function aceptarCookies() {
 // ============================================================
 // COOKIES
 // ============================================================
+
+// ============================================================
+// WHATSAPP SHARE
+// ============================================================
+function compartirWhatsApp() {
+    const datos = window._lastDatos;
+    if (!datos) { alert('Primero analiza una inversión'); return; }
+
+    const precio = parseFloat(document.getElementById('precio')?.value) || 0;
+    const cf = datos.flujoMensual;
+    const tir = datos.rentabilidadAnual.toFixed(2);
+    const roi = datos.roiAnual.toFixed(2);
+    const inv = datos.inversionInicial;
+
+    const params = new URLSearchParams();
+    const ids = ['precio','entradaEuros','interes','anos','alquiler','mesesVacio','anosAnalisis',
+                 'revalorizacion','ibi','comunidad','seguro','seguroImpago','mantenimiento',
+                 'administracion','incrementoAlquiler','incrementoGastos','taxAlquiler',
+                 'gastosVenta','irpfVenta','plusvaliaPorc','reforma','gastosCompra',
+                 'gastosHipoteca','tipoVivienda','financiacionTipo','ccaa'];
+    ids.forEach(id => { const el = document.getElementById(id); if (el) params.set(id, el.value); });
+    params.set('lang', currentLanguage);
+    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+
+    const msg = `🏠 *Análisis de inversión inmobiliaria*\n\n` +
+        `💰 Inversión inicial: *${fmt(inv)} €*\n` +
+        `📈 Cashflow mensual: *${fmt(cf)} €/mes*\n` +
+        `⚡ TIR: *${tir}%*  |  ROI: *${roi}%*\n\n` +
+        `Ver análisis completo 👇\n${url}`;
+
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(waUrl, '_blank');
+}
+
+// ============================================================
+// ANÁLISIS GUARDADOS (localStorage)
+// ============================================================
+const SAVED_KEY = 'pisorentable_saved_v1';
+
+function getSaved() {
+    try { return JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); }
+    catch(e) { return []; }
+}
+
+function setSaved(list) {
+    localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+}
+
+function openSavedModal() {
+    renderSavedList();
+    document.getElementById('savedModal').classList.add('active');
+    // Sugerir nombre basado en CP o precio
+    const cp = document.getElementById('codigoPostal')?.value || '';
+    const precio = document.getElementById('precio')?.value || '';
+    const hint = cp ? `Piso ${cp}` : precio ? `Inmueble ${fmt(parseFloat(precio))}€` : '';
+    document.getElementById('saveNameInput').value = hint;
+}
+
+function closeSavedModal() {
+    document.getElementById('savedModal').classList.remove('active');
+}
+
+function saveCurrentAnalysis() {
+    const name = document.getElementById('saveNameInput').value.trim();
+    if (!name) { document.getElementById('saveNameInput').focus(); return; }
+
+    const ids = ['precio','entradaEuros','interes','anos','alquiler','mesesVacio','anosAnalisis',
+                 'revalorizacion','ibi','comunidad','seguro','seguroImpago','mantenimiento',
+                 'administracion','incrementoAlquiler','incrementoGastos','taxAlquiler',
+                 'gastosVenta','irpfVenta','plusvaliaPorc','reforma','gastosCompra',
+                 'gastosHipoteca','tipoVivienda','financiacionTipo','ccaa','codigoPostal'];
+    const params = {};
+    ids.forEach(id => { const el = document.getElementById(id); if (el) params[id] = el.value; });
+
+    const datos = window._lastDatos;
+    const saved = getSaved();
+    saved.unshift({
+        id: Date.now(),
+        name,
+        date: new Date().toLocaleDateString('es-ES'),
+        params,
+        summary: datos ? {
+            inversion: datos.inversionInicial,
+            cashflow: datos.flujoMensual,
+            tir: datos.rentabilidadAnual,
+            roi: datos.roiAnual,
+            beneficio: datos.beneficioTotal
+        } : null
+    });
+    // Máximo 20 análisis guardados
+    if (saved.length > 20) saved.splice(20);
+    setSaved(saved);
+    renderSavedList();
+    document.getElementById('saveNameInput').value = '';
+
+    // Toast de confirmación
+    const toast = document.getElementById('shareToast');
+    if (toast) {
+        toast.textContent = '💾 Análisis guardado correctamente';
+        toast.classList.add('visible');
+        setTimeout(() => { toast.classList.remove('visible'); toast.textContent = '✅ Enlace copiado al portapapeles'; }, 2500);
+    }
+}
+
+function renderSavedList() {
+    const list = document.getElementById('savedList');
+    if (!list) return;
+    const saved = getSaved();
+    if (saved.length === 0) {
+        list.innerHTML = '<p class="saved-empty">No tienes análisis guardados todavía.<br>Rellena los datos, analiza y pulsa Guardar.</p>';
+        return;
+    }
+    list.innerHTML = saved.map(a => `
+        <div class="saved-item">
+            <div class="saved-item-info">
+                <span class="saved-item-name">${a.name}</span>
+                <span class="saved-item-date">${a.date}</span>
+                ${a.summary ? `
+                <div class="saved-item-kpis">
+                    <span class="saved-kpi">💰 ${fmt(a.summary.inversion)}€</span>
+                    <span class="saved-kpi ${a.summary.cashflow >= 0 ? 'kpi-pos' : 'kpi-neg'}">${fmt(a.summary.cashflow)}€/mes</span>
+                    <span class="saved-kpi">TIR ${a.summary.tir.toFixed(1)}%</span>
+                </div>` : ''}
+            </div>
+            <div class="saved-item-actions">
+                <button class="btn-saved-load" onclick="loadSaved(${a.id})" title="Cargar">📂</button>
+                <button class="btn-saved-del" onclick="deleteSaved(${a.id})" title="Eliminar">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function loadSaved(id) {
+    const saved = getSaved();
+    const item = saved.find(a => a.id === id);
+    if (!item) return;
+    Object.entries(item.params).forEach(([k, v]) => {
+        const el = document.getElementById(k);
+        if (el) { el.value = v; el.dispatchEvent(new Event('change')); }
+    });
+    calcular();
+    closeSavedModal();
+}
+
+function deleteSaved(id) {
+    const saved = getSaved().filter(a => a.id !== id);
+    setSaved(saved);
+    renderSavedList();
+    // Actualizar selectores del comparador si está abierto
+    if (document.getElementById('compareModal').classList.contains('active')) {
+        renderCompareSelectors();
+    }
+}
+
+// ============================================================
+// COMPARADOR DE INMUEBLES
+// ============================================================
+function openCompareModal() {
+    const saved = getSaved();
+    if (saved.length < 2) {
+        alert('Necesitas al menos 2 análisis guardados para comparar.\n\nGuarda el análisis actual con el botón 💾 Guardar.');
+        return;
+    }
+    renderCompareSelectors();
+    document.getElementById('compareModal').classList.add('active');
+}
+
+function closeCompareModal() {
+    document.getElementById('compareModal').classList.remove('active');
+}
+
+function renderCompareSelectors() {
+    const saved = getSaved();
+    const opts = saved.map(a => `<option value="${a.id}">${a.name} (${a.date})</option>`).join('');
+    document.getElementById('compareSelectA').innerHTML = opts;
+    document.getElementById('compareSelectB').innerHTML = opts;
+    // Seleccionar el segundo por defecto en B
+    if (saved.length >= 2) document.getElementById('compareSelectB').selectedIndex = 1;
+    document.getElementById('compareResult').innerHTML = '';
+}
+
+function runComparison() {
+    const saved = getSaved();
+    const idA = parseInt(document.getElementById('compareSelectA').value);
+    const idB = parseInt(document.getElementById('compareSelectB').value);
+    if (idA === idB) { alert('Selecciona dos análisis diferentes'); return; }
+
+    const a = saved.find(x => x.id === idA);
+    const b = saved.find(x => x.id === idB);
+    if (!a || !b || !a.summary || !b.summary) {
+        document.getElementById('compareResult').innerHTML = '<p style="color:var(--danger)">Uno de los análisis no tiene datos. Cárgalo, analiza y guárdalo de nuevo.</p>';
+        return;
+    }
+
+    const metrics = [
+        { label: 'Inversión inicial', ka: a.summary.inversion, kb: b.summary.inversion, fmt: v => fmt(v) + ' €', lowerIsBetter: true },
+        { label: 'Cashflow mensual', ka: a.summary.cashflow, kb: b.summary.cashflow, fmt: v => fmt(v) + ' €/mes', lowerIsBetter: false },
+        { label: 'TIR anualizada', ka: a.summary.tir, kb: b.summary.tir, fmt: v => v.toFixed(2) + '%', lowerIsBetter: false },
+        { label: 'ROI anual', ka: a.summary.roi, kb: b.summary.roi, fmt: v => v.toFixed(2) + '%', lowerIsBetter: false },
+        { label: 'Beneficio total', ka: a.summary.beneficio, kb: b.summary.beneficio, fmt: v => fmt(v) + ' €', lowerIsBetter: false },
+    ];
+
+    let scoreA = 0, scoreB = 0;
+    const rows = metrics.map(m => {
+        const aBetter = m.lowerIsBetter ? m.ka < m.kb : m.ka > m.kb;
+        const bBetter = m.lowerIsBetter ? m.kb < m.ka : m.kb > m.ka;
+        if (aBetter) scoreA++;
+        if (bBetter) scoreB++;
+        return `
+        <tr>
+            <td class="cmp-label">${m.label}</td>
+            <td class="cmp-val ${aBetter ? 'cmp-winner' : bBetter ? 'cmp-loser' : ''}">${m.fmt(m.ka)}</td>
+            <td class="cmp-val ${bBetter ? 'cmp-winner' : aBetter ? 'cmp-loser' : ''}">${m.fmt(m.kb)}</td>
+        </tr>`;
+    }).join('');
+
+    const winner = scoreA > scoreB ? a.name : scoreB > scoreA ? b.name : null;
+    const verdict = winner
+        ? `🏆 <strong>${winner}</strong> gana en ${Math.max(scoreA, scoreB)} de ${metrics.length} métricas`
+        : `🤝 Empate — depende de tus prioridades`;
+
+    document.getElementById('compareResult').innerHTML = `
+        <div class="cmp-verdict">${verdict}</div>
+        <div class="cmp-table-wrap">
+            <table class="cmp-table">
+                <thead>
+                    <tr>
+                        <th>Métrica</th>
+                        <th class="${scoreA > scoreB ? 'cmp-winner-header' : ''}">${a.name}</th>
+                        <th class="${scoreB > scoreA ? 'cmp-winner-header' : ''}">${b.name}</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        </div>
+        <p class="cmp-note">* Verde = mejor valor en esa métrica. Carga cualquier análisis con 📂 para simularlo en detalle.</p>
+    `;
+}
+
+// ============================================================
+// SIMULADOR TURÍSTICO
+// ============================================================
+function calcularTuristico() {
+    const precioNoche = parseFloat(document.getElementById('precioNoche')?.value) || 0;
+    const ocupacion   = parseFloat(document.getElementById('ocupacionTuristico')?.value) || 65;
+    const comision    = parseFloat(document.getElementById('comisionPlataforma')?.value) || 15;
+    const limpieza    = parseFloat(document.getElementById('gastosLimpieza')?.value) || 0;
+    const suministros = parseFloat(document.getElementById('suministrosTuristico')?.value) || 0;
+
+    if (precioNoche <= 0) { alert('Introduce el precio por noche'); return; }
+
+    // Ingresos turístico
+    const nochesOcupadas = 365 * (ocupacion / 100);
+    const ingresosBrutos = precioNoche * nochesOcupadas;
+    const gastosPlataforma = ingresosBrutos * (comision / 100);
+    const ingresosNetos = ingresosBrutos - gastosPlataforma - limpieza - suministros;
+    const ingresosMensuales = ingresosNetos / 12;
+
+    // Ingresos larga duración (del tab ingresos)
+    const alquilerLD = parseFloat(document.getElementById('alquiler')?.value) || 0;
+    const mesesVacioLD = parseFloat(document.getElementById('mesesVacio')?.value) || 0;
+    const ingresosLD = alquilerLD * 12 * (1 - mesesVacioLD / 12);
+    const ingresosLDMensual = ingresosLD / 12;
+
+    const difAnual = ingresosNetos - ingresosLD;
+    const difClass = difAnual >= 0 ? 'metric-positive' : 'metric-negative';
+    const signo = difAnual >= 0 ? '+' : '';
+
+    const res = document.getElementById('turisticoResultado');
+    res.style.display = 'block';
+    res.innerHTML = `
+        <div class="turistico-comparativa">
+            <div class="turistico-col turistico-col--tur">
+                <div class="tur-col-label">🏖️ Turístico</div>
+                <div class="tur-ing-bruto">${fmt(Math.round(ingresosBrutos))} €/año brutos</div>
+                <div class="tur-detail">− ${comision}% plataforma: ${fmt(Math.round(gastosPlataforma))} €</div>
+                <div class="tur-detail">− Limpieza: ${fmt(limpieza)} €</div>
+                <div class="tur-detail">− Suministros: ${fmt(suministros)} €</div>
+                <div class="tur-neto"><strong>${fmt(Math.round(ingresosNetos))} €/año</strong><br><small>${fmt(Math.round(ingresosMensuales))} €/mes</small></div>
+                <div class="tur-noches">${Math.round(nochesOcupadas)} noches ocupadas/año</div>
+            </div>
+            <div class="turistico-col turistico-col--ld">
+                <div class="tur-col-label">🏠 Larga duración</div>
+                <div class="tur-ing-bruto">${fmt(Math.round(alquilerLD * 12))} €/año brutos</div>
+                <div class="tur-detail">− ${mesesVacioLD} mes(es) vacío</div>
+                <div class="tur-detail">&nbsp;</div>
+                <div class="tur-detail">&nbsp;</div>
+                <div class="tur-neto"><strong>${fmt(Math.round(ingresosLD))} €/año</strong><br><small>${fmt(Math.round(ingresosLDMensual))} €/mes</small></div>
+                <div class="tur-noches">Estabilidad y menos gestión</div>
+            </div>
+        </div>
+        <div class="turistico-diferencia ${difClass}">
+            ${signo}${fmt(Math.round(difAnual))} €/año con turístico vs. larga duración
+        </div>
+        <p class="turistico-nota">💡 Pulsa "Analizar Inversión" con estos ingresos de turístico cargados automáticamente.</p>
+        <button class="btn btn-primary" style="width:100%; margin-top:0.5rem;" onclick="usarIngresosturistico(${Math.round(ingresosMensuales)})">
+            ✅ Usar ingresos turísticos en el análisis principal
+        </button>
+    `;
+}
+
+window.usarIngresosturistico = function(mensual) {
+    const el = document.getElementById('alquiler');
+    if (el) {
+        el.value = mensual;
+        // Cambiar meses vacío a 0 (turístico ya tiene ocupación integrada)
+        const mv = document.getElementById('mesesVacio');
+        if (mv) mv.value = 0;
+        calcular();
+        // Volver al tab de ingresos para que vea el cambio
+        switchTab('ingresos');
+        const toast = document.getElementById('shareToast');
+        if (toast) {
+            toast.textContent = '🏖️ Ingresos turísticos aplicados';
+            toast.classList.add('visible');
+            setTimeout(() => { toast.classList.remove('visible'); toast.textContent = '✅ Enlace copiado al portapapeles'; }, 2500);
+        }
+    }
+};
+
+// ============================================================
+// SIMULADOR DE SUBIDA DE TIPOS (se inyecta en resultados)
+// ============================================================
+function generarSimuladorTiposHTML(datos) {
+    if (datos.financiacionTipo !== 'con_hipoteca') return '';
+    return `
+    <div class="col-section" id="col-tipos">
+        <button class="col-header" onclick="toggleCol('tipos')" type="button" aria-expanded="false">
+            <span class="col-title">📉 Simulador de subida de tipos de interés</span>
+            <span class="col-chevron">▾</span>
+        </button>
+        <div class="col-body">
+            <div class="col-inner">
+                <div class="tipos-wrap">
+                    <div class="tipos-controls">
+                        <label class="form-label">Tipo de interés hipotecario</label>
+                        <div class="tipos-slider-row">
+                            <span class="tipos-min">0%</span>
+                            <input type="range" id="tiposSlider" class="form-range" min="0" max="12" step="0.25" value="${datos.interes}"/>
+                            <span class="tipos-max">12%</span>
+                        </div>
+                        <div class="tipos-valor-wrap">
+                            <span id="tiposValorLabel" class="tipos-valor">${datos.interes}%</span>
+                            <span class="tipos-base">(actual: ${datos.interes}%)</span>
+                        </div>
+                    </div>
+                    <div id="tiposResultado" class="tipos-resultado"></div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function initSimuladorTipos(datos) {
+    const slider = document.getElementById('tiposSlider');
+    if (!slider) return;
+
+    function recalcularTipos() {
+        const nuevoTipo = parseFloat(slider.value);
+        document.getElementById('tiposValorLabel').textContent = nuevoTipo.toFixed(2) + '%';
+
+        const capital = datos.prestamo;
+        const anos = datos.anos;
+        const i = nuevoTipo / 100 / 12;
+        const n = anos * 12;
+        const nuevaCuota = i > 0
+            ? capital * i * Math.pow(1+i, n) / (Math.pow(1+i, n) - 1)
+            : capital / n;
+
+        const difCuota = nuevaCuota - datos.cuotaHipoteca;
+        const nuevoCashflow = datos.flujoMensual - difCuota;
+        const difCashflow = nuevoCashflow - datos.flujoMensual;
+        const cfClass = nuevoCashflow >= 0 ? 'metric-positive' : 'metric-negative';
+        const difClass = difCashflow >= 0 ? 'metric-positive' : 'metric-negative';
+
+        // Color del slider según impacto
+        const impacto = Math.abs(difCuota / Math.max(1, datos.cuotaHipoteca));
+        const sliderColor = impacto < 0.1 ? '#10b981' : impacto < 0.25 ? '#f59e0b' : '#ef4444';
+        slider.style.setProperty('--slider-fill', sliderColor);
+
+        document.getElementById('tiposResultado').innerHTML = `
+            <div class="tipos-grid">
+                <div class="tipos-card">
+                    <div class="tipos-card-label">Nueva cuota</div>
+                    <div class="tipos-card-val">${fmt(Math.round(nuevaCuota))} €/mes</div>
+                    <div class="tipos-card-dif ${difCuota > 0 ? 'metric-negative' : 'metric-positive'}">
+                        ${difCuota > 0 ? '+' : ''}${fmt(Math.round(difCuota))} €/mes vs. actual
+                    </div>
+                </div>
+                <div class="tipos-card">
+                    <div class="tipos-card-label">Nuevo cashflow</div>
+                    <div class="tipos-card-val ${cfClass}">${fmt(Math.round(nuevoCashflow))} €/mes</div>
+                    <div class="tipos-card-dif ${difClass}">
+                        ${difCashflow >= 0 ? '+' : ''}${fmt(Math.round(difCashflow))} €/mes
+                    </div>
+                </div>
+                <div class="tipos-card">
+                    <div class="tipos-card-label">Coste extra anual</div>
+                    <div class="tipos-card-val ${difCuota > 0 ? 'metric-negative' : 'metric-positive'}">${fmt(Math.round(Math.abs(difCuota) * 12))} €/año</div>
+                    <div class="tipos-card-dif" style="font-size:0.75rem; color:var(--text-light)">
+                        ${nuevoTipo > datos.interes ? 'impacto de la subida' : nuevoTipo < datos.interes ? 'ahorro de la bajada' : 'sin cambio'}
+                    </div>
+                </div>
+            </div>
+            ${nuevoCashflow < 0 && datos.flujoMensual >= 0
+                ? '<div class="alert alert-danger" style="margin-top:0.75rem;">⚠️ Con este tipo de interés el cashflow se vuelve negativo</div>'
+                : ''}
+        `;
+    }
+
+    slider.addEventListener('input', recalcularTipos);
+    recalcularTipos(); // render inicial
+}
+
+// Registrar en toggleCol para inicializar al abrir
+const _originalToggleCol = window.toggleCol;
+window.toggleCol = function(id) {
+    _originalToggleCol(id);
+    if (id === 'tipos' && window._lastDatos) {
+        setTimeout(() => initSimuladorTipos(window._lastDatos), 50);
+    }
+};
+
+// ============================================================
+// WIDGET EMBEBIBLE
+// ============================================================
+let _widgetSize = 'full';
+const WIDGET_SIZES = {
+    full:    { w: '100%',  h: '900px' },
+    compact: { w: '800px', h: '800px' },
+    mini:    { w: '480px', h: '700px' },
+};
+
+function openWidgetModal() {
+    document.getElementById('widgetModal').classList.add('active');
+    renderWidgetCode();
+}
+
+function closeWidgetModal() {
+    document.getElementById('widgetModal').classList.remove('active');
+}
+
+window.setWidgetSize = function(size) {
+    _widgetSize = size;
+    document.querySelectorAll('.widget-size-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('ws-' + size)?.classList.add('active');
+    renderWidgetCode();
+};
+
+function renderWidgetCode() {
+    const base = 'https://pisorentable.org';
+    const { w, h } = WIDGET_SIZES[_widgetSize] || WIDGET_SIZES.full;
+    const code = `<!-- Calculadora de Inversión Inmobiliaria — pisorentable.org -->
+<iframe
+  src="${base}"
+  width="${w}"
+  height="${h}"
+  style="border:none; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.12);"
+  title="Calculadora rentabilidad alquiler España"
+  loading="lazy"
+  allow="clipboard-write">
+</iframe>
+<p style="font-size:12px; color:#888; margin-top:4px;">
+  Herramienta gratuita por <a href="${base}" target="_blank">pisorentable.org</a>
+</p>`;
+    const pre = document.getElementById('widgetCode');
+    if (pre) pre.textContent = code;
+}
+
+window.copyWidgetCode = function() {
+    const code = document.getElementById('widgetCode')?.textContent || '';
+    navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.widget-copy-btn');
+        if (btn) { btn.textContent = '✅ Copiado'; setTimeout(() => btn.textContent = '📋 Copiar', 2000); }
+    });
+};
+
+// Registrar listener del botón widget
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('widgetBtn')?.addEventListener('click', openWidgetModal);
+}, { once: true });
+
+// ============================================================
+// HERRAMIENTAS ADICIONALES — Modal principal
+// ============================================================
+function openToolsModal() {
+    renderHistorial();
+    initModoRapido();
+    document.getElementById('toolsModal').classList.add('active');
+}
+function closeToolsModal() {
+    document.getElementById('toolsModal').classList.remove('active');
+}
+
+window.toggleTool = function(id) {
+    const sec = document.getElementById('tool-' + id);
+    if (!sec) return;
+    const isOpen = sec.classList.contains('tool-open');
+    // Cerrar todas
+    document.querySelectorAll('.tool-section.tool-open').forEach(s => s.classList.remove('tool-open'));
+    // Abrir la clickeada si estaba cerrada
+    if (!isOpen) {
+        sec.classList.add('tool-open');
+        if (id === 'rapido') initModoRapido();
+        if (id === 'historial') renderHistorial();
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('toolsBtn')?.addEventListener('click', openToolsModal);
+});
+
+// ============================================================
+// HERRAMIENTA 1 — ¿Cuánto puedo pagar?
+// ============================================================
+window.calcularCapacidad = function() {
+    const sueldo  = parseFloat(document.getElementById('sueldoNeto')?.value) || 0;
+    const otros   = parseFloat(document.getElementById('otrosIngresos')?.value) || 0;
+    const deudas  = parseFloat(document.getElementById('otrasDeudas')?.value) || 0;
+    const ahorros = parseFloat(document.getElementById('ahorrosDisponibles')?.value) || 0;
+
+    const ingresoTotal = sueldo + otros;
+    if (ingresoTotal <= 0) { alert('Introduce tus ingresos mensuales'); return; }
+
+    // Criterio 35%: cuota máxima = 35% ingresos - otras deudas
+    const cuotaMax35 = ingresoTotal * 0.35 - deudas;
+    // Criterio 40% (más permisivo)
+    const cuotaMax40 = ingresoTotal * 0.40 - deudas;
+
+    if (cuotaMax35 <= 0) {
+        document.getElementById('capacidadResultado').style.display = 'block';
+        document.getElementById('capacidadResultado').innerHTML =
+            '<div class="alert alert-danger">⚠️ Con tus deudas actuales ya superas el 35% de endeudamiento. Reduce deudas antes de solicitar hipoteca.</div>';
+        return;
+    }
+
+    // Precio máximo con hipoteca a 25 años al 3.5% (referencia)
+    function precioMaxHipoteca(cuota, tipo, anos, pctEntrada, pctGastosCompra) {
+        const i = tipo / 100 / 12, n = anos * 12;
+        const prestamo = i > 0 ? cuota * (Math.pow(1+i,n)-1) / (i*Math.pow(1+i,n)) : cuota*n;
+        // prestamo = precio * (1 - entrada%) - pero gastos de compra salen del ahorro
+        // precio*(1-entrada%) = prestamo  →  precio = prestamo / (1-entrada%)
+        return prestamo / (1 - pctEntrada/100);
+    }
+
+    const tipo = 3.5, anos = 25;
+    const pctEntrada = 20, pctGastos = 11; // entrada + gastos ~31% del precio
+
+    const pm35 = precioMaxHipoteca(cuotaMax35, tipo, anos, pctEntrada, pctGastos);
+    const pm40 = precioMaxHipoteca(cuotaMax40, tipo, anos, pctEntrada, pctGastos);
+
+    // ¿Los ahorros cubren la entrada + gastos del precio máximo?
+    const entradaGastos35 = pm35 * (pctEntrada + pctGastos) / 100;
+    const entradaGastos40 = pm40 * (pctEntrada + pctGastos) / 100;
+    const limitadoPorAhorros = ahorros < entradaGastos35;
+
+    // Precio máximo limitado por ahorros: ahorros = precio * 0.31 → precio = ahorros/0.31
+    const pmAhorros = ahorros / ((pctEntrada + pctGastos) / 100);
+
+    const pmFinal35 = limitadoPorAhorros ? Math.min(pm35, pmAhorros) : pm35;
+    const pmFinal40 = limitadoPorAhorros ? Math.min(pm40, pmAhorros) : pm40;
+
+    const faltaAhorros = Math.max(0, entradaGastos35 - ahorros);
+
+    document.getElementById('capacidadResultado').style.display = 'block';
+    document.getElementById('capacidadResultado').innerHTML = `
+        <div class="capacidad-grid">
+            <div class="capacidad-escenario capacidad-escenario--conservador">
+                <div class="cap-label">Escenario conservador (35%)</div>
+                <div class="cap-precio">${fmt(Math.round(pmFinal35/1000)*1000)} €</div>
+                <div class="cap-detalle">Cuota máx: ${fmt(Math.round(cuotaMax35))} €/mes</div>
+                <div class="cap-detalle">Entrada + gastos: ${fmt(Math.round(pmFinal35*(pctEntrada+pctGastos)/100))} €</div>
+            </div>
+            <div class="capacidad-escenario capacidad-escenario--moderado">
+                <div class="cap-label">Escenario moderado (40%)</div>
+                <div class="cap-precio">${fmt(Math.round(pmFinal40/1000)*1000)} €</div>
+                <div class="cap-detalle">Cuota máx: ${fmt(Math.round(cuotaMax40))} €/mes</div>
+                <div class="cap-detalle">Entrada + gastos: ${fmt(Math.round(pmFinal40*(pctEntrada+pctGastos)/100))} €</div>
+            </div>
+        </div>
+        ${limitadoPorAhorros ? `<div class="alert alert-warning" style="margin-top:0.75rem;">⚠️ Capacidad limitada por ahorros. Necesitas <strong>${fmt(Math.round(entradaGastos35))} €</strong> para la entrada+gastos del escenario conservador. Te faltan <strong>${fmt(Math.round(faltaAhorros))} €</strong>.</div>` : ''}
+        <div class="cap-nota">* Cálculo con hipoteca a ${anos} años al ${tipo}%. Entrada 20% + gastos compra ~11%. Consulta con tu banco para condiciones reales.</div>
+        <button class="btn btn-primary" style="width:100%; margin-top:0.75rem;" onclick="cargarPrecioEnCalculadora(${Math.round(pmFinal35/1000)*1000})">✅ Usar ${fmt(Math.round(pmFinal35/1000)*1000)}€ en la calculadora</button>
+    `;
+};
+
+window.cargarPrecioEnCalculadora = function(precio) {
+    const el = document.getElementById('precio');
+    if (el) { el.value = precio; calcular(); switchTab('propiedad'); }
+    closeToolsModal();
+};
+
+// ============================================================
+// HERRAMIENTA 2 — Historial de CPs buscados
+// ============================================================
+const HISTORIAL_KEY = 'pisorentable_historial_v1';
+
+function getHistorial() {
+    try { return JSON.parse(localStorage.getItem(HISTORIAL_KEY) || '[]'); }
+    catch(e) { return []; }
+}
+
+function addToHistorial(cp, provincia, precioM2) {
+    if (!cp || cp.length < 2) return;
+    let h = getHistorial();
+    // Eliminar si ya existe
+    h = h.filter(x => x.cp !== cp);
+    h.unshift({ cp, provincia, precioM2, fecha: new Date().toLocaleDateString('es-ES') });
+    if (h.length > 8) h = h.slice(0, 8);
+    localStorage.setItem(HISTORIAL_KEY, JSON.stringify(h));
+}
+
+function renderHistorial() {
+    const el = document.getElementById('historialList');
+    if (!el) return;
+    const h = getHistorial();
+    if (h.length === 0) {
+        el.innerHTML = '<p class="saved-empty">Aún no has buscado ningún código postal.<br>Escribe un CP en el panel de Propiedad para guardar el historial.</p>';
+        return;
+    }
+    el.innerHTML = h.map(item => `
+        <div class="historial-item">
+            <div class="historial-cp">${item.cp}</div>
+            <div class="historial-info">
+                <span class="historial-prov">${item.provincia}</span>
+                <span class="historial-precio">${item.precioM2?.toLocaleString('es-ES')} €/m²</span>
+            </div>
+            <div class="historial-fecha">${item.fecha}</div>
+            <button class="btn-saved-load" onclick="cargarCPHistorial('${item.cp}')" title="Cargar este CP">📍</button>
+        </div>
+    `).join('');
+}
+
+window.clearHistorial = function() {
+    localStorage.removeItem(HISTORIAL_KEY);
+    renderHistorial();
+};
+
+window.cargarCPHistorial = function(cp) {
+    const el = document.getElementById('codigoPostal');
+    if (el) { el.value = cp; actualizarMercado(); switchTab('propiedad'); }
+    closeToolsModal();
+};
+
+// Guardar en historial cuando se busca un CP válido
+const _origActualizarMercado = actualizarMercado;
+actualizarMercado = function() {
+    _origActualizarMercado();
+    const cp = (document.getElementById('codigoPostal')?.value || '').trim();
+    const prefix = cp.slice(0, 2);
+    const prov = prefix.length === 2 ? PROVINCIA_DATA[prefix] : null;
+    if (prov && cp.length >= 4) addToHistorial(cp, prov.nombre, prov.precioM2);
+};
+
+// ============================================================
+// HERRAMIENTA 3 — Modo rápido ¿Me sale la cuenta?
+// ============================================================
+function initModoRapido() {
+    ['rpPrecio','rpEntrada','rpAlquiler','rpAnos'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', calcularModoRapido);
+    });
+    calcularModoRapido();
+}
+
+function calcularModoRapido() {
+    const precio   = parseFloat(document.getElementById('rpPrecio')?.value) || 0;
+    const entrada  = parseFloat(document.getElementById('rpEntrada')?.value) || 0;
+    const alquiler = parseFloat(document.getElementById('rpAlquiler')?.value) || 0;
+    const anos     = parseFloat(document.getElementById('rpAnos')?.value) || 20;
+    const el       = document.getElementById('rapidoResultado');
+    if (!el || precio <= 0 || alquiler <= 0) return;
+
+    // Hipoteca estimada: prestamo a 3.5% 25 años
+    const prestamo = Math.max(0, precio - entrada);
+    const i = 3.5/100/12, n = 25*12;
+    const cuota = prestamo > 0 ? (i > 0 ? prestamo*i*Math.pow(1+i,n)/(Math.pow(1+i,n)-1) : prestamo/n) : 0;
+
+    // Gastos estimados: 1.5% precio/año
+    const gastosMes = precio * 0.015 / 12;
+    const cashflow = alquiler - cuota - gastosMes;
+    const rentaBruta = alquiler * 12 / precio * 100;
+
+    // Veredicto
+    let verdict, vClass, vIcon;
+    if (cashflow > 100 && rentaBruta > 5) {
+        verdict = '✅ Sí sale la cuenta'; vClass = 'rapido-verde'; vIcon = '🟢';
+    } else if (cashflow > -200 && rentaBruta > 4) {
+        verdict = '🟡 Sale justo — analiza más'; vClass = 'rapido-amarillo'; vIcon = '🟡';
+    } else {
+        verdict = '🔴 No sale la cuenta'; vClass = 'rapido-rojo'; vIcon = '🔴';
+    }
+
+    el.innerHTML = `
+        <div class="rapido-veredicto ${vClass}">
+            <span class="rapido-icon">${vIcon}</span>
+            <span class="rapido-texto">${verdict}</span>
+        </div>
+        <div class="rapido-metricas">
+            <div class="rapido-met">
+                <span class="rapido-met-label">Cashflow est.</span>
+                <span class="rapido-met-val ${cashflow >= 0 ? 'metric-positive':'metric-negative'}">${fmt(Math.round(cashflow))} €/mes</span>
+            </div>
+            <div class="rapido-met">
+                <span class="rapido-met-label">Renta bruta</span>
+                <span class="rapido-met-val ${rentaBruta>=5?'metric-positive':rentaBruta>=4?'metric-warning':'metric-negative'}">${rentaBruta.toFixed(1)}%</span>
+            </div>
+            <div class="rapido-met">
+                <span class="rapido-met-label">Cuota hip. est.</span>
+                <span class="rapido-met-val">${fmt(Math.round(cuota))} €/mes</span>
+            </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%; margin-top:0.75rem; font-size:0.85rem;" onclick="cargarEnCalculadora(${precio},${entrada},${alquiler},${anos})">
+            🧮 Analizar en detalle con todos los parámetros
+        </button>
+    `;
+}
+
+window.cargarEnCalculadora = function(precio, entrada, alquiler, anos) {
+    const fields = {precio, entradaEuros: entrada, alquiler, anosAnalisis: anos};
+    Object.entries(fields).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    });
+    calcular();
+    closeToolsModal();
+};
+
+// ============================================================
+// HERRAMIENTA 4 — ROI de reforma
+// ============================================================
+window.calcularROIReforma = function() {
+    const coste         = parseFloat(document.getElementById('refCoste')?.value) || 0;
+    const alqAntes      = parseFloat(document.getElementById('refAlquilerAntes')?.value) || 0;
+    const alqDespues    = parseFloat(document.getElementById('refAlquilerDespues')?.value) || 0;
+    const plusvalia     = parseFloat(document.getElementById('refPlusvalia')?.value) || 0;
+    const el = document.getElementById('reformaResultado');
+    if (!el || coste <= 0) { alert('Introduce el coste de la reforma'); return; }
+
+    const mejoraMensual  = alqDespues - alqAntes;
+    const mejoraAnual    = mejoraMensual * 12;
+    const roi            = coste > 0 ? (mejoraAnual / coste * 100) : 0;
+    const payback        = mejoraAnual > 0 ? coste / mejoraAnual : Infinity;
+    const retornoTotal   = mejoraAnual * 10 + plusvalia; // 10 años
+    const roiTotal10     = coste > 0 ? (retornoTotal / coste * 100) : 0;
+
+    const roiClass = roi >= 10 ? 'metric-positive' : roi >= 5 ? 'metric-warning' : 'metric-negative';
+
+    el.style.display = 'block';
+    el.innerHTML = `
+        <div class="reforma-grid">
+            <div class="reforma-card">
+                <div class="reforma-card-label">ROI anual reforma</div>
+                <div class="reforma-card-val ${roiClass}">${roi.toFixed(1)}%</div>
+                <div class="reforma-card-sub">sobre el coste invertido</div>
+            </div>
+            <div class="reforma-card">
+                <div class="reforma-card-label">Payback (recuperación)</div>
+                <div class="reforma-card-val">${payback === Infinity ? '∞' : payback.toFixed(1)} años</div>
+                <div class="reforma-card-sub">solo por mayor alquiler</div>
+            </div>
+            <div class="reforma-card">
+                <div class="reforma-card-label">Mejora mensual</div>
+                <div class="reforma-card-val metric-positive">+${fmt(Math.round(mejoraMensual))} €/mes</div>
+                <div class="reforma-card-sub">${fmt(Math.round(mejoraAnual))} €/año</div>
+            </div>
+            <div class="reforma-card">
+                <div class="reforma-card-label">Retorno total 10 años</div>
+                <div class="reforma-card-val metric-positive">${fmt(Math.round(retornoTotal))} €</div>
+                <div class="reforma-card-sub">alquiler + plusvalía</div>
+            </div>
+        </div>
+        <div class="cap-nota" style="margin-top:0.75rem;">* Incluye ${fmt(Math.round(plusvalia))} € de plusvalía estimada. El ROI real depende de retención de inquilinos y mercado local.</div>
+    `;
+};
+
+// ============================================================
+// HERRAMIENTA 5 — Simulador Euríbor hipoteca variable
+// ============================================================
+window.calcularEuribor = function() {
+    const capital      = parseFloat(document.getElementById('eurCapital')?.value) || 0;
+    const diferencial  = parseFloat(document.getElementById('eurDiferencial')?.value) || 0.75;
+    const anos         = parseFloat(document.getElementById('eurAnos')?.value) || 20;
+    const alquiler     = parseFloat(document.getElementById('eurAlquiler')?.value) || 0;
+    const gastos       = parseFloat(document.getElementById('eurGastos')?.value) || 0;
+    const el = document.getElementById('euriborResultado');
+    if (!el || capital <= 0) { alert('Introduce el capital pendiente'); return; }
+
+    function cuotaHip(euribor) {
+        const tipo = Math.max(0, euribor + diferencial);
+        const i = tipo / 100 / 12, n = anos * 12;
+        return i > 0 ? capital * i * Math.pow(1+i,n) / (Math.pow(1+i,n)-1) : capital/n;
+    }
+
+    // Escenarios Euríbor
+    const escenarios = [
+        { label: 'Euríbor -1% (bajada fuerte)', euribor: -0.5, icon: '📉' },
+        { label: 'Euríbor actual ~2.5%',         euribor:  2.5, icon: '📊', actual: true },
+        { label: 'Euríbor +1% (subida moderada)',euribor:  3.5, icon: '⚠️' },
+        { label: 'Euríbor +2% (subida fuerte)',  euribor:  4.5, icon: '🔴' },
+        { label: 'Euríbor +4% (escenario 2022)', euribor:  4.0, icon: '🚨' },
+    ];
+
+    const filas = escenarios.map(esc => {
+        const tipo = Math.max(0, esc.euribor + diferencial);
+        const cuota = cuotaHip(esc.euribor);
+        const cf = alquiler - cuota - gastos;
+        const cfClass = cf >= 0 ? 'metric-positive' : 'metric-negative';
+        return `
+            <tr class="${esc.actual ? 'eur-actual-row' : ''}">
+                <td>${esc.icon} <span style="font-size:0.82rem;">${esc.label}</span></td>
+                <td style="text-align:center; font-weight:700;">${tipo.toFixed(2)}%</td>
+                <td style="text-align:right; font-weight:700;">${fmt(Math.round(cuota))} €</td>
+                <td style="text-align:right;" class="${cfClass}">${fmt(Math.round(cf))} €</td>
+            </tr>`;
+    }).join('');
+
+    const cuotaActual = cuotaHip(2.5);
+    const cfActual = alquiler - cuotaActual - gastos;
+
+    el.style.display = 'block';
+    el.innerHTML = `
+        <div class="eur-summary">
+            <span>Con Euríbor actual (~2.5%): cuota <strong>${fmt(Math.round(cuotaActual))} €/mes</strong>, cashflow <strong class="${cfActual>=0?'metric-positive':'metric-negative'}">${fmt(Math.round(cfActual))} €/mes</strong></span>
+        </div>
+        <div class="eur-table-wrap">
+            <table class="eur-table">
+                <thead>
+                    <tr>
+                        <th>Escenario</th>
+                        <th style="text-align:center;">Tipo total</th>
+                        <th style="text-align:right;">Cuota</th>
+                        <th style="text-align:right;">Cashflow</th>
+                    </tr>
+                </thead>
+                <tbody>${filas}</tbody>
+            </table>
+        </div>
+        <div class="cap-nota" style="margin-top:0.75rem;">* Cashflow = alquiler - cuota - gastos fijos. Tipo total = Euríbor + diferencial ${diferencial}%.</div>
+    `;
+};
