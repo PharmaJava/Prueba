@@ -303,6 +303,134 @@ const translations = {
 let currentLanguage = 'es';
 
 // ============================================================
+// BASE DE DATOS: PRECIO €/m² POR PROVINCIA (CP prefix 2 dígitos)
+// Fuente: Tinsa/INE estimaciones 2025
+// ============================================================
+const PROVINCIA_DATA = {
+    '01': { nombre: 'Álava / Vitoria',        precioM2: 2200 },
+    '02': { nombre: 'Albacete',               precioM2: 900  },
+    '03': { nombre: 'Alicante',               precioM2: 1650 },
+    '04': { nombre: 'Almería',                precioM2: 1050 },
+    '05': { nombre: 'Ávila',                  precioM2: 800  },
+    '06': { nombre: 'Badajoz',                precioM2: 750  },
+    '07': { nombre: 'Baleares',               precioM2: 3500 },
+    '08': { nombre: 'Barcelona',              precioM2: 3800 },
+    '09': { nombre: 'Burgos',                 precioM2: 1100 },
+    '10': { nombre: 'Cáceres',                precioM2: 750  },
+    '11': { nombre: 'Cádiz',                  precioM2: 1400 },
+    '12': { nombre: 'Castellón',              precioM2: 1050 },
+    '13': { nombre: 'Ciudad Real',            precioM2: 700  },
+    '14': { nombre: 'Córdoba',                precioM2: 1000 },
+    '15': { nombre: 'A Coruña',               precioM2: 1450 },
+    '16': { nombre: 'Cuenca',                 precioM2: 650  },
+    '17': { nombre: 'Girona',                 precioM2: 2100 },
+    '18': { nombre: 'Granada',                precioM2: 1350 },
+    '19': { nombre: 'Guadalajara',            precioM2: 1200 },
+    '20': { nombre: 'Gipuzkoa / San Sebastián', precioM2: 3800 },
+    '21': { nombre: 'Huelva',                 precioM2: 900  },
+    '22': { nombre: 'Huesca',                 precioM2: 950  },
+    '23': { nombre: 'Jaén',                   precioM2: 700  },
+    '24': { nombre: 'León',                   precioM2: 950  },
+    '25': { nombre: 'Lleida',                 precioM2: 1050 },
+    '26': { nombre: 'La Rioja / Logroño',     precioM2: 1200 },
+    '27': { nombre: 'Lugo',                   precioM2: 850  },
+    '28': { nombre: 'Madrid',                 precioM2: 4100 },
+    '29': { nombre: 'Málaga',                 precioM2: 2600 },
+    '30': { nombre: 'Murcia',                 precioM2: 1100 },
+    '31': { nombre: 'Navarra / Pamplona',     precioM2: 1850 },
+    '32': { nombre: 'Ourense',                precioM2: 850  },
+    '33': { nombre: 'Asturias / Oviedo',      precioM2: 1350 },
+    '34': { nombre: 'Palencia',               precioM2: 800  },
+    '35': { nombre: 'Las Palmas (Gran Canaria)', precioM2: 1950 },
+    '36': { nombre: 'Pontevedra / Vigo',      precioM2: 1600 },
+    '37': { nombre: 'Salamanca',              precioM2: 1100 },
+    '38': { nombre: 'Santa Cruz de Tenerife', precioM2: 1700 },
+    '39': { nombre: 'Cantabria / Santander',  precioM2: 1700 },
+    '40': { nombre: 'Segovia',                precioM2: 900  },
+    '41': { nombre: 'Sevilla',                precioM2: 1850 },
+    '42': { nombre: 'Soria',                  precioM2: 650  },
+    '43': { nombre: 'Tarragona',              precioM2: 1500 },
+    '44': { nombre: 'Teruel',                 precioM2: 650  },
+    '45': { nombre: 'Toledo',                 precioM2: 900  },
+    '46': { nombre: 'Valencia',               precioM2: 2200 },
+    '47': { nombre: 'Valladolid',             precioM2: 1150 },
+    '48': { nombre: 'Bizkaia / Bilbao',       precioM2: 2900 },
+    '49': { nombre: 'Zamora',                 precioM2: 700  },
+    '50': { nombre: 'Zaragoza',               precioM2: 1500 },
+    '51': { nombre: 'Ceuta',                  precioM2: 1100 },
+    '52': { nombre: 'Melilla',                precioM2: 1000 },
+};
+
+// ============================================================
+// LÓGICA DE REFERENCIA DE MERCADO
+// ============================================================
+function actualizarMercado() {
+    const cp = (document.getElementById('codigoPostal')?.value || '').trim();
+    const precioRefEl = document.getElementById('precioRefM2');
+    const superficieEl = document.getElementById('superficieM2');
+    const resultado = document.getElementById('mercadoResultado');
+    const provinciaHint = document.getElementById('provinciaHint');
+
+    // 1. Detectar provincia por los 2 primeros dígitos del CP
+    if (cp.length >= 2) {
+        const prefix = cp.substring(0, 2);
+        const prov = PROVINCIA_DATA[prefix];
+        if (prov) {
+            if (provinciaHint) {
+                provinciaHint.innerHTML = `📍 <strong>${prov.nombre}</strong> &nbsp;·&nbsp; Referencia media: <strong>${prov.precioM2.toLocaleString('es-ES')} €/m²</strong>`;
+                provinciaHint.style.display = 'block';
+            }
+            // Rellenar precio si está vacío o vino de provincia anterior
+            if (precioRefEl && (!precioRefEl.value || precioRefEl.dataset.autoFilled === 'true')) {
+                precioRefEl.value = prov.precioM2;
+                precioRefEl.dataset.autoFilled = 'true';
+            }
+        } else {
+            if (provinciaHint) provinciaHint.style.display = 'none';
+        }
+    } else {
+        if (provinciaHint) provinciaHint.style.display = 'none';
+    }
+
+    // 2. Calcular si tenemos precio/m² y superficie
+    const precioM2 = parseFloat(precioRefEl?.value) || 0;
+    const superficie = parseFloat(superficieEl?.value) || 0;
+    const precioCompra = parseFloat(document.getElementById('precio')?.value) || 0;
+    const descuento = parseFloat(document.getElementById('descuentoOferta')?.value) || 10;
+
+    if (!resultado) return;
+
+    if (precioM2 > 0 && superficie > 0) {
+        const valorMercado = precioM2 * superficie;
+        const diferencia = precioCompra - valorMercado;
+        const diferenciaPct = valorMercado > 0 ? (diferencia / valorMercado) * 100 : 0;
+        const ofertaSugerida = precioCompra * (1 - descuento / 100);
+        const ahorro = precioCompra - ofertaSugerida;
+
+        document.getElementById('mrValorMercado').textContent = fmt(valorMercado) + ' €';
+
+        const vsEl = document.getElementById('mrVsTexto');
+        if (Math.abs(diferenciaPct) < 2) {
+            vsEl.textContent = '≈ Precio en línea con el mercado';
+            vsEl.className = 'metric-warning';
+        } else if (diferenciaPct > 0) {
+            vsEl.textContent = `+${fmt(diferencia)} € sobre mercado (+${diferenciaPct.toFixed(1)}%)`;
+            vsEl.className = 'metric-negative';
+        } else {
+            vsEl.textContent = `${fmt(diferencia)} € bajo mercado (${diferenciaPct.toFixed(1)}%)`;
+            vsEl.className = 'metric-positive';
+        }
+
+        document.getElementById('mrOferta').textContent = fmt(Math.round(ofertaSugerida)) + ' €';
+        document.getElementById('mrAhorro').textContent = fmt(Math.round(ahorro)) + ' €';
+
+        resultado.style.display = 'block';
+    } else {
+        resultado.style.display = 'none';
+    }
+}
+
+// ============================================================
 // DISCLAIMER
 // ============================================================
 // ============================================================
@@ -680,7 +808,7 @@ function calcular() {
         // Renderizar gráficos y tabla hipoteca DESPUÉS de inyectar el HTML
         requestAnimationFrame(() => {
             renderizarDoughnut(datos);
-            renderizarLineChart(datos);
+            // lineChart se renderiza al abrir su colapsable (toggleCol)
             if (financiacionTipo === 'con_hipoteca') renderizarTablaHipoteca(datos, null, 0, 'cuota');
         });
         actualizarResumenFlotante(datos);
@@ -859,6 +987,45 @@ function renderizarDoughnut(datos) {
         `).join('');
     }
 }
+
+// ============================================================
+// HELPER — sección colapsable
+// startOpen: true = visible por defecto, false = cerrado por defecto
+// ============================================================
+function colapsable(id, titulo, contenidoHTML, startOpen = false) {
+    const openClass = startOpen ? ' col-open' : '';
+    return `
+    <div class="col-section${openClass}" id="col-${id}">
+        <button class="col-header" onclick="toggleCol('${id}')" type="button" aria-expanded="${startOpen}">
+            <span class="col-title">${titulo}</span>
+            <span class="col-chevron">▾</span>
+        </button>
+        <div class="col-body">
+            <div class="col-inner">${contenidoHTML}</div>
+        </div>
+    </div>`;
+}
+
+window.toggleCol = function(id) {
+    const sec = document.getElementById('col-' + id);
+    if (!sec) return;
+    const isOpen = sec.classList.contains('col-open');
+    sec.classList.toggle('col-open', !isOpen);
+    const btn = sec.querySelector('.col-header');
+    if (btn) btn.setAttribute('aria-expanded', String(!isOpen));
+
+    // Si se acaba de abrir y contiene canvas → re-renderizar gráficos
+    if (!isOpen) {
+        const lineCanvas = sec.querySelector('#lineChart');
+        const doughnutCanvas = sec.querySelector('#doughnutChart');
+        if (lineCanvas && window._lastDatos) {
+            requestAnimationFrame(() => renderizarLineChart(window._lastDatos));
+        }
+        if (doughnutCanvas && window._lastDatos) {
+            requestAnimationFrame(() => renderizarDoughnut(window._lastDatos));
+        }
+    }
+};
 
 // ============================================================
 // MOSTRAR RESULTADOS
@@ -1048,14 +1215,11 @@ function mostrarResultados(datos) {
             🌟 <strong>${t.excelente_rentabilidad}</strong>
         </div>` : ''}
 
-        <!-- SEMÁFORO VISUAL -->
-        ${generarSemaforoHTML(datos)}
-
         <!-- KPIs PRINCIPALES -->
         <div class="results-grid">
-            <div class="metric-card" data-tooltip-key="inversion">
+            <div class="metric-card">
                 <div class="metric-header">
-                    <div class="metric-title">${t.inversion_inicial} <span class="metric-info-icon" title="${currentLanguage === 'es' ? 'Suma total que sale de tu bolsillo: entrada + impuestos + gastos + reforma + gastos hipoteca' : 'Total out-of-pocket: down payment + taxes + costs + renovation + mortgage fees'}">ℹ️</span></div>
+                    <div class="metric-title">${t.inversion_inicial}</div>
                     <div class="metric-icon">💰</div>
                 </div>
                 <div class="metric-value">${fmt(datos.inversionInicial)} €</div>
@@ -1064,7 +1228,7 @@ function mostrarResultados(datos) {
 
             <div class="metric-card" data-tooltip-key="cashflow">
                 <div class="metric-header">
-                    <div class="metric-title">${t.flujo_mensual} <span class="metric-info-icon" title="${currentLanguage === 'es' ? 'Lo que te queda en el bolsillo cada mes tras pagar hipoteca, gastos e impuestos. Indicador clave para renta pasiva.' : 'What you keep each month after mortgage, costs and taxes. Key indicator for passive income.'}">ℹ️</span></div>
+                    <div class="metric-title">${t.flujo_mensual}</div>
                     <div class="metric-icon">${datos.flujoMensual >= 0 ? '📈' : '📉'}</div>
                 </div>
                 <div class="metric-value ${flujoClass}">${fmt(datos.flujoMensual)} €</div>
@@ -1074,7 +1238,7 @@ function mostrarResultados(datos) {
 
             <div class="metric-card" data-tooltip-key="roi">
                 <div class="metric-header">
-                    <div class="metric-title">${t.roi_anual} <span class="metric-info-icon" title="${currentLanguage === 'es' ? 'Cashflow anual / Capital invertido. Un ROI alto con cashflow negativo es una señal de alerta.' : 'Annual cashflow / Invested capital. High ROI with negative cashflow is a warning sign.'}">ℹ️</span></div>
+                    <div class="metric-title">${t.roi_anual}</div>
                     <div class="metric-icon">📊</div>
                 </div>
                 <div class="metric-value ${roiClass}">${datos.roiAnual.toFixed(2)}%</div>
@@ -1084,7 +1248,7 @@ function mostrarResultados(datos) {
 
             <div class="metric-card" data-tooltip-key="tir">
                 <div class="metric-header">
-                    <div class="metric-title">${t.tir_anualizada} <span class="metric-info-icon" title="${currentLanguage === 'es' ? 'Rentabilidad anual compuesta incluyendo alquileres + ganancia por venta. >7% supera la media histórica del mercado español.' : 'Compound annual return including rent + sale gain. >7% beats Spanish historical average.'}">ℹ️</span></div>
+                    <div class="metric-title">${t.tir_anualizada}</div>
                     <div class="metric-icon">⚡</div>
                 </div>
                 <div class="metric-value ${rentabilidadClass}">${datos.rentabilidadAnual.toFixed(2)}%</div>
@@ -1094,7 +1258,7 @@ function mostrarResultados(datos) {
 
             <div class="metric-card" data-tooltip-key="beneficio">
                 <div class="metric-header">
-                    <div class="metric-title">${t.beneficio_total} <span class="metric-info-icon" title="${currentLanguage === 'es' ? 'Flujo acumulado + neto de venta - inversión inicial. El resultado total de tu apuesta.' : 'Accumulated cashflow + net sale - initial investment. The total result of your bet.'}">ℹ️</span></div>
+                    <div class="metric-title">${t.beneficio_total}</div>
                     <div class="metric-icon">${datos.beneficioTotal >= 0 ? '🎯' : '⚠️'}</div>
                 </div>
                 <div class="metric-value ${beneficioClass}">${fmt(datos.beneficioTotal)} €</div>
@@ -1103,7 +1267,7 @@ function mostrarResultados(datos) {
 
             <div class="metric-card" data-tooltip-key="neto">
                 <div class="metric-header">
-                    <div class="metric-title">${t.flujo_acumulado} <span class="metric-info-icon" title="${currentLanguage === 'es' ? 'Suma de todos los cashflows anuales durante el período de análisis, solo por alquileres.' : 'Sum of all annual cashflows during the analysis period, from rentals only.'}">ℹ️</span></div>
+                    <div class="metric-title">${t.flujo_acumulado}</div>
                     <div class="metric-icon">💧</div>
                 </div>
                 <div class="metric-value ${datos.flujoAcumulado >= 0 ? 'metric-positive' : 'metric-negative'}">${fmt(datos.flujoAcumulado)} €</div>
@@ -1111,124 +1275,57 @@ function mostrarResultados(datos) {
             </div>
         </div>
 
-        <!-- DESGLOSE + CASHFLOW LADO A LADO -->
+        <!-- DESGLOSE: gráfico doughnut siempre visible (es pequeño) -->
         ${generarDoughnutHTML(datos)}
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.25rem; margin-bottom:1.25rem;">
-            <div class="detail-card">
+
+        <!-- DESGLOSE INVERSIÓN + CASHFLOW + PROYECCIÓN VENTA — colapsables -->
+        ${colapsable('desglose', '💰 ' + t.desglose_inversion + ' · Cashflow · Proyección venta', `
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:1rem;">
+            <div class="detail-card" style="margin-bottom:0;">
                 <div class="detail-card-title">${t.desglose_inversion}</div>
-                <div class="detail-row">
-                    <span>${t.entrada_porcentaje} (${datos.entrada}%)</span>
-                    <span>${fmt(datos.montoEntrada)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.impuestos_itp}</span>
-                    <span>${fmt(datos.impuestos)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.gastos_compra_text}</span>
-                    <span>${fmt(datos.gastosCompra)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.gastos_reforma_text}</span>
-                    <span>${fmt(datos.reforma)} €</span>
-                </div>
-                ${datos.financiacionTipo === 'con_hipoteca' ? `
-                <div class="detail-row">
-                    <span>${t.gastos_hipoteca_text}</span>
-                    <span>${fmt(datos.gastosHipoteca)} €</span>
-                </div>` : ''}
-                <div class="detail-row total">
-                    <span>${t.total_inversion}</span>
-                    <span>${fmt(datos.inversionInicial)} €</span>
-                </div>
+                <div class="detail-row"><span>${t.entrada_porcentaje} (${datos.entrada}%)</span><span>${fmt(datos.montoEntrada)} €</span></div>
+                <div class="detail-row"><span>${t.impuestos_itp}</span><span>${fmt(datos.impuestos)} €</span></div>
+                <div class="detail-row"><span>${t.gastos_compra_text}</span><span>${fmt(datos.gastosCompra)} €</span></div>
+                <div class="detail-row"><span>${t.gastos_reforma_text}</span><span>${fmt(datos.reforma)} €</span></div>
+                ${datos.financiacionTipo === 'con_hipoteca' ? `<div class="detail-row"><span>${t.gastos_hipoteca_text}</span><span>${fmt(datos.gastosHipoteca)} €</span></div>` : ''}
+                <div class="detail-row total"><span>${t.total_inversion}</span><span>${fmt(datos.inversionInicial)} €</span></div>
             </div>
-
-            <div class="detail-card">
+            <div class="detail-card" style="margin-bottom:0;">
                 <div class="detail-card-title">${t.cashflow_mensual_card}</div>
-                <div class="detail-row">
-                    <span>${t.ingresos_alquiler}</span>
-                    <span class="metric-positive">+${fmt(datos.ingresosMensuales)} €</span>
-                </div>
-                ${datos.financiacionTipo === 'con_hipoteca' ? `
-                <div class="detail-row">
-                    <span>${t.cuota_hipoteca}</span>
-                    <span class="metric-negative">-${fmt(datos.cuotaHipoteca)} €</span>
-                </div>` : ''}
-                <div class="detail-row">
-                    <span>${t.comunidad_text}</span>
-                    <span class="metric-negative">-${fmt(datos.comunidad)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.ibi_mensual}</span>
-                    <span class="metric-negative">-${fmt(datos.ibi / 12)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.seguro_mensual}</span>
-                    <span class="metric-negative">-${fmt(datos.seguro / 12)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.seguro_impago_mensual}</span>
-                    <span class="metric-negative">-${fmt(datos.seguroImpago / 12)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.mantenimiento_mensual}</span>
-                    <span class="metric-negative">-${fmt(datos.mantenimiento / 12)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.administracion_text}</span>
-                    <span class="metric-negative">-${fmt(datos.administracion)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.impuestos_alquiler}</span>
-                    <span class="metric-negative">-${fmt(datos.taxMensual)} €</span>
-                </div>
-                <div class="detail-row total">
-                    <span>${t.net_cashflow}</span>
-                    <span class="${flujoClass}">${fmt(datos.flujoMensual)} €</span>
-                </div>
+                <div class="detail-row"><span>${t.ingresos_alquiler}</span><span class="metric-positive">+${fmt(datos.ingresosMensuales)} €</span></div>
+                ${datos.financiacionTipo === 'con_hipoteca' ? `<div class="detail-row"><span>${t.cuota_hipoteca}</span><span class="metric-negative">-${fmt(datos.cuotaHipoteca)} €</span></div>` : ''}
+                <div class="detail-row"><span>${t.comunidad_text}</span><span class="metric-negative">-${fmt(datos.comunidad)} €</span></div>
+                <div class="detail-row"><span>${t.ibi_mensual}</span><span class="metric-negative">-${fmt(datos.ibi / 12)} €</span></div>
+                <div class="detail-row"><span>${t.seguro_mensual}</span><span class="metric-negative">-${fmt(datos.seguro / 12)} €</span></div>
+                <div class="detail-row"><span>${t.seguro_impago_mensual}</span><span class="metric-negative">-${fmt(datos.seguroImpago / 12)} €</span></div>
+                <div class="detail-row"><span>${t.mantenimiento_mensual}</span><span class="metric-negative">-${fmt(datos.mantenimiento / 12)} €</span></div>
+                <div class="detail-row"><span>${t.administracion_text}</span><span class="metric-negative">-${fmt(datos.administracion)} €</span></div>
+                <div class="detail-row"><span>${t.impuestos_alquiler}</span><span class="metric-negative">-${fmt(datos.taxMensual)} €</span></div>
+                <div class="detail-row total"><span>${t.net_cashflow}</span><span class="${flujoClass}">${fmt(datos.flujoMensual)} €</span></div>
             </div>
-
-            <div class="detail-card">
+            <div class="detail-card" style="margin-bottom:0;">
                 <div class="detail-card-title">${t.proyeccion_venta} ${datos.anosAnalisis})</div>
-                <div class="detail-row">
-                    <span>${t.valor_estimado}</span>
-                    <span>${fmt(datos.precioVentaBruto)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.gastos_venta_porcentaje}</span>
-                    <span class="metric-negative">-${fmt(datos.gastosVentaEuros)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.plusvalia_municipal}</span>
-                    <span class="metric-negative">-${fmt(datos.plusvalia)} €</span>
-                </div>
-                <div class="detail-row">
-                    <span>${t.irpf_ganancia}</span>
-                    <span class="metric-negative">-${fmt(datos.impuestosGanancias)} €</span>
-                </div>
-                <div class="detail-row total">
-                    <span>${t.valor_neto_venta}</span>
-                    <span class="metric-info">${fmt(datos.precioVentaNeto)} €</span>
-                </div>
+                <div class="detail-row"><span>${t.valor_estimado}</span><span>${fmt(datos.precioVentaBruto)} €</span></div>
+                <div class="detail-row"><span>${t.gastos_venta_porcentaje}</span><span class="metric-negative">-${fmt(datos.gastosVentaEuros)} €</span></div>
+                <div class="detail-row"><span>${t.plusvalia_municipal}</span><span class="metric-negative">-${fmt(datos.plusvalia)} €</span></div>
+                <div class="detail-row"><span>${t.irpf_ganancia}</span><span class="metric-negative">-${fmt(datos.impuestosGanancias)} €</span></div>
+                <div class="detail-row total"><span>${t.valor_neto_venta}</span><span class="metric-info">${fmt(datos.precioVentaNeto)} €</span></div>
             </div>
-        </div>
+        </div>`, false)}
 
-        <!-- CALCULADORA INVERSA (justo tras distribución de costes) -->
+        <!-- CALCULADORA INVERSA — siempre visible, es pequeña -->
         ${generarCalculadoraInversaHTML()}
 
-        <!-- GRÁFICO DE EVOLUCIÓN TEMPORAL -->
-        ${generarLineChartHTML()}
+        <!-- GRÁFICO EVOLUCIÓN TEMPORAL — colapsable cerrado -->
+        ${colapsable('linechart', '📈 Evolución del beneficio acumulado año a año', generarLineChartHTML(), false)}
 
-        <!-- TABLA DE HIPOTECA CON AMORTIZACIONES -->
-        ${datos.financiacionTipo === 'con_hipoteca' ? generarTablaHipotecaHTML(datos) : ''}
+        <!-- TABLA HIPOTECA — colapsable cerrado -->
+        ${datos.financiacionTipo === 'con_hipoteca' ? colapsable('hipoteca', '🏦 Cuadro de amortización hipotecaria', generarTablaHipotecaHTML(datos), false) : ''}
 
-        <!-- TABLA DE PROYECCIONES AÑO A AÑO -->
-        <div class="detail-card">
-            <div class="detail-card-title">${t.proyecciones_ano}</div>
-            ${tablaProyecciones}
-        </div>
+        <!-- PROYECCIONES AÑO A AÑO — colapsable cerrado -->
+        ${colapsable('proyecciones', '📅 ' + t.proyecciones_ano, `<div class="detail-card" style="margin-bottom:0;">${tablaProyecciones}</div>`, false)}
 
-        <!-- COMPARACIÓN CON OTRAS INVERSIONES (al final) -->
+        <!-- COMPARACIÓN — siempre visible -->
         <div class="detail-card" style="margin-bottom:1.25rem;">
             <div class="detail-card-title">${t.comparacion_inversiones}</div>
             <div class="comparison-table">${comparacionHTML}</div>
@@ -2269,6 +2366,28 @@ document.addEventListener('DOMContentLoaded', () => {
     mostrarBannerCookies();
     initDarkMode();
     initTooltips();
+
+    // ── Referencia de mercado ──
+    const cpInput = document.getElementById('codigoPostal');
+    const precioRefInput = document.getElementById('precioRefM2');
+    const superficieInput = document.getElementById('superficieM2');
+    const descuentoInput = document.getElementById('descuentoOferta');
+    const precioInputMercado = document.getElementById('precio');
+
+    // Cuando el usuario toca el precio/m² manualmente, marcamos que ya no es auto
+    if (precioRefInput) {
+        precioRefInput.addEventListener('input', () => {
+            precioRefInput.dataset.autoFilled = 'false';
+            actualizarMercado();
+        });
+    }
+    if (cpInput) cpInput.addEventListener('input', actualizarMercado);
+    if (superficieInput) superficieInput.addEventListener('input', actualizarMercado);
+    if (descuentoInput) descuentoInput.addEventListener('input', actualizarMercado);
+    // Recalcular vs-mercado si cambia el precio de compra
+    if (precioInputMercado) {
+        precioInputMercado.addEventListener('input', actualizarMercado);
+    }
 });
 // ============================================================
 // COOKIES
@@ -2814,313 +2933,5 @@ function aceptarCookies() {
 }
 
 // ============================================================
-// MEJORA 2: GUARDAR / RECUPERAR ESCENARIOS CON localStorage
-// ============================================================
-const PARAM_IDS = [
-    'precio','tipoVivienda','gastosCompra','reforma',
-    'financiacionTipo','entradaEuros','interes','anos','gastosHipoteca',
-    'alquiler','mesesVacio','incrementoAlquiler','anosAnalisis',
-    'ibi','comunidad','seguro','seguroImpago','mantenimiento',
-    'administracion','incrementoGastos','taxAlquiler',
-    'revalorizacion','gastosVenta','plusvalia','irpfVenta','ccaaSelector'
-];
-
-function leerParametrosActuales() {
-    const params = {};
-    PARAM_IDS.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) params[id] = el.value;
-    });
-    return params;
-}
-
-function guardarEscenario() {
-    const nombre = prompt(currentLanguage === 'es'
-        ? 'Nombre para este escenario (ej: Piso Málaga):'
-        : 'Name for this scenario (e.g. Flat London):');
-    if (!nombre || !nombre.trim()) return;
-
-    const key = 'pisorentable_escenarios';
-    const existentes = JSON.parse(localStorage.getItem(key) || '[]');
-    const nuevo = {
-        id: Date.now(),
-        nombre: nombre.trim(),
-        fecha: new Date().toLocaleDateString(currentLanguage === 'es' ? 'es-ES' : 'en-GB'),
-        params: leerParametrosActuales(),
-        resumen: window._lastDatos ? {
-            flujoMensual: window._lastDatos.flujoMensual,
-            rentabilidadAnual: window._lastDatos.rentabilidadAnual,
-            inversionInicial: window._lastDatos.inversionInicial
-        } : null
-    };
-    existentes.push(nuevo);
-    localStorage.setItem(key, JSON.stringify(existentes));
-    renderizarEscenariosGuardados();
-    mostrarToastPersonalizado(currentLanguage === 'es' ? `✅ Escenario "${nuevo.nombre}" guardado` : `✅ Scenario "${nuevo.nombre}" saved`);
-}
-
-function cargarEscenario(id) {
-    const key = 'pisorentable_escenarios';
-    const existentes = JSON.parse(localStorage.getItem(key) || '[]');
-    const esc = existentes.find(e => e.id === id);
-    if (!esc) return;
-
-    PARAM_IDS.forEach(pid => {
-        const el = document.getElementById(pid);
-        if (el && esc.params[pid] !== undefined) el.value = esc.params[pid];
-    });
-    actualizarEntradaSlider();
-    toggleFinanciacionInputs();
-    window.actualizarITPHint && window.actualizarITPHint();
-    calcular();
-    mostrarToastPersonalizado(currentLanguage === 'es' ? `📂 Escenario "${esc.nombre}" cargado` : `📂 Scenario "${esc.nombre}" loaded`);
-}
-
-function eliminarEscenario(id) {
-    const key = 'pisorentable_escenarios';
-    let existentes = JSON.parse(localStorage.getItem(key) || '[]');
-    existentes = existentes.filter(e => e.id !== id);
-    localStorage.setItem(key, JSON.stringify(existentes));
-    renderizarEscenariosGuardados();
-}
-
-function renderizarEscenariosGuardados() {
-    const container = document.getElementById('escenariosGuardadosLista');
-    if (!container) return;
-    const key = 'pisorentable_escenarios';
-    const lista = JSON.parse(localStorage.getItem(key) || '[]');
-    const esEs = currentLanguage === 'es';
-
-    if (lista.length === 0) {
-        container.innerHTML = `<p class="escenarios-empty">${esEs ? 'No hay escenarios guardados aún.' : 'No saved scenarios yet.'}</p>`;
-        return;
-    }
-
-    container.innerHTML = lista.map(esc => {
-        const flujo = esc.resumen ? fmt(esc.resumen.flujoMensual) + ' €/mes' : '—';
-        const tir = esc.resumen ? esc.resumen.rentabilidadAnual.toFixed(2) + '%' : '—';
-        const flujoClass = esc.resumen && esc.resumen.flujoMensual >= 0 ? 'metric-positive' : 'metric-negative';
-        return `
-        <div class="escenario-item">
-            <div class="escenario-info">
-                <div class="escenario-nombre">📁 ${esc.nombre}</div>
-                <div class="escenario-meta">${esc.fecha} · CF: <span class="${flujoClass}">${flujo}</span> · TIR: ${tir}</div>
-            </div>
-            <div class="escenario-acciones">
-                <button class="btn-escenario-cargar" onclick="cargarEscenario(${esc.id})" title="${esEs ? 'Cargar' : 'Load'}">📂</button>
-                <button class="btn-escenario-borrar" onclick="eliminarEscenario(${esc.id})" title="${esEs ? 'Eliminar' : 'Delete'}">🗑️</button>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-function mostrarToastPersonalizado(msg) {
-    let toast = document.getElementById('customToast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'customToast';
-        toast.className = 'share-toast';
-        toast.style.cssText = 'position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);transition:opacity 0.4s;z-index:9999;';
-        document.body.appendChild(toast);
-    }
-    toast.textContent = msg;
-    toast.style.display = 'block';
-    toast.style.opacity = '1';
-    setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => { toast.style.display = 'none'; }, 400); }, 2500);
-}
-
-function toggleEscenariosPanel() {
-    const panel = document.getElementById('escenariosPanel');
-    if (!panel) return;
-    const abierto = panel.classList.toggle('abierto');
-    if (abierto) renderizarEscenariosGuardados();
-}
-
-// ============================================================
-// MEJORA 1: COMPARADOR DE DOS PROPIEDADES
-// ============================================================
-let comparadorVisible = false;
-let comparadorDatos = { a: null, b: null };
-
-function toggleComparador() {
-    const modal = document.getElementById('comparadorModal');
-    if (!modal) return;
-    comparadorVisible = !comparadorVisible;
-    modal.style.display = comparadorVisible ? 'flex' : 'none';
-    if (comparadorVisible) actualizarComparador();
-}
-
-function capturarParaComparador(slot) {
-    if (!window._lastDatos) {
-        mostrarToastPersonalizado(currentLanguage === 'es' ? '⚠️ Primero calcula la inversión' : '⚠️ Calculate first');
-        return;
-    }
-    const nombre = prompt(currentLanguage === 'es'
-        ? `Nombre para esta propiedad (slot ${slot.toUpperCase()}):` 
-        : `Name for this property (slot ${slot.toUpperCase()}):`);
-    if (nombre === null) return;
-    comparadorDatos[slot] = {
-        nombre: nombre.trim() || (currentLanguage === 'es' ? `Propiedad ${slot.toUpperCase()}` : `Property ${slot.toUpperCase()}`),
-        datos: { ...window._lastDatos }
-    };
-    actualizarComparador();
-}
-
-function actualizarComparador() {
-    const body = document.getElementById('comparadorBody');
-    if (!body) return;
-    const esEs = currentLanguage === 'es';
-    const { a, b } = comparadorDatos;
-
-    if (!a && !b) {
-        body.innerHTML = `<p style="text-align:center;color:var(--text-light);padding:2rem;">${esEs ? 'Captura dos propiedades para compararlas.' : 'Capture two properties to compare them.'}</p>`;
-        return;
-    }
-
-    const metrics = [
-        { key: 'inversionInicial', label: esEs ? 'Inversión inicial' : 'Initial investment', fmt: v => fmt(v) + ' €', lowerBetter: true },
-        { key: 'flujoMensual', label: esEs ? 'Cashflow mensual' : 'Monthly cashflow', fmt: v => fmt(v) + ' €/mes', lowerBetter: false },
-        { key: 'roiAnual', label: 'ROI anual', fmt: v => v.toFixed(2) + '%', lowerBetter: false },
-        { key: 'rentabilidadAnual', label: 'TIR estimada', fmt: v => v.toFixed(2) + '%', lowerBetter: false },
-        { key: 'beneficioTotal', label: esEs ? 'Beneficio total' : 'Total profit', fmt: v => fmt(v) + ' €', lowerBetter: false },
-        { key: 'precioVentaNeto', label: esEs ? 'Neto al vender' : 'Net on sale', fmt: v => fmt(v) + ' €', lowerBetter: false },
-        { key: 'flujoAcumulado', label: esEs ? 'Flujo acumulado' : 'Accumulated cashflow', fmt: v => fmt(v) + ' €', lowerBetter: false },
-    ];
-
-    const renderSlot = (slot, data) => {
-        if (!data) return `
-            <div class="comp-slot comp-slot--empty">
-                <div class="comp-slot-title">${esEs ? 'Propiedad' : 'Property'} ${slot.toUpperCase()}</div>
-                <button class="btn btn-primary" style="margin-top:1rem;" onclick="capturarParaComparador('${slot}')">
-                    ${esEs ? '📷 Capturar análisis actual' : '📷 Capture current analysis'}
-                </button>
-            </div>`;
-        return `
-            <div class="comp-slot">
-                <div class="comp-slot-title">${data.nombre}</div>
-                <button class="btn btn-share btn-sm" onclick="capturarParaComparador('${slot}')" style="margin-bottom:0.75rem;font-size:0.75rem;">🔄 ${esEs ? 'Reemplazar' : 'Replace'}</button>
-            </div>`;
-    };
-
-    const aVal = (key) => a ? a.datos[key] : null;
-    const bVal = (key) => b ? b.datos[key] : null;
-
-    const winnerClass = (va, vb, lowerBetter) => {
-        if (va === null || vb === null) return ['', ''];
-        const aWins = lowerBetter ? va < vb : va > vb;
-        const tie = Math.abs(va - vb) < 0.01;
-        if (tie) return ['comp-tie', 'comp-tie'];
-        return aWins ? ['comp-winner', 'comp-loser'] : ['comp-loser', 'comp-winner'];
-    };
-
-    const rows = metrics.map(m => {
-        const va = aVal(m.key);
-        const vb = bVal(m.key);
-        const [ca, cb] = winnerClass(va, vb, m.lowerBetter);
-        return `
-        <tr>
-            <td class="comp-metric-label">${m.label}</td>
-            <td class="comp-value ${ca}">${va !== null ? m.fmt(va) : '—'}</td>
-            <td class="comp-value ${cb}">${vb !== null ? m.fmt(vb) : '—'}</td>
-        </tr>`;
-    }).join('');
-
-    body.innerHTML = `
-    <div class="comp-header-row">
-        ${renderSlot('a', a)}
-        <div class="comp-vs">VS</div>
-        ${renderSlot('b', b)}
-    </div>
-    <table class="comp-table">
-        <thead>
-            <tr>
-                <th>${esEs ? 'Métrica' : 'Metric'}</th>
-                <th>${a ? a.nombre : 'A'}</th>
-                <th>${b ? b.nombre : 'B'}</th>
-            </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-    </table>
-    <p class="comp-nota">🏆 ${esEs ? 'Verde = mejor resultado · Rojo = peor resultado' : 'Green = better result · Red = worse result'}</p>`;
-}
-
-// ============================================================
-// MEJORA 3: SEMÁFORO VISUAL
-// ============================================================
-function calcularSemaforo(datos) {
-    const puntos = [];
-    let total = 0;
-
-    if (datos.flujoMensual > 200) { puntos.push({ ok: 'green', label: `Cashflow > 200 €/mes ✅` }); total += 3; }
-    else if (datos.flujoMensual >= 0) { puntos.push({ ok: 'yellow', label: `Cashflow positivo pero bajo ⚠️` }); total += 1.5; }
-    else { puntos.push({ ok: 'red', label: `Cashflow negativo (${fmt(datos.flujoMensual)} €/mes) ❌` }); }
-
-    if (datos.rentabilidadAnual > 7) { puntos.push({ ok: 'green', label: `TIR excelente (${datos.rentabilidadAnual.toFixed(1)}%) ✅` }); total += 3; }
-    else if (datos.rentabilidadAnual >= 4) { puntos.push({ ok: 'yellow', label: `TIR moderada (${datos.rentabilidadAnual.toFixed(1)}%) ⚠️` }); total += 1.5; }
-    else { puntos.push({ ok: 'red', label: `TIR baja (${datos.rentabilidadAnual.toFixed(1)}%) ❌` }); }
-
-    if (datos.roiAnual > 5) { puntos.push({ ok: 'green', label: `ROI sólido (${datos.roiAnual.toFixed(1)}%) ✅` }); total += 2; }
-    else if (datos.roiAnual >= 3) { puntos.push({ ok: 'yellow', label: `ROI moderado (${datos.roiAnual.toFixed(1)}%) ⚠️` }); total += 1; }
-    else { puntos.push({ ok: 'red', label: `ROI bajo (${datos.roiAnual.toFixed(1)}%) ❌` }); }
-
-    if (datos.beneficioTotal > 0) { puntos.push({ ok: 'green', label: `Beneficio total positivo ✅` }); total += 2; }
-    else { puntos.push({ ok: 'red', label: `Beneficio total negativo ❌` }); }
-
-    const max = 10;
-    const pct = Math.min(100, (total / max) * 100);
-    let nivel, color, emoji;
-    if (pct >= 70) { nivel = currentLanguage === 'es' ? 'Inversión atractiva' : 'Attractive investment'; color = '#10b981'; emoji = '🟢'; }
-    else if (pct >= 40) { nivel = currentLanguage === 'es' ? 'Inversión moderada' : 'Moderate investment'; color = '#f59e0b'; emoji = '🟡'; }
-    else { nivel = currentLanguage === 'es' ? 'Inversión con riesgos' : 'Risky investment'; color = '#ef4444'; emoji = '🔴'; }
-
-    return { puntos, pct, nivel, color, emoji };
-}
-
-function generarSemaforoHTML(datos) {
-    const s = calcularSemaforo(datos);
-    const esEs = currentLanguage === 'es';
-    const dotColor = (ok) => ok === 'green' ? '#10b981' : ok === 'yellow' ? '#f59e0b' : '#ef4444';
-    return `
-    <div class="semaforo-card">
-        <div class="semaforo-header">
-            <span class="semaforo-emoji">${s.emoji}</span>
-            <div>
-                <div class="semaforo-nivel" style="color:${s.color}">${s.nivel}</div>
-                <div class="semaforo-sub">${esEs ? 'Evaluación rápida de la inversión' : 'Quick investment assessment'}</div>
-            </div>
-            <div class="semaforo-score" style="color:${s.color}">${Math.round(s.pct)}<span>/100</span></div>
-        </div>
-        <div class="semaforo-bar-bg">
-            <div class="semaforo-bar-fill" style="width:${s.pct}%;background:${s.color}"></div>
-        </div>
-        <ul class="semaforo-lista">
-            ${s.puntos.map(p => `<li><span class="semaforo-dot" style="background:${dotColor(p.ok)}"></span>${p.label}</li>`).join('')}
-        </ul>
-        <div class="semaforo-nota">${esEs ? '* Evaluación orientativa basada en umbrales del mercado español.' : '* Indicative assessment based on Spanish market benchmarks.'}</div>
-    </div>`;
-}
-
-window.actualizarITPHint = function() {
-    const tipoViviendaSel = document.getElementById('tipoVivienda');
-    const itpHint = document.getElementById('itpHint');
-    const ccaaGroup = document.getElementById('ccaaGroup');
-    const ccaaSelector = document.getElementById('ccaaSelector');
-    if (!itpHint) return;
-    const t = translations[currentLanguage];
-    const tipoVivienda = tipoViviendaSel ? tipoViviendaSel.value : 'segunda';
-    if (tipoVivienda === 'nueva') {
-        itpHint.textContent = t.itp_hint_nueva;
-        if (ccaaGroup) ccaaGroup.style.display = 'none';
-    } else {
-        if (ccaaGroup) ccaaGroup.style.display = 'block';
-        if (ccaaSelector && ccaaSelector.value) {
-            itpHint.textContent = t.itp_hint_ccaa;
-        } else {
-            itpHint.textContent = t.itp_hint_default;
-        }
-    }
-};
-
-// ============================================================
-// FIN MEJORAS
+// COOKIES
 // ============================================================
