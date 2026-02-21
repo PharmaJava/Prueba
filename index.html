@@ -149,6 +149,71 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <span class="input-suffix">€</span>
                             </div>
                         </div>
+
+                        <!-- ── BLOQUE REFERENCIA DE MERCADO ── -->
+                        <div class="mercado-ref-block">
+                            <div class="mercado-ref-header">
+                                <span class="mercado-ref-icon">📍</span>
+                                <span class="mercado-ref-title">Referencia de mercado <span class="mercado-ref-badge">Opcional</span></span>
+                            </div>
+
+                            <div class="form-group mercado-field">
+                                <label class="form-label">Código postal</label>
+                                <div class="input-group">
+                                    <input class="form-input" id="codigoPostal" type="text" inputmode="numeric" maxlength="5" placeholder="28001" style="letter-spacing:0.1em;"/>
+                                </div>
+                                <div class="field-hint" id="provinciaHint" style="display:none;"></div>
+                            </div>
+
+                            <div class="form-group mercado-field">
+                                <label class="form-label">
+                                    Precio de referencia
+                                    <span class="help-tooltip" title="Precio medio €/m² estimado para la zona. Se rellena automáticamente según la provincia del código postal, pero puedes ajustarlo con el dato real de Idealista o Fotocasa.">ℹ️</span>
+                                </label>
+                                <div class="input-group">
+                                    <input class="form-input with-suffix" id="precioRefM2" type="number" inputmode="decimal" min="0" step="50" placeholder="—"/>
+                                    <span class="input-suffix">€/m²</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mercado-field">
+                                <label class="form-label">Superficie del inmueble</label>
+                                <div class="input-group">
+                                    <input class="form-input with-suffix" id="superficieM2" type="number" inputmode="decimal" min="0" step="1" placeholder="—"/>
+                                    <span class="input-suffix">m²</span>
+                                </div>
+                            </div>
+
+                            <!-- Panel de resultados inline -->
+                            <div class="mercado-resultado" id="mercadoResultado" style="display:none;">
+                                <div class="mercado-resultado-row">
+                                    <span>Valor de mercado estimado</span>
+                                    <strong id="mrValorMercado" class="metric-info">—</strong>
+                                </div>
+                                <div class="mercado-resultado-row mercado-resultado-row--vs">
+                                    <span>Tu precio vs. mercado</span>
+                                    <strong id="mrVsTexto">—</strong>
+                                </div>
+                                <div class="mercado-resultado-divider">💡 Estrategia de oferta</div>
+                                <div class="mercado-resultado-row">
+                                    <span>Descuento de negociación</span>
+                                    <div class="mercado-descuento-wrap">
+                                        <input type="number" id="descuentoOferta" class="mercado-descuento-input" min="0" max="30" step="0.5" value="10"/>
+                                        <span class="mercado-descuento-pct">%</span>
+                                    </div>
+                                </div>
+                                <div class="mercado-resultado-row mercado-resultado-row--oferta">
+                                    <span>💬 Oferta inicial sugerida</span>
+                                    <strong id="mrOferta" class="metric-positive">—</strong>
+                                </div>
+                                <div class="mercado-resultado-row mercado-resultado-row--ahorro">
+                                    <span>Ahorro potencial</span>
+                                    <strong id="mrAhorro" class="metric-positive">—</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ── FIN BLOQUE REFERENCIA ── -->
+
                     </div>
 
                     <!-- Tab: Financiación -->
@@ -329,18 +394,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="action-buttons" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                         <button class="btn btn-reset" id="resetBtn" title="Restablecer valores por defecto">🔄</button>
                         <button class="btn btn-share" id="shareBtn"><span data-i18n="btn_compartir">🔗 Compartir análisis</span></button>
-                        <button class="btn btn-save-scenario" onclick="guardarEscenario()" title="Guardar escenario actual">💾 Guardar</button>
-                        <button class="btn btn-save-scenario btn-comparador-toggle" onclick="toggleComparador()" title="Comparar dos propiedades">⚖️ Comparar</button>
                         <button class="btn btn-primary" id="pdfBtn" style="background: var(--gradient-main);"><span data-i18n="btn_exportar_pdf">📄 Exportar PDF</span></button>
                         <button class="btn btn-primary btn-block" id="calcularBtn" style="flex: 1 1 auto;"><span data-i18n="analizar_inversion">🧮 Analizar Inversión</span></button>
-                    </div>
-
-                    <!-- Panel de escenarios guardados -->
-                    <div class="escenarios-panel-toggle" onclick="toggleEscenariosPanel()">
-                        📁 <span id="escenariosToggleLabel">Mis escenarios guardados</span> <span class="escenarios-chevron">▾</span>
-                    </div>
-                    <div class="escenarios-panel" id="escenariosPanel">
-                        <div id="escenariosGuardadosLista"></div>
                     </div>
 
                     <!-- Notificación de enlace copiado -->
@@ -473,29 +528,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="floating-tir" id="floatingTir"></div>
     </div>
 
-    <!-- Modal Comparador de Propiedades -->
-    <div id="comparadorModal" class="comparador-modal-overlay" style="display:none;" onclick="if(event.target===this)toggleComparador()">
-        <div class="comparador-modal-box">
-            <div class="comparador-modal-header">
-                <span>⚖️ Comparador de Propiedades</span>
-                <button class="comparador-close" onclick="toggleComparador()">✕</button>
-            </div>
-            <div class="comparador-instrucciones">
-                Configura cada propiedad en la calculadora y pulsa <strong>📷 Capturar</strong> para guardarla en el comparador.
-            </div>
-            <div class="comparador-capture-row">
-                <button class="btn btn-primary" onclick="capturarParaComparador('a')">📷 Capturar como Propiedad A</button>
-                <button class="btn btn-share" onclick="capturarParaComparador('b')">📷 Capturar como Propiedad B</button>
-            </div>
-            <div id="comparadorBody"></div>
-        </div>
-    </div>
-
     <footer class="legal-info">
-        <p>
-            <a href="/blog.html" style="color: #94a3b8; text-decoration: underline;">📚 Blog</a> &nbsp;·&nbsp;
-            <a href="privacidad.html" target="_blank" rel="noopener" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a>
-        </p>
+        <p><a href="privacidad.html" target="_blank" rel="noopener" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
         <a href="https://librecounter.org/referer/show" target="_blank" rel="noopener">
             <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" alt="Contador de visitas" style="width:1px;height:1px;opacity:0;position:absolute;" />
         </a>
