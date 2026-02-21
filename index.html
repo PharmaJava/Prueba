@@ -88,6 +88,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <button class="nav-tab" data-tab="ingresos"><span data-i18n="ingresos">📈 Ingresos</span></button>
                         <button class="nav-tab" data-tab="gastos"><span data-i18n="gastos">📊 Gastos</span></button>
                         <button class="nav-tab" data-tab="revalorizacion"><span data-i18n="revalorizacion">💎 Revalorización</span></button>
+                        <button class="nav-tab" data-tab="turistico"><span>🏖️ Turístico</span></button>
                     </div>
 
                     <!-- Tab: Propiedad -->
@@ -151,43 +152,50 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </div>
 
                         <!-- ── BLOQUE REFERENCIA DE MERCADO ── -->
+                        <!-- ── BLOQUE REFERENCIA DE MERCADO ── -->
                         <div class="mercado-ref-block">
                             <div class="mercado-ref-header">
                                 <span class="mercado-ref-icon">📍</span>
-                                <span class="mercado-ref-title">Referencia de mercado <span class="mercado-ref-badge">Opcional</span></span>
+                                <span class="mercado-ref-title">Análisis de mercado <span class="mercado-ref-badge">Opcional</span></span>
                             </div>
 
-                            <div class="form-group mercado-field">
-                                <label class="form-label">Código postal</label>
-                                <div class="input-group">
-                                    <input class="form-input" id="codigoPostal" type="text" inputmode="numeric" maxlength="5" placeholder="28001" style="letter-spacing:0.1em;"/>
+                            <!-- CP + superficie en la misma fila -->
+                            <div class="mercado-row-inline">
+                                <div class="form-group mercado-field" style="flex:1;">
+                                    <label class="form-label">Código postal</label>
+                                    <input class="form-input" id="codigoPostal" type="text" inputmode="numeric" maxlength="5" placeholder="41002" style="letter-spacing:0.12em;"/>
                                 </div>
-                                <div class="field-hint" id="provinciaHint" style="display:none;"></div>
-                            </div>
-
-                            <div class="form-group mercado-field">
-                                <label class="form-label">
-                                    Precio de referencia
-                                    <span class="help-tooltip" title="Precio medio €/m² estimado para la zona. Se rellena automáticamente según la provincia del código postal, pero puedes ajustarlo con el dato real de Idealista o Fotocasa.">ℹ️</span>
-                                </label>
-                                <div class="input-group">
-                                    <input class="form-input with-suffix" id="precioRefM2" type="number" inputmode="decimal" min="0" step="50" placeholder="—"/>
-                                    <span class="input-suffix">€/m²</span>
+                                <div class="form-group mercado-field" style="flex:1;">
+                                    <label class="form-label">Superficie</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="superficieM2" type="number" inputmode="decimal" min="0" step="1" placeholder="80"/>
+                                        <span class="input-suffix">m²</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="form-group mercado-field">
-                                <label class="form-label">Superficie del inmueble</label>
-                                <div class="input-group">
-                                    <input class="form-input with-suffix" id="superficieM2" type="number" inputmode="decimal" min="0" step="1" placeholder="—"/>
-                                    <span class="input-suffix">m²</span>
+                            <!-- Tarjeta de datos de mercado (se muestra al detectar provincia) -->
+                            <div id="mercadoCard" class="mercado-card" style="display:none;">
+                                <div class="mercado-card-provincia" id="mercadoCardProvincia">—</div>
+                                <div class="mercado-card-precio">
+                                    <div class="mercado-precio-item">
+                                        <span class="mercado-precio-label">Precio medio €/m²</span>
+                                        <strong class="mercado-precio-val" id="mercadoCardPrecioM2">—</strong>
+                                    </div>
+                                    <div class="mercado-precio-item mercado-precio-item--edit">
+                                        <span class="mercado-precio-label">Ajustar (Idealista/Fotocasa)</span>
+                                        <div class="input-group" style="max-width:140px;">
+                                            <input class="form-input with-suffix" id="precioRefM2" type="number" inputmode="decimal" min="0" step="50" placeholder="auto"/>
+                                            <span class="input-suffix" style="font-size:0.7rem;">€/m²</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Panel de resultados inline -->
+                            <!-- Panel de comparativa (se muestra con CP + superficie) -->
                             <div class="mercado-resultado" id="mercadoResultado" style="display:none;">
                                 <div class="mercado-resultado-row">
-                                    <span>Valor de mercado estimado</span>
+                                    <span>Valor estimado de mercado</span>
                                     <strong id="mrValorMercado" class="metric-info">—</strong>
                                 </div>
                                 <div class="mercado-resultado-row mercado-resultado-row--vs">
@@ -196,7 +204,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 </div>
                                 <div class="mercado-resultado-divider">💡 Estrategia de oferta</div>
                                 <div class="mercado-resultado-row">
-                                    <span>Descuento de negociación</span>
+                                    <span>Descuento negociación</span>
                                     <div class="mercado-descuento-wrap">
                                         <input type="number" id="descuentoOferta" class="mercado-descuento-input" min="0" max="30" step="0.5" value="10"/>
                                         <span class="mercado-descuento-pct">%</span>
@@ -207,7 +215,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     <strong id="mrOferta" class="metric-positive">—</strong>
                                 </div>
                                 <div class="mercado-resultado-row mercado-resultado-row--ahorro">
-                                    <span>Ahorro potencial</span>
+                                    <span>Ahorro potencial si aceptan</span>
                                     <strong id="mrAhorro" class="metric-positive">—</strong>
                                 </div>
                             </div>
@@ -390,12 +398,65 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </div>
                     </div>
 
+                    <!-- Tab: Turístico -->
+                    <div class="tab-content" id="turistico-tab">
+                        <div class="turistico-header">
+                            <span class="turistico-badge">🏖️ Alquiler Turístico</span>
+                            <p class="turistico-desc">Compara larga duración vs. alquiler vacacional para maximizar ingresos.</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Precio por noche</label>
+                            <div class="input-group">
+                                <input class="form-input with-suffix" id="precioNoche" min="0" step="5" type="number" inputmode="decimal" value="85"/>
+                                <span class="input-suffix">€/noche</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Ocupación media anual
+                                <span class="help-tooltip" title="% de noches ocupadas al año. Media España turístico: 60-75%. Zonas premium (Costa del Sol, Barcelona, Madrid centro): 70-85%.">ℹ️</span>
+                            </label>
+                            <div class="input-group">
+                                <input class="form-input with-suffix" id="ocupacionTuristico" min="0" max="100" step="1" type="number" inputmode="decimal" value="65"/>
+                                <span class="input-suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gastos plataforma (Airbnb/Booking)</label>
+                            <div class="input-group">
+                                <input class="form-input with-suffix" id="comisionPlataforma" min="0" max="30" step="0.5" type="number" inputmode="decimal" value="15"/>
+                                <span class="input-suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gastos limpieza / rotación</label>
+                            <div class="input-group">
+                                <input class="form-input with-suffix" id="gastosLimpieza" min="0" step="50" type="number" inputmode="decimal" value="1200"/>
+                                <span class="input-suffix">€/año</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Suministros (luz, agua, wifi)</label>
+                            <div class="input-group">
+                                <input class="form-input with-suffix" id="suministrosTuristico" min="0" step="50" type="number" inputmode="decimal" value="1800"/>
+                                <span class="input-suffix">€/año</span>
+                            </div>
+                        </div>
+                        <div id="turisticoResultado" class="turistico-resultado" style="display:none;"></div>
+                        <button class="btn btn-primary" id="calcTuristicoBtn" style="width:100%; margin-top:0.5rem;">🏖️ Calcular y Comparar</button>
+                    </div>
+
                     <!-- Botones de acción -->
                     <div class="action-buttons" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                         <button class="btn btn-reset" id="resetBtn" title="Restablecer valores por defecto">🔄</button>
-                        <button class="btn btn-share" id="shareBtn"><span data-i18n="btn_compartir">🔗 Compartir análisis</span></button>
-                        <button class="btn btn-primary" id="pdfBtn" style="background: var(--gradient-main);"><span data-i18n="btn_exportar_pdf">📄 Exportar PDF</span></button>
-                        <button class="btn btn-primary btn-block" id="calcularBtn" style="flex: 1 1 auto;"><span data-i18n="analizar_inversion">🧮 Analizar Inversión</span></button>
+                        <button class="btn btn-share" id="shareBtn"><span data-i18n="btn_compartir">🔗 Compartir</span></button>
+                        <button class="btn btn-whatsapp" id="whatsappBtn" title="Compartir por WhatsApp">📱 WhatsApp</button>
+                        <button class="btn btn-save" id="saveBtn" title="Guardar este análisis">💾 Guardar</button>
+                        <button class="btn btn-compare" id="compareBtn" title="Comparar dos inmuebles">⚖️ Comparar</button>
+                        <button class="btn btn-widget" id="widgetBtn" title="Obtener código widget">🔌 Widget</button>
+                        <button class="btn btn-tools" id="toolsBtn" title="Herramientas adicionales">🛠️ Herramientas</button>
+                        <button class="btn btn-primary" id="pdfBtn" style="background: var(--gradient-main);"><span data-i18n="btn_exportar_pdf">📄 PDF</span></button>
+                        <button class="btn btn-primary btn-block" id="calcularBtn" style="flex: 1 1 auto;"><span data-i18n="analizar_inversion">🧮 Analizar</span></button>
                     </div>
 
                     <!-- Notificación de enlace copiado -->
@@ -564,5 +625,307 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </footer>
 
 <script src="app.js"></script>
+
+    <!-- ── MODAL: ANÁLISIS GUARDADOS ─────────────────────── -->
+    <div class="modal-overlay" id="savedModal" onclick="if(event.target===this)closeSavedModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-title">💾 Análisis Guardados</span>
+                <button class="modal-close" onclick="closeSavedModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="save-new-row">
+                    <input type="text" id="saveNameInput" class="form-input" placeholder="Nombre del análisis (ej: Piso Sevilla centro)" maxlength="60"/>
+                    <button class="btn btn-primary" onclick="saveCurrentAnalysis()" style="white-space:nowrap; padding:0.75rem 1.25rem;">💾 Guardar</button>
+                </div>
+                <div id="savedList" class="saved-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL: COMPARADOR ─────────────────────────────── -->
+    <div class="modal-overlay" id="compareModal" onclick="if(event.target===this)closeCompareModal()">
+        <div class="modal-box modal-box--wide">
+            <div class="modal-header">
+                <span class="modal-title">⚖️ Comparador de Inmuebles</span>
+                <button class="modal-close" onclick="closeCompareModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-hint">Selecciona dos análisis guardados para compararlos en detalle.</p>
+                <div class="compare-selectors">
+                    <div class="compare-selector">
+                        <label class="form-label">Inmueble A</label>
+                        <select id="compareSelectA" class="form-select"></select>
+                    </div>
+                    <div class="compare-vs">VS</div>
+                    <div class="compare-selector">
+                        <label class="form-label">Inmueble B</label>
+                        <select id="compareSelectB" class="form-select"></select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="runComparison()" style="width:100%; margin-top:1rem;">⚖️ Comparar ahora</button>
+                <div id="compareResult" class="compare-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL: HERRAMIENTAS ──────────────────────────────── -->
+    <div class="modal-overlay" id="toolsModal" onclick="if(event.target===this)closeToolsModal()">
+        <div class="modal-box modal-box--wide">
+            <div class="modal-header">
+                <span class="modal-title">🛠️ Herramientas Adicionales</span>
+                <button class="modal-close" onclick="closeToolsModal()">✕</button>
+            </div>
+            <div class="modal-body">
+
+                <!-- HERRAMIENTA 1: ¿Cuánto puedo pagar? -->
+                <div class="tool-section" id="tool-capacidad">
+                    <div class="tool-section-header" onclick="toggleTool('capacidad')">
+                        <span class="tool-icon">🏦</span>
+                        <div class="tool-info">
+                            <span class="tool-title">¿Cuánto puedo pagar?</span>
+                            <span class="tool-desc">Calcula el precio máximo según tus ingresos</span>
+                        </div>
+                        <span class="tool-chevron">▾</span>
+                    </div>
+                    <div class="tool-body" id="tool-body-capacidad">
+                        <div class="tool-inner">
+                            <div class="tools-row">
+                                <div class="form-group">
+                                    <label class="form-label">Sueldo neto mensual</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="sueldoNeto" type="number" min="0" step="100" value="2500" inputmode="decimal"/>
+                                        <span class="input-suffix">€/mes</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Otros ingresos (pareja, etc.)</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="otrosIngresos" type="number" min="0" step="100" value="0" inputmode="decimal"/>
+                                        <span class="input-suffix">€/mes</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Otras deudas mensuales</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="otrasDeudas" type="number" min="0" step="50" value="0" inputmode="decimal"/>
+                                        <span class="input-suffix">€/mes</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Ahorros disponibles (entrada)</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="ahorrosDisponibles" type="number" min="0" step="1000" value="40000" inputmode="decimal"/>
+                                        <span class="input-suffix">€</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="width:100%;" onclick="calcularCapacidad()">🏦 Calcular capacidad</button>
+                            <div id="capacidadResultado" class="tool-resultado" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HERRAMIENTA 2: Historial de CPs -->
+                <div class="tool-section" id="tool-historial">
+                    <div class="tool-section-header" onclick="toggleTool('historial')">
+                        <span class="tool-icon">🕐</span>
+                        <div class="tool-info">
+                            <span class="tool-title">Historial de zonas buscadas</span>
+                            <span class="tool-desc">Últimas búsquedas por código postal</span>
+                        </div>
+                        <span class="tool-chevron">▾</span>
+                    </div>
+                    <div class="tool-body" id="tool-body-historial">
+                        <div class="tool-inner">
+                            <div id="historialList" class="historial-list"></div>
+                            <button class="btn btn-share" style="width:100%; margin-top:0.5rem; font-size:0.8rem;" onclick="clearHistorial()">🗑️ Borrar historial</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HERRAMIENTA 3: Modo rápido ¿Me sale la cuenta? -->
+                <div class="tool-section" id="tool-rapido">
+                    <div class="tool-section-header" onclick="toggleTool('rapido')">
+                        <span class="tool-icon">⚡</span>
+                        <div class="tool-info">
+                            <span class="tool-title">¿Me sale la cuenta? (modo rápido)</span>
+                            <span class="tool-desc">4 datos, respuesta en 3 segundos</span>
+                        </div>
+                        <span class="tool-chevron">▾</span>
+                    </div>
+                    <div class="tool-body" id="tool-body-rapido">
+                        <div class="tool-inner">
+                            <div class="tools-row">
+                                <div class="form-group">
+                                    <label class="form-label">Precio del piso</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="rpPrecio" type="number" min="0" step="5000" value="120000" inputmode="decimal"/>
+                                        <span class="input-suffix">€</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Entrada disponible</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="rpEntrada" type="number" min="0" step="1000" value="30000" inputmode="decimal"/>
+                                        <span class="input-suffix">€</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Alquiler esperado</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="rpAlquiler" type="number" min="0" step="50" value="700" inputmode="decimal"/>
+                                        <span class="input-suffix">€/mes</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Años de análisis</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="rpAnos" type="number" min="5" max="40" step="1" value="20" inputmode="decimal"/>
+                                        <span class="input-suffix">años</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="rapidoResultado" class="rapido-resultado"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HERRAMIENTA 4: ROI de reforma -->
+                <div class="tool-section" id="tool-reforma">
+                    <div class="tool-section-header" onclick="toggleTool('reforma')">
+                        <span class="tool-icon">🔨</span>
+                        <div class="tool-info">
+                            <span class="tool-title">ROI de reforma</span>
+                            <span class="tool-desc">¿Cuánto mejora la rentabilidad reformando?</span>
+                        </div>
+                        <span class="tool-chevron">▾</span>
+                    </div>
+                    <div class="tool-body" id="tool-body-reforma">
+                        <div class="tool-inner">
+                            <div class="tools-row">
+                                <div class="form-group">
+                                    <label class="form-label">Coste de la reforma</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="refCoste" type="number" min="0" step="500" value="15000" inputmode="decimal"/>
+                                        <span class="input-suffix">€</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Alquiler actual (sin reforma)</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="refAlquilerAntes" type="number" min="0" step="50" value="650" inputmode="decimal"/>
+                                        <span class="input-suffix">€/mes</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Alquiler esperado (con reforma)</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="refAlquilerDespues" type="number" min="0" step="50" value="800" inputmode="decimal"/>
+                                        <span class="input-suffix">€/mes</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Plusvalía esperada por reforma</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="refPlusvalia" type="number" min="0" step="1000" value="20000" inputmode="decimal"/>
+                                        <span class="input-suffix">€</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="width:100%;" onclick="calcularROIReforma()">🔨 Calcular ROI reforma</button>
+                            <div id="reformaResultado" class="tool-resultado" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HERRAMIENTA 5: Alerta Euríbor variable -->
+                <div class="tool-section" id="tool-euribor">
+                    <div class="tool-section-header" onclick="toggleTool('euribor')">
+                        <span class="tool-icon">📊</span>
+                        <div class="tool-info">
+                            <span class="tool-title">Simulador Euríbor (hipoteca variable)</span>
+                            <span class="tool-desc">Cashflow según Euríbor actual y escenarios</span>
+                        </div>
+                        <span class="tool-chevron">▾</span>
+                    </div>
+                    <div class="tool-body" id="tool-body-euribor">
+                        <div class="tool-inner">
+                            <div class="tools-row">
+                                <div class="form-group">
+                                    <label class="form-label">Capital pendiente</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="eurCapital" type="number" min="0" step="1000" value="80000" inputmode="decimal"/>
+                                        <span class="input-suffix">€</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Diferencial del banco</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="eurDiferencial" type="number" min="0" step="0.05" value="0.75" inputmode="decimal"/>
+                                        <span class="input-suffix">%</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Años restantes</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="eurAnos" type="number" min="1" max="40" step="1" value="20" inputmode="decimal"/>
+                                        <span class="input-suffix">años</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Alquiler mensual</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="eurAlquiler" type="number" min="0" step="50" value="700" inputmode="decimal"/>
+                                        <span class="input-suffix">€/mes</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Gastos fijos mensuales</label>
+                                    <div class="input-group">
+                                        <input class="form-input with-suffix" id="eurGastos" type="number" min="0" step="10" value="150" inputmode="decimal"/>
+                                        <span class="input-suffix">€/mes</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="width:100%;" onclick="calcularEuribor()">📊 Simular escenarios Euríbor</button>
+                            <div id="euriborResultado" class="tool-resultado" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL: WIDGET EMBEBIBLE ──────────────────────────── -->
+    <div class="modal-overlay" id="widgetModal" onclick="if(event.target===this)closeWidgetModal()">
+        <div class="modal-box modal-box--wide">
+            <div class="modal-header">
+                <span class="modal-title">🔌 Widget Embebible</span>
+                <button class="modal-close" onclick="closeWidgetModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-hint">Copia este código en tu web o blog para incrustar la calculadora con tu branding.</p>
+                <div class="widget-options">
+                    <label class="form-label">Tamaño</label>
+                    <div class="widget-size-row">
+                        <button class="widget-size-btn active" onclick="setWidgetSize('full')" id="ws-full">Completo</button>
+                        <button class="widget-size-btn" onclick="setWidgetSize('compact')" id="ws-compact">Compacto (800px)</button>
+                        <button class="widget-size-btn" onclick="setWidgetSize('mini')" id="ws-mini">Mini (480px)</button>
+                    </div>
+                </div>
+                <div class="widget-preview-label">Código para copiar:</div>
+                <div class="widget-code-wrap">
+                    <pre id="widgetCode" class="widget-code"></pre>
+                    <button class="widget-copy-btn" onclick="copyWidgetCode()">📋 Copiar</button>
+                </div>
+                <div class="widget-disclaimer">
+                    ℹ️ El widget carga la calculadora completa en un iframe. Puedes añadir <code>?lang=en</code> para inglés. Uso libre con atribución a pisorentable.org.
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
