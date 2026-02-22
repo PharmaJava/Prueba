@@ -1327,6 +1327,9 @@ function mostrarResultados(datos) {
         <!-- CALCULADORA INVERSA — siempre visible, es pequeña -->
         ${generarCalculadoraInversaHTML()}
 
+        <!-- TURÍSTICO — colapsable, datos en tiempo real -->
+        ${generarTuristicoResumenHTML()}
+
         <!-- GRÁFICO EVOLUCIÓN TEMPORAL — colapsable cerrado -->
         ${colapsable('linechart', '📈 Evolución del beneficio acumulado año a año', generarLineChartHTML(), false)}
 
@@ -3183,21 +3186,7 @@ window.calcularInversa = function() {
 
 // ============================================================
 // COOKIES
-// ============================================================
-function mostrarBannerCookies() {
-    const banner = document.getElementById('cookie-banner');
-    if (!banner) return;
-    if (localStorage.getItem('cookiesAceptadas') !== 'true') {
-        setTimeout(() => banner.classList.add('visible'), 800);
-    }
-}
-
-function aceptarCookies() {
-    const banner = document.getElementById('cookie-banner');
-    if (banner) banner.classList.remove('visible');
-    localStorage.setItem('cookiesAceptadas', 'true');
-}
-
+// ===========
 // ============================================================
 // COOKIES
 // ============================================================
@@ -3443,6 +3432,59 @@ function runComparison() {
 // ============================================================
 // SIMULADOR TURÍSTICO
 // ============================================================
+// Genera el HTML del widget turístico (usado tanto en resultados como en el tab)
+function turisticoHTML(d) {
+    var difClass = d.difAnual >= 0 ? 'metric-positive' : 'metric-negative';
+    var signo    = d.difAnual >= 0 ? '+' : '';
+    var alqLDok  = d.alquilerLD > 0;
+    return (
+        '<div class="tur-resumen-inline">' +
+            '<div class="tur-resumen-col">' +
+                '<span class="tur-resumen-label">🏖️ Turístico neto</span>' +
+                '<span class="tur-resumen-val">' + fmt(Math.round(d.ingresosMensuales)) + ' €/mes</span>' +
+                '<span class="tur-resumen-sub">' + fmt(Math.round(d.ingresosNetos)) + ' €/año · ' + Math.round(d.nochesOcupadas) + ' noches</span>' +
+            '</div>' +
+            (alqLDok
+                ? '<div class="tur-resumen-col">' +
+                    '<span class="tur-resumen-label">🏠 Larga duración</span>' +
+                    '<span class="tur-resumen-val">' + fmt(Math.round(d.ingresosLDMensual)) + ' €/mes</span>' +
+                    '<span class="tur-resumen-sub">' + fmt(Math.round(d.ingresosLD)) + ' €/año</span>' +
+                '</div>' +
+                '<div class="tur-resumen-dif ' + difClass + '">' + signo + fmt(Math.round(d.difAnual)) + ' €/año</div>'
+                : '<div class="tur-resumen-hint">Pon un alquiler en Ingresos para comparar</div>') +
+        '</div>' +
+        '<div style="display:flex;gap:0.6rem;margin-top:0.75rem;">' +
+            '<button class="btn btn-primary" style="flex:1;" onclick="abrirModalTuristico()">🔍 Ver comparativa detallada</button>' +
+            '<button class="btn btn-share" style="flex:1;" onclick="usarIngresosturistico(' + Math.round(d.ingresosMensuales) + ')">✅ Usar en análisis</button>' +
+        '</div>'
+    );
+}
+
+// Widget colapsable para la zona de resultados — se regenera con calcularTuristico()
+function generarTuristicoResumenHTML() {
+    var d = window._lastTuristico;
+    if (!d) {
+        return '<div class="col-section" id="col-turistico-res" style="margin-bottom:1.25rem;">' +
+            '<div class="col-section-header" onclick="toggleSection(\'turistico-res\')">' +
+                '<span class="col-section-title">🏖️ Comparativa Turístico vs. Larga Duración</span>' +
+                '<span class="col-chevron">▾</span>' +
+            '</div>' +
+            '<div class="col-section-body" id="body-turistico-res" style="display:none;">' +
+                '<div style="padding:1rem; font-size:0.85rem; color:var(--text-light);">Ve al tab 🏖️ Turístico, introduce el precio por noche y la comparativa aparecerá aquí automáticamente.</div>' +
+            '</div>' +
+        '</div>';
+    }
+    return '<div class="col-section" id="col-turistico-res" style="margin-bottom:1.25rem;">' +
+        '<div class="col-section-header" onclick="toggleSection(\'turistico-res\')">' +
+            '<span class="col-section-title">🏖️ Comparativa Turístico vs. Larga Duración</span>' +
+            '<span class="col-chevron">▾</span>' +
+        '</div>' +
+        '<div class="col-section-body" id="body-turistico-res" style="display:none;">' +
+            '<div style="padding:1rem 0;">' + turisticoHTML(d) + '</div>' +
+        '</div>' +
+    '</div>';
+}
+
 function calcularTuristico() {
     const precioNoche = parseFloat(document.getElementById('precioNoche')?.value) || 0;
     const ocupacion   = parseFloat(document.getElementById('ocupacionTuristico')?.value) || 65;
@@ -3484,27 +3526,15 @@ function calcularTuristico() {
     const signo = difAnual >= 0 ? '+' : '';
     const alquilerLDOk = alquilerLD > 0;
 
+    // Actualizar el div dentro del tab turístico
     res.style.display = 'block';
-    res.innerHTML =
-        '<div class="tur-resumen-inline">' +
-            '<div class="tur-resumen-col">' +
-                '<span class="tur-resumen-label">🏖️ Turístico neto</span>' +
-                '<span class="tur-resumen-val">' + fmt(Math.round(ingresosMensuales)) + ' €/mes</span>' +
-                '<span class="tur-resumen-sub">' + fmt(Math.round(ingresosNetos)) + ' €/año</span>' +
-            '</div>' +
-            (alquilerLDOk
-                ? '<div class="tur-resumen-col">' +
-                    '<span class="tur-resumen-label">🏠 Larga duración</span>' +
-                    '<span class="tur-resumen-val">' + fmt(Math.round(ingresosLDMensual)) + ' €/mes</span>' +
-                    '<span class="tur-resumen-sub">' + fmt(Math.round(ingresosLD)) + ' €/año</span>' +
-                '</div>' +
-                '<div class="tur-resumen-dif ' + difClass + '">' + signo + fmt(Math.round(difAnual)) + ' €/año</div>'
-                : '<div class="tur-resumen-hint">Pon un alquiler en la pestaña Ingresos para comparar</div>') +
-        '</div>' +
-        '<div style="display:flex; gap:0.6rem; margin-top:0.75rem;">' +
-            '<button class="btn btn-primary" style="flex:1;" onclick="abrirModalTuristico()">🔍 Ver comparativa detallada</button>' +
-            '<button class="btn btn-share" style="flex:1;" onclick="usarIngresosturistico(' + Math.round(ingresosMensuales) + ')">✅ Usar en análisis</button>' +
-        '</div>';
+    res.innerHTML = turisticoHTML(window._lastTuristico);
+
+    // Actualizar también el widget en la zona de resultados si ya está renderizado
+    var bodyRes = document.getElementById('body-turistico-res');
+    if (bodyRes) {
+        bodyRes.innerHTML = '<div style="padding:1rem 0;">' + turisticoHTML(window._lastTuristico) + '</div>';
+    }
 }
 
 // ── Modal comparativa turístico detallada ────────────────────
