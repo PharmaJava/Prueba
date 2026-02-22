@@ -3437,52 +3437,76 @@ function turisticoHTML(d) {
     var difClass = d.difAnual >= 0 ? 'metric-positive' : 'metric-negative';
     var signo    = d.difAnual >= 0 ? '+' : '';
     var alqLDok  = d.alquilerLD > 0;
-    return (
+
+    // Calcular cashflow estimado con ingresos turísticos (usando datos del análisis actual)
+    var datos = window._lastDatos;
+    var cashflowTur = null;
+    var cashflowLD  = null;
+    if (datos) {
+        var gastosMes = datos.gastosFijosAnuales ? datos.gastosFijosAnuales / 12 : 0;
+        var cuotaMes  = datos.cuotaHipoteca || 0;
+        cashflowTur = d.ingresosMensuales - cuotaMes - gastosMes;
+        cashflowLD  = alqLDok ? (d.ingresosLDMensual - cuotaMes - gastosMes) : null;
+    }
+
+    var html =
         '<div class="tur-resumen-inline">' +
             '<div class="tur-resumen-col">' +
-                '<span class="tur-resumen-label">🏖️ Turístico neto</span>' +
+                '<span class="tur-resumen-label">🏖️ Ingresos turístico</span>' +
                 '<span class="tur-resumen-val">' + fmt(Math.round(d.ingresosMensuales)) + ' €/mes</span>' +
                 '<span class="tur-resumen-sub">' + fmt(Math.round(d.ingresosNetos)) + ' €/año · ' + Math.round(d.nochesOcupadas) + ' noches</span>' +
             '</div>' +
             (alqLDok
                 ? '<div class="tur-resumen-col">' +
-                    '<span class="tur-resumen-label">🏠 Larga duración</span>' +
+                    '<span class="tur-resumen-label">🏠 Ingresos larga duración</span>' +
                     '<span class="tur-resumen-val">' + fmt(Math.round(d.ingresosLDMensual)) + ' €/mes</span>' +
                     '<span class="tur-resumen-sub">' + fmt(Math.round(d.ingresosLD)) + ' €/año</span>' +
+                '</div>'
+                : '') +
+            (alqLDok
+                ? '<div class="tur-resumen-dif ' + difClass + '">' + signo + fmt(Math.round(d.difAnual)) + ' €/año más con turístico</div>'
+                : '<div class="tur-resumen-hint">Añade alquiler en pestaña Ingresos para comparar</div>') +
+        '</div>';
+
+    // Mostrar cashflow estimado si tenemos datos del análisis
+    if (cashflowTur !== null) {
+        var cfTurClass = cashflowTur >= 0 ? 'metric-positive' : 'metric-negative';
+        html +=
+            '<div class="tur-cashflow-row">' +
+                '<div class="tur-cashflow-item">' +
+                    '<span class="tur-cashflow-label">💰 Cashflow turístico est.</span>' +
+                    '<span class="tur-cashflow-val ' + cfTurClass + '">' + fmt(Math.round(cashflowTur)) + ' €/mes</span>' +
                 '</div>' +
-                '<div class="tur-resumen-dif ' + difClass + '">' + signo + fmt(Math.round(d.difAnual)) + ' €/año</div>'
-                : '<div class="tur-resumen-hint">Pon un alquiler en Ingresos para comparar</div>') +
-        '</div>' +
+                (cashflowLD !== null
+                    ? '<div class="tur-cashflow-item">' +
+                        '<span class="tur-cashflow-label">💰 Cashflow larga duración</span>' +
+                        '<span class="tur-cashflow-val ' + (cashflowLD >= 0 ? 'metric-positive' : 'metric-negative') + '">' + fmt(Math.round(cashflowLD)) + ' €/mes</span>' +
+                    '</div>'
+                    : '') +
+            '</div>';
+    }
+
+    html +=
         '<div style="display:flex;gap:0.6rem;margin-top:0.75rem;">' +
-            '<button class="btn btn-primary" style="flex:1;" onclick="abrirModalTuristico()">🔍 Ver comparativa detallada</button>' +
-            '<button class="btn btn-share" style="flex:1;" onclick="usarIngresosturistico(' + Math.round(d.ingresosMensuales) + ')">✅ Usar en análisis</button>' +
-        '</div>'
-    );
+            '<button class="btn btn-primary" style="flex:1;" onclick="abrirModalTuristico()">🔍 Comparativa detallada</button>' +
+            '<button class="btn btn-share" style="flex:1;" onclick="usarIngresosturistico(' + Math.round(d.ingresosMensuales) + ')">✅ Cargar turístico y recalcular</button>' +
+        '</div>';
+
+    return html;
 }
 
-// Widget colapsable para la zona de resultados — se regenera con calcularTuristico()
+// Widget colapsable para la zona de resultados — usa la función colapsable() estándar
 function generarTuristicoResumenHTML() {
     var d = window._lastTuristico;
+    var inner;
     if (!d) {
-        return '<div class="col-section" id="col-turistico-res" style="margin-bottom:1.25rem;">' +
-            '<div class="col-section-header" onclick="toggleSection(\'turistico-res\')">' +
-                '<span class="col-section-title">🏖️ Comparativa Turístico vs. Larga Duración</span>' +
-                '<span class="col-chevron">▾</span>' +
-            '</div>' +
-            '<div class="col-section-body" id="body-turistico-res" style="display:none;">' +
-                '<div style="padding:1rem; font-size:0.85rem; color:var(--text-light);">Ve al tab 🏖️ Turístico, introduce el precio por noche y la comparativa aparecerá aquí automáticamente.</div>' +
-            '</div>' +
-        '</div>';
+        inner = '<div style="padding:0.5rem 0; font-size:0.85rem; color:var(--text-light);">' +
+            'Ve al tab 🏖️ Turístico, introduce el precio por noche y la comparativa aparecerá aquí.' +
+            '</div>';
+    } else {
+        inner = '<div id="body-turistico-res">' + turisticoHTML(d) + '</div>';
     }
-    return '<div class="col-section" id="col-turistico-res" style="margin-bottom:1.25rem;">' +
-        '<div class="col-section-header" onclick="toggleSection(\'turistico-res\')">' +
-            '<span class="col-section-title">🏖️ Comparativa Turístico vs. Larga Duración</span>' +
-            '<span class="col-chevron">▾</span>' +
-        '</div>' +
-        '<div class="col-section-body" id="body-turistico-res" style="display:none;">' +
-            '<div style="padding:1rem 0;">' + turisticoHTML(d) + '</div>' +
-        '</div>' +
-    '</div>';
+    return colapsable('turistico-res', '🏖️ Comparativa Turístico vs. Larga Duración', inner, false);
 }
 
 function calcularTuristico() {
@@ -3533,7 +3557,7 @@ function calcularTuristico() {
     // Actualizar también el widget en la zona de resultados si ya está renderizado
     var bodyRes = document.getElementById('body-turistico-res');
     if (bodyRes) {
-        bodyRes.innerHTML = '<div style="padding:1rem 0;">' + turisticoHTML(window._lastTuristico) + '</div>';
+        bodyRes.innerHTML = turisticoHTML(window._lastTuristico);
     }
 }
 
