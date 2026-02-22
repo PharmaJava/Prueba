@@ -2428,231 +2428,189 @@ html.dark .hipoteca-row-amort { background: rgba(251,191,36,0.04) !important; }
    BLOQUE REFERENCIA DE MERCADO
    ============================================================ */
 .mercado-ref-block {
-    background: linear-gradient(135deg, rgba(26,95,168,0.06) 0%, rgba(46,159,216,0.08) 100%);
-    border: 1.5px solid rgba(26,95,168,0.18);
-    border-radius: 16px;
-    padding: 1.25rem 1.25rem 1rem;
-    margin-top: 0.5rem;
-}
-
-/* Fila inline: CP + Superficie */
-.mercado-row-inline {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-}
-.mercado-row-inline .form-group { margin-bottom: 0; }
-
-/* Tarjeta automática de datos de provincia */
-.mercado-card {
     background: var(--white);
-    border: 1.5px solid var(--primary);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 1.1rem 1.1rem 0.9rem;
+    margin-top: 1rem;
+}
+
+/* Grid de 3 inputs: CP | Superficie | €/m² */
+.mercado-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+@media (max-width: 600px) {
+    .mercado-inputs-grid { grid-template-columns: 1fr 1fr; }
+    .mercado-inputs-grid .form-group:last-child { grid-column: 1 / -1; }
+}
+
+.mercado-prov-hint {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    min-height: 1em;
+    transition: color 0.2s;
+}
+
+.mercado-m2-auto {
+    font-size: 0.68rem;
+    color: var(--success, #10b981);
+    font-weight: 600;
+    margin-left: 0.3rem;
+}
+
+/* Resultado: valor estimado */
+.mercado-resultado-nuevo {
+    margin-top: 1rem;
+    border: 1.5px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 0.75rem;
-    animation: slideIn 0.25s ease;
-}
-@keyframes slideIn { from { opacity:0; transform:translateY(-6px) } to { opacity:1; transform:translateY(0) } }
-
-.mercado-card-provincia {
-    background: var(--primary);
-    color: white;
-    font-size: 0.82rem;
-    font-weight: 700;
-    padding: 0.4rem 0.85rem;
+    animation: fadeIn 0.3s ease;
 }
 
-.mercado-card-precio {
+@keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+
+.mercado-valor-estimado {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 0.85rem;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(135deg, #1a5fa8 0%, #2563eb 100%);
+    color: white;
+}
+.mercado-valor-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    opacity: 0.9;
+}
+.mercado-valor-num {
+    font-size: 1.4rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+/* Fila comparativa tu precio vs mercado */
+.mercado-comparativa-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    background: var(--light);
     flex-wrap: wrap;
 }
-
-.mercado-precio-item {
+.mercado-comp-item {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    align-items: center;
+    flex: 1;
+    min-width: 80px;
 }
-
-.mercado-precio-label {
-    font-size: 0.7rem;
-    font-weight: 600;
+.mercado-comp-label {
+    font-size: 0.68rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--text-light);
+    font-weight: 700;
+    margin-bottom: 0.2rem;
 }
-
-.mercado-precio-val {
-    font-size: 1.35rem;
+.mercado-comp-val {
+    font-size: 1rem;
     font-weight: 800;
     font-family: 'Inter', sans-serif;
-    color: var(--primary);
-    line-height: 1;
+    color: var(--dark);
+}
+.mercado-comp-sep {
+    flex: 2;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-light);
+    padding: 0 0.25rem;
 }
 
-.mercado-precio-item--edit {
-    margin-left: auto;
+/* Fila oferta */
+.mercado-oferta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    border-top: 1px solid var(--border);
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.mercado-oferta-label {
+    font-size: 0.82rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+.mercado-ahorro-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--text-light);
+    background: var(--light);
 }
 
-/* Dark mode */
-html.dark .mercado-card {
-    background: #071528;
-    border-color: #5ba3e0;
+/* Mantener input de descuento compacto */
+.mercado-descuento-input {
+    width: 48px;
+    padding: 0.2rem 0.4rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-align: center;
+    background: var(--white);
+    color: var(--dark);
+    font-family: inherit;
 }
-html.dark .mercado-card-provincia {
-    background: #1e3a5f;
-}
+.mercado-descuento-input:focus { outline: none; border-color: var(--primary); }
 
+/* Header del bloque */
 .mercado-ref-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 1.1rem;
 }
-
-.mercado-ref-icon {
-    font-size: 1.1rem;
-}
-
+.mercado-ref-icon { font-size: 1rem; }
 .mercado-ref-title {
-    font-size: 0.95rem;
     font-weight: 700;
+    font-size: 0.9rem;
     color: var(--dark);
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
-
 .mercado-ref-badge {
     font-size: 0.65rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
     text-transform: uppercase;
-    background: rgba(26,95,168,0.1);
-    border: 1px solid rgba(26,95,168,0.2);
-    color: var(--primary);
-    border-radius: 99px;
-    padding: 0.15rem 0.55rem;
-}
-
-.mercado-field {
-    margin-bottom: 1rem;
-}
-
-.mercado-field:last-child {
-    margin-bottom: 0;
-}
-
-/* Panel de resultado */
-.mercado-resultado {
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 0.75rem;
-    animation: slideIn 0.3s ease;
-}
-
-.mercado-resultado-divider {
+    letter-spacing: 0.06em;
     background: var(--light);
     color: var(--text-light);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.4rem 0.9rem;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.15rem 0.5rem;
 }
 
-.mercado-resultado-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.6rem 0.9rem;
-    font-size: 0.88rem;
-    color: var(--text);
-    border-bottom: 1px solid var(--border);
-    gap: 0.75rem;
-}
-
-.mercado-resultado-row:last-child {
-    border-bottom: none;
-}
-
-.mercado-resultado-row > span:first-child {
-    flex-shrink: 0;
-    color: var(--text-light);
-    font-weight: 500;
-}
-
-.mercado-resultado-row--vs {
-    background: rgba(26,95,168,0.03);
-}
-
-.mercado-resultado-row--oferta {
-    background: rgba(61, 184, 72, 0.06);
-    border-top: 2px solid var(--success);
-    font-weight: 600;
-}
-
-.mercado-resultado-row--ahorro {
-    background: rgba(61, 184, 72, 0.03);
-}
-
-/* Input de descuento inline */
-.mercado-descuento-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.mercado-descuento-input {
-    width: 56px;
-    padding: 0.3rem 0.5rem;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-    color: var(--dark);
-    background: var(--white);
-    transition: border-color 0.2s;
-}
-
-.mercado-descuento-input:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-.mercado-descuento-pct {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--text-light);
-}
-
-/* Dark mode del bloque */
-html.dark .mercado-ref-block {
-    background: linear-gradient(135deg, rgba(91,163,224,0.06) 0%, rgba(56,189,248,0.08) 100%);
-    border-color: rgba(91,163,224,0.2);
-}
-
-html.dark .mercado-resultado {
-    background: #071528;
-    border-color: #1e3a5f;
-}
-
-html.dark .mercado-resultado-divider {
-    background: #0d2036;
-    border-color: #1e3a5f;
-}
-
-html.dark .mercado-resultado-row {
-    border-color: #1e3a5f;
-}
+/* Dark mode */
+html.dark .mercado-ref-block { background: var(--dark-card); border-color: #1e3a5f; }
+html.dark .mercado-resultado-nuevo { border-color: #1e3a5f; }
+html.dark .mercado-comparativa-row { background: #0d2036; }
+html.dark .mercado-comp-val { color: #e2e8f0; }
+html.dark .mercado-ahorro-row { background: #0d2036; border-color: #1e3a5f; }
+html.dark .mercado-oferta-row { border-color: #1e3a5f; }
+html.dark .mercado-descuento-input { background: #0d2036; border-color: #1e3a5f; color: #e2e8f0; }
 
 html.dark .mercado-descuento-input {
     background: #0d2036;
