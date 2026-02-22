@@ -431,6 +431,14 @@ function actualizarMercado() {
     } else {
         resultado.style.display = 'none';
     }
+
+    // Guardar en historial de CPs
+    const _cpHist = (document.getElementById('codigoPostal')?.value || '').trim();
+    const _prefHist = _cpHist.slice(0, 2);
+    const _provHist = _prefHist.length === 2 ? PROVINCIA_DATA[_prefHist] : null;
+    if (_provHist && _cpHist.length >= 4) {
+        if (typeof addToHistorial === 'function') addToHistorial(_cpHist, _provHist.nombre, _provHist.precioM2);
+    }
 }
 
 // ============================================================
@@ -2565,6 +2573,12 @@ document.addEventListener('DOMContentLoaded', () => {
         shareBtn.addEventListener('click', compartirAnalisis);
     }
 
+    // Botón herramientas
+    const toolsBtn = document.getElementById('toolsBtn');
+    if (toolsBtn) {
+        toolsBtn.addEventListener('click', openToolsModal);
+    }
+
     // Botón PDF
     const pdfBtn = document.getElementById('pdfBtn');
     if (pdfBtn) {
@@ -3669,10 +3683,7 @@ window.copyWidgetCode = function() {
     });
 };
 
-// Registrar listener del botón widget
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('widgetBtn')?.addEventListener('click', openWidgetModal);
-}, { once: true });
+// widgetBtn eliminado — sin listener extra
 
 // ============================================================
 // HERRAMIENTAS ADICIONALES — Modal principal
@@ -3700,9 +3711,7 @@ window.toggleTool = function(id) {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('toolsBtn')?.addEventListener('click', openToolsModal);
-});
+// toolsBtn se registra en el DOMContentLoaded principal
 
 // ============================================================
 // HERRAMIENTA 1 — ¿Cuánto puedo pagar?
@@ -3836,15 +3845,7 @@ window.cargarCPHistorial = function(cp) {
     closeToolsModal();
 };
 
-// Guardar en historial cuando se busca un CP válido
-const _origActualizarMercado = actualizarMercado;
-actualizarMercado = function() {
-    _origActualizarMercado();
-    const cp = (document.getElementById('codigoPostal')?.value || '').trim();
-    const prefix = cp.slice(0, 2);
-    const prov = prefix.length === 2 ? PROVINCIA_DATA[prefix] : null;
-    if (prov && cp.length >= 4) addToHistorial(cp, prov.nombre, prov.precioM2);
-};
+// Historial de CP: se llama desde dentro de actualizarMercado directamente
 
 // ============================================================
 // HERRAMIENTA 3 — Modo rápido ¿Me sale la cuenta?
