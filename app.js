@@ -824,6 +824,8 @@ function calcular() {
         });
         actualizarResumenFlotante(datos);
         validarEntradas({ mesesVacio, entradaEuros, precio });
+        // Actualizar widget turístico en resultados con los datos actuales
+        calcularTuristico();
 
     } catch (err) {
         console.error(err);
@@ -3495,18 +3497,14 @@ function turisticoHTML(d) {
     return html;
 }
 
-// Widget colapsable para la zona de resultados — usa la función colapsable() estándar
+// Widget colapsable para la zona de resultados — siempre con id="body-turistico-res"
 function generarTuristicoResumenHTML() {
     var d = window._lastTuristico;
-    var inner;
-    if (!d) {
-        inner = '<div style="padding:0.5rem 0; font-size:0.85rem; color:var(--text-light);">' +
-            'Ve al tab 🏖️ Turístico, introduce el precio por noche y la comparativa aparecerá aquí.' +
-            '</div>';
-    } else {
-        inner = '<div id="body-turistico-res">' + turisticoHTML(d) + '</div>';
-    }
-    return colapsable('turistico-res', '🏖️ Comparativa Turístico vs. Larga Duración', inner, false);
+    var inner = d
+        ? turisticoHTML(d)
+        : '<div style="padding:0.5rem 0; font-size:0.85rem; color:var(--text-light);">Introduce el precio por noche en el tab 🏖️ Turístico y la comparativa aparecerá aquí automáticamente.</div>';
+    return colapsable('turistico-res', '🏖️ Comparativa Turístico vs. Larga Duración',
+        '<div id="body-turistico-res">' + inner + '</div>', false);
 }
 
 function calcularTuristico() {
@@ -3516,13 +3514,7 @@ function calcularTuristico() {
     const limpieza    = parseFloat(document.getElementById('gastosLimpieza')?.value) || 0;
     const suministros = parseFloat(document.getElementById('suministrosTuristico')?.value) || 0;
 
-    const res = document.getElementById('turisticoResultado');
-    if (precioNoche <= 0) {
-        if (res) res.innerHTML = '<div class="tur-empty">Introduce el precio por noche para ver la comparativa en tiempo real 👆</div>';
-        return;
-    }
-
-    // Ingresos turístico
+    // Calcular siempre — con o sin el div del tab visible
     const nochesOcupadas = 365 * (ocupacion / 100);
     const ingresosBrutos = precioNoche * nochesOcupadas;
     const gastosPlataforma = ingresosBrutos * (comision / 100);
@@ -3534,30 +3526,34 @@ function calcularTuristico() {
     const mesesVacioLD = parseFloat(document.getElementById('mesesVacio')?.value) || 0;
     const ingresosLD = alquilerLD * 12 * (1 - mesesVacioLD / 12);
     const ingresosLDMensual = ingresosLD / 12;
-
     const difAnual = ingresosNetos - ingresosLD;
 
-    if (!res) return;
+    const res = document.getElementById('turisticoResultado');
 
-    // Guardar datos para el modal
+    if (precioNoche <= 0) {
+        window._lastTuristico = null;
+        if (res) res.innerHTML = '<div class="tur-empty">Introduce el precio por noche para ver la comparativa 👆</div>';
+        var bodyRes0 = document.querySelector('#col-turistico-res .col-inner');
+        if (bodyRes0) bodyRes0.innerHTML = '<div id="body-turistico-res"><div style="padding:0.5rem 0;font-size:0.85rem;color:var(--text-light);">Introduce el precio por noche en el tab 🏖️ Turístico y la comparativa aparecerá aquí automáticamente.</div></div>';
+        return;
+    }
+
+    // Guardar datos
     window._lastTuristico = {
         precioNoche, ocupacion, comision, limpieza, suministros,
         nochesOcupadas, ingresosBrutos, gastosPlataforma, ingresosNetos, ingresosMensuales,
         alquilerLD, mesesVacioLD, ingresosLD, ingresosLDMensual, difAnual
     };
 
-    const difClass = difAnual >= 0 ? 'metric-positive' : 'metric-negative';
-    const signo = difAnual >= 0 ? '+' : '';
-    const alquilerLDOk = alquilerLD > 0;
+    var html = turisticoHTML(window._lastTuristico);
 
-    // Actualizar el div dentro del tab turístico
-    res.style.display = 'block';
-    res.innerHTML = turisticoHTML(window._lastTuristico);
+    // Actualizar tab turístico
+    if (res) { res.style.display = 'block'; res.innerHTML = html; }
 
-    // Actualizar también el widget en la zona de resultados si ya está renderizado
-    var bodyRes = document.getElementById('body-turistico-res');
-    if (bodyRes) {
-        bodyRes.innerHTML = turisticoHTML(window._lastTuristico);
+    // Actualizar colapsable en resultados — buscar el col-inner y poner el contenido
+    var colInner = document.querySelector('#col-turistico-res .col-inner');
+    if (colInner) {
+        colInner.innerHTML = '<div id="body-turistico-res">' + html + '</div>';
     }
 }
 
