@@ -2545,6 +2545,165 @@ function exportToPDF(opts) {
 
     } // fin sec comparativa
 
+
+    // ────────────────────────────────────────────────────────────
+    // SECCIÓN: ANÁLISIS DE ZONA (CP + €/m² + valor estimado)
+    // ────────────────────────────────────────────────────────────
+    if (sec('zona')) {
+        const cp         = document.getElementById('codigoPostal')?.value?.trim() || '';
+        const precioM2   = parseFloat(document.getElementById('precioRefM2')?.value) || 0;
+        const superficie = parseFloat(document.getElementById('superficieM2')?.value) || 0;
+        const provHint   = document.getElementById('mercadoProvHint')?.textContent || '';
+
+        if (cp && (precioM2 > 0 || superficie > 0)) {
+            newPage();
+            sectionTitle(s('Análisis de Zona — Referencia de Mercado'));
+
+            const valorEstimado = precioM2 * superficie;
+            const precioCompra  = datos.precio || 0;
+            const diferencia    = precioCompra > 0 && valorEstimado > 0 ? precioCompra - valorEstimado : 0;
+            const difPct        = valorEstimado > 0 && precioCompra > 0 ? (diferencia / valorEstimado * 100) : 0;
+            const descuento     = parseFloat(document.getElementById('descuentoOferta')?.value) || 10;
+            const oferta        = precioCompra > 0 ? precioCompra * (1 - descuento/100) : valorEstimado * (1 - descuento/100);
+
+            const rows = [
+                { label: 'Codigo postal', value: cp },
+                { label: s('Zona / Municipio'),  value: s(provHint.replace(/📍|🗺️/g, '').trim()) || 'N/D' },
+                { label: 'Precio medio EUR/m2',  value: precioM2 > 0 ? f(precioM2) + ' EUR/m2' : 'N/D' },
+                { label: 'Superficie',            value: superficie > 0 ? superficie + ' m2' : 'N/D' },
+            ];
+            if (valorEstimado > 0) {
+                rows.push({ label: 'Valor estimado de mercado', value: f(Math.round(valorEstimado)) + ' EUR', color: C.info });
+            }
+            if (precioCompra > 0 && valorEstimado > 0) {
+                rows.push({ label: 'Tu precio de compra',  value: f(Math.round(precioCompra)) + ' EUR' });
+                const vsColor = diferencia > 0 ? C.danger : C.accent;
+                const vsLabel = Math.abs(difPct) < 2 ? 'En linea con el mercado' :
+                                diferencia > 0 ? '+' + difPct.toFixed(1) + '% sobre mercado' :
+                                difPct.toFixed(1) + '% bajo mercado (buena compra)';
+                rows.push({ label: s('Precio vs. mercado'), value: s(vsLabel), color: vsColor });
+                rows.push({ label: s('Oferta sugerida (' + descuento + '% dto.)'), value: f(Math.round(oferta)) + ' EUR', color: C.accent });
+                rows.push({ label: 'Ahorro potencial',    value: f(Math.round(precioCompra - oferta)) + ' EUR', color: C.accent });
+            }
+            twoColMetrics(rows);
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // SECCIÓN: PLUSVALÍA MUNICIPAL REAL (Ley 11/2021)
+    // ────────────────────────────────────────────────────────────
+    if (sec('plusvalia_real')) {
+        const catastral   = parseFloat(document.getElementById('pvCatastral')?.value) || 0;
+        const anosPlus    = parseFloat(document.getElementById('pvAnos')?.value) || datos.anosAnalisis || 10;
+        const municipio   = document.getElementById('pvMunicipio')?.value || '_default';
+        const plusvaliaManual = parseFloat(document.getElementById('plusvalia')?.value) || 0;
+
+        // Si no hay valor catastral, estimamos al 35% del precio
+        const catastralEfectivo = catastral > 0 ? catastral : (datos.precio ? Math.round(datos.precio * 0.35) : 0);
+
+        if (catastralEfectivo > 0) {
+            newPage();
+            sectionTitle(s('Plusvalía Municipal — Cálculo Real (Ley 11/2021)'));
+
+            const anos   = Math.min(Math.max(1, Math.ceil(anosPlus)), 20);
+            const COEF   = {1:0.14,2:0.13,3:0.15,4:0.16,5:0.17,6:0.17,7:0.17,8:0.17,9:0.16,
+                            10:0.14,11:0.12,12:0.10,13:0.09,14:0.09,15:0.09,
+                            16:0.09,17:0.09,18:0.09,19:0.09,20:0.09};
+            const TIPOS  = {Madrid:29,Barcelona:30,Valencia:30,Sevilla:28,Zaragoza:28,
+                            Malaga:27,Bilbao:25,Palma:22,Alicante:25,Murcia:25,_default:25};
+            const coef   = COEF[anos];
+            const tipo   = TIPOS[municipio] || TIPOS['_default'];
+            const base   = Math.round(catastralEfectivo * coef);
+            const cuota  = Math.round(base * tipo / 100);
+
+            twoColMetrics([
+                { label: s('Valor catastral suelo'), value: f(catastralEfectivo) + ' EUR' + (catastral <= 0 ? s(' (estimado ~35%)') : '') },
+                { label: s('Años de tenencia'),       value: anos + s(' años') },
+                { label: s('Coeficiente RD 27/2021'), value: (coef * 100).toFixed(2) + '%' },
+                { label: 'Base imponible',            value: f(base) + ' EUR' },
+                { label: s('Tipo impositivo (' + municipio.replace('_default', 'general') + ')'), value: tipo + '%' },
+                { label: 'Cuota a pagar (estimacion)',value: f(cuota) + ' EUR', color: C.danger },
+                { label: 'Valor introducido manualmente', value: plusvaliaManual > 0 ? f(plusvaliaManual) + ' EUR' : 'N/D' },
+            ]);
+
+            // Nota legal
+            setFont('italic', 7.5, C.grey);
+            const nota = s('Nota: Cálculo estimativo según método objetivo (RD 27/2021). El ayuntamiento también puede aplicar el método directo (ganancia real × tipo). Consulta con gestor.');
+            const notaLines = doc.splitTextToSize(nota, CW);
+            doc.text(notaLines, ML, y);
+            y += notaLines.length * 4.5 + 3;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // SECCIÓN: RENTABILIDAD COMPARADA POR CIUDADES
+    // ────────────────────────────────────────────────────────────
+    if (sec('rentabilidad_ciudad')) {
+        newPage();
+        sectionTitle(s('Rentabilidad Bruta Media por Ciudad — España 2025'));
+
+        const ciudades = [
+            { ciudad: 'Murcia',       rentBruta: 7.8, precioM2: 1100 },
+            { ciudad: 'Huelva',       rentBruta: 7.5, precioM2: 900  },
+            { ciudad: 'Toledo',       rentBruta: 7.2, precioM2: 900  },
+            { ciudad: s('Córdoba'),   rentBruta: 7.0, precioM2: 1100 },
+            { ciudad: s('Almería'),   rentBruta: 7.0, precioM2: 1050 },
+            { ciudad: 'Zaragoza',     rentBruta: 6.8, precioM2: 1600 },
+            { ciudad: 'Valladolid',   rentBruta: 6.5, precioM2: 1300 },
+            { ciudad: 'Alicante',     rentBruta: 6.4, precioM2: 1900 },
+            { ciudad: 'Tenerife',     rentBruta: 6.3, precioM2: 1800 },
+            { ciudad: 'Valencia',     rentBruta: 6.2, precioM2: 2200 },
+            { ciudad: 'Salamanca',    rentBruta: 6.2, precioM2: 1200 },
+            { ciudad: 'Las Palmas',   rentBruta: 6.0, precioM2: 2200 },
+            { ciudad: 'Burgos',       rentBruta: 6.0, precioM2: 1100 },
+            { ciudad: 'Sevilla',      rentBruta: 5.9, precioM2: 2000 },
+            { ciudad: s('Málaga'),    rentBruta: 5.7, precioM2: 3100 },
+            { ciudad: 'Oviedo',       rentBruta: 5.8, precioM2: 1800 },
+            { ciudad: 'Vigo',         rentBruta: 5.6, precioM2: 2000 },
+            { ciudad: 'Granada',      rentBruta: 5.5, precioM2: 1800 },
+            { ciudad: 'Madrid',       rentBruta: 4.8, precioM2: 5200 },
+            { ciudad: 'Barcelona',    rentBruta: 4.5, precioM2: 5500 },
+            { ciudad: 'San Sebastian',rentBruta: 3.8, precioM2: 5500 },
+        ];
+
+        // Encabezado de tabla
+        const colW = [70, 40, 50, 40];
+        const colX = [ML, ML+colW[0], ML+colW[0]+colW[1], ML+colW[0]+colW[1]+colW[2]];
+        checkNewPage(12);
+        fillRect(ML, y, CW, 8, C.darkMid);
+        setFont('bold', 8, C.white);
+        doc.text('Ciudad', colX[0]+2, y+5.5);
+        doc.text('Rent. bruta', colX[1]+2, y+5.5);
+        doc.text(s('€/m² medio'), colX[2]+2, y+5.5);
+        doc.text('vs. tu inversión', colX[3]+2, y+5.5);
+        y += 9;
+
+        const myRent = datos ? datos.rentabilidadAnual : 0;
+        ciudades.forEach((c, i) => {
+            checkNewPage(8);
+            if (i % 2 === 0) fillRect(ML, y, CW, 7.5, C.greyXLight);
+            const rentColor = c.rentBruta >= 6.5 ? C.accent : c.rentBruta >= 5.0 ? C.warning : C.danger;
+            setFont('normal', 8, C.dark);
+            doc.text(c.ciudad, colX[0]+2, y+5);
+            setFont('bold', 8, rentColor);
+            doc.text(c.rentBruta.toFixed(1) + '%', colX[1]+2, y+5);
+            setFont('normal', 8, C.dark);
+            doc.text(f(c.precioM2) + ' EUR/m2', colX[2]+2, y+5);
+            if (myRent > 0) {
+                const diff = myRent - c.rentBruta;
+                const diffColor = diff >= 0 ? C.accent : C.danger;
+                setFont('bold', 8, diffColor);
+                doc.text((diff >= 0 ? '+' : '') + diff.toFixed(1) + '%', colX[3]+2, y+5);
+            }
+            y += 7.5;
+        });
+        y += 4;
+
+        setFont('italic', 7.5, C.grey);
+        doc.text(s('Fuente: Idealista 2025. Rentabilidad bruta = alquiler anual / precio compra. No incluye gastos.'), ML, y);
+        y += 5;
+    }
+
     // ── HERRAMIENTAS EN PDF ───────────────────────────────────
 
     // TURÍSTICO
