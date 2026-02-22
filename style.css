@@ -3734,3 +3734,28 @@ html.dark .tur-modal-table td  { border-color: #1e3a5f; color: #cbd5e1; }
 html.dark .tur-modal-total td  { background: #0d2036; }
 html.dark .tur-modal-pros-contras { border-color: #1e3a5f; }
 html.dark .tur-modal-pros      { border-color: #1e3a5f; }
+
+/* ── Fila cashflow turístico ─────────────────────────────── */
+.tur-cashflow-row {
+    display: flex;
+    gap: 0;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 0.6rem;
+}
+.tur-cashflow-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.6rem 0.5rem;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    background: var(--light);
+}
+.tur-cashflow-item:last-child { border-right: none; }
+.tur-cashflow-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-light); margin-bottom: 0.2rem; }
+.tur-cashflow-val   { font-size: 1rem; font-weight: 800; font-family: 'Inter', sans-serif; }
+html.dark .tur-cashflow-item { background: #0d2036; border-color: #1e3a5f; }
+html.dark .tur-cashflow-row  { border-color: #1e3a5f; }
