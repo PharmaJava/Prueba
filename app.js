@@ -366,11 +366,9 @@ const PROVINCIA_DATA = {
 let _mercadoPrecioManual = false;
 
 function actualizarMercado() {
-    const cpEl      = document.getElementById('codigoPostal');
-    const precioEl  = document.getElementById('precioRefM2');
-    const supEl     = document.getElementById('superficieM2');
-    const resultado = document.getElementById('mercadoResultado');
-    const card      = document.getElementById('mercadoCard');
+    const cpEl     = document.getElementById('codigoPostal');
+    const precioEl = document.getElementById('precioRefM2');
+    const supEl    = document.getElementById('superficieM2');
 
     if (!cpEl) return;
 
@@ -378,66 +376,92 @@ function actualizarMercado() {
     const prefix = cp.slice(0, 2);
     const prov   = (prefix.length === 2) ? PROVINCIA_DATA[prefix] : null;
 
-    // ── 1. Mostrar tarjeta de provincia y rellenar €/m² automáticamente ──
+    // ── 1. Detectar provincia y autorellenar €/m² ──
+    const hintEl  = document.getElementById('mercadoProvHint');
+    const autoEl  = document.getElementById('mercadoM2Auto');
+
     if (prov) {
-        // Mostrar tarjeta con datos de la provincia
-        if (card) {
-            card.style.display = 'block';
-            const provEl = document.getElementById('mercadoCardProvincia');
-            const m2El   = document.getElementById('mercadoCardPrecioM2');
-            if (provEl) provEl.textContent = '📍 ' + prov.nombre;
-            if (m2El)   m2El.textContent   = prov.precioM2.toLocaleString('es-ES') + ' €/m²';
+        // Mostrar nombre de provincia bajo el CP
+        if (hintEl) {
+            hintEl.textContent = '📍 ' + prov.nombre;
+            hintEl.style.color = 'var(--success, #10b981)';
         }
-        // Autorellenar campo editable si el usuario no lo ha tocado
+        // Autorellenar €/m² si el usuario no lo ha tocado
         if (precioEl && !_mercadoPrecioManual) {
             precioEl.value = prov.precioM2;
+            if (autoEl) { autoEl.textContent = '(auto)'; }
         }
+        // IDs legacy para PDF
+        const legProv = document.getElementById('mercadoCardProvincia');
+        const legM2   = document.getElementById('mercadoCardPrecioM2');
+        if (legProv) legProv.textContent = prov.nombre;
+        if (legM2)   legM2.textContent   = prov.precioM2;
     } else {
-        if (card) card.style.display = 'none';
-        if (precioEl && !_mercadoPrecioManual) precioEl.value = '';
+        if (hintEl) hintEl.textContent = cp.length >= 2 ? '❓ CP no reconocido' : '';
+        if (precioEl && !_mercadoPrecioManual) {
+            precioEl.value = '';
+            if (autoEl) autoEl.textContent = '';
+        }
     }
 
-    // ── 2. Panel de comparativa (necesita CP + superficie) ──
-    const precioM2   = precioEl ? (parseFloat(precioEl.value) || 0) : (prov ? prov.precioM2 : 0);
+    // ── 2. Calcular valor estimado del inmueble ──
+    const precioM2   = parseFloat(precioEl ? precioEl.value : 0) || 0;
     const superficie = parseFloat(supEl ? supEl.value : 0) || 0;
-    const precio     = parseFloat((document.getElementById('precio') || {}).value) || 0;
+    const precioCompra = parseFloat((document.getElementById('precio') || {}).value) || 0;
     const descuento  = parseFloat((document.getElementById('descuentoOferta') || {}).value) || 10;
+    const resultado  = document.getElementById('mercadoResultado');
 
     if (!resultado) return;
 
     if (precioM2 > 0 && superficie > 0) {
         const valorMercado = precioM2 * superficie;
-        const diferencia   = precio - valorMercado;
-        const difPct       = valorMercado > 0 ? (diferencia / valorMercado) * 100 : 0;
-        const oferta       = precio * (1 - descuento / 100);
+        const diferencia   = precioCompra > 0 ? precioCompra - valorMercado : 0;
+        const difPct       = valorMercado > 0 && precioCompra > 0 ? (diferencia / valorMercado) * 100 : 0;
+        const oferta       = precioCompra > 0 ? precioCompra * (1 - descuento / 100) : valorMercado * (1 - descuento / 100);
 
+        // Valor estimado grande
         document.getElementById('mrValorMercado').textContent = fmt(Math.round(valorMercado)) + ' €';
 
+        // Comparativa tu precio vs mercado
+        const mrPrecioCompra = document.getElementById('mrPrecioCompra');
+        const mrValorMercado2 = document.getElementById('mrValorMercado2');
+        if (mrPrecioCompra) mrPrecioCompra.textContent = precioCompra > 0 ? fmt(Math.round(precioCompra)) + ' €' : '—';
+        if (mrValorMercado2) mrValorMercado2.textContent = fmt(Math.round(valorMercado)) + ' €';
+
         const vsEl = document.getElementById('mrVsTexto');
-        if (Math.abs(difPct) < 2) {
-            vsEl.textContent = '≈ En línea con el mercado';
-            vsEl.className   = 'metric-warning';
-        } else if (diferencia > 0) {
-            vsEl.textContent = '+' + fmt(Math.round(diferencia)) + ' € por encima (+' + difPct.toFixed(1) + '%)';
-            vsEl.className   = 'metric-negative';
-        } else {
-            vsEl.textContent = fmt(Math.round(diferencia)) + ' € por debajo (' + difPct.toFixed(1) + '%)';
-            vsEl.className   = 'metric-positive';
+        if (vsEl) {
+            if (precioCompra <= 0) {
+                vsEl.textContent = 'Introduce tu precio arriba para comparar';
+                vsEl.className = 'mercado-comp-sep';
+            } else if (Math.abs(difPct) < 2) {
+                vsEl.textContent = '≈ En línea con el mercado';
+                vsEl.className = 'mercado-comp-sep metric-warning';
+            } else if (diferencia > 0) {
+                vsEl.textContent = '+' + difPct.toFixed(1) + '% sobre mercado';
+                vsEl.className = 'mercado-comp-sep metric-negative';
+            } else {
+                vsEl.textContent = difPct.toFixed(1) + '% bajo mercado 🎯';
+                vsEl.className = 'mercado-comp-sep metric-positive';
+            }
         }
 
+        // Oferta sugerida
         document.getElementById('mrOferta').textContent = fmt(Math.round(oferta)) + ' €';
-        document.getElementById('mrAhorro').textContent = fmt(Math.round(precio - oferta)) + ' €';
+        if (precioCompra > 0) {
+            document.getElementById('mrAhorro').textContent = fmt(Math.round(precioCompra - oferta)) + ' €';
+            document.getElementById('mrAhorro').parentElement.style.display = '';
+        } else {
+            document.getElementById('mrAhorro').parentElement.style.display = 'none';
+        }
+
         resultado.style.display = 'block';
     } else {
         resultado.style.display = 'none';
     }
 
-    // Guardar en historial de CPs
-    const _cpHist = (document.getElementById('codigoPostal')?.value || '').trim();
-    const _prefHist = _cpHist.slice(0, 2);
-    const _provHist = _prefHist.length === 2 ? PROVINCIA_DATA[_prefHist] : null;
-    if (_provHist && _cpHist.length >= 4) {
-        if (typeof addToHistorial === 'function') addToHistorial(_cpHist, _provHist.nombre, _provHist.precioM2);
+    // ── 3. Guardar en historial de CPs ──
+    if (prov && cp.length >= 4) {
+        if (typeof addToHistorial === 'function') addToHistorial(cp, prov.nombre, prov.precioM2);
     }
 }
 
