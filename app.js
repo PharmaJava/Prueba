@@ -2666,16 +2666,29 @@ document.addEventListener('DOMContentLoaded', () => {
 function mostrarBannerCookies() {
     const banner = document.getElementById('cookie-banner');
     if (!banner) return;
-    if (localStorage.getItem('cookiesAceptadas') !== 'true') {
-        setTimeout(() => banner.classList.add('visible'), 800);
+    // Mostrar si no ha dado respuesta aún (ni aceptado ni rechazado)
+    const decision = localStorage.getItem('cookiesDecision');
+    if (!decision) {
+        setTimeout(() => banner.classList.add('visible'), 900);
     }
 }
 
 function aceptarCookies() {
     const banner = document.getElementById('cookie-banner');
     if (banner) banner.classList.remove('visible');
+    localStorage.setItem('cookiesDecision', 'accepted');
     localStorage.setItem('cookiesAceptadas', 'true');
+    // Cargar GTM ahora que el usuario ha aceptado
+    if (typeof cargarGTM === 'function') cargarGTM();
 }
+
+window.rechazarCookies = function() {
+    const banner = document.getElementById('cookie-banner');
+    if (banner) banner.classList.remove('visible');
+    localStorage.setItem('cookiesDecision', 'rejected');
+    localStorage.setItem('cookiesAceptadas', 'false');
+    // No cargar GTM ni analytics
+};
 
 // ============================================================
 // GRÁFICO DE EVOLUCIÓN TEMPORAL (línea - beneficio acumulado)
