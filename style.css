@@ -3524,3 +3524,203 @@ body {
 .tur-cashflow-item:last-child { border-right: none; }
 .tur-cashflow-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-light); margin-bottom: 0.2rem; }
 .tur-cashflow-val   { font-size: 1rem; font-weight: 800; font-family: 'Inter', sans-serif; }
+
+
+
+/* ============================================================
+   PLUSVALÍA MUNICIPAL — ESTILOS
+   ============================================================ */
+.btn-calc-plusvalia {
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #1a5fa8;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.btn-calc-plusvalia:hover { background: #1a5fa8; color: white; border-color: #1a5fa8; }
+
+.pv-resultado-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(135deg, #1e3a5f, #1a5fa8);
+    color: white;
+    border-radius: 10px 10px 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.pv-cuota {
+    font-size: 1.4rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+}
+.pv-detalle-grid {
+    border: 1.5px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+}
+.pv-detalle-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.83rem;
+}
+.pv-detalle-item:nth-child(even) { background: #f8fafc; }
+.pv-detalle-item--total { background: #f0fdf4 !important; font-weight: 700; }
+.pv-det-label { color: #64748b; }
+.pv-det-val { font-weight: 700; color: #1e3a5f; }
+.pv-nota {
+    margin-top: 0.65rem;
+    padding: 0.65rem 0.85rem;
+    background: #fffbeb;
+    border-left: 3px solid #f59e0b;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.78rem;
+    color: #78350f;
+    line-height: 1.45;
+}
+
+/* ============================================================
+   MAPA DE RENTABILIDAD — ESTILOS
+   ============================================================ */
+.mapa-layout { display: flex; flex-direction: column; height: 70vh; max-height: 600px; }
+.mapa-leyenda-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    background: #f8fafc;
+}
+.mapa-leyenda-item {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+}
+.mapa-tabla-container { flex: 1; overflow-y: auto; }
+.mapa-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+}
+.mapa-tabla thead th {
+    background: #1e3a5f;
+    color: white;
+    padding: 0.6rem 0.85rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.mapa-tabla-row {
+    cursor: pointer;
+    transition: background 0.12s;
+    border-bottom: 1px solid #f1f5f9;
+}
+.mapa-tabla-row:hover { background: #eff6ff; }
+.mapa-tabla td { padding: 0.55rem 0.85rem; vertical-align: middle; }
+.btn-mapa-usar {
+    background: #1a5fa8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+    white-space: nowrap;
+}
+.btn-mapa-usar:hover { background: #1e3a5f; }
+
+/* ============================================================
+   WIZARD PASO A PASO — ESTILOS
+   ============================================================ */
+.wizard-progress-bar {
+    height: 5px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+}
+.wizard-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #1a5fa8, #10b981);
+    border-radius: 3px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.wizard-step-info {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+}
+.wizard-step-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.wizard-icono {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 0.4rem;
+}
+.wizard-titulo {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #1e3a5f;
+    text-align: center;
+    margin: 0 0 0.3rem;
+}
+.wizard-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    text-align: center;
+    margin: 0 0 1.25rem;
+}
+.wizard-campos { display: flex; flex-direction: column; }
+.wizard-resultado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.wizard-kpis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    width: 100%;
+    margin: 0.75rem 0;
+}
+.wizard-kpi {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.wizard-kpi--pos { border-color: #10b981; background: #f0fdf4; }
+.wizard-kpi--neg { border-color: #ef4444; background: #fef2f2; }
+.wizard-kpi-label { font-size: 0.72rem; color: #64748b; font-weight: 600; }
+.wizard-kpi-val { font-size: 1.05rem; font-weight: 800; color: #1e3a5f; }
+.wizard-kpi--pos .wizard-kpi-val { color: #059669; }
+.wizard-kpi--neg .wizard-kpi-val { color: #dc2626; }
