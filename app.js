@@ -555,7 +555,8 @@ function compartirAnalisis() {
         'alquiler','mesesVacio','incrementoAlquiler','anosAnalisis',
         'ibi','comunidad','seguro','seguroImpago','mantenimiento',
         'administracion','incrementoGastos','taxAlquiler',
-        'revalorizacion','gastosVenta','plusvalia','irpfVenta'
+        'revalorizacion','gastosVenta','plusvalia','irpfVenta',
+        'codigoPostal','superficieM2','precioRefM2','descuentoOferta'
     ];
 
     const params = new URLSearchParams();
@@ -622,6 +623,7 @@ function cargarDesdeURL() {
     actualizarEntradaSlider();
     toggleFinanciacionInputs();
     calcular();
+    actualizarMercado();
 }
 
 // ============================================================
@@ -2611,6 +2613,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calcular automáticamente al cargar
     calcular();
 
+    // Inicializar mercado con el CP que haya al cargar
+    actualizarMercado();
+
     // Nuevas funcionalidades
     mostrarBannerCookies();
     initDarkMode();
@@ -2651,14 +2656,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // Código postal: escuchar todas las formas de entrada
+    // Código postal: todos los eventos posibles para máxima compatibilidad
     if (cpInput) {
-        ['input', 'change'].forEach(ev => cpInput.addEventListener(ev, actualizarMercado));
-        cpInput.addEventListener('paste', () => setTimeout(actualizarMercado, 20));
+        ['input', 'change', 'keyup'].forEach(ev => cpInput.addEventListener(ev, actualizarMercado));
+        cpInput.addEventListener('paste', () => setTimeout(actualizarMercado, 50));
     }
-    if (superficieInput) superficieInput.addEventListener('input', actualizarMercado);
-    if (descuentoInput) descuentoInput.addEventListener('input', actualizarMercado);
-    if (precioInputMercado) precioInputMercado.addEventListener('input', actualizarMercado);
+    if (superficieInput) {
+        ['input', 'change'].forEach(ev => superficieInput.addEventListener(ev, actualizarMercado));
+    }
+    if (descuentoInput) {
+        ['input', 'change'].forEach(ev => descuentoInput.addEventListener(ev, actualizarMercado));
+    }
+    if (precioInputMercado) {
+        precioInputMercado.addEventListener('input', actualizarMercado);
+    }
 });
 // ============================================================
 // COOKIES
@@ -2673,14 +2684,14 @@ function mostrarBannerCookies() {
     }
 }
 
-function aceptarCookies() {
+window.aceptarCookies = function() {
     const banner = document.getElementById('cookie-banner');
     if (banner) banner.classList.remove('visible');
     localStorage.setItem('cookiesDecision', 'accepted');
     localStorage.setItem('cookiesAceptadas', 'true');
     // Cargar GTM ahora que el usuario ha aceptado
     if (typeof cargarGTM === 'function') cargarGTM();
-}
+};
 
 window.rechazarCookies = function() {
     const banner = document.getElementById('cookie-banner');
