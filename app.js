@@ -369,97 +369,75 @@ function actualizarMercado() {
     const cpEl     = document.getElementById('codigoPostal');
     const precioEl = document.getElementById('precioRefM2');
     const supEl    = document.getElementById('superficieM2');
-
     if (!cpEl) return;
 
     const cp     = cpEl.value.trim();
-    const prefix = cp.slice(0, 2);
-    const prov   = (prefix.length === 2) ? PROVINCIA_DATA[prefix] : null;
+    const prefix = cp.slice(0, 2).padStart(2, '0');
+    const prov   = cp.length >= 2 ? PROVINCIA_DATA[prefix] : null;
 
-    // ── 1. Detectar provincia y autorellenar €/m² ──
-    const hintEl  = document.getElementById('mercadoProvHint');
-    const autoEl  = document.getElementById('mercadoM2Auto');
+    const hintEl = document.getElementById('mercadoProvHint');
+    const autoEl = document.getElementById('mercadoM2Auto');
 
+    // ── 1. Autodetectar provincia y rellenar €/m² ──
     if (prov) {
-        // Mostrar nombre de provincia bajo el CP
-        if (hintEl) {
-            hintEl.textContent = '📍 ' + prov.nombre;
-            hintEl.style.color = 'var(--success, #10b981)';
-        }
-        // Autorellenar €/m² si el usuario no lo ha tocado
+        if (hintEl) { hintEl.textContent = '📍 ' + prov.nombre; hintEl.style.color = '#10b981'; }
         if (precioEl && !_mercadoPrecioManual) {
             precioEl.value = prov.precioM2;
-            if (autoEl) { autoEl.textContent = '(auto)'; }
+            if (autoEl) autoEl.textContent = '· auto';
         }
-        // IDs legacy para PDF
-        const legProv = document.getElementById('mercadoCardProvincia');
-        const legM2   = document.getElementById('mercadoCardPrecioM2');
-        if (legProv) legProv.textContent = prov.nombre;
-        if (legM2)   legM2.textContent   = prov.precioM2;
     } else {
-        if (hintEl) hintEl.textContent = cp.length >= 2 ? '❓ CP no reconocido' : '';
-        if (precioEl && !_mercadoPrecioManual) {
-            precioEl.value = '';
-            if (autoEl) autoEl.textContent = '';
-        }
+        if (hintEl) hintEl.textContent = cp.length >= 2 ? '❓ Provincia no encontrada' : '';
+        if (precioEl && !_mercadoPrecioManual) { precioEl.value = ''; if (autoEl) autoEl.textContent = ''; }
     }
 
-    // ── 2. Calcular valor estimado del inmueble ──
-    const precioM2   = parseFloat(precioEl ? precioEl.value : 0) || 0;
-    const superficie = parseFloat(supEl ? supEl.value : 0) || 0;
-    const precioCompra = parseFloat((document.getElementById('precio') || {}).value) || 0;
-    const descuento  = parseFloat((document.getElementById('descuentoOferta') || {}).value) || 10;
-    const resultado  = document.getElementById('mercadoResultado');
-
+    // ── 2. Calcular valor estimado ──
+    const precioM2     = parseFloat(precioEl?.value) || 0;
+    const superficie   = parseFloat(supEl?.value) || 0;
+    const precioCompra = parseFloat(document.getElementById('precio')?.value) || 0;
+    const descuento    = parseFloat(document.getElementById('descuentoOferta')?.value) || 10;
+    const resultado    = document.getElementById('mercadoResultado');
     if (!resultado) return;
 
     if (precioM2 > 0 && superficie > 0) {
-        const valorMercado = precioM2 * superficie;
-        const diferencia   = precioCompra > 0 ? precioCompra - valorMercado : 0;
-        const difPct       = valorMercado > 0 && precioCompra > 0 ? (diferencia / valorMercado) * 100 : 0;
-        const oferta       = precioCompra > 0 ? precioCompra * (1 - descuento / 100) : valorMercado * (1 - descuento / 100);
+        const valorMercado = Math.round(precioM2 * superficie);
+        const oferta       = Math.round((precioCompra > 0 ? precioCompra : valorMercado) * (1 - descuento / 100));
 
-        // Valor estimado grande
-        document.getElementById('mrValorMercado').textContent = fmt(Math.round(valorMercado)) + ' €';
+        document.getElementById('mrValorMercado').textContent  = fmt(valorMercado) + ' €';
+        document.getElementById('mrPrecioM2Usado').textContent  = fmt(precioM2) + ' €/m²' + (prov ? ' (' + prov.nombre + ')' : '');
+        document.getElementById('mrSuperficieUsada').textContent = superficie + ' m²';
 
-        // Comparativa tu precio vs mercado
-        const mrPrecioCompra = document.getElementById('mrPrecioCompra');
-        const mrValorMercado2 = document.getElementById('mrValorMercado2');
-        if (mrPrecioCompra) mrPrecioCompra.textContent = precioCompra > 0 ? fmt(Math.round(precioCompra)) + ' €' : '—';
-        if (mrValorMercado2) mrValorMercado2.textContent = fmt(Math.round(valorMercado)) + ' €';
-
-        const vsEl = document.getElementById('mrVsTexto');
-        if (vsEl) {
-            if (precioCompra <= 0) {
-                vsEl.textContent = 'Introduce tu precio arriba para comparar';
-                vsEl.className = 'mercado-comp-sep';
-            } else if (Math.abs(difPct) < 2) {
-                vsEl.textContent = '≈ En línea con el mercado';
-                vsEl.className = 'mercado-comp-sep metric-warning';
-            } else if (diferencia > 0) {
-                vsEl.textContent = '+' + difPct.toFixed(1) + '% sobre mercado';
-                vsEl.className = 'mercado-comp-sep metric-negative';
-            } else {
-                vsEl.textContent = difPct.toFixed(1) + '% bajo mercado 🎯';
-                vsEl.className = 'mercado-comp-sep metric-positive';
-            }
-        }
-
-        // Oferta sugerida
-        document.getElementById('mrOferta').textContent = fmt(Math.round(oferta)) + ' €';
+        // Comparativa con precio de compra
+        const vsBloque     = document.getElementById('mrVsBloque');
+        const ofertaBloque = document.getElementById('mrOfertaBloque');
         if (precioCompra > 0) {
-            document.getElementById('mrAhorro').textContent = fmt(Math.round(precioCompra - oferta)) + ' €';
-            document.getElementById('mrAhorro').parentElement.style.display = '';
+            const diferencia = precioCompra - valorMercado;
+            const difPct     = (diferencia / valorMercado * 100);
+            const vsEl       = document.getElementById('mrVsTexto');
+            if (vsEl) {
+                if (Math.abs(difPct) < 2)     { vsEl.textContent = '≈ Precio en línea con el mercado';          vsEl.className = 'mercado-dato-val metric-warning'; }
+                else if (diferencia > 0)       { vsEl.textContent = '+' + difPct.toFixed(1) + '% sobre mercado · ' + fmt(Math.round(diferencia)) + ' € de más'; vsEl.className = 'mercado-dato-val metric-negative'; }
+                else                           { vsEl.textContent = difPct.toFixed(1) + '% bajo mercado 🎯 · ahorras ' + fmt(Math.abs(Math.round(diferencia))) + ' €'; vsEl.className = 'mercado-dato-val metric-positive'; }
+            }
+            if (vsBloque) vsBloque.style.display = '';
+            document.getElementById('mrOferta').textContent = fmt(oferta) + ' €';
+            if (ofertaBloque) ofertaBloque.style.display = '';
         } else {
-            document.getElementById('mrAhorro').parentElement.style.display = 'none';
+            if (vsBloque) vsBloque.style.display = 'none';
+            document.getElementById('mrOferta').textContent = fmt(oferta) + ' €';
+            if (ofertaBloque) ofertaBloque.style.display = '';
         }
 
         resultado.style.display = 'block';
+        resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else {
         resultado.style.display = 'none';
+        // Dar feedback si falta algo
+        if (hintEl && cp.length >= 2 && prov && superficie <= 0) {
+            hintEl.textContent = '📍 ' + prov.nombre + ' — introduce los m² para calcular';
+        }
     }
 
-    // ── 3. Guardar en historial de CPs ──
+    // ── 3. Historial ──
     if (prov && cp.length >= 4) {
         if (typeof addToHistorial === 'function') addToHistorial(cp, prov.nombre, prov.precioM2);
     }
@@ -2642,7 +2620,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Nuevas funcionalidades
     mostrarBannerCookies();
-    initDarkMode();
     initTooltips();
 
     // WhatsApp, Guardar, Comparar, Turístico
@@ -2749,7 +2726,6 @@ function renderizarLineChart(datos) {
     const beneficios = datos.proyecciones.map(p => Math.round(p.beneficioAcumulado));
     const netosVenta = datos.proyecciones.map(p => Math.round(p.precioVentaNeto));
 
-    const isDark = document.documentElement.classList.contains('dark');
     const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
     const textColor = isDark ? '#94a3b8' : '#64748b';
 
