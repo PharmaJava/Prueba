@@ -1894,58 +1894,6 @@ body {
 /* ============================================================
    DARK MODE
    ============================================================ */
-html.dark {
-    --primary:      #5ba3e0;
-    --primary-dark: #2e7abf;
-    --secondary:    #38bdf8;
-    --success:      #4ade80;
-    --danger:       #f87171;
-    --warning:      #fbbf24;
-    --dark:         #e0eeff;
-    --dark-light:   #c5daee;
-    --light:        #0d2036;
-    --white:        #071528;
-    --border:       #1e3a5f;
-    --text:         #b8d4ef;
-    --text-light:   #5a7fa0;
-    --glass:        rgba(0, 20, 50, 0.3);
-    --shadow:       0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
-    --shadow-lg:    0 10px 15px -3px rgba(0,0,0,0.4);
-    --shadow-xl:    0 20px 25px -5px rgba(0,0,0,0.5);
-}
-
-html.dark body {
-    background: #020617;
-    color: var(--text);
-}
-
-html.dark .glass-card,
-html.dark .detail-card,
-html.dark .chart-card,
-html.dark .line-chart-card,
-html.dark .inverse-calc-card,
-html.dark .saved-scenarios-panel,
-html.dark .projection-table-container {
-    background: #0f172a;
-    border-color: #334155;
-}
-
-html.dark .nav-tabs       { background: #1e293b; }
-html.dark .nav-tab.active { background: #0f172a; }
-html.dark .projection-table th { background: #1e293b; }
-html.dark .projection-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
-html.dark .form-input,
-html.dark .form-select    { background: #1e293b; border-color: #334155; color: #e2e8f0; }
-html.dark .seo-card       { background: #0f172a; border-color: #334155; }
-html.dark .metric-card    { background: #0f172a; border-color: #334155; }
-html.dark .disclaimer-modal { background: #0f172a; color: #e2e8f0; }
-html.dark .proyeccion-modal-box { background: #0f172a; }
-html.dark .proyeccion-modal-section { border-color: #334155; }
-html.dark .proyeccion-modal-section-title { background: #1e293b; }
-html.dark .btn-scenario   { background: #1e293b; border-color: #334155; }
-html.dark .seo-disclaimer-box { background: #1e293b; }
-html.dark .inversa-row    { border-color: #334155; }
-html.dark .inversa-row:nth-child(even) { background: #1e293b; }
 
 /* ── Header controls (dark toggle + lang selector) ── */
 .header-controls {
@@ -1956,18 +1904,6 @@ html.dark .inversa-row:nth-child(even) { background: #1e293b; }
     top: 1.25rem;
     right: 1.25rem;
 }
-
-.dark-mode-toggle {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 8px;
-    padding: 0.4rem 0.65rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-    line-height: 1;
-}
-.dark-mode-toggle:hover { background: rgba(255,255,255,0.25); }
 
 /* ============================================================
    GRÁFICO DE EVOLUCIÓN TEMPORAL (line chart)
@@ -2025,11 +1961,6 @@ html.dark .inversa-row:nth-child(even) { background: #1e293b; }
     box-shadow: var(--shadow-xl);
     pointer-events: none;
     animation: tooltipFade 0.15s ease;
-}
-
-html.dark .metric-tooltip-popup {
-    background: #1e293b;
-    border: 1px solid #334155;
 }
 
 @keyframes tooltipFade {
@@ -2283,12 +2214,6 @@ html.dark .metric-tooltip-popup {
     display: flex; align-items: center; gap: 0.5rem;
     position: absolute; top: 1.25rem; right: 1.25rem;
 }
-.dark-mode-toggle {
-    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 8px; padding: 0.4rem 0.65rem; font-size: 1rem;
-    cursor: pointer; transition: background 0.2s; line-height: 1;
-}
-.dark-mode-toggle:hover { background: rgba(255,255,255,0.25); }
 
 /* ── Gráfico evolución temporal ── */
 .line-chart-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
@@ -2418,175 +2343,28 @@ html.dark .metric-tooltip-popup {
 }
 
 /* Dark mode tabla hipoteca */
-html.dark .hipoteca-intro { background: rgba(129,140,248,0.08); border-color: rgba(129,140,248,0.2); }
-html.dark .amort-controls { background: #1e293b; border-color: #334155; }
-html.dark .amort-resultado { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.2); }
-html.dark .amort-badge { background: rgba(251,191,36,0.15); color: #fbbf24; }
-html.dark .hipoteca-row-amort { background: rgba(251,191,36,0.04) !important; }
 
 /* ============================================================
    BLOQUE REFERENCIA DE MERCADO
    ============================================================ */
 .mercado-ref-block {
-    background: var(--white);
-    border: 1.5px solid var(--border);
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
     border-radius: 16px;
-    padding: 1.1rem 1.1rem 0.9rem;
+    padding: 1.1rem;
     margin-top: 1rem;
 }
-
-/* Grid de 3 inputs: CP | Superficie | €/m² */
-.mercado-inputs-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.75rem;
-    margin-top: 0.75rem;
-}
-@media (max-width: 600px) {
-    .mercado-inputs-grid { grid-template-columns: 1fr 1fr; }
-    .mercado-inputs-grid .form-group:last-child { grid-column: 1 / -1; }
-}
-
-.mercado-prov-hint {
-    font-size: 0.72rem;
-    font-weight: 600;
-    margin-top: 0.25rem;
-    min-height: 1em;
-    transition: color 0.2s;
-}
-
-.mercado-m2-auto {
-    font-size: 0.68rem;
-    color: var(--success, #10b981);
-    font-weight: 600;
-    margin-left: 0.3rem;
-}
-
-/* Resultado: valor estimado */
-.mercado-resultado-nuevo {
-    margin-top: 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
-
-.mercado-valor-estimado {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.85rem 1rem;
-    background: linear-gradient(135deg, #1a5fa8 0%, #2563eb 100%);
-    color: white;
-}
-.mercado-valor-label {
-    font-size: 0.82rem;
-    font-weight: 600;
-    opacity: 0.9;
-}
-.mercado-valor-num {
-    font-size: 1.4rem;
-    font-weight: 800;
-    font-family: 'Inter', sans-serif;
-    letter-spacing: -0.02em;
-}
-
-/* Fila comparativa tu precio vs mercado */
-.mercado-comparativa-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.7rem 1rem;
-    background: var(--light);
-    flex-wrap: wrap;
-}
-.mercado-comp-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    min-width: 80px;
-}
-.mercado-comp-label {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--text-light);
-    font-weight: 700;
-    margin-bottom: 0.2rem;
-}
-.mercado-comp-val {
-    font-size: 1rem;
-    font-weight: 800;
-    font-family: 'Inter', sans-serif;
-    color: var(--dark);
-}
-.mercado-comp-sep {
-    flex: 2;
-    text-align: center;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--text-light);
-    padding: 0 0.25rem;
-}
-
-/* Fila oferta */
-.mercado-oferta-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 1rem;
-    border-top: 1px solid var(--border);
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-.mercado-oferta-label {
-    font-size: 0.82rem;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-}
-.mercado-ahorro-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 1rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.82rem;
-    color: var(--text-light);
-    background: var(--light);
-}
-
-/* Mantener input de descuento compacto */
-.mercado-descuento-input {
-    width: 48px;
-    padding: 0.2rem 0.4rem;
-    border: 1.5px solid var(--border);
-    border-radius: 6px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    text-align: center;
-    background: var(--white);
-    color: var(--dark);
-    font-family: inherit;
-}
-.mercado-descuento-input:focus { outline: none; border-color: var(--primary); }
-
-/* Header del bloque */
 .mercado-ref-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom: 0.85rem;
 }
 .mercado-ref-icon { font-size: 1rem; }
 .mercado-ref-title {
     font-weight: 700;
     font-size: 0.9rem;
-    color: var(--dark);
+    color: #1e3a5f;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -2596,65 +2374,130 @@ html.dark .hipoteca-row-amort { background: rgba(251,191,36,0.04) !important; }
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    background: var(--light);
-    color: var(--text-light);
-    border: 1px solid var(--border);
+    background: #f1f5f9;
+    color: #94a3b8;
+    border: 1px solid #e2e8f0;
     border-radius: 20px;
     padding: 0.15rem 0.5rem;
 }
 
-/* Dark mode */
-html.dark .mercado-ref-block { background: var(--dark-card); border-color: #1e3a5f; }
-html.dark .mercado-resultado-nuevo { border-color: #1e3a5f; }
-html.dark .mercado-comparativa-row { background: #0d2036; }
-html.dark .mercado-comp-val { color: #e2e8f0; }
-html.dark .mercado-ahorro-row { background: #0d2036; border-color: #1e3a5f; }
-html.dark .mercado-oferta-row { border-color: #1e3a5f; }
-html.dark .mercado-descuento-input { background: #0d2036; border-color: #1e3a5f; color: #e2e8f0; }
-
-html.dark .mercado-descuento-input {
-    background: #0d2036;
-    border-color: #1e3a5f;
-    color: #b8d4ef;
+/* Grid 3 columnas */
+.mercado-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.65rem;
+}
+@media (max-width: 640px) {
+    .mercado-inputs-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .mercado-inputs-grid .form-group:last-child {
+        grid-column: 1 / -1;
+    }
 }
 
-/* ── Dark mode general ── */
-html.dark {
-    --primary:      #5ba3e0;
-    --primary-dark: #2e7abf;
-    --secondary:    #38bdf8;
-    --success:      #4ade80;
-    --danger:       #f87171;
-    --warning:      #fbbf24;
-    --dark:         #e0eeff;
-    --dark-light:   #c5daee;
-    --light:        #0d2036;
-    --white:        #071528;
-    --border:       #1e3a5f;
-    --text:         #b8d4ef;
-    --text-light:   #5a7fa0;
-    --glass:        rgba(0, 20, 50, 0.3);
-    --shadow:       0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
-    --shadow-lg:    0 10px 15px -3px rgba(0,0,0,0.4);
-    --shadow-xl:    0 20px 25px -5px rgba(0,0,0,0.5);
-    background: #040f1e;
+.mercado-prov-hint {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.3rem;
+    min-height: 1.1em;
 }
-html.dark body { color: var(--text); }
-html.dark .glass-card, html.dark .detail-card, html.dark .chart-card,
-html.dark .line-chart-card, html.dark .inverse-calc-card, html.dark .hipoteca-card,
-html.dark .projection-table-container { background: #071528; border-color: #1e3a5f; }
-html.dark .nav-tabs { background: #0d2036; }
-html.dark .nav-tab.active { background: #071528; }
-html.dark .projection-table th { background: #0d2036; }
-html.dark .form-input, html.dark .form-select { background: #0d2036; border-color: #1e3a5f; color: #b8d4ef; }
-html.dark .seo-card { background: #071528; border-color: #1e3a5f; }
-html.dark .metric-card { background: #071528; border-color: #1e3a5f; }
-html.dark .proyeccion-modal-box { background: #071528; }
-html.dark .proyeccion-modal-section { border-color: #1e3a5f; }
-html.dark .proyeccion-modal-section-title { background: #1e293b; }
-html.dark .seo-disclaimer-box { background: #1e293b; }
-html.dark .inversa-row { border-color: #334155; }
-html.dark .metric-tooltip-popup { background: #1e293b; border: 1px solid #334155; }
+.mercado-m2-auto {
+    font-size: 0.68rem;
+    font-weight: 700;
+    margin-left: 0.25rem;
+}
+
+/* Botón calcular */
+.btn-mercado-calcular {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0.65rem 1rem;
+    background: #1a5fa8;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.12s;
+}
+.btn-mercado-calcular:hover { background: #1e3a5f; transform: translateY(-1px); }
+.btn-mercado-calcular:active { transform: translateY(0); }
+
+/* Resultado valor estimado */
+.mercado-valor-estimado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1rem;
+    background: linear-gradient(135deg, #1a5fa8 0%, #2563eb 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+.mercado-valor-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    opacity: 0.9;
+}
+.mercado-valor-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+/* Grid de datos debajo del valor estimado */
+.mercado-datos-grid {
+    border: 1.5px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+}
+.mercado-dato {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.mercado-dato:last-child { border-bottom: none; }
+.mercado-dato:nth-child(even) { background: #f8fafc; }
+.mercado-dato-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+}
+.mercado-dato-val {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    text-align: right;
+}
+.mercado-descuento-input {
+    width: 46px;
+    padding: 0.15rem 0.3rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    background: white;
+    color: #1e3a5f;
+    font-family: inherit;
+}
+.mercado-descuento-input:focus { outline: none; border-color: #1a5fa8; }
+
 
 /* ============================================================
    SECCIONES COLAPSABLES
@@ -2732,17 +2575,6 @@ html.dark .metric-tooltip-popup { background: #1e293b; border: 1px solid #334155
 }
 
 /* Dark mode */
-html.dark .col-header {
-    background: #0d2036;
-}
-
-html.dark .col-header:hover {
-    background: rgba(91, 163, 224, 0.08);
-}
-
-html.dark .col-section {
-    border-color: #1e3a5f;
-}
 
 /* Quitar el margen extra de las detail-cards dentro del colapsable */
 .col-inner .detail-card {
@@ -3204,23 +3036,6 @@ html.dark .col-section {
 }
 
 /* ── Dark mode nuevos componentes ───────────────────────── */
-html.dark .modal-box        { background: #071528; border: 1px solid #1e3a5f; }
-html.dark .modal-header     { background: #0d2036; border-color: #1e3a5f; }
-html.dark .saved-item       { background: #071528; border-color: #1e3a5f; }
-html.dark .saved-kpi        { background: #0d2036; }
-html.dark .cmp-table th     { background: #0d2036; }
-html.dark .cmp-table td     { border-color: #1e3a5f; }
-html.dark .cmp-table-wrap   { border-color: #1e3a5f; }
-html.dark .cmp-verdict      { background: rgba(91,163,224,0.08); border-color: rgba(91,163,224,0.2); }
-html.dark .tipos-card       { background: #0d2036; }
-html.dark .widget-code-wrap { background: #0d2036; }
-html.dark .widget-code      { color: #94c7f0; }
-html.dark .btn-save         { background: #071528; color: #5ba3e0; border-color: #5ba3e0; }
-html.dark .btn-compare      { background: #071528; color: #a78bfa; border-color: #a78bfa; }
-html.dark .btn-widget       { background: #071528; color: #38bdf8; border-color: #38bdf8; }
-html.dark .turistico-col--tur  { background: rgba(8,145,178,0.1); }
-html.dark .turistico-col--ld   { background: rgba(26,95,168,0.08); }
-html.dark .turistico-diferencia{ background: #0d2036; }
 
 /* ============================================================
    HERRAMIENTAS ADICIONALES — Modal y secciones colapsables
@@ -3496,21 +3311,6 @@ html.dark .turistico-diferencia{ background: #0d2036; }
 .eur-actual-row td { border-top: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
 
 /* ── Dark mode herramientas ─────────────────────────────── */
-html.dark .tool-section-header { background: #0d2036; }
-html.dark .tool-section-header:hover { background: rgba(91,163,224,0.08); }
-html.dark .tool-section { border-color: #1e3a5f; }
-html.dark .tool-section.tool-open { border-color: #5ba3e0; }
-html.dark .historial-item { background: #071528; border-color: #1e3a5f; }
-html.dark .historial-item:hover { border-color: #5ba3e0; }
-html.dark .eur-table th { background: #0d2036; }
-html.dark .eur-table td { border-color: #1e3a5f; }
-html.dark .eur-actual-row { background: rgba(91,163,224,0.08); }
-html.dark .capacidad-escenario--conservador { background: rgba(91,163,224,0.08); }
-html.dark .capacidad-escenario--moderado { background: rgba(245,158,11,0.08); }
-html.dark .reforma-card { border-color: #1e3a5f; }
-html.dark .btn-tools { background: #071528; border-color: #d97706; color: #fbbf24; }
-html.dark .rapido-resultado { border-color: #1e3a5f; }
-html.dark .rapido-met { border-color: #1e3a5f; }
 
 /* Estado vacío turístico */
 .tur-empty {
@@ -3581,10 +3381,6 @@ html.dark .rapido-met { border-color: #1e3a5f; }
 }
 
 /* Dark mode */
-html.dark .pdf-section-group { border-color: #1e3a5f; }
-html.dark .pdf-group-title { background: #0d2036; border-color: #1e3a5f; }
-html.dark .pdf-check { border-color: #1e3a5f; color: #e2e8f0; }
-html.dark .pdf-check:hover { background: rgba(91,163,224,0.08); }
 
 /* ── Resumen inline turístico (dentro del tab) ───────────── */
 .tur-resumen-inline {
@@ -3705,14 +3501,6 @@ html.dark .pdf-check:hover { background: rgba(91,163,224,0.08); }
 .tur-modal-actions .btn { flex: 1; min-width: 160px; }
 
 /* Dark mode */
-html.dark .tur-resumen-inline  { border-color: #1e3a5f; }
-html.dark .tur-resumen-col     { border-color: #1e3a5f; }
-html.dark .tur-resumen-dif     { background: #0d2036; }
-html.dark .tur-modal-col       { border-color: #1e3a5f; }
-html.dark .tur-modal-table td  { border-color: #1e3a5f; color: #cbd5e1; }
-html.dark .tur-modal-total td  { background: #0d2036; }
-html.dark .tur-modal-pros-contras { border-color: #1e3a5f; }
-html.dark .tur-modal-pros      { border-color: #1e3a5f; }
 
 /* ── Fila cashflow turístico ─────────────────────────────── */
 .tur-cashflow-row {
@@ -3736,5 +3524,3 @@ html.dark .tur-modal-pros      { border-color: #1e3a5f; }
 .tur-cashflow-item:last-child { border-right: none; }
 .tur-cashflow-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-light); margin-bottom: 0.2rem; }
 .tur-cashflow-val   { font-size: 1rem; font-weight: 800; font-family: 'Inter', sans-serif; }
-html.dark .tur-cashflow-item { background: #0d2036; border-color: #1e3a5f; }
-html.dark .tur-cashflow-row  { border-color: #1e3a5f; }
