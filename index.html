@@ -631,6 +631,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script src="app.js"></script>
 
+
 <!-- ── MODAL: ANÁLISIS GUARDADOS ─────────────────────── -->
 <div class="modal-overlay" id="savedModal" onclick="if(event.target===this)closeSavedModal()">
     <div class="modal-box">
@@ -670,6 +671,55 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
             <button class="btn btn-primary" onclick="runComparison()" style="width:100%; margin-top:1rem;">⚖️ Comparar ahora</button>
             <div id="compareResult" class="compare-result"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL: SELECTOR DE SECCIONES PDF ─────────────────── -->
+<div class="modal-overlay" id="pdfModal" onclick="if(event.target===this)closePdfModal()">
+    <div class="modal-box modal-box--wide">
+        <div class="modal-header">
+            <span class="modal-title">📄 Selecciona el contenido del informe</span>
+            <button class="modal-close" onclick="closePdfModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-hint">Marca las secciones que quieres incluir en el PDF. Se generará en el orden que ves aquí.</p>
+
+            <div class="pdf-sections">
+                <div class="pdf-section-group">
+                    <div class="pdf-group-title">📊 Análisis principal</div>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_portada" checked> Portada con KPIs principales</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_mercado" checked> Referencia de mercado y oferta</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_parametros" checked> Parámetros de la inversión</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_inversion" checked> Desglose inversión inicial</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_gastos_op" checked> Gastos operativos anuales</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_resultados" checked> Resultados económicos año 1</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_venta" checked> Proyección de venta</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_proyecciones" checked> Proyección año por año (tabla completa)</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_comparativa" checked> Comparativa con otras inversiones</label>
+                </div>
+
+                <div class="pdf-section-group">
+                    <div class="pdf-group-title">🏦 Hipoteca</div>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_hipoteca" checked> Cuadro de amortización hipotecaria</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_inversa" checked> Análisis inverso (precio máximo)</label>
+                </div>
+
+                <div class="pdf-section-group">
+                    <div class="pdf-group-title">🛠️ Herramientas</div>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_turistico"> Comparativa turístico vs. larga duración</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_capacidad"> Capacidad de compra (¿Cuánto puedo pagar?)</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_reforma"> ROI de reforma</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_euribor"> Simulador Euríbor</label>
+                    <label class="pdf-check"><input type="checkbox" id="pdfSec_rapido"> Análisis rápido</label>
+                </div>
+            </div>
+
+            <div class="pdf-modal-footer">
+                <button class="btn btn-share" onclick="toggleAllPdfSections(true)">✅ Seleccionar todo</button>
+                <button class="btn btn-share" onclick="toggleAllPdfSections(false)">☐ Desmarcar todo</button>
+                <button class="btn btn-primary" id="pdfGenerateBtn" onclick="generatePdfWithOptions()" style="flex:1; min-width:160px;">📄 Generar PDF</button>
+            </div>
         </div>
     </div>
 </div>
@@ -931,7 +981,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </div>
 </div>
-
 
 </body>
 </html>
