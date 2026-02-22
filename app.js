@@ -306,6 +306,252 @@ let currentLanguage = 'es';
 // BASE DE DATOS: PRECIO €/m² POR PROVINCIA (CP prefix 2 dígitos)
 // Fuente: Tinsa/INE estimaciones 2025
 // ============================================================
+// Base de datos de precios por código postal (3 dígitos = municipio/distrito)
+// Fuente: Idealista, Fotocasa, MITMA - Precios medios €/m² 2024-2025
+const CP_DATA = {
+  // ── MADRID (28) ────────────────────────────────────────────
+  '280': { zona: 'Madrid Centro',         precioM2: 5800 },
+  '281': { zona: 'Madrid Norte / Chamberí', precioM2: 5200 },
+  '282': { zona: 'Madrid Arganzuela/Retiro', precioM2: 4800 },
+  '283': { zona: 'Madrid Salamanca/Goya', precioM2: 6500 },
+  '284': { zona: 'Madrid Chamartín',      precioM2: 5600 },
+  '285': { zona: 'Madrid Hortaleza',      precioM2: 3800 },
+  '286': { zona: 'Madrid Fuencarral',     precioM2: 4200 },
+  '287': { zona: 'Madrid Moncloa',        precioM2: 4900 },
+  '288': { zona: 'Madrid Carabanchel/Latina', precioM2: 3200 },
+  '289': { zona: 'Madrid Usera/Vallecas', precioM2: 2900 },
+  '290': { zona: 'Alcobendas/San Sebastián de los Reyes', precioM2: 3200 },
+  '291': { zona: 'Getafe/Leganés',        precioM2: 2400 },
+  '292': { zona: 'Alcalá de Henares',     precioM2: 2000 },
+  '293': { zona: 'Móstoles/Fuenlabrada',  precioM2: 2100 },
+  '294': { zona: 'Pozuelo/Majadahonda',   precioM2: 4800 },
+  '295': { zona: 'Las Rozas/Boadilla',    precioM2: 4200 },
+  '296': { zona: 'Alcorcón/Arroyomolinos',precioM2: 2600 },
+  '297': { zona: 'Torrejón de Ardoz',     precioM2: 2200 },
+  '298': { zona: 'Collado Villalba/Galapagar', precioM2: 2400 },
+  '299': { zona: 'Aranjuez/Valdemoro',    precioM2: 1600 },
+
+  // ── BARCELONA (08) ─────────────────────────────────────────
+  '080': { zona: 'Barcelona Eixample',    precioM2: 5800 },
+  '081': { zona: 'Barcelona Gràcia/Sants', precioM2: 4800 },
+  '082': { zona: 'Barcelona Poble Nou/22@', precioM2: 5200 },
+  '083': { zona: 'Barcelona Sant Martí',  precioM2: 4500 },
+  '084': { zona: 'Barcelona Sarrià/Sant Gervasi', precioM2: 6200 },
+  '085': { zona: 'Barcelona Nou Barris', precioM2: 3000 },
+  '086': { zona: 'Barcelona Horta-Guinardó', precioM2: 3400 },
+  '087': { zona: 'L\'Hospitalet / Cornellà', precioM2: 2800 },
+  '088': { zona: 'Terrassa / Sabadell',   precioM2: 1900 },
+  '089': { zona: 'Mataró / Maresme',      precioM2: 2600 },
+  '081': { zona: 'Badalona / Santa Coloma', precioM2: 2400 },
+  '082': { zona: 'Cerdanyola / Rubí',     precioM2: 2000 },
+  '083': { zona: 'Vic / Manresa',         precioM2: 1400 },
+  '084': { zona: 'Igualada / Vilafranca', precioM2: 1600 },
+
+  // ── SEVILLA (41) ───────────────────────────────────────────
+  '410': { zona: 'Sevilla Centro/Casco Histórico', precioM2: 3200 },
+  '411': { zona: 'Sevilla Triana/Los Remedios', precioM2: 2800 },
+  '412': { zona: 'Sevilla Norte/Macarena', precioM2: 1600 },
+  '413': { zona: 'Sevilla Este/Nervión',  precioM2: 2200 },
+  '414': { zona: 'Sevilla Sur/Bellavista', precioM2: 1800 },
+  '415': { zona: 'Alcalá de Guadaíra',    precioM2: 1400 },
+  '416': { zona: 'Dos Hermanas',          precioM2: 1500 },
+  '417': { zona: 'Utrera/Marchena',       precioM2: 900  },
+  '418': { zona: 'Écija/Osuna',           precioM2: 700  },
+  '419': { zona: 'Carmona/Lora del Río',  precioM2: 850  },
+
+  // ── MÁLAGA (29) ────────────────────────────────────────────
+  '290': { zona: 'Málaga Ciudad',         precioM2: 3100 },
+  '291': { zona: 'Málaga Este/Pedregalejo', precioM2: 2800 },
+  '292': { zona: 'Málaga Oeste/Carretera de Cádiz', precioM2: 2400 },
+  '293': { zona: 'Marbella/San Pedro',    precioM2: 4500 },
+  '294': { zona: 'Fuengirola/Benalmádena', precioM2: 3200 },
+  '295': { zona: 'Torremolinos/Torremolinos', precioM2: 2900 },
+  '296': { zona: 'Estepona/Casares',      precioM2: 2800 },
+  '297': { zona: 'Nerja/Torrox',          precioM2: 2200 },
+  '298': { zona: 'Antequera/Ronda',       precioM2: 1100 },
+  '299': { zona: 'Vélez-Málaga',          precioM2: 1400 },
+
+  // ── VALENCIA (46) ──────────────────────────────────────────
+  '460': { zona: 'Valencia Centro/Eixample', precioM2: 3200 },
+  '461': { zona: 'Valencia Ruzafa/Russafa', precioM2: 3500 },
+  '462': { zona: 'Valencia Campanar/Benicalap', precioM2: 2400 },
+  '463': { zona: 'Valencia Benimaclet/Pla del Real', precioM2: 2800 },
+  '464': { zona: 'Valencia Patraix/Jesús', precioM2: 2100 },
+  '465': { zona: 'Valencia Quatre Carreres', precioM2: 2600 },
+  '466': { zona: 'Valencia Pobles del Nord', precioM2: 1600 },
+  '467': { zona: 'Torrent/Mislata',       precioM2: 1800 },
+  '468': { zona: 'Sagunto/Puçol',         precioM2: 1400 },
+  '469': { zona: 'Gandía/Oliva',          precioM2: 1700 },
+
+  // ── BILBAO (48) ────────────────────────────────────────────
+  '480': { zona: 'Bilbao Centro',         precioM2: 3800 },
+  '481': { zona: 'Bilbao Abando/Indautxu', precioM2: 4200 },
+  '482': { zona: 'Bilbao Deusto/Santutxu', precioM2: 3000 },
+  '483': { zona: 'Barakaldo/Sestao',      precioM2: 2200 },
+  '484': { zona: 'Getxo/Leioa',           precioM2: 3200 },
+  '485': { zona: 'Basauri/Galdakao',      precioM2: 2400 },
+  '486': { zona: 'Durango/Ermua',         precioM2: 2000 },
+  '487': { zona: 'Gernika/Mungia',        precioM2: 1800 },
+  '488': { zona: 'Amorebieta/Elorrio',    precioM2: 1600 },
+
+  // ── ALICANTE (03) ──────────────────────────────────────────
+  '030': { zona: 'Alicante Ciudad',       precioM2: 1900 },
+  '031': { zona: 'Alicante Playa/Cabo Huertas', precioM2: 2600 },
+  '032': { zona: 'Benidorm/Villajoyosa',  precioM2: 2400 },
+  '033': { zona: 'Torrevieja/Guardamar',  precioM2: 1800 },
+  '034': { zona: 'Elche',                 precioM2: 1300 },
+  '035': { zona: 'Orihuela Costa',        precioM2: 1600 },
+  '036': { zona: 'Elda/Petrer',           precioM2: 800  },
+  '037': { zona: 'Denia/Jávea',           precioM2: 3200 },
+  '038': { zona: 'Altea/Calpe',           precioM2: 2800 },
+  '039': { zona: 'Alcoy/Ibi',             precioM2: 700  },
+
+  // ── ZARAGOZA (50) ──────────────────────────────────────────
+  '500': { zona: 'Zaragoza Centro',       precioM2: 2000 },
+  '501': { zona: 'Zaragoza Delicias/Oliver', precioM2: 1400 },
+  '502': { zona: 'Zaragoza Torrero/La Paz', precioM2: 1600 },
+  '503': { zona: 'Zaragoza Casablanca/Las Fuentes', precioM2: 1500 },
+  '504': { zona: 'Zaragoza Actur/Rey Fernando', precioM2: 1800 },
+  '505': { zona: 'Cuarte/Cadrete',        precioM2: 1400 },
+  '506': { zona: 'Utebo/Alagón',          precioM2: 1000 },
+
+  // ── GRANADA (18) ───────────────────────────────────────────
+  '180': { zona: 'Granada Centro/Albayzín', precioM2: 2100 },
+  '181': { zona: 'Granada Norte/Cartuja', precioM2: 1500 },
+  '182': { zona: 'Granada Sur/Zaidín',    precioM2: 1600 },
+  '183': { zona: 'Motril/Salobreña',      precioM2: 1100 },
+  '184': { zona: 'Guadix/Baza',           precioM2: 700  },
+  '185': { zona: 'Loja/Montefrío',        precioM2: 600  },
+  '186': { zona: 'Almuñécar/La Herradura', precioM2: 2000 },
+  '187': { zona: 'Santa Fe/Peligros',     precioM2: 1300 },
+  '188': { zona: 'Maracena/Armilla',      precioM2: 1400 },
+
+  // ── MURCIA (30) ────────────────────────────────────────────
+  '300': { zona: 'Murcia Ciudad',         precioM2: 1300 },
+  '301': { zona: 'Murcia Oeste/Churra',   precioM2: 1100 },
+  '302': { zona: 'Cartagena Ciudad',      precioM2: 1200 },
+  '303': { zona: 'Cartagena Costa/Mazarrón', precioM2: 1400 },
+  '304': { zona: 'Lorca/Águilas',         precioM2: 800  },
+  '305': { zona: 'Alcantarilla/Molina',   precioM2: 1000 },
+  '306': { zona: 'San Javier/Los Alcázares', precioM2: 1600 },
+  '307': { zona: 'Yecla/Jumilla',         precioM2: 700  },
+  '308': { zona: 'Cieza/Caravaca',        precioM2: 700  },
+  '309': { zona: 'Torre-Pacheco/Balsicas', precioM2: 1300 },
+
+  // ── VALLADOLID (47) ────────────────────────────────────────
+  '470': { zona: 'Valladolid Centro',     precioM2: 1600 },
+  '471': { zona: 'Valladolid Villa del Prado/Parquesol', precioM2: 1800 },
+  '472': { zona: 'Valladolid Delicias/Pajarillos', precioM2: 1100 },
+  '473': { zona: 'Medina del Campo',      precioM2: 900  },
+  '474': { zona: 'Laguna de Duero',       precioM2: 1400 },
+
+  // ── CÓRDOBA (14) ───────────────────────────────────────────
+  '140': { zona: 'Córdoba Centro/Medina', precioM2: 1500 },
+  '141': { zona: 'Córdoba Norte/Brillante', precioM2: 1300 },
+  '142': { zona: 'Córdoba Sur/Zoco',      precioM2: 1000 },
+  '143': { zona: 'Lucena/Cabra',          precioM2: 700  },
+  '144': { zona: 'Puente Genil/Montilla', precioM2: 650  },
+  '145': { zona: 'Pozoblanco/Peñarroya',  precioM2: 600  },
+
+  // ── PALMA DE MALLORCA (07) ─────────────────────────────────
+  '070': { zona: 'Palma Centro/Eixample', precioM2: 4500 },
+  '071': { zona: 'Palma Son Sardina/Establiments', precioM2: 3200 },
+  '072': { zona: 'Calvià/Magaluf',        precioM2: 3800 },
+  '073': { zona: 'Alcúdia/Pollença',      precioM2: 4200 },
+  '074': { zona: 'Manacor/Felanitx',      precioM2: 2500 },
+  '075': { zona: 'Llucmajor/Campos',      precioM2: 2800 },
+  '076': { zona: 'Inca/Binissalem',       precioM2: 2200 },
+  '077': { zona: 'Ibiza Ciudad',          precioM2: 6500 },
+  '078': { zona: 'Sant Antoni/Sant Joan', precioM2: 5800 },
+  '079': { zona: 'Menorca/Maó',           precioM2: 3000 },
+
+  // ── TENERIFE (38) ──────────────────────────────────────────
+  '380': { zona: 'Santa Cruz de Tenerife', precioM2: 1800 },
+  '381': { zona: 'La Laguna/Tegueste',    precioM2: 1600 },
+  '382': { zona: 'Los Cristianos/Las Américas', precioM2: 2800 },
+  '383': { zona: 'Costa Adeje/Adeje',     precioM2: 3500 },
+  '384': { zona: 'Puerto de la Cruz/Orotava', precioM2: 1900 },
+  '385': { zona: 'Arona/Vilaflor',        precioM2: 2200 },
+  '386': { zona: 'Icod/Buenavista',       precioM2: 1200 },
+  '387': { zona: 'Güímar/Granadilla',     precioM2: 1100 },
+  '388': { zona: 'La Gomera/La Palma',    precioM2: 1400 },
+
+  // ── LAS PALMAS (35) ────────────────────────────────────────
+  '350': { zona: 'Las Palmas Ciudad',     precioM2: 2200 },
+  '351': { zona: 'Las Palmas Triana/Vegueta', precioM2: 2800 },
+  '352': { zona: 'Maspalomas/Playa del Inglés', precioM2: 2600 },
+  '353': { zona: 'Telde/Ingenio',         precioM2: 1400 },
+  '354': { zona: 'Arucas/Gáldar',         precioM2: 1200 },
+  '355': { zona: 'Puerto Rico/Mogán',     precioM2: 3200 },
+
+  // ── NAVARRA (31) ───────────────────────────────────────────
+  '310': { zona: 'Pamplona/Iruña Centro', precioM2: 2500 },
+  '311': { zona: 'Pamplona Ensanche',     precioM2: 2800 },
+  '312': { zona: 'Barañáin/Berriozar',    precioM2: 1800 },
+  '313': { zona: 'Tudela',               precioM2: 1400 },
+  '314': { zona: 'Estella/Tafalla',       precioM2: 1100 },
+
+  // ── DONOSTIA / SAN SEBASTIÁN (20) ─────────────────────────
+  '200': { zona: 'Donostia Centro',       precioM2: 5500 },
+  '201': { zona: 'Donostia Antiguo/Aiete', precioM2: 4800 },
+  '202': { zona: 'Donostia Amara/Gros',   precioM2: 5000 },
+  '203': { zona: 'Irun/Hondarribia',      precioM2: 3200 },
+  '204': { zona: 'Tolosa/Andoain',        precioM2: 2400 },
+  '205': { zona: 'Zarautz/Getaria',       precioM2: 3800 },
+  '206': { zona: 'Hernani/Errenteria',    precioM2: 2800 },
+
+  // ── SANTANDER (39) ─────────────────────────────────────────
+  '390': { zona: 'Santander Centro',      precioM2: 2200 },
+  '391': { zona: 'Santander Sardinero/Nueva Montaña', precioM2: 2600 },
+  '392': { zona: 'Torrelavega',           precioM2: 1400 },
+  '393': { zona: 'Castro Urdiales/Laredo', precioM2: 1800 },
+  '394': { zona: 'San Vicente/Suances',   precioM2: 2000 },
+  '395': { zona: 'Reinosa/Potes',         precioM2: 800  },
+
+  // ── OVIEDO / ASTURIAS (33) ─────────────────────────────────
+  '330': { zona: 'Oviedo Centro',         precioM2: 1800 },
+  '331': { zona: 'Oviedo Buenavista/Teatinos', precioM2: 2000 },
+  '332': { zona: 'Gijón Centro',          precioM2: 1700 },
+  '333': { zona: 'Gijón El Llano/La Calzada', precioM2: 1400 },
+  '334': { zona: 'Avilés',               precioM2: 1100 },
+  '335': { zona: 'Mieres/Langreo',        precioM2: 700  },
+  '336': { zona: 'Cangas de Narcea/Tineo', precioM2: 600  },
+  '337': { zona: 'Llanes/Ribadesella',    precioM2: 1800 },
+  '338': { zona: 'Cudillero/Luarca',      precioM2: 1200 },
+
+  // ── A CORUÑA (15) ──────────────────────────────────────────
+  '150': { zona: 'A Coruña Centro',       precioM2: 2200 },
+  '151': { zona: 'A Coruña Zona Alta',    precioM2: 2600 },
+  '152': { zona: 'Santiago de Compostela', precioM2: 2000 },
+  '153': { zona: 'Ferrol',               precioM2: 900  },
+  '154': { zona: 'Carballo/Betanzos',     precioM2: 1000 },
+
+  // ── VIGO / PONTEVEDRA (36) ─────────────────────────────────
+  '360': { zona: 'Vigo Centro',           precioM2: 2000 },
+  '361': { zona: 'Vigo Casco Vello/Bouzas', precioM2: 1700 },
+  '362': { zona: 'Pontevedra Ciudad',     precioM2: 1600 },
+  '363': { zona: 'Redondela/Mos',         precioM2: 1100 },
+  '364': { zona: 'Cangas/Moaña',          precioM2: 1200 },
+  '365': { zona: 'Sanxenxo/O Grove',      precioM2: 2200 },
+
+  // ── CÁDIZ (11) ─────────────────────────────────────────────
+  '110': { zona: 'Cádiz Ciudad',          precioM2: 1800 },
+  '111': { zona: 'Jerez de la Frontera',  precioM2: 1300 },
+  '112': { zona: 'Algeciras/La Línea',    precioM2: 1000 },
+  '113': { zona: 'El Puerto de Santa María', precioM2: 1700 },
+  '114': { zona: 'Chiclana/Conil',        precioM2: 1900 },
+  '115': { zona: 'Sanlúcar/Rota',         precioM2: 1500 },
+  '116': { zona: 'Tarifa/Los Barrios',    precioM2: 1600 },
+  '117': { zona: 'Ubrique/Arcos',         precioM2: 700  },
+
+  // ── TARRAGONA (43) ─────────────────────────────────────────
+  '430': { zona: 'Tarragona Ciudad',      precioM2: 1800 },
+  '431': { zona: 'Reus/Cambrils',         precioM2: 1600 },
+  '432': { zona: 'Salou/La Pineda',       precioM2: 2200 },
+  '433': { zona: 'Tortosa/Deltebre',      precioM2: 900  },
+  '434': { zona: 'Valls/Montblanc',       precioM2: 1000 },
+};
+
 const PROVINCIA_DATA = {
     '01': { nombre: 'Álava / Vitoria',        precioM2: 2200 },
     '02': { nombre: 'Albacete',               precioM2: 900  },
@@ -371,22 +617,36 @@ function actualizarMercado() {
     const supEl    = document.getElementById('superficieM2');
     if (!cpEl) return;
 
-    const cp     = cpEl.value.trim();
-    const prefix = cp.slice(0, 2).padStart(2, '0');
-    const prov   = cp.length >= 2 ? PROVINCIA_DATA[prefix] : null;
+    const cp      = cpEl.value.trim();
+    const pre3    = cp.slice(0, 3);   // 3 dígitos → municipio/distrito
+    const pre2    = cp.slice(0, 2);   // 2 dígitos → provincia fallback
+
+    // Buscar primero por 3 dígitos (más preciso), luego por 2 (provincia)
+    const cpInfo  = (cp.length >= 3 && CP_DATA[pre3]) ? CP_DATA[pre3] : null;
+    const provInfo= (cp.length >= 2 && PROVINCIA_DATA[pre2]) ? PROVINCIA_DATA[pre2] : null;
+    const zonaNombre = cpInfo ? cpInfo.zona : (provInfo ? provInfo.nombre : null);
+    const precioAuto = cpInfo ? cpInfo.precioM2 : (provInfo ? provInfo.precioM2 : 0);
+    const esExacto   = !!cpInfo;
 
     const hintEl = document.getElementById('mercadoProvHint');
     const autoEl = document.getElementById('mercadoM2Auto');
 
-    // ── 1. Autodetectar provincia y rellenar €/m² ──
-    if (prov) {
-        if (hintEl) { hintEl.textContent = '📍 ' + prov.nombre; hintEl.style.color = '#10b981'; }
+    // ── 1. Autodetectar zona y rellenar €/m² ──
+    if (zonaNombre) {
+        const precisionLabel = esExacto ? '📍' : '🗺️';
+        const precisionHint  = esExacto ? '' : ' (media provincia)';
+        if (hintEl) { hintEl.textContent = precisionLabel + ' ' + zonaNombre + precisionHint; hintEl.style.color = '#10b981'; }
         if (precioEl && !_mercadoPrecioManual) {
-            precioEl.value = prov.precioM2;
-            if (autoEl) autoEl.textContent = '· auto';
+            precioEl.value = precioAuto;
+            if (autoEl) autoEl.textContent = esExacto ? '· zona' : '· prov.';
         }
+        // Actualizar legacy PDF
+        const legProv = document.getElementById('mercadoCardProvincia');
+        const legM2   = document.getElementById('mercadoCardPrecioM2');
+        if (legProv) legProv.textContent = zonaNombre;
+        if (legM2)   legM2.textContent   = precioAuto;
     } else {
-        if (hintEl) hintEl.textContent = cp.length >= 2 ? '❓ Provincia no encontrada' : '';
+        if (hintEl) hintEl.textContent = cp.length >= 2 ? '❓ CP no reconocido' : '';
         if (precioEl && !_mercadoPrecioManual) { precioEl.value = ''; if (autoEl) autoEl.textContent = ''; }
     }
 
@@ -3839,6 +4099,441 @@ window.copyWidgetCode = function() {
 };
 
 // widgetBtn eliminado — sin listener extra
+
+
+// ============================================================
+// PLUSVALÍA MUNICIPAL REAL — Ley 11/2021 (Método objetivo)
+// Coeficientes máximos RD 27/2021 actualizados 2024
+// ============================================================
+const COEF_PLUSVALIA = {
+    1:  0.14,   // menos de 1 año
+    2:  0.13,   // 1-2 años
+    3:  0.15,   // 2-3 años
+    4:  0.16,   // 3-4 años
+    5:  0.17,   // 4-5 años
+    6:  0.17,   // 5-6 años
+    7:  0.17,   // 6-7 años
+    8:  0.17,   // 7-8 años
+    9:  0.16,   // 8-9 años
+    10: 0.14,   // 9-10 años
+    11: 0.12,   // 10-11 años
+    12: 0.10,   // 11-12 años
+    13: 0.09,   // 12-13 años
+    14: 0.09,   // 13-14 años
+    15: 0.09,   // 14-15 años
+    16: 0.09,   // 15-16 años
+    17: 0.09,   // 16-17 años
+    18: 0.09,   // 17-18 años
+    19: 0.09,   // 18-19 años
+    20: 0.09,   // 19-20 años o más
+};
+
+// Tipos impositivos medios por municipio (máx legal 30%)
+// Grandes ciudades suelen aplicar el máximo o cerca
+const TIPO_MUNICIPAL = {
+    'Madrid':    29.0,
+    'Barcelona': 30.0,
+    'Valencia':  30.0,
+    'Sevilla':   28.0,
+    'Zaragoza':  28.0,
+    'Málaga':    27.0,
+    'Bilbao':    25.0,
+    'Palma':     22.0,
+    'Alicante':  25.0,
+    'Murcia':    25.0,
+    '_default':  25.0,
+};
+
+function calcularPlusvaliaMunicipal(valorCatastralSuelo, anostenencia, municipio) {
+    // Limitar años al máximo de la tabla
+    const anos = Math.min(Math.max(1, Math.ceil(anostenencia)), 20);
+    const coef = COEF_PLUSVALIA[anos];
+    
+    // Base imponible método objetivo: valor catastral suelo × coeficiente
+    const baseImponible = valorCatastralSuelo * coef;
+    
+    // Tipo impositivo del municipio
+    const tipo = TIPO_MUNICIPAL[municipio] || TIPO_MUNICIPAL['_default'];
+    
+    // Cuota íntegra
+    const cuota = baseImponible * (tipo / 100);
+    
+    return {
+        anos,
+        coef,
+        baseImponible: Math.round(baseImponible),
+        tipo,
+        cuota: Math.round(cuota),
+    };
+}
+
+// Abre el modal de calculadora de plusvalía
+window.abrirCalcPlusvalia = function() {
+    const modal = document.getElementById('plusvaliaModal');
+    if (!modal) return;
+    // Prellenar con datos actuales si los hay
+    const precio = parseFloat(document.getElementById('precio')?.value) || 0;
+    const anos   = parseFloat(document.getElementById('anosAnalisis')?.value) || 10;
+    if (precio > 0) {
+        const catEl = document.getElementById('pvCatastral');
+        if (catEl && !catEl.value) catEl.value = Math.round(precio * 0.35); // estimación catastral ~35% del precio
+    }
+    const anosEl = document.getElementById('pvAnos');
+    if (anosEl) anosEl.value = anos;
+    modal.classList.add('active');
+    calcularPlusvaliaModal();
+};
+
+window.cerrarCalcPlusvalia = function() {
+    document.getElementById('plusvaliaModal')?.classList.remove('active');
+};
+
+window.calcularPlusvaliaModal = function() {
+    const catastral  = parseFloat(document.getElementById('pvCatastral')?.value) || 0;
+    const anos       = parseFloat(document.getElementById('pvAnos')?.value) || 10;
+    const municipio  = document.getElementById('pvMunicipio')?.value || '_default';
+    const resultDiv  = document.getElementById('pvResultado');
+    
+    if (!resultDiv) return;
+    if (catastral <= 0) {
+        resultDiv.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:1rem;">Introduce el valor catastral del suelo para calcular.</p>';
+        return;
+    }
+    
+    const res = calcularPlusvaliaMunicipal(catastral, anos, municipio);
+    
+    // También calcular con el 50% del catastral (estimación suelo conservadora)
+    const resConservador = calcularPlusvaliaMunicipal(catastral * 0.5, anos, municipio);
+    
+    resultDiv.innerHTML = `
+        <div class="pv-resultado-header">
+            <span>Estimación plusvalía municipal</span>
+            <span class="pv-cuota">${fmt(res.cuota)} €</span>
+        </div>
+        <div class="pv-detalle-grid">
+            <div class="pv-detalle-item">
+                <span class="pv-det-label">Valor catastral suelo</span>
+                <span class="pv-det-val">${fmt(catastral)} €</span>
+            </div>
+            <div class="pv-detalle-item">
+                <span class="pv-det-label">Años de tenencia</span>
+                <span class="pv-det-val">${res.anos} años</span>
+            </div>
+            <div class="pv-detalle-item">
+                <span class="pv-det-label">Coeficiente (RD 27/2021)</span>
+                <span class="pv-det-val">${(res.coef * 100).toFixed(2)}%</span>
+            </div>
+            <div class="pv-detalle-item">
+                <span class="pv-det-label">Base imponible</span>
+                <span class="pv-det-val">${fmt(res.baseImponible)} €</span>
+            </div>
+            <div class="pv-detalle-item">
+                <span class="pv-det-label">Tipo impositivo</span>
+                <span class="pv-det-val">${res.tipo}%</span>
+            </div>
+            <div class="pv-detalle-item pv-detalle-item--total">
+                <span class="pv-det-label">Cuota a pagar</span>
+                <span class="pv-det-val metric-negative">${fmt(res.cuota)} €</span>
+            </div>
+        </div>
+        <div class="pv-nota">
+            💡 Si no conoces el valor catastral del suelo, consulta el recibo del IBI. 
+            El suelo suele representar el 30-50% del valor catastral total.
+            Rango estimado: <strong>${fmt(resConservador.cuota)} – ${fmt(res.cuota)} €</strong>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:0.75rem;" 
+            onclick="aplicarPlusvaliaCalculada(${res.cuota}); cerrarCalcPlusvalia()">
+            ✅ Aplicar ${fmt(res.cuota)} € al análisis
+        </button>
+    `;
+};
+
+window.aplicarPlusvaliaCalculada = function(valor) {
+    const el = document.getElementById('plusvalia');
+    if (el) { el.value = valor; calcular(); }
+    const toast = document.getElementById('shareToast');
+    if (toast) {
+        toast.textContent = '✅ Plusvalía aplicada: ' + fmt(valor) + ' €';
+        toast.classList.add('visible');
+        setTimeout(() => { toast.classList.remove('visible'); toast.textContent = '✅ Enlace copiado al portapapeles'; }, 2500);
+    }
+};
+
+
+// ============================================================
+// WIZARD PASO A PASO
+// ============================================================
+const WIZARD_STEPS = [
+    {
+        id: 'precio',
+        titulo: '¿Cuánto cuesta el piso?',
+        icono: '🏠',
+        desc: 'Precio de compra del inmueble',
+        campos: [
+            { id: 'precio',       label: 'Precio de compra', suffix: '€',    type: 'number', min: 0,   step: 1000, placeholder: '150000' },
+            { id: 'superficieM2', label: 'Superficie',        suffix: 'm²',   type: 'number', min: 0,   step: 1,    placeholder: '80' },
+            { id: 'codigoPostal', label: 'Código postal',     suffix: '',     type: 'text',   max: 5,   placeholder: '28001' },
+        ]
+    },
+    {
+        id: 'financiacion',
+        titulo: '¿Cómo lo financias?',
+        icono: '🏦',
+        desc: 'Hipoteca o compra al contado',
+        campos: [
+            { id: 'entradaEuros', label: 'Ahorro aportado (entrada)',  suffix: '€',  type: 'number', min: 0, step: 1000, placeholder: '30000' },
+            { id: 'interes',      label: 'Interés hipoteca',           suffix: '%',  type: 'number', min: 0, step: 0.1,  placeholder: '3.5'   },
+            { id: 'anos',         label: 'Años de hipoteca',           suffix: 'años', type: 'number', min: 5, step: 1,  placeholder: '25'    },
+        ]
+    },
+    {
+        id: 'alquiler',
+        titulo: '¿Cuánto cobrarías de alquiler?',
+        icono: '💰',
+        desc: 'Ingresos mensuales estimados',
+        campos: [
+            { id: 'alquiler',    label: 'Alquiler mensual',    suffix: '€/mes', type: 'number', min: 0, step: 50,  placeholder: '900' },
+            { id: 'mesesVacio',  label: 'Meses vacío al año',  suffix: 'meses', type: 'number', min: 0, step: 1,   placeholder: '1'   },
+            { id: 'reforma',     label: 'Gastos de reforma',   suffix: '€',     type: 'number', min: 0, step: 500, placeholder: '0'   },
+        ]
+    },
+    {
+        id: 'resultado',
+        titulo: '¡Tu análisis está listo!',
+        icono: '📊',
+        desc: 'Resultados de tu inversión',
+        campos: []
+    }
+];
+
+let _wizardStep = 0;
+
+window.abrirWizard = function() {
+    _wizardStep = 0;
+    document.getElementById('wizardModal').classList.add('active');
+    renderizarWizardStep();
+};
+window.cerrarWizard = function() {
+    document.getElementById('wizardModal').classList.remove('active');
+};
+
+function renderizarWizardStep() {
+    const step  = WIZARD_STEPS[_wizardStep];
+    const total = WIZARD_STEPS.length;
+    const body  = document.getElementById('wizardBody');
+    if (!body) return;
+
+    // Barra de progreso
+    const pct = Math.round((_wizardStep / (total - 1)) * 100);
+
+    if (step.id === 'resultado') {
+        // Último paso: calcular y mostrar resumen
+        calcular();
+        const datos = window._lastDatos;
+        body.innerHTML = `
+            <div class="wizard-resultado">
+                <div class="wizard-icono">${step.icono}</div>
+                <h3 class="wizard-titulo">${step.titulo}</h3>
+                ${datos ? `
+                <div class="wizard-kpis">
+                    <div class="wizard-kpi ${datos.flujoMensual >= 0 ? 'wizard-kpi--pos' : 'wizard-kpi--neg'}">
+                        <span class="wizard-kpi-label">💰 Cashflow mensual</span>
+                        <span class="wizard-kpi-val">${fmt(datos.flujoMensual)} €/mes</span>
+                    </div>
+                    <div class="wizard-kpi">
+                        <span class="wizard-kpi-label">📈 Rentabilidad anual</span>
+                        <span class="wizard-kpi-val">${datos.rentabilidadAnual.toFixed(2)}%</span>
+                    </div>
+                    <div class="wizard-kpi">
+                        <span class="wizard-kpi-label">🏦 Inversión inicial</span>
+                        <span class="wizard-kpi-val">${fmt(datos.inversionInicial)} €</span>
+                    </div>
+                    <div class="wizard-kpi">
+                        <span class="wizard-kpi-label">⏱️ TIR a ${datos.anosAnalisis} años</span>
+                        <span class="wizard-kpi-val">${datos.tir ? datos.tir.toFixed(2) + '%' : datos.rentabilidadAnual.toFixed(2) + '%'}</span>
+                    </div>
+                </div>
+                <p style="font-size:0.82rem;color:#64748b;text-align:center;margin-top:0.5rem;">Estos son valores aproximados. Desplázate abajo para ver el análisis completo.</p>
+                ` : '<p style="color:#94a3b8;">Revisa los datos en los pasos anteriores.</p>'}
+                <div style="display:flex;gap:0.65rem;margin-top:1rem;">
+                    <button class="btn btn-share" onclick="wizardPrev()" style="flex:1">← Ajustar datos</button>
+                    <button class="btn btn-primary" onclick="cerrarWizard();document.getElementById('resultados').scrollIntoView({behavior:'smooth'})" style="flex:1">Ver análisis completo →</button>
+                </div>
+            </div>`;
+        return;
+    }
+
+    const camposHTML = step.campos.map(c => {
+        const valActual = document.getElementById(c.id)?.value || c.placeholder || '';
+        return `
+        <div class="form-group" style="margin-bottom:0.85rem;">
+            <label class="form-label">${c.label}</label>
+            <div class="input-group">
+                <input class="form-input ${c.suffix ? 'with-suffix' : ''}" 
+                    id="wiz_${c.id}" type="${c.type}" 
+                    ${c.min !== undefined ? 'min="'+c.min+'"' : ''}
+                    ${c.step ? 'step="'+c.step+'"' : ''}
+                    ${c.max ? 'maxlength="'+c.max+'"' : ''}
+                    placeholder="${c.placeholder || ''}"
+                    value="${document.getElementById(c.id)?.value || ''}"
+                    oninput="wizardSyncField('${c.id}', this.value)"/>
+                ${c.suffix ? '<span class="input-suffix">'+c.suffix+'</span>' : ''}
+            </div>
+        </div>`;
+    }).join('');
+
+    body.innerHTML = `
+        <div class="wizard-progress-bar">
+            <div class="wizard-progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="wizard-step-info">
+            <span class="wizard-step-num">Paso ${_wizardStep + 1} de ${total - 1}</span>
+        </div>
+        <div class="wizard-icono">${step.icono}</div>
+        <h3 class="wizard-titulo">${step.titulo}</h3>
+        <p class="wizard-desc">${step.desc}</p>
+        <div class="wizard-campos">${camposHTML}</div>
+        <div style="display:flex;gap:0.65rem;margin-top:1rem;">
+            ${_wizardStep > 0 ? '<button class="btn btn-share" onclick="wizardPrev()" style="flex:1">← Atrás</button>' : ''}
+            <button class="btn btn-primary" onclick="wizardNext()" style="flex:${_wizardStep === 0 ? 2 : 1}">
+                ${_wizardStep < total - 2 ? 'Siguiente →' : '🎯 Ver resultados'}
+            </button>
+        </div>`;
+}
+
+window.wizardSyncField = function(id, val) {
+    const el = document.getElementById(id);
+    if (el) { el.value = val; }
+    // Si es CP, actualizar mercado
+    if (id === 'codigoPostal') actualizarMercado();
+};
+
+window.wizardNext = function() {
+    if (_wizardStep < WIZARD_STEPS.length - 1) {
+        _wizardStep++;
+        renderizarWizardStep();
+    }
+};
+window.wizardPrev = function() {
+    if (_wizardStep > 0) { _wizardStep--; renderizarWizardStep(); }
+};
+
+// ============================================================
+// MAPA DE RENTABILIDAD POR CIUDADES
+// ============================================================
+const RENTABILIDAD_CIUDADES = [
+    { ciudad: 'Murcia',      lat: 37.98, lng: -1.13, rentBruta: 7.8, precioM2: 1100, alquilerM2: 7.1 },
+    { ciudad: 'Huelva',      lat: 37.26, lng: -6.95, rentBruta: 7.5, precioM2: 900,  alquilerM2: 5.6 },
+    { ciudad: 'Toledo',      lat: 39.86, lng: -4.02, rentBruta: 7.2, precioM2: 900,  alquilerM2: 5.4 },
+    { ciudad: 'Almería',     lat: 36.84, lng: -2.47, rentBruta: 7.0, precioM2: 1050, alquilerM2: 6.1 },
+    { ciudad: 'Zaragoza',    lat: 41.65, lng: -0.89, rentBruta: 6.8, precioM2: 1600, alquilerM2: 9.1 },
+    { ciudad: 'Valladolid',  lat: 41.65, lng: -4.72, rentBruta: 6.5, precioM2: 1300, alquilerM2: 7.1 },
+    { ciudad: 'Alicante',    lat: 38.35, lng: -0.48, rentBruta: 6.4, precioM2: 1900, alquilerM2: 10.1},
+    { ciudad: 'Valencia',    lat: 39.47, lng: -0.37, rentBruta: 6.2, precioM2: 2200, alquilerM2: 11.4},
+    { ciudad: 'Sevilla',     lat: 37.39, lng: -5.99, rentBruta: 5.9, precioM2: 2000, alquilerM2: 9.8 },
+    { ciudad: 'Málaga',      lat: 36.72, lng: -4.42, rentBruta: 5.7, precioM2: 3100, alquilerM2: 14.7},
+    { ciudad: 'Granada',     lat: 37.18, lng: -3.60, rentBruta: 5.5, precioM2: 1800, alquilerM2: 8.3 },
+    { ciudad: 'Bilbao',      lat: 43.26, lng: -2.93, rentBruta: 5.2, precioM2: 3800, alquilerM2: 16.5},
+    { ciudad: 'Madrid',      lat: 40.42, lng: -3.70, rentBruta: 4.8, precioM2: 5200, alquilerM2: 20.8},
+    { ciudad: 'Barcelona',   lat: 41.39, lng:  2.15, rentBruta: 4.5, precioM2: 5500, alquilerM2: 20.6},
+    { ciudad: 'San Sebastián',lat:43.32, lng: -1.98, rentBruta: 3.8, precioM2: 5500, alquilerM2: 17.4},
+    { ciudad: 'Santander',   lat: 43.46, lng: -3.81, rentBruta: 5.0, precioM2: 2200, alquilerM2: 9.2 },
+    { ciudad: 'Oviedo',      lat: 43.36, lng: -5.85, rentBruta: 5.8, precioM2: 1800, alquilerM2: 8.7 },
+    { ciudad: 'A Coruña',    lat: 43.37, lng: -8.40, rentBruta: 5.3, precioM2: 2200, alquilerM2: 9.7 },
+    { ciudad: 'Vigo',        lat: 42.23, lng: -8.72, rentBruta: 5.6, precioM2: 2000, alquilerM2: 9.3 },
+    { ciudad: 'Palma',       lat: 39.57, lng:  2.65, rentBruta: 5.1, precioM2: 4500, alquilerM2: 19.1},
+    { ciudad: 'Las Palmas',  lat: 28.10, lng: -15.41,rentBruta: 6.0, precioM2: 2200, alquilerM2: 11.0},
+    { ciudad: 'Tenerife',    lat: 28.47, lng: -16.26,rentBruta: 6.3, precioM2: 1800, alquilerM2: 9.5 },
+    { ciudad: 'Córdoba',     lat: 37.89, lng: -4.78, rentBruta: 7.0, precioM2: 1100, alquilerM2: 6.4 },
+    { ciudad: 'Cádiz',       lat: 36.53, lng: -6.30, rentBruta: 6.1, precioM2: 1800, alquilerM2: 9.2 },
+    { ciudad: 'Pamplona',    lat: 42.82, lng: -1.64, rentBruta: 4.9, precioM2: 2600, alquilerM2: 10.6},
+    { ciudad: 'Burgos',      lat: 42.34, lng: -3.70, rentBruta: 6.0, precioM2: 1100, alquilerM2: 5.5 },
+    { ciudad: 'Salamanca',   lat: 40.96, lng: -5.66, rentBruta: 6.2, precioM2: 1200, alquilerM2: 6.2 },
+];
+
+window.abrirMapa = function() {
+    document.getElementById('mapaModal').classList.add('active');
+    renderizarMapa();
+};
+window.cerrarMapa = function() {
+    document.getElementById('mapaModal').classList.remove('active');
+};
+
+function renderizarMapa() {
+    const container = document.getElementById('mapaContainer');
+    if (!container) return;
+
+    const maxRent = Math.max(...RENTABILIDAD_CIUDADES.map(c => c.rentBruta));
+    const minRent = Math.min(...RENTABILIDAD_CIUDADES.map(c => c.rentBruta));
+
+    const getColor = (rent) => {
+        const pct = (rent - minRent) / (maxRent - minRent);
+        if (pct > 0.7)  return { bg: '#10b981', text: 'white' };
+        if (pct > 0.4)  return { bg: '#f59e0b', text: 'white' };
+        return            { bg: '#ef4444', text: 'white' };
+    };
+
+    // Tabla ordenada por rentabilidad
+    const sorted = [...RENTABILIDAD_CIUDADES].sort((a,b) => b.rentBruta - a.rentBruta);
+
+    container.innerHTML = `
+        <div class="mapa-layout">
+            <div class="mapa-leyenda-top">
+                <span class="mapa-leyenda-item" style="background:#10b981;color:white;">▲ Alta &gt;6%</span>
+                <span class="mapa-leyenda-item" style="background:#f59e0b;color:white;">▶ Media 5-6%</span>
+                <span class="mapa-leyenda-item" style="background:#ef4444;color:white;">▼ Baja &lt;5%</span>
+                <span style="font-size:0.72rem;color:#64748b;margin-left:auto;">* Rentabilidad bruta. Fuente: Idealista 2025</span>
+            </div>
+            <div class="mapa-tabla-container">
+                <table class="mapa-tabla">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ciudad</th>
+                            <th>Rent. bruta</th>
+                            <th>Precio €/m²</th>
+                            <th>Alquiler €/m²/mes</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sorted.map((c, i) => {
+                            const col = getColor(c.rentBruta);
+                            const barPct = Math.round((c.rentBruta / maxRent) * 100);
+                            return `<tr class="mapa-tabla-row" onclick="seleccionarCiudadMapa('${c.ciudad}', ${c.precioM2})">
+                                <td style="font-weight:700;color:#94a3b8;">${i+1}</td>
+                                <td style="font-weight:700;">${c.ciudad}</td>
+                                <td>
+                                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                                        <div style="width:60px;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
+                                            <div style="width:${barPct}%;height:100%;background:${col.bg};border-radius:4px;"></div>
+                                        </div>
+                                        <span style="font-weight:800;color:${col.bg};">${c.rentBruta.toFixed(1)}%</span>
+                                    </div>
+                                </td>
+                                <td>${fmt(c.precioM2)} €/m²</td>
+                                <td>${c.alquilerM2.toFixed(1)} €/m²</td>
+                                <td><button class="btn-mapa-usar" onclick="event.stopPropagation();seleccionarCiudadMapa('${c.ciudad}', ${c.precioM2})">Usar datos</button></td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>`;
+}
+
+window.seleccionarCiudadMapa = function(ciudad, precioM2) {
+    // Aplicar precio al campo de referencia
+    const precioEl = document.getElementById('precioRefM2');
+    if (precioEl) { precioEl.value = precioM2; _mercadoPrecioManual = true; actualizarMercado(); }
+    cerrarMapa();
+    const toast = document.getElementById('shareToast');
+    if (toast) {
+        toast.textContent = '📍 ' + ciudad + ' — ' + fmt(precioM2) + ' €/m² aplicado';
+        toast.classList.add('visible');
+        setTimeout(() => { toast.classList.remove('visible'); toast.textContent = '✅ Enlace copiado al portapapeles'; }, 2500);
+    }
+};
 
 // ============================================================
 // HERRAMIENTAS ADICIONALES — Modal principal
