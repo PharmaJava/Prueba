@@ -35,12 +35,20 @@
 
     <link rel="stylesheet" href="style.css">
 
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-5TG9V5WN');</script>
+    <!-- Google Tag Manager — se carga SOLO tras aceptar cookies (RGPD) -->
+    <script>
+    function cargarGTM() {
+        if (document.getElementById('gtm-script')) return;
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;j.id='gtm-script';
+        f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-5TG9V5WN');
+    }
+    // Si ya aceptó antes, carga inmediatamente
+    if (localStorage.getItem('cookiesAceptadas') === 'true') cargarGTM();
+    </script>
     <!-- End Google Tag Manager -->
 
     <!-- Librerías (Chart.js una sola vez) -->
@@ -593,10 +601,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <div id="cookie-banner" class="cookie-banner">
-    <p>
-        🍪 Utilizamos cookies técnicas para el funcionamiento de la calculadora. No recopilamos datos personales.
-        <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button>
-    </p>
+    <div class="cookie-content">
+        <div class="cookie-text">
+            <span class="cookie-icon">🍪</span>
+            <div>
+                <strong>Usamos cookies</strong><br>
+                Cookies técnicas propias (necesarias) y cookies de análisis de Google Analytics/GTM para mejorar el servicio. Las cookies de análisis solo se activan con tu consentimiento.
+                <a href="privacidad.html" target="_blank" rel="noopener" class="cookie-link">Más información</a>
+            </div>
+        </div>
+        <div class="cookie-btns">
+            <button onclick="rechazarCookies()" class="btn-cookie btn-cookie--rechazar">Solo necesarias</button>
+            <button onclick="aceptarCookies()" class="btn-cookie btn-cookie--aceptar">Aceptar todas</button>
+        </div>
+    </div>
 </div>
 
 <!-- ══════════════════════════════════════════════════
