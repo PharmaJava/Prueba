@@ -3723,68 +3723,86 @@ window.calcularCapacidad = function() {
     const ahorros = parseFloat(document.getElementById('ahorrosDisponibles')?.value) || 0;
 
     const ingresoTotal = sueldo + otros;
+    const el = document.getElementById('capacidadResultado');
     if (ingresoTotal <= 0) { alert('Introduce tus ingresos mensuales'); return; }
 
-    // Criterio 35%: cuota máxima = 35% ingresos - otras deudas
+    // Cuota máxima según criterio de endeudamiento (ingresos * % - otras deudas)
     const cuotaMax35 = ingresoTotal * 0.35 - deudas;
-    // Criterio 40% (más permisivo)
     const cuotaMax40 = ingresoTotal * 0.40 - deudas;
 
     if (cuotaMax35 <= 0) {
-        document.getElementById('capacidadResultado').style.display = 'block';
-        document.getElementById('capacidadResultado').innerHTML =
-            '<div class="alert alert-danger">⚠️ Con tus deudas actuales ya superas el 35% de endeudamiento. Reduce deudas antes de solicitar hipoteca.</div>';
+        el.style.display = 'block';
+        el.innerHTML = '<div class="alert alert-danger">⚠️ Con tus deudas actuales ya superas el 35% de endeudamiento. Reduce deudas antes de solicitar hipoteca.</div>';
         return;
     }
 
-    // Precio máximo con hipoteca a 25 años al 3.5% (referencia)
-    function precioMaxHipoteca(cuota, tipo, anos, pctEntrada, pctGastosCompra) {
-        const i = tipo / 100 / 12, n = anos * 12;
-        const prestamo = i > 0 ? cuota * (Math.pow(1+i,n)-1) / (i*Math.pow(1+i,n)) : cuota*n;
-        // prestamo = precio * (1 - entrada%) - pero gastos de compra salen del ahorro
-        // precio*(1-entrada%) = prestamo  →  precio = prestamo / (1-entrada%)
-        return prestamo / (1 - pctEntrada/100);
+    // Precio máximo que se puede financiar dado una cuota máxima
+    // Préstamo = cuota * [(1+i)^n - 1] / [i * (1+i)^n]   (fórmula correcta)
+    // Precio   = préstamo / (1 - pctEntrada/100)           (banco financia 80%)
+    function calcPrecioMax(cuota, tipoAnual, anosHip, pctEntrada) {
+        var i = tipoAnual / 100 / 12;
+        var n = anosHip * 12;
+        var prestamo = i > 0
+            ? cuota * (Math.pow(1+i, n) - 1) / (i * Math.pow(1+i, n))
+            : cuota * n;
+        return prestamo / (1 - pctEntrada / 100);
     }
 
-    const tipo = 3.5, anos = 25;
-    const pctEntrada = 20, pctGastos = 11; // entrada + gastos ~31% del precio
+    var tipo = 3.5, anosHip = 25, pctEntrada = 20;
+    var pctGastos = 11; // gastos de compra ~11% del precio (notaría, registro, ITP...)
 
-    const pm35 = precioMaxHipoteca(cuotaMax35, tipo, anos, pctEntrada, pctGastos);
-    const pm40 = precioMaxHipoteca(cuotaMax40, tipo, anos, pctEntrada, pctGastos);
+    // Precio máximo según capacidad de pago
+    var pmPago35 = calcPrecioMax(cuotaMax35, tipo, anosHip, pctEntrada);
+    var pmPago40 = calcPrecioMax(cuotaMax40, tipo, anosHip, pctEntrada);
 
-    // ¿Los ahorros cubren la entrada + gastos del precio máximo?
-    const entradaGastos35 = pm35 * (pctEntrada + pctGastos) / 100;
-    const entradaGastos40 = pm40 * (pctEntrada + pctGastos) / 100;
-    const limitadoPorAhorros = ahorros < entradaGastos35;
+    // Precio máximo según ahorros disponibles (deben cubrir entrada 20% + gastos 11% = 31%)
+    var pmAhorros = ahorros > 0 ? ahorros / ((pctEntrada + pctGastos) / 100) : 0;
 
-    // Precio máximo limitado por ahorros: ahorros = precio * 0.31 → precio = ahorros/0.31
-    const pmAhorros = ahorros / ((pctEntrada + pctGastos) / 100);
+    // El precio máximo real es el mínimo de los dos limitantes
+    var pmFinal35 = pmAhorros > 0 ? Math.min(pmPago35, pmAhorros) : pmPago35;
+    var pmFinal40 = pmAhorros > 0 ? Math.min(pmPago40, pmAhorros) : pmPago40;
 
-    const pmFinal35 = limitadoPorAhorros ? Math.min(pm35, pmAhorros) : pm35;
-    const pmFinal40 = limitadoPorAhorros ? Math.min(pm40, pmAhorros) : pm40;
+    // ¿Qué factor está limitando?
+    var limitaPago35   = pmPago35 <= pmAhorros || pmAhorros === 0;
+    var ahorrosNecesarios35 = Math.round(pmPago35 * (pctEntrada + pctGastos) / 100);
+    var faltaAhorros = Math.max(0, ahorrosNecesarios35 - ahorros);
 
-    const faltaAhorros = Math.max(0, entradaGastos35 - ahorros);
+    // Cuota real que pagará con el precio final
+    var prestamo35 = pmFinal35 * (1 - pctEntrada/100);
+    var prestamo40 = pmFinal40 * (1 - pctEntrada/100);
+    var ii = tipo/100/12, nn = anosHip*12;
+    var cuotaReal35 = ii > 0 ? prestamo35*ii*Math.pow(1+ii,nn)/(Math.pow(1+ii,nn)-1) : prestamo35/nn;
+    var cuotaReal40 = ii > 0 ? prestamo40*ii*Math.pow(1+ii,nn)/(Math.pow(1+ii,nn)-1) : prestamo40/nn;
+    var pctIngreso35 = ingresoTotal > 0 ? (cuotaReal35/ingresoTotal*100) : 0;
+    var pctIngreso40 = ingresoTotal > 0 ? (cuotaReal40/ingresoTotal*100) : 0;
 
-    document.getElementById('capacidadResultado').style.display = 'block';
-    document.getElementById('capacidadResultado').innerHTML = `
-        <div class="capacidad-grid">
-            <div class="capacidad-escenario capacidad-escenario--conservador">
-                <div class="cap-label">Escenario conservador (35%)</div>
-                <div class="cap-precio">${fmt(Math.round(pmFinal35/1000)*1000)} €</div>
-                <div class="cap-detalle">Cuota máx: ${fmt(Math.round(cuotaMax35))} €/mes</div>
-                <div class="cap-detalle">Entrada + gastos: ${fmt(Math.round(pmFinal35*(pctEntrada+pctGastos)/100))} €</div>
-            </div>
-            <div class="capacidad-escenario capacidad-escenario--moderado">
-                <div class="cap-label">Escenario moderado (40%)</div>
-                <div class="cap-precio">${fmt(Math.round(pmFinal40/1000)*1000)} €</div>
-                <div class="cap-detalle">Cuota máx: ${fmt(Math.round(cuotaMax40))} €/mes</div>
-                <div class="cap-detalle">Entrada + gastos: ${fmt(Math.round(pmFinal40*(pctEntrada+pctGastos)/100))} €</div>
-            </div>
-        </div>
-        ${limitadoPorAhorros ? `<div class="alert alert-warning" style="margin-top:0.75rem;">⚠️ Capacidad limitada por ahorros. Necesitas <strong>${fmt(Math.round(entradaGastos35))} €</strong> para la entrada+gastos del escenario conservador. Te faltan <strong>${fmt(Math.round(faltaAhorros))} €</strong>.</div>` : ''}
-        <div class="cap-nota">* Cálculo con hipoteca a ${anos} años al ${tipo}%. Entrada 20% + gastos compra ~11%. Consulta con tu banco para condiciones reales.</div>
-        <button class="btn btn-primary" style="width:100%; margin-top:0.75rem;" onclick="cargarPrecioEnCalculadora(${Math.round(pmFinal35/1000)*1000})">✅ Usar ${fmt(Math.round(pmFinal35/1000)*1000)}€ en la calculadora</button>
-    `;
+    var factorLimitante = limitaPago35
+        ? (faltaAhorros > 0
+            ? '<div class="alert alert-warning" style="margin-top:0.75rem;">⚠️ El factor limitante son tus <strong>ingresos</strong>. Para el escenario conservador necesitarías ahorros de <strong>' + fmt(ahorrosNecesarios35) + ' €</strong> (te faltan <strong>' + fmt(faltaAhorros) + ' €</strong>).</div>'
+            : '')
+        : '<div class="alert alert-warning" style="margin-top:0.75rem;">⚠️ El factor limitante son tus <strong>ahorros</strong> (' + fmt(ahorros) + ' €). Con más ahorros podrías acceder a un piso de hasta <strong>' + fmt(Math.round(pmPago35/1000)*1000) + ' €</strong> según tus ingresos.</div>';
+
+    el.style.display = 'block';
+    el.innerHTML =
+        '<div class="capacidad-grid">' +
+            '<div class="capacidad-escenario capacidad-escenario--conservador">' +
+                '<div class="cap-label">Conservador (35% ingresos)</div>' +
+                '<div class="cap-precio">' + fmt(Math.round(pmFinal35/1000)*1000) + ' €</div>' +
+                '<div class="cap-detalle">Cuota: ' + fmt(Math.round(cuotaReal35)) + ' €/mes (' + pctIngreso35.toFixed(0) + '% ingresos)</div>' +
+                '<div class="cap-detalle">Entrada+gastos: ' + fmt(Math.round(pmFinal35*(pctEntrada+pctGastos)/100)) + ' €</div>' +
+                '<div class="cap-detalle">Préstamo: ' + fmt(Math.round(prestamo35)) + ' €</div>' +
+            '</div>' +
+            '<div class="capacidad-escenario capacidad-escenario--moderado">' +
+                '<div class="cap-label">Moderado (40% ingresos)</div>' +
+                '<div class="cap-precio">' + fmt(Math.round(pmFinal40/1000)*1000) + ' €</div>' +
+                '<div class="cap-detalle">Cuota: ' + fmt(Math.round(cuotaReal40)) + ' €/mes (' + pctIngreso40.toFixed(0) + '% ingresos)</div>' +
+                '<div class="cap-detalle">Entrada+gastos: ' + fmt(Math.round(pmFinal40*(pctEntrada+pctGastos)/100)) + ' €</div>' +
+                '<div class="cap-detalle">Préstamo: ' + fmt(Math.round(prestamo40)) + ' €</div>' +
+            '</div>' +
+        '</div>' +
+        factorLimitante +
+        '<div class="cap-nota">* Hipoteca a ' + anosHip + ' años al ' + tipo + '%. Entrada mínima 20% + gastos compra ~11%. Dato orientativo — consulta con tu banco.</div>' +
+        '<button class="btn btn-primary" style="width:100%; margin-top:0.75rem;" onclick="cargarPrecioEnCalculadora(' + Math.round(pmFinal35/1000)*1000 + ')">✅ Usar ' + fmt(Math.round(pmFinal35/1000)*1000) + ' € en la calculadora</button>';
 };
 
 window.cargarPrecioEnCalculadora = function(precio) {
