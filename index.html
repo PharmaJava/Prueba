@@ -67,8 +67,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <header class="header">
         <div class="header-controls">
-            <button class="dark-mode-toggle" id="darkModeToggle" title="Modo oscuro">🌙</button>
-            <select id="langSelector">
+                        <select id="langSelector">
                 <option value="es">🇪🇸 Español</option>
                 <option value="en">🇬🇧 English</option>
             </select>
@@ -167,11 +166,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <span class="mercado-ref-title">Análisis de mercado <span class="mercado-ref-badge">Opcional</span></span>
                             </div>
 
-                            <!-- Fila 1: CP + Superficie + €/m² -->
+                            <!-- Grid 3 columnas: CP | Superficie | €/m² -->
                             <div class="mercado-inputs-grid">
                                 <div class="form-group" style="margin-bottom:0;">
                                     <label class="form-label">Código postal</label>
-                                    <input class="form-input" id="codigoPostal" type="text" inputmode="numeric" maxlength="5" placeholder="41002" style="letter-spacing:0.12em;"/>
+                                    <input class="form-input" id="codigoPostal" type="text" inputmode="numeric" maxlength="5" placeholder="ej. 28001"/>
                                     <div class="mercado-prov-hint" id="mercadoProvHint"></div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;">
@@ -182,47 +181,53 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     </div>
                                 </div>
                                 <div class="form-group" style="margin-bottom:0;">
-                                    <label class="form-label">€/m² <span class="mercado-m2-auto" id="mercadoM2Auto"></span></label>
+                                    <label class="form-label">€/m² <span class="mercado-m2-auto" id="mercadoM2Auto" style="color:#10b981;font-size:0.7rem;font-weight:700;"></span></label>
                                     <div class="input-group">
-                                        <input class="form-input with-suffix" id="precioRefM2" type="number" inputmode="decimal" min="0" step="50" placeholder="—"/>
+                                        <input class="form-input with-suffix" id="precioRefM2" type="number" inputmode="decimal" min="0" step="50" placeholder="auto"/>
                                         <span class="input-suffix" style="font-size:0.72rem;">€/m²</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Resultado: valor estimado del inmueble — siempre visible cuando hay datos -->
-                            <div id="mercadoResultado" class="mercado-resultado-nuevo" style="display:none;">
+                            <!-- Botón calcular -->
+                            <button class="btn-mercado-calcular" onclick="actualizarMercado()" type="button">
+                                🔍 Calcular valor estimado
+                            </button>
+
+                            <!-- Resultado valor estimado -->
+                            <div id="mercadoResultado" style="display:none; margin-top:0.75rem;">
                                 <div class="mercado-valor-estimado">
                                     <span class="mercado-valor-label">🏠 Valor estimado del inmueble</span>
                                     <span class="mercado-valor-num" id="mrValorMercado">—</span>
                                 </div>
-                                <div class="mercado-comparativa-row">
-                                    <div class="mercado-comp-item">
-                                        <span class="mercado-comp-label">Tu precio</span>
-                                        <span class="mercado-comp-val" id="mrPrecioCompra">—</span>
+                                <div class="mercado-datos-grid">
+                                    <div class="mercado-dato">
+                                        <span class="mercado-dato-label">Precio/m² usado</span>
+                                        <span class="mercado-dato-val" id="mrPrecioM2Usado">—</span>
                                     </div>
-                                    <div class="mercado-comp-sep" id="mrVsTexto">—</div>
-                                    <div class="mercado-comp-item">
-                                        <span class="mercado-comp-label">Valor mercado</span>
-                                        <span class="mercado-comp-val" id="mrValorMercado2">—</span>
+                                    <div class="mercado-dato">
+                                        <span class="mercado-dato-label">Superficie</span>
+                                        <span class="mercado-dato-val" id="mrSuperficieUsada">—</span>
                                     </div>
-                                </div>
-                                <div class="mercado-oferta-row">
-                                    <span class="mercado-oferta-label">💬 Oferta sugerida con
-                                        <input type="number" id="descuentoOferta" class="mercado-descuento-input" min="0" max="30" step="0.5" value="10"/>
-                                        % descuento:</span>
-                                    <strong id="mrOferta" class="metric-positive">—</strong>
-                                </div>
-                                <div class="mercado-ahorro-row">
-                                    <span>Ahorro potencial si aceptan</span>
-                                    <strong id="mrAhorro" class="metric-positive">—</strong>
+                                    <div class="mercado-dato" id="mrVsBloque" style="display:none;">
+                                        <span class="mercado-dato-label">Tu precio vs mercado</span>
+                                        <span class="mercado-dato-val" id="mrVsTexto">—</span>
+                                    </div>
+                                    <div class="mercado-dato" id="mrOfertaBloque" style="display:none;">
+                                        <span class="mercado-dato-label">💬 Oferta sugerida (
+                                            <input type="number" id="descuentoOferta" class="mercado-descuento-input" min="0" max="30" step="0.5" value="10"/>%)</span>
+                                        <span class="mercado-dato-val metric-positive" id="mrOferta">—</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- IDs legacy para compatibilidad con PDF -->
+                            <!-- IDs legacy PDF -->
                             <span id="mercadoCard" style="display:none;"></span>
                             <span id="mercadoCardProvincia" style="display:none;"></span>
                             <span id="mercadoCardPrecioM2" style="display:none;"></span>
+                            <span id="mrAhorro" style="display:none;"></span>
+                            <span id="mrPrecioCompra" style="display:none;"></span>
+                            <span id="mrValorMercado2" style="display:none;"></span>
                         </div>
                         <!-- ── FIN BLOQUE REFERENCIA ── -->
 
