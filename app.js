@@ -1339,12 +1339,11 @@ function mostrarResultados(datos) {
         <!-- SIMULADOR TIPOS — colapsable -->
         ${generarSimuladorTiposHTML(datos)}
 
-        <!-- COMPARACIÓN — siempre visible -->
-        <div class="detail-card" style="margin-bottom:1.25rem;">
-            <div class="detail-card-title">${t.comparacion_inversiones}</div>
-            <div class="comparison-table">${comparacionHTML}</div>
-            <p style="font-size:0.75rem; color:var(--text-light); margin-top:0.75rem;">* ${currentLanguage === 'es' ? 'Rentabilidades de referencia a feb 2026. No constituyen garantía de rentabilidad futura.' : 'Reference returns as of Feb 2026. Do not constitute a guarantee of future performance.'}</p>
-        </div>
+        <!-- COMPARACIÓN — colapsable -->
+        ${colapsable('comparativa', '📊 ' + t.comparacion_inversiones,
+            '<div class="comparison-table">' + comparacionHTML + '</div>' +
+            '<p style="font-size:0.75rem; color:var(--text-light); margin-top:0.75rem;">* ' + (currentLanguage === 'es' ? 'Rentabilidades de referencia a feb 2026. No constituyen garantía de rentabilidad futura.' : 'Reference returns as of Feb 2026. Do not constitute a guarantee of future performance.') + '</p>',
+            false)}
     `;
 }
 
@@ -3471,41 +3470,123 @@ function calcularTuristico() {
     const ingresosLDMensual = ingresosLD / 12;
 
     const difAnual = ingresosNetos - ingresosLD;
-    const difClass = difAnual >= 0 ? 'metric-positive' : 'metric-negative';
-    const signo = difAnual >= 0 ? '+' : '';
 
     if (!res) return;
+
+    // Guardar datos para el modal
+    window._lastTuristico = {
+        precioNoche, ocupacion, comision, limpieza, suministros,
+        nochesOcupadas, ingresosBrutos, gastosPlataforma, ingresosNetos, ingresosMensuales,
+        alquilerLD, mesesVacioLD, ingresosLD, ingresosLDMensual, difAnual
+    };
+
+    const difClass = difAnual >= 0 ? 'metric-positive' : 'metric-negative';
+    const signo = difAnual >= 0 ? '+' : '';
+    const alquilerLDOk = alquilerLD > 0;
+
     res.style.display = 'block';
-    res.innerHTML = `
-        <div class="turistico-comparativa">
-            <div class="turistico-col turistico-col--tur">
-                <div class="tur-col-label">🏖️ Turístico</div>
-                <div class="tur-ing-bruto">${fmt(Math.round(ingresosBrutos))} €/año brutos</div>
-                <div class="tur-detail">− ${comision}% plataforma: ${fmt(Math.round(gastosPlataforma))} €</div>
-                <div class="tur-detail">− Limpieza: ${fmt(limpieza)} €</div>
-                <div class="tur-detail">− Suministros: ${fmt(suministros)} €</div>
-                <div class="tur-neto"><strong>${fmt(Math.round(ingresosNetos))} €/año</strong><br><small>${fmt(Math.round(ingresosMensuales))} €/mes</small></div>
-                <div class="tur-noches">${Math.round(nochesOcupadas)} noches ocupadas/año</div>
-            </div>
-            <div class="turistico-col turistico-col--ld">
-                <div class="tur-col-label">🏠 Larga duración</div>
-                <div class="tur-ing-bruto">${fmt(Math.round(alquilerLD * 12))} €/año brutos</div>
-                <div class="tur-detail">− ${mesesVacioLD} mes(es) vacío</div>
-                <div class="tur-detail">&nbsp;</div>
-                <div class="tur-detail">&nbsp;</div>
-                <div class="tur-neto"><strong>${fmt(Math.round(ingresosLD))} €/año</strong><br><small>${fmt(Math.round(ingresosLDMensual))} €/mes</small></div>
-                <div class="tur-noches">Estabilidad y menos gestión</div>
-            </div>
-        </div>
-        <div class="turistico-diferencia ${difClass}">
-            ${signo}${fmt(Math.round(difAnual))} €/año con turístico vs. larga duración
-        </div>
-        <p class="turistico-nota">💡 Pulsa "Analizar Inversión" con estos ingresos de turístico cargados automáticamente.</p>
-        <button class="btn btn-primary" style="width:100%; margin-top:0.5rem;" onclick="usarIngresosturistico(${Math.round(ingresosMensuales)})">
-            ✅ Usar ingresos turísticos en el análisis principal
-        </button>
-    `;
+    res.innerHTML =
+        '<div class="tur-resumen-inline">' +
+            '<div class="tur-resumen-col">' +
+                '<span class="tur-resumen-label">🏖️ Turístico neto</span>' +
+                '<span class="tur-resumen-val">' + fmt(Math.round(ingresosMensuales)) + ' €/mes</span>' +
+                '<span class="tur-resumen-sub">' + fmt(Math.round(ingresosNetos)) + ' €/año</span>' +
+            '</div>' +
+            (alquilerLDOk
+                ? '<div class="tur-resumen-col">' +
+                    '<span class="tur-resumen-label">🏠 Larga duración</span>' +
+                    '<span class="tur-resumen-val">' + fmt(Math.round(ingresosLDMensual)) + ' €/mes</span>' +
+                    '<span class="tur-resumen-sub">' + fmt(Math.round(ingresosLD)) + ' €/año</span>' +
+                '</div>' +
+                '<div class="tur-resumen-dif ' + difClass + '">' + signo + fmt(Math.round(difAnual)) + ' €/año</div>'
+                : '<div class="tur-resumen-hint">Pon un alquiler en la pestaña Ingresos para comparar</div>') +
+        '</div>' +
+        '<div style="display:flex; gap:0.6rem; margin-top:0.75rem;">' +
+            '<button class="btn btn-primary" style="flex:1;" onclick="abrirModalTuristico()">🔍 Ver comparativa detallada</button>' +
+            '<button class="btn btn-share" style="flex:1;" onclick="usarIngresosturistico(' + Math.round(ingresosMensuales) + ')">✅ Usar en análisis</button>' +
+        '</div>';
 }
+
+// ── Modal comparativa turístico detallada ────────────────────
+window.abrirModalTuristico = function() {
+    var d = window._lastTuristico;
+    if (!d) return;
+
+    var difClass = d.difAnual >= 0 ? 'metric-positive' : 'metric-negative';
+    var signo    = d.difAnual >= 0 ? '+' : '';
+    var alqLDok  = d.alquilerLD > 0;
+
+    // Calcular rentabilidad bruta de ambos (si tenemos precio)
+    var precio = parseFloat(document.getElementById('precio')?.value) || 0;
+    var rentaTur = precio > 0 ? (d.ingresosNetos / precio * 100) : 0;
+    var rentaLD  = precio > 0 ? (d.ingresosLD  / precio * 100) : 0;
+
+    // Pros/contras
+    var prosTur  = ['Mayor ingreso potencial', 'Flexibilidad de uso', 'Más opciones de optimización fiscal'];
+    var contTur  = ['Más gestión y dedicación', 'Ingresos variables por temporada', 'Gastos de limpieza y suministros', 'Dependencia de plataformas'];
+    var prosLD   = ['Ingresos estables y predecibles', 'Menos gestión', 'Reducción IRPF 60% (vivienda habitual)', 'Menor desgaste del inmueble'];
+    var contLD   = ['Menor ingreso si el mercado turístico es fuerte', 'Riesgo de impago inquilino', 'Menos flexibilidad de uso'];
+
+    var el = document.getElementById('turisticoModal');
+    document.getElementById('turisticoModalBody').innerHTML =
+        '<div class="tur-modal-header">' +
+            '<div class="tur-modal-kpi ' + (d.difAnual >= 0 ? 'tur-modal-kpi--pos' : 'tur-modal-kpi--neg') + '">' +
+                '<span class="tur-modal-kpi-label">Diferencia anual</span>' +
+                '<span class="tur-modal-kpi-val">' + signo + fmt(Math.round(d.difAnual)) + ' €/año</span>' +
+                '<span class="tur-modal-kpi-sub">' + (d.difAnual >= 0 ? 'El turístico genera más ingreso' : 'La larga duración genera más ingreso') + '</span>' +
+            '</div>' +
+        '</div>' +
+        '<div class="tur-modal-cols">' +
+            // COLUMNA TURÍSTICO
+            '<div class="tur-modal-col tur-modal-col--tur">' +
+                '<div class="tur-modal-col-title">🏖️ Alquiler Turístico</div>' +
+                '<table class="tur-modal-table">' +
+                    '<tr><td>Precio por noche</td><td>' + fmt(d.precioNoche) + ' €</td></tr>' +
+                    '<tr><td>Ocupación media</td><td>' + d.ocupacion + '% (' + Math.round(d.nochesOcupadas) + ' noches/año)</td></tr>' +
+                    '<tr><td>Ingresos brutos</td><td>' + fmt(Math.round(d.ingresosBrutos)) + ' €/año</td></tr>' +
+                    '<tr><td>− Comisión plataforma (' + d.comision + '%)</td><td class="metric-negative">−' + fmt(Math.round(d.gastosPlataforma)) + ' €</td></tr>' +
+                    '<tr><td>− Limpieza/rotación</td><td class="metric-negative">−' + fmt(d.limpieza) + ' €</td></tr>' +
+                    '<tr><td>− Suministros</td><td class="metric-negative">−' + fmt(d.suministros) + ' €</td></tr>' +
+                    '<tr class="tur-modal-total"><td>Ingresos netos</td><td class="metric-positive">' + fmt(Math.round(d.ingresosNetos)) + ' €/año</td></tr>' +
+                    '<tr class="tur-modal-total"><td>Equivalente mensual</td><td class="metric-positive">' + fmt(Math.round(d.ingresosMensuales)) + ' €/mes</td></tr>' +
+                    (rentaTur > 0 ? '<tr><td>Rentabilidad bruta</td><td>' + rentaTur.toFixed(2) + '%</td></tr>' : '') +
+                '</table>' +
+                '<div class="tur-modal-pros-contras">' +
+                    '<div class="tur-modal-pros"><strong>✅ Ventajas</strong><ul>' + prosTur.map(function(p){return '<li>'+p+'</li>';}).join('') + '</ul></div>' +
+                    '<div class="tur-modal-contras"><strong>❌ Inconvenientes</strong><ul>' + contTur.map(function(p){return '<li>'+p+'</li>';}).join('') + '</ul></div>' +
+                '</div>' +
+            '</div>' +
+            // COLUMNA LARGA DURACIÓN
+            '<div class="tur-modal-col tur-modal-col--ld">' +
+                '<div class="tur-modal-col-title">🏠 Larga Duración</div>' +
+                (alqLDok
+                    ? '<table class="tur-modal-table">' +
+                        '<tr><td>Alquiler mensual</td><td>' + fmt(d.alquilerLD) + ' €/mes</td></tr>' +
+                        '<tr><td>Meses vacío</td><td>' + d.mesesVacioLD + ' mes(es)/año</td></tr>' +
+                        '<tr><td>Ingresos brutos</td><td>' + fmt(Math.round(d.alquilerLD*12)) + ' €/año</td></tr>' +
+                        '<tr><td>− Periodo vacío</td><td class="metric-negative">−' + fmt(Math.round(d.alquilerLD*d.mesesVacioLD)) + ' €</td></tr>' +
+                        '<tr class="tur-modal-total"><td>Ingresos netos</td><td>' + fmt(Math.round(d.ingresosLD)) + ' €/año</td></tr>' +
+                        '<tr class="tur-modal-total"><td>Equivalente mensual</td><td>' + fmt(Math.round(d.ingresosLDMensual)) + ' €/mes</td></tr>' +
+                        (rentaLD > 0 ? '<tr><td>Rentabilidad bruta</td><td>' + rentaLD.toFixed(2) + '%</td></tr>' : '') +
+                    '</table>'
+                    : '<div class="tur-modal-hint">Introduce el alquiler mensual en la pestaña <strong>Ingresos</strong> para ver la comparativa completa.</div>') +
+                '<div class="tur-modal-pros-contras">' +
+                    '<div class="tur-modal-pros"><strong>✅ Ventajas</strong><ul>' + prosLD.map(function(p){return '<li>'+p+'</li>';}).join('') + '</ul></div>' +
+                    '<div class="tur-modal-contras"><strong>❌ Inconvenientes</strong><ul>' + contLD.map(function(p){return '<li>'+p+'</li>';}).join('') + '</ul></div>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="tur-modal-actions">' +
+            '<button class="btn btn-primary" style="flex:1;" onclick="usarIngresosturistico(' + Math.round(d.ingresosMensuales) + '); cerrarModalTuristico()">🏖️ Analizar con ingresos turísticos</button>' +
+            (alqLDok ? '<button class="btn btn-share" style="flex:1;" onclick="cerrarModalTuristico()">🏠 Mantener larga duración</button>' : '') +
+        '</div>';
+
+    el.classList.add('active');
+};
+
+window.cerrarModalTuristico = function() {
+    document.getElementById('turisticoModal').classList.remove('active');
+};
 
 window.usarIngresosturistico = function(mensual) {
     const el = document.getElementById('alquiler');
