@@ -3606,3 +3606,131 @@ html.dark .pdf-section-group { border-color: #1e3a5f; }
 html.dark .pdf-group-title { background: #0d2036; border-color: #1e3a5f; }
 html.dark .pdf-check { border-color: #1e3a5f; color: #e2e8f0; }
 html.dark .pdf-check:hover { background: rgba(91,163,224,0.08); }
+
+/* ── Resumen inline turístico (dentro del tab) ───────────── */
+.tur-resumen-inline {
+    display: flex;
+    gap: 0;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+.tur-resumen-col {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    border-right: 1px solid var(--border);
+    text-align: center;
+}
+.tur-resumen-col:last-child { border-right: none; }
+.tur-resumen-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-light); margin-bottom: 0.25rem; }
+.tur-resumen-val   { font-size: 1.15rem; font-weight: 800; font-family: 'Inter', sans-serif; color: var(--dark); line-height: 1; }
+.tur-resumen-sub   { font-size: 0.72rem; color: var(--text-light); margin-top: 0.2rem; }
+.tur-resumen-dif   { flex: 1; min-width: 120px; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; font-family: 'Inter', sans-serif; padding: 0.75rem; background: var(--light); text-align: center; }
+.tur-resumen-hint  { flex: 1; padding: 0.75rem; font-size: 0.78rem; color: var(--text-light); display: flex; align-items: center; justify-content: center; text-align: center; }
+
+/* ── Modal turístico detallado ───────────────────────────── */
+.tur-modal-header {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.tur-modal-kpi {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    min-width: 220px;
+}
+.tur-modal-kpi--pos { background: rgba(16,185,129,0.1); border: 1.5px solid rgba(16,185,129,0.3); }
+.tur-modal-kpi--neg { background: rgba(239,68,68,0.08); border: 1.5px solid rgba(239,68,68,0.2); }
+.tur-modal-kpi-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-light); }
+.tur-modal-kpi-val   { font-size: 1.6rem; font-weight: 800; font-family: 'Inter', sans-serif; color: var(--dark); line-height: 1.1; }
+.tur-modal-kpi-sub   { font-size: 0.78rem; color: var(--text-light); margin-top: 0.2rem; }
+
+.tur-modal-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+@media (max-width: 560px) { .tur-modal-cols { grid-template-columns: 1fr; } }
+
+.tur-modal-col {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+}
+.tur-modal-col--tur { border-color: rgba(8,145,178,0.4); }
+.tur-modal-col--ld  { border-color: rgba(26,95,168,0.3); }
+
+.tur-modal-col-title {
+    padding: 0.6rem 0.9rem;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: white;
+}
+.tur-modal-col--tur .tur-modal-col-title { background: #0891b2; }
+.tur-modal-col--ld  .tur-modal-col-title { background: var(--primary); }
+
+.tur-modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+.tur-modal-table td {
+    padding: 0.45rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+}
+.tur-modal-table td:last-child { text-align: right; font-weight: 600; }
+.tur-modal-total td { font-weight: 800; background: var(--light); }
+
+.tur-modal-pros-contras {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+}
+.tur-modal-pros, .tur-modal-contras {
+    padding: 0.65rem 0.9rem;
+}
+.tur-modal-pros   { border-right: 1px solid var(--border); }
+.tur-modal-pros strong   { color: var(--success); }
+.tur-modal-contras strong{ color: var(--danger); }
+.tur-modal-pros ul, .tur-modal-contras ul {
+    margin: 0.3rem 0 0;
+    padding-left: 1rem;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+.tur-modal-hint {
+    padding: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    text-align: center;
+}
+.tur-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+.tur-modal-actions .btn { flex: 1; min-width: 160px; }
+
+/* Dark mode */
+html.dark .tur-resumen-inline  { border-color: #1e3a5f; }
+html.dark .tur-resumen-col     { border-color: #1e3a5f; }
+html.dark .tur-resumen-dif     { background: #0d2036; }
+html.dark .tur-modal-col       { border-color: #1e3a5f; }
+html.dark .tur-modal-table td  { border-color: #1e3a5f; color: #cbd5e1; }
+html.dark .tur-modal-total td  { background: #0d2036; }
+html.dark .tur-modal-pros-contras { border-color: #1e3a5f; }
+html.dark .tur-modal-pros      { border-color: #1e3a5f; }
