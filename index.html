@@ -382,7 +382,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" data-i18n="plusvalia">Impuesto plusvalía municipal</label>
+                            <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;">
+                                <span data-i18n="plusvalia">Plusvalía municipal</span>
+                                <button type="button" class="btn-calc-plusvalia" onclick="abrirCalcPlusvalia()">🧮 Calcular</button>
+                            </label>
                             <div class="input-group">
                                 <input class="form-input with-suffix" id="plusvalia" min="0" step="100" type="number" inputmode="decimal" value="2000"/>
                                 <span class="input-suffix">€</span>
@@ -459,6 +462,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="action-buttons" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                         <button class="btn btn-reset" id="resetBtn" title="Restablecer valores por defecto">🔄 Resetear</button>
                         <button class="btn btn-share" id="shareBtn">🔗 Compartir</button>
+                        <button class="btn btn-share" onclick="abrirWizard()" title="Calculadora guiada paso a paso">🧭 Guiada</button>
+                        <button class="btn btn-share" onclick="abrirMapa()" title="Rentabilidad por ciudades">🗺️ Mapa</button>
                         <button class="btn btn-tools" id="toolsBtn" title="Herramientas adicionales">🛠️ Herramientas</button>
                         <button class="btn btn-primary" id="pdfBtn" style="background: var(--gradient-main); flex:1;">📄 Exportar PDF</button>
                     </div>
@@ -998,6 +1003,74 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     ℹ️ El widget carga la calculadora completa en un iframe. Puedes añadir <code>?lang=en</code> para inglés. Uso libre con atribución a pisorentable.org.
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <!-- ── MODAL: CALCULADORA PLUSVALÍA REAL ────────────────── -->
+    <div class="modal-overlay" id="plusvaliaModal" onclick="if(event.target===this)cerrarCalcPlusvalia()">
+        <div class="modal-box" style="max-width:520px;">
+            <div class="modal-header">
+                <span class="modal-title">🏛️ Plusvalía Municipal — Cálculo Real (Ley 11/2021)</span>
+                <button class="modal-close" onclick="cerrarCalcPlusvalia()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+                    <div class="form-group" style="margin:0;">
+                        <label class="form-label">Valor catastral del suelo (€)
+                            <span class="help-tooltip" title="Consúltalo en el recibo del IBI. El suelo suele ser el 30-50% del valor catastral total.">ℹ️</span>
+                        </label>
+                        <input class="form-input" id="pvCatastral" type="number" min="0" step="1000" placeholder="ej. 45000" oninput="calcularPlusvaliaModal()"/>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label class="form-label">Años de tenencia</label>
+                        <input class="form-input" id="pvAnos" type="number" min="1" max="30" step="1" value="10" oninput="calcularPlusvaliaModal()"/>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0.75rem;">
+                    <label class="form-label">Municipio</label>
+                    <select class="form-select" id="pvMunicipio" onchange="calcularPlusvaliaModal()">
+                        <option value="_default">Otros municipios (25%)</option>
+                        <option value="Madrid">Madrid (29%)</option>
+                        <option value="Barcelona">Barcelona (30%)</option>
+                        <option value="Valencia">Valencia (30%)</option>
+                        <option value="Sevilla">Sevilla (28%)</option>
+                        <option value="Zaragoza">Zaragoza (28%)</option>
+                        <option value="Málaga">Málaga (27%)</option>
+                        <option value="Bilbao">Bilbao (25%)</option>
+                        <option value="Palma">Palma de Mallorca (22%)</option>
+                        <option value="Alicante">Alicante (25%)</option>
+                        <option value="Murcia">Murcia (25%)</option>
+                    </select>
+                </div>
+                <div id="pvResultado">
+                    <p style="color:#94a3b8;text-align:center;padding:1rem;">Introduce el valor catastral del suelo para calcular.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL: MAPA DE RENTABILIDAD ──────────────────────── -->
+    <div class="modal-overlay" id="mapaModal" onclick="if(event.target===this)cerrarMapa()">
+        <div class="modal-box modal-box--wide" style="max-width:900px;">
+            <div class="modal-header">
+                <span class="modal-title">🗺️ Rentabilidad Media por Ciudad — España 2025</span>
+                <button class="modal-close" onclick="cerrarMapa()">✕</button>
+            </div>
+            <div class="modal-body" style="padding:0;">
+                <div id="mapaContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── WIZARD PASO A PASO ───────────────────────────────── -->
+    <div class="modal-overlay" id="wizardModal" onclick="if(event.target===this)cerrarWizard()">
+        <div class="modal-box modal-box--wide" style="max-width:560px;">
+            <div class="modal-header">
+                <span class="modal-title">🧭 Calculadora guiada</span>
+                <button class="modal-close" onclick="cerrarWizard()">✕</button>
+            </div>
+            <div class="modal-body" id="wizardBody"></div>
         </div>
     </div>
 
