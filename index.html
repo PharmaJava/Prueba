@@ -1,1085 +1,658 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-552P3WBC');</script>
+<!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculadora Sueldo Farmacia 2026 | Convenio Nacional, Bizkaia, Gipuzkoa, Cataluña</title>
+    <meta name="description" content="Calcula tu sueldo neto en farmacia 2026. Convenio Nacional, Bizkaia, Gipuzkoa, Girona, Tarragona, Lleida y Asturias. Incluye IRPF, SS, MEI, trienios, quinquenios y nocturnidad. Gratis.">
+    <meta name="keywords" content="sueldo farmacia 2026, calculadora salario farmacia, convenio farmacia 2026, nómina farmacia, sueldo farmacéutico, sueldo técnico farmacia, sueldo auxiliar farmacia, convenio bizkaia farmacia, convenio gipuzkoa farmacia, XXV convenio farmacia">
+    <link rel="canonical" href="https://conveniodefarmacia.com">
+    <meta name="robots" content="index, follow">
 
-    <!-- SEO -->
-    <meta name="description" content="Calculadora gratuita de rentabilidad de alquiler en España. Calcula TIR, ROI, cashflow mensual, ITP, hipoteca y proyección año a año de tu inversión inmobiliaria."/>
-    <meta name="keywords" content="calculadora rentabilidad alquiler, inversión inmobiliaria españa, calcular ROI piso, TIR inmobiliaria, cashflow alquiler, ITP vivienda"/>
-    <meta name="author" content="Calculadora Inversión Inmobiliaria"/>
+    <meta property="og:title" content="Calculadora Sueldo Farmacia 2026 | Nacional · Bizkaia · Gipuzkoa · Cataluña">
+    <meta property="og:description" content="Calcula tu sueldo neto real según el XXV Convenio y provinciales. Bizkaia, Gipuzkoa, Cataluña, Asturias. Actualizado con MEI e IRPF 2026.">
+    <meta property="og:image" content="https://conveniodefarmacia.com/IMG_9941.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://conveniodefarmacia.com">
+    <meta property="og:locale" content="es_ES">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Calculadora Sueldo Farmacia 2026">
+    <meta name="twitter:description" content="Calcula tu sueldo neto real según el XXV Convenio y provinciales. Gratis y actualizado 2026.">
+    <meta name="twitter:image" content="https://conveniodefarmacia.com/IMG_9941.png">
 
-    <!-- Open Graph / WhatsApp / redes -->
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="https://pisorentable.org"/>
-    <meta property="og:title" content="Calculadora de Inversión Inmobiliaria | España"/>
-    <meta property="og:description" content="Calcula GRATIS el cashflow, ROI y rentabilidad neta de tu inversión inmobiliaria en España."/>
-    <meta property="og:image" content="https://pisorentable.org/piso.png"/>
-    <meta property="og:image:width" content="1200"/>
-    <meta property="og:image:height" content="630"/>
-    <meta property="og:image:type" content="image/png"/>
+    <link rel="icon" type="image/png" href="IMG_9941.png">
+    <link rel="apple-touch-icon" href="IMG_9941.png">
 
-    <!-- Twitter card -->
-    <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="twitter:title" content="Calculadora de Inversión Inmobiliaria | España"/>
-    <meta name="twitter:description" content="Calcula GRATIS el cashflow, ROI y rentabilidad neta de tu inversión inmobiliaria en España."/>
-    <meta name="twitter:image" content="https://pisorentable.org/piso.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="icon" type="image/png" href="https://pisorentable.org/piso.png"/>
-    <title>Calculadora de Inversión Inmobiliaria | Rentabilidad Alquiler España</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- Fonts: preconnect primero para reducir latencia, display=swap evita FOUT -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Google Tag Manager — se carga SOLO tras aceptar cookies (RGPD) -->
-    <script>
-    function cargarGTM() {
-        if (document.getElementById('gtm-script')) return;
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;j.id='gtm-script';
-        f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-5TG9V5WN');
-    }
-    // Si ya aceptó antes, carga inmediatamente
-    if (localStorage.getItem('cookiesAceptadas') === 'true') cargarGTM();
-    </script>
-    <!-- End Google Tag Manager -->
-
-    <!-- Librerías (Chart.js una sola vez) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
 <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5TG9V5WN"
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-552P3WBC"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<div class="bg-particles" id="particles"></div>
-<div class="app-container">
+<!-- Tooltip global -->
+<div id="tooltip-global" class="tooltip-global" role="tooltip"></div>
 
+<main class="container">
     <header class="header">
-        <div class="header-controls">
-                        <select id="langSelector">
-                <option value="es">🇪🇸 Español</option>
-                <option value="en">🇬🇧 English</option>
-            </select>
+        <div class="logo-area">
+            <img src="IMG_9941.png" alt="Sueldo Farmacia Pro Logo" class="main-logo" style="height:60px;width:auto;object-fit:contain;">
+            <h1>Sueldo Farmacia Pro</h1>
         </div>
-        <div class="header-content">
-            <div class="header-badge" data-i18n="header_badge">Herramienta gratuita · España</div>
-            <h1 data-i18n="calculadora_inversion">🏠 Calculadora de Inversión Inmobiliaria</h1>
-            <p data-i18n="analisis_completo">Análisis completo para inversión en alquiler · TIR · ROI · Cashflow · Proyección a largo plazo</p>
+        <button id="dark-toggle" class="dark-toggle" aria-label="Cambiar modo claro/oscuro" title="Modo oscuro">
+            <i class="fas fa-moon"></i>
+        </button>
+        <p>Calculadora Multiconvenio Actualizada 2026</p>
+        <div style="display:flex;justify-content:center;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap;">
+            <span class="badge badge--green">✓ XXV CONVENIO</span>
+            <span class="badge badge--blue">✓ PROVINCIAL</span>
+            <span class="badge badge--pink">✓ MEI 2026</span>
+            <span class="badge badge--purple">✓ BIZKAIA · GIPUZKOA</span>
         </div>
     </header>
 
-    <main class="main-content">
-        <div class="content-grid">
+    <div id="capture-area" class="capture-wrapper">
+        <div class="desktop-layout">
 
-            <!-- Panel de Configuración -->
-            <div class="glass-card config-panel">
-                <div class="card-header">
-                    <div class="card-title"><span data-i18n="configuracion_inversion">⚙️ Configuración de Inversión</span></div>
-                    <div class="card-subtitle"><span data-i18n="personaliza_parametros">Personaliza todos los parámetros de tu análisis</span></div>
-                </div>
-                <div class="card-body">
-                    <div class="nav-tabs">
-                        <button class="nav-tab active" data-tab="propiedad"><span data-i18n="propiedad">🏠 Propiedad</span></button>
-                        <button class="nav-tab" data-tab="financiacion"><span data-i18n="financiacion">💰 Financiación</span></button>
-                        <button class="nav-tab" data-tab="ingresos"><span data-i18n="ingresos">📈 Ingresos</span></button>
-                        <button class="nav-tab" data-tab="gastos"><span data-i18n="gastos">📊 Gastos</span></button>
-                        <button class="nav-tab" data-tab="revalorizacion"><span data-i18n="revalorizacion">💎 Revalorización</span></button>
-                        <button class="nav-tab" data-tab="turistico"><span>🏖️ Turístico</span></button>
+            <!-- COLUMNA IZQUIERDA: Inputs -->
+            <div class="col-inputs">
+                <section class="calculator-grid">
+
+                    <div class="input-group full-width-input">
+                        <label for="convenio">
+                            <i class="fas fa-file-contract"></i> Convenio Aplicable
+                            <span class="tooltip-trigger" data-tip="Selecciona el convenio colectivo que aplica en tu farmacia. Si no lo sabes, consulta tu contrato o al delegado sindical. Por defecto aplica el Nacional."><i class="fas fa-circle-question"></i></span>
+                        </label>
+                        <select id="convenio">
+                            <option value="nacional" selected>Nacional (XXV Convenio)</option>
+                            <optgroup label="── Cataluña ──">
+                                <option value="barcelona">Barcelona (Nacional desde ene-2025)</option>
+                                <option value="gironatarragona">Girona / Tarragona / Lleida</option>
+                            </optgroup>
+                            <optgroup label="── País Vasco ──">
+                                <option value="bizkaia">Bizkaia</option>
+                                <option value="gipuzkoa">Gipuzkoa</option>
+                                <option value="alava">Álava (rige Conv. Nacional)</option>
+                            </optgroup>
+                            <optgroup label="── Otros ──">
+                                <option value="asturias">Asturias (15 pagas)</option>
+                            </optgroup>
+                        </select>
+                        <div id="convenio-aviso" class="convenio-aviso" style="display:none;"></div>
                     </div>
 
-                    <!-- Tab: Propiedad -->
-                    <div class="tab-content active" id="propiedad-tab">
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="precio_compra">Precio de compra</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="precio" min="0" step="1000" type="number" inputmode="decimal" value="95000"/>
-                                <span class="input-suffix">€</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="tipo_vivienda">Tipo de vivienda
-                                <span class="help-tooltip" title="El ITP varía por región. Selecciona la tuya para aplicar el tipo correcto automáticamente.">ℹ️</span>
-                            </label>
-                            <select class="form-select" id="tipoVivienda">
-                                <option value="segunda" data-i18n="segunda_vivienda">Segunda vivienda (7% ITP)</option>
-                                <option value="nueva" data-i18n="vivienda_nueva">Vivienda nueva (10% IVA + 1.2% AJD)</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="ccaaGroup">
-                            <label class="form-label" data-i18n="comunidad_autonoma">
-                                Comunidad Autónoma
-                                <span class="help-tooltip" title="El ITP varía por región. Selecciona la tuya para aplicar el tipo correcto automáticamente.">ℹ️</span>
-                            </label>
-                            <select class="form-select" id="ccaaSelector">
-                                <option value="" data-i18n="ccaa_selecciona">— Selecciona para ajustar el ITP —</option>
-                                <option value="6">Madrid (6%)</option>
-                                <option value="7">Andalucía (7%)</option>
-                                <option value="7">Aragón (7%)</option>
-                                <option value="7">Asturias (7%)</option>
-                                <option value="7">Baleares (7%)</option>
-                                <option value="6.5">Canarias (6.5%)</option>
-                                <option value="6">Cantabria (6%)</option>
-                                <option value="9">Castilla-La Mancha (9%)</option>
-                                <option value="8">Castilla y León (8%)</option>
-                                <option value="10">Cataluña (10%)</option>
-                                <option value="8">Extremadura (8%)</option>
-                                <option value="10">Galicia (10%)</option>
-                                <option value="6">La Rioja (6%)</option>
-                                <option value="6">Navarra (6%)</option>
-                                <option value="10">C. Valenciana (10%)</option>
-                                <option value="7">País Vasco (7%)</option>
-                                <option value="7">Murcia (7%)</option>
-                            </select>
-                            <div class="field-hint" id="itpHint" data-i18n="itp_hint_default">El ITP se calcula automáticamente según el tipo de vivienda (7% por defecto)</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="gastos_compra">Gastos de compra-venta</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="gastosCompra" min="0" step="100" type="number" inputmode="decimal" value="3000"/>
-                                <span class="input-suffix">€</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="gastos_reforma">Gastos de reforma</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="reforma" min="0" step="100" type="number" inputmode="decimal" value="4000"/>
-                                <span class="input-suffix">€</span>
-                            </div>
-                        </div>
+                    <div class="input-group">
+                        <label for="profesion">
+                            <i class="fas fa-user-md"></i> Categoría
+                            <span class="tooltip-trigger" data-tip="Farmacéutico/a: titulado universitario. Técnico/a: CFGS en Farmacia. Auxiliar: CFGM o sin titulación específica del sector."><i class="fas fa-circle-question"></i></span>
+                        </label>
+                        <select id="profesion">
+                            <option value="farmaceutico">Farmacéutico/a</option>
+                            <option value="tecnico">Técnico/a</option>
+                            <option value="auxiliar">Auxiliar</option>
+                        </select>
+                    </div>
 
-                        <!-- ── BLOQUE REFERENCIA DE MERCADO ── -->
-                        <!-- ── BLOQUE REFERENCIA DE MERCADO ── -->
-                        <div class="mercado-ref-block">
-                            <div class="mercado-ref-header">
-                                <span class="mercado-ref-icon">📍</span>
-                                <span class="mercado-ref-title">Análisis de mercado <span class="mercado-ref-badge">Opcional</span></span>
-                            </div>
+                    <div class="input-group">
+                        <label id="labelAntiguedad" for="antiguedad">
+                            <i class="fas fa-award"></i> Nº Trienios
+                            <span class="tooltip-trigger" data-tip="Un trienio = 3 años trabajados en la misma empresa. Si llevas 7 años, tienes 2 trienios. En Bizkaia y Gipuzkoa son quinquenios (cada 5 años)."><i class="fas fa-circle-question"></i></span>
+                        </label>
+                        <input type="number" id="antiguedad" value="0" min="0" max="20" step="1">
+                    </div>
 
-                            <!-- Grid 3 columnas: CP | Superficie | €/m² -->
-                            <div class="mercado-inputs-grid">
-                                <div class="form-group" style="margin-bottom:0;">
-                                    <label class="form-label">Código postal</label>
-                                    <input class="form-input" id="codigoPostal" type="text" inputmode="numeric" maxlength="5" placeholder="ej. 28001"/>
-                                    <div class="mercado-prov-hint" id="mercadoProvHint"></div>
+                    <div class="input-group">
+                        <label for="anio">
+                            <i class="fas fa-calendar-alt"></i> Año
+                        </label>
+                        <select id="anio">
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="porcentaje">
+                            <i class="fas fa-clock"></i> Jornada (%)
+                            <span class="tooltip-trigger" data-tip="100% = jornada completa (1.785h/año en farmacia). Si trabajas 20h semanales sobre 40h, introduce 50. Usa el slider para ajustar rápidamente."><i class="fas fa-circle-question"></i></span>
+                        </label>
+                        <input type="number" id="porcentaje" value="100" min="1" max="100" step="1">
+                        <input type="range" id="porcentaje-slider" min="1" max="100" value="100" step="1" class="jornada-slider">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="numPagas">
+                            <i class="fas fa-money-bill-wave"></i> Nº Pagas
+                            <span class="tooltip-trigger" data-tip="14 pagas: cobras extra en junio y diciembre. 12 pagas: las extras se prorratean y cobras lo mismo cada mes. El bruto anual es exactamente igual."><i class="fas fa-circle-question"></i></span>
+                        </label>
+                        <select id="numPagas">
+                            <option value="12">12 pagas</option>
+                            <option value="14" selected>14 pagas</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="numHoras">
+                            <i class="fas fa-moon"></i> H. Nocturnas/mes
+                            <span class="tooltip-trigger" data-tip="Horas trabajadas entre las 22:00 y las 06:00. Se pagan a precio superior al ordinario según convenio. No se incluyen en pagas extras."><i class="fas fa-circle-question"></i></span>
+                        </label>
+                        <input type="number" id="numHoras" value="0" min="0" max="200" step="1">
+                    </div>
+
+                    <div class="input-group full-width-input">
+                        <label for="mejoraSalarial">
+                            <i class="fas fa-hand-holding-usd"></i> Mejora Voluntaria Bruta (€/mes)
+                            <span class="tooltip-trigger" data-tip="Cantidad adicional que tu empresa paga por encima del convenio. Introduce el importe bruto mensual. Se incluye en pagas extras."><i class="fas fa-circle-question"></i></span>
+                        </label>
+                        <input type="number" id="mejoraSalarial" value="0" step="10" min="0">
+                    </div>
+
+                    <!-- CPG: solo visible en Nacional y Álava -->
+                    <div class="input-group full-width-input" id="cpg-group" style="display:none;">
+                        <label for="cpgImporte">
+                            <i class="fas fa-history"></i> Plus Ad Personam / CPG (€/mes bruto)
+                        </label>
+                        <input type="number" id="cpgImporte" value="0" step="1" min="0">
+                        <span class="cpg-hint">Complemento Personal de Garantía por antigüedad anterior al 01/07/2000. Se incluye en pagas extras.</span>
+                    </div>
+
+                    <div class="input-group full-width-input">
+                        <label for="porcentajeIRPF" class="label--green">
+                            <i class="fas fa-percentage"></i> Retención IRPF (%)
+                            <span class="tooltip-trigger" data-tip="Se actualiza automáticamente según tu categoría. Orientativo: Auxiliar 8%, Técnico 11%, Farmacéutico 15,86%. Ajústalo si tu retención real es diferente."><i class="fas fa-circle-question"></i></span>
+                        </label>
+                        <input type="number" id="porcentajeIRPF" value="15.00" step="0.5" min="0" max="47">
+                        <div id="irpf-indicador" class="irpf-indicador irpf-indicador--default"></div>
+                    </div>
+                </section>
+
+                <!-- Configuración SS / MEI -->
+                <details class="advanced-settings" id="bloque-ss">
+                    <summary>
+                        <i class="fas fa-cog"></i> Configuración de Cotización (SS / MEI)
+                        <i class="fas fa-chevron-down"></i>
+                    </summary>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <label for="cotizacionContComu">Contingencias Comunes (%)</label>
+                            <input type="number" id="cotizacionContComu" value="4.70" step="0.01" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="cotizacionDesempleo">Desempleo (%)</label>
+                            <input type="number" id="cotizacionDesempleo" value="1.55" step="0.01" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="cotizacionMEI">MEI - Mecanismo Equidad (%)</label>
+                            <input type="number" id="cotizacionMEI" value="0.13" step="0.01" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="cotizacionFormacion">Formación Profesional (%)</label>
+                            <input type="number" id="cotizacionFormacion" value="0.10" step="0.01" min="0">
+                        </div>
+                        <p style="font-size:0.75rem;color:#64748b;margin-top:6px;">
+                            💡 Valores por defecto actualizados para 2026. Solo modifica si tienes bases especiales.
+                        </p>
+                        <button type="button" id="btn-reset-cotizaciones" class="btn-reset">
+                            <i class="fas fa-rotate-left"></i> Restaurar valores 2026
+                        </button>
+                    </div>
+                </details>
+
+                <!-- CALCULADORA INVERSA -->
+                <details class="extra-block extra-block--inversa" id="bloque-inversa">
+                    <summary class="extra-block__summary">
+                        <span class="extra-block__icon">🔄</span>
+                        <span class="extra-block__title">Calculadora inversa</span>
+                        <span class="extra-block__badge">¿Qué bruto pedir?</span>
+                        <i class="fas fa-chevron-down extra-block__chevron"></i>
+                    </summary>
+                    <div class="extra-block__body">
+                        <p class="extra-block__desc">Introduce el neto mensual que quieres cobrar y te calculamos el bruto que debes negociar con tu empleador, usando tu IRPF y SS actuales.</p>
+                        <div class="extra-block__grid">
+                            <div class="input-group">
+                                <label for="inv-neto-deseado"><i class="fas fa-bullseye"></i> Neto mensual deseado (€)</label>
+                                <input type="number" id="inv-neto-deseado" value="1500" step="50" min="0">
+                            </div>
+                            <div class="input-group" style="display:flex;align-items:flex-end;">
+                                <button type="button" id="btn-calcular-inversa" class="btn-calcular-inversa">
+                                    <i class="fas fa-calculator"></i> Calcular
+                                </button>
+                            </div>
+                        </div>
+                        <div id="resultado-inversa" class="extra-block__resultado"></div>
+                    </div>
+                </details>
+
+                <!-- BLOQUE ATRASOS -->
+                <details class="extra-block extra-block--atrasos" id="bloque-atrasos">
+                    <summary class="extra-block__summary">
+                        <span class="extra-block__icon">⚠️</span>
+                        <span class="extra-block__title">¿Te han pagado los atrasos?</span>
+                        <span class="extra-block__badge">2% obligatorio desde 2025</span>
+                        <i class="fas fa-chevron-down extra-block__chevron"></i>
+                    </summary>
+                    <div class="extra-block__body">
+                        <p class="extra-block__desc">Muchas farmacias no han aplicado la subida obligatoria. Indica desde cuándo no te lo han subido y calcularemos lo que te deben en neto.</p>
+                        <div class="extra-block__grid">
+                            <div class="input-group">
+                                <label for="atrasos-desde"><i class="fas fa-calendar-day"></i> Desde (mes/año)</label>
+                                <input type="month" id="atrasos-desde" value="2024-01" min="2024-01" max="2026-12">
+                            </div>
+                            <div class="input-group">
+                                <label for="atrasos-hasta"><i class="fas fa-calendar-check"></i> Hasta</label>
+                                <input type="month" id="atrasos-hasta" min="2024-01" max="2026-12">
+                            </div>
+                        </div>
+                        <div id="resultado-atrasos" class="extra-block__resultado"></div>
+                    </div>
+                </details>
+
+                <!-- BLOQUE SIMULADOR NUEVO CONVENIO -->
+                <details class="extra-block extra-block--convenio" id="bloque-nuevo-convenio">
+                    <summary class="extra-block__summary">
+                        <span class="extra-block__icon">🔮</span>
+                        <span class="extra-block__title">Simular nuevo convenio</span>
+                        <span class="extra-block__badge">Negocia con datos</span>
+                        <i class="fas fa-chevron-down extra-block__chevron"></i>
+                    </summary>
+                    <div class="extra-block__body">
+                        <p class="extra-block__desc">Juega con los porcentajes de subida para visualizar cómo quedaría tu nómina cuando se firme el nuevo convenio.</p>
+                        <div class="extra-block__grid">
+                            <div class="input-group">
+                                <label for="sim-subida-2025"><i class="fas fa-arrow-trend-up"></i> Subida 2025 (%)</label>
+                                <input type="number" id="sim-subida-2025" value="3" step="0.1" min="0" max="20">
+                            </div>
+                            <div class="input-group">
+                                <label for="sim-subida-2026"><i class="fas fa-arrow-trend-up"></i> Subida 2026 (%)</label>
+                                <input type="number" id="sim-subida-2026" value="3" step="0.1" min="0" max="20">
+                            </div>
+                        </div>
+                        <div id="resultado-simulador" class="extra-block__resultado"></div>
+                    </div>
+                </details>
+
+                <!-- WIZARD IRPF -->
+                <details class="extra-block extra-block--wizard" id="bloque-wizard-irpf">
+                    <summary class="extra-block__summary">
+                        <span class="extra-block__icon">🧮</span>
+                        <span class="extra-block__title">¿Cuál es mi IRPF?</span>
+                        <span class="extra-block__badge">Calcúlalo aquí</span>
+                        <i class="fas fa-chevron-down extra-block__chevron"></i>
+                    </summary>
+                    <div class="extra-block__body">
+                        <p class="extra-block__desc">Responde 3 preguntas y te damos una estimación orientativa de tu retención según la tabla oficial de la AEAT.</p>
+                        <div class="wizard-pasos">
+                            <div class="wizard-paso">
+                                <label class="wizard-label"><i class="fas fa-user"></i> Estado civil y situación</label>
+                                <div class="wizard-opciones">
+                                    <button class="wizard-opcion" data-grupo="estado" data-val="soltero">Soltero/a sin hijos</button>
+                                    <button class="wizard-opcion" data-grupo="estado" data-val="casado_conyuge">Casado/a, cónyuge trabaja</button>
+                                    <button class="wizard-opcion" data-grupo="estado" data-val="casado_solo">Casado/a, único sustentador</button>
+                                    <button class="wizard-opcion" data-grupo="estado" data-val="monoparental">Familia monoparental</button>
                                 </div>
-                                <div class="form-group" style="margin-bottom:0;">
-                                    <label class="form-label">Superficie</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="superficieM2" type="number" inputmode="decimal" min="0" step="1" placeholder="80"/>
-                                        <span class="input-suffix">m²</span>
-                                    </div>
-                                </div>
-                                <div class="form-group" style="margin-bottom:0;">
-                                    <label class="form-label">€/m² <span class="mercado-m2-auto" id="mercadoM2Auto" style="color:#10b981;font-size:0.7rem;font-weight:700;"></span></label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="precioRefM2" type="number" inputmode="decimal" min="0" step="50" placeholder="auto"/>
-                                        <span class="input-suffix" style="font-size:0.72rem;">€/m²</span>
-                                    </div>
+                            </div>
+                            <div class="wizard-paso">
+                                <label class="wizard-label"><i class="fas fa-child"></i> Hijos menores de 25 años a cargo</label>
+                                <div class="wizard-opciones">
+                                    <button class="wizard-opcion" data-grupo="hijos" data-val="0">0 hijos</button>
+                                    <button class="wizard-opcion" data-grupo="hijos" data-val="1">1 hijo</button>
+                                    <button class="wizard-opcion" data-grupo="hijos" data-val="2">2 hijos</button>
+                                    <button class="wizard-opcion" data-grupo="hijos" data-val="3">3 o más</button>
                                 </div>
                             </div>
-
-                            <!-- Botón calcular -->
-                            <button class="btn-mercado-calcular" onclick="actualizarMercado()" type="button">
-                                🔍 Calcular valor estimado
-                            </button>
-
-                            <!-- Resultado valor estimado -->
-                            <div id="mercadoResultado" style="display:none; margin-top:0.75rem;">
-                                <div class="mercado-valor-estimado">
-                                    <span class="mercado-valor-label">🏠 Valor estimado del inmueble</span>
-                                    <span class="mercado-valor-num" id="mrValorMercado">—</span>
-                                </div>
-                                <div class="mercado-datos-grid">
-                                    <div class="mercado-dato">
-                                        <span class="mercado-dato-label">Precio/m² usado</span>
-                                        <span class="mercado-dato-val" id="mrPrecioM2Usado">—</span>
-                                    </div>
-                                    <div class="mercado-dato">
-                                        <span class="mercado-dato-label">Superficie</span>
-                                        <span class="mercado-dato-val" id="mrSuperficieUsada">—</span>
-                                    </div>
-                                    <div class="mercado-dato" id="mrVsBloque" style="display:none;">
-                                        <span class="mercado-dato-label">Tu precio vs mercado</span>
-                                        <span class="mercado-dato-val" id="mrVsTexto">—</span>
-                                    </div>
-                                    <div class="mercado-dato" id="mrOfertaBloque" style="display:none;">
-                                        <span class="mercado-dato-label">💬 Oferta sugerida (
-                                            <input type="number" id="descuentoOferta" class="mercado-descuento-input" min="0" max="30" step="0.5" value="10"/>%)</span>
-                                        <span class="mercado-dato-val metric-positive" id="mrOferta">—</span>
-                                    </div>
+                            <div class="wizard-paso">
+                                <label class="wizard-label"><i class="fas fa-euro-sign"></i> Salario bruto anual estimado</label>
+                                <div class="wizard-opciones">
+                                    <button class="wizard-opcion" data-grupo="salario" data-val="bajo">Menos de 20.000 €</button>
+                                    <button class="wizard-opcion" data-grupo="salario" data-val="medio">20.000 – 30.000 €</button>
+                                    <button class="wizard-opcion" data-grupo="salario" data-val="alto">30.000 – 45.000 €</button>
+                                    <button class="wizard-opcion" data-grupo="salario" data-val="muyalto">Más de 45.000 €</button>
                                 </div>
                             </div>
-
-                            <!-- IDs legacy PDF -->
-                            <span id="mercadoCard" style="display:none;"></span>
-                            <span id="mercadoCardProvincia" style="display:none;"></span>
-                            <span id="mercadoCardPrecioM2" style="display:none;"></span>
-                            <span id="mrAhorro" style="display:none;"></span>
-                            <span id="mrPrecioCompra" style="display:none;"></span>
-                            <span id="mrValorMercado2" style="display:none;"></span>
                         </div>
-                        <!-- ── FIN BLOQUE REFERENCIA ── -->
-
+                        <div id="resultado-wizard" class="extra-block__resultado"></div>
                     </div>
+                </details>
 
-                    <!-- Tab: Financiación -->
-                    <div class="tab-content" id="financiacion-tab">
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="tipo_financiacion">Tipo de financiación</label>
-                            <select class="form-select" id="financiacionTipo">
-                                <option value="con_hipoteca" data-i18n="con_hipoteca">Con hipoteca</option>
-                                <option value="sin_hipoteca" data-i18n="sin_hipoteca">Sin hipoteca</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="entradaGroup">
-                            <label class="form-label" data-i18n="ahorro_aportado">Ahorro aportado</label>
+                <!-- CALCULADORA BRUTO LIBRE -->
+                <details class="extra-block extra-block--bruto" id="bloque-bruto-libre">
+                    <summary class="extra-block__summary">
+                        <span class="extra-block__icon">💼</span>
+                        <span class="extra-block__title">¿No eres de farmacia?</span>
+                        <span class="extra-block__badge">Cualquier sector</span>
+                        <i class="fas fa-chevron-down extra-block__chevron"></i>
+                    </summary>
+                    <div class="extra-block__body">
+                        <p class="extra-block__desc">Introduce tu bruto anual y calculamos tu neto sin depender de tablas de convenio. Válido para cualquier sector.</p>
+                        <div class="extra-block__grid">
                             <div class="input-group">
-                                <input class="form-input with-suffix" id="entradaEuros" min="0" step="1000" type="number" inputmode="decimal" value="19000"/>
-                                <span class="input-suffix" id="entradaPorcentajeDisplay">20%</span>
+                                <label for="bl-bruto-anual"><i class="fas fa-euro-sign"></i> Bruto anual (€)</label>
+                                <input type="number" id="bl-bruto-anual" value="25000" step="500" min="0">
                             </div>
-                            <div class="slider-container">
-                                <input type="range" id="entradaSlider" class="form-slider" min="0" max="95000" step="1000" value="19000"/>
-                            </div>
-                        </div>
-                        <div class="form-group" id="interesGroup">
-                            <label class="form-label" data-i18n="interes_hipoteca">Tipo de interés hipoteca</label>
                             <div class="input-group">
-                                <input class="form-input with-suffix" id="interes" max="15" min="0" step="0.1" type="number" inputmode="decimal" value="3.2"/>
-                                <span class="input-suffix">%</span>
+                                <label for="bl-irpf"><i class="fas fa-percentage"></i> IRPF (%)</label>
+                                <input type="number" id="bl-irpf" value="15" step="0.5" min="0" max="47">
                             </div>
-                        </div>
-                        <div class="form-group" id="anosGroup">
-                            <label class="form-label" data-i18n="anos_hipoteca">Años de hipoteca</label>
-                            <input class="form-input" id="anos" max="40" min="5" step="1" type="number" inputmode="decimal" value="25"/>
-                        </div>
-                        <div class="form-group" id="gastosHipGroup">
-                            <label class="form-label" data-i18n="gastos_hipoteca">Gastos de hipoteca</label>
                             <div class="input-group">
-                                <input class="form-input with-suffix" id="gastosHipoteca" min="0" step="100" type="number" inputmode="decimal" value="1800"/>
-                                <span class="input-suffix">€</span>
+                                <label for="bl-pagas"><i class="fas fa-money-bill-wave"></i> Nº Pagas</label>
+                                <select id="bl-pagas">
+                                    <option value="12">12 pagas</option>
+                                    <option value="14" selected>14 pagas</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="bl-ss"><i class="fas fa-shield-halved"></i> SS trabajador (%)</label>
+                                <input type="number" id="bl-ss" value="6.35" step="0.01" min="0">
                             </div>
                         </div>
+                        <button type="button" id="btn-calcular-bruto" class="btn-calcular-inversa" style="margin-top:0.5rem;">
+                            <i class="fas fa-calculator"></i> Calcular mi neto
+                        </button>
+                        <div id="resultado-bruto-libre" class="extra-block__resultado"></div>
                     </div>
+                </details>
 
-                    <!-- Tab: Ingresos -->
-                    <div class="tab-content" id="ingresos-tab">
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="alquiler_mensual">Alquiler mensual</label>
+                <!-- CALCULADORA DE VACACIONES -->
+                <details class="extra-block extra-block--vacaciones" id="bloque-vacaciones">
+                    <summary class="extra-block__summary">
+                        <span class="extra-block__icon">🏖️</span>
+                        <span class="extra-block__title">Vacaciones y días libres</span>
+                        <span class="extra-block__badge">Convenio farmacia</span>
+                        <i class="fas fa-chevron-down extra-block__chevron"></i>
+                    </summary>
+                    <div class="extra-block__body">
+                        <p class="extra-block__desc">Calcula los días de vacaciones que te corresponden según tu convenio y fecha de alta, y cuánto valen en metálico si te los compensan.</p>
+                        <div class="extra-block__grid">
                             <div class="input-group">
-                                <input class="form-input with-suffix" id="alquiler" min="0" step="50" type="number" inputmode="decimal" value="700"/>
-                                <span class="input-suffix" data-i18n="mes">€/mes</span>
+                                <label for="vac-alta"><i class="fas fa-calendar-plus"></i> Fecha de alta en empresa</label>
+                                <input type="date" id="vac-alta" value="2020-01-01">
+                            </div>
+                            <div class="input-group">
+                                <label for="vac-referencia"><i class="fas fa-calendar-day"></i> Calcular hasta</label>
+                                <input type="date" id="vac-referencia">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="meses_vacios">Meses vacío al año</label>
-                            <input class="form-input" id="mesesVacio" max="12" min="0" step="0.5" type="number" inputmode="decimal" value="0.5"/>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="incremento_alquiler">Incremento anual del alquiler</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="incrementoAlquiler" max="10" min="0" step="0.1" type="number" inputmode="decimal" value="2"/>
-                                <span class="input-suffix">%</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="anos_analisis">Años de análisis</label>
-                            <input class="form-input" id="anosAnalisis" max="40" min="1" step="1" type="number" inputmode="decimal" value="20"/>
-                        </div>
+                        <div id="resultado-vacaciones" class="extra-block__resultado"></div>
                     </div>
+                </details>
 
-                    <!-- Tab: Gastos -->
-                    <div class="tab-content" id="gastos-tab">
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="ibi_anual">IBI anual</label>
+                <!-- CALCULADORA DE PENSIÓN ESTIMADA -->
+                <details class="extra-block extra-block--pension" id="bloque-pension">
+                    <summary class="extra-block__summary">
+                        <span class="extra-block__icon">👴</span>
+                        <span class="extra-block__title">Pensión estimada</span>
+                        <span class="extra-block__badge">Orientativo</span>
+                        <i class="fas fa-chevron-down extra-block__chevron"></i>
+                    </summary>
+                    <div class="extra-block__body">
+                        <p class="extra-block__desc">Estimación de tu pensión de jubilación según los años cotizados y tu salario actual. Basado en el sistema español de la Seguridad Social.</p>
+                        <div class="extra-block__grid">
                             <div class="input-group">
-                                <input class="form-input with-suffix" id="ibi" min="0" step="50" type="number" inputmode="decimal" value="380"/>
-                                <span class="input-suffix" data-i18n="ano">€/año</span>
+                                <label for="pen-edad-actual"><i class="fas fa-birthday-cake"></i> Edad actual</label>
+                                <input type="number" id="pen-edad-actual" value="35" min="16" max="65" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="pen-anios-cotizados"><i class="fas fa-briefcase"></i> Años ya cotizados</label>
+                                <input type="number" id="pen-anios-cotizados" value="10" min="0" max="47" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="pen-edad-jubilacion"><i class="fas fa-umbrella-beach"></i> Edad de jubilación</label>
+                                <select id="pen-edad-jubilacion">
+                                    <option value="65">65 años (anticipada con penalización)</option>
+                                    <option value="66">66 años</option>
+                                    <option value="66.5" selected>66 años y 6 meses (2026)</option>
+                                    <option value="67">67 años (jubilación plena)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="pen-base-reguladora"><i class="fas fa-euro-sign"></i> Base reguladora (€/mes)</label>
+                                <input type="number" id="pen-base-reguladora" value="0" min="0" step="50" placeholder="0 = usar mi bruto actual">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="gastos_comunidad">Gastos de comunidad</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="comunidad" min="0" step="10" type="number" inputmode="decimal" value="55"/>
-                                <span class="input-suffix" data-i18n="mes">€/mes</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="seguro_hogar">Seguro de hogar</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="seguro" min="0" step="50" type="number" inputmode="decimal" value="220"/>
-                                <span class="input-suffix" data-i18n="ano">€/año</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="seguro_impago">Seguro de impago</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="seguroImpago" min="0" step="50" type="number" inputmode="decimal" value="160"/>
-                                <span class="input-suffix" data-i18n="ano">€/año</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="mantenimiento">Mantenimiento y reparaciones</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="mantenimiento" min="0" step="50" type="number" inputmode="decimal" value="400"/>
-                                <span class="input-suffix" data-i18n="ano">€/año</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="administracion">Administración/Gestión</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="administracion" min="0" step="10" type="number" inputmode="decimal" value="0"/>
-                                <span class="input-suffix" data-i18n="mes">€/mes</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="incremento_gastos">Incremento anual de gastos</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="incrementoGastos" max="10" min="0" step="0.1" type="number" inputmode="decimal" value="0"/>
-                                <span class="input-suffix">%</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="tasa_impositiva">
-                                Tasa impositiva sobre alquiler neto
-                                <span class="help-tooltip" title="Modelo fiscal simplificado. La fiscalidad real depende de tu tramo IRPF, la reducción del 60% por alquiler de vivienda habitual y tus deducciones reales (intereses, amortización). Consulta con un asesor fiscal.">ℹ️</span>
-                            </label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="taxAlquiler" max="47" min="0" step="0.1" type="number" inputmode="decimal" value="19"/>
-                                <span class="input-suffix">%</span>
-                            </div>
-                            <div class="field-hint">Tipo orientativo. Tramos reales IRPF: 19% (&lt;6.000€), 21% (6-50k€), 23% (50-200k€), 26% (&gt;200k€). Reduce el 60% si es vivienda habitual.</div>
-                        </div>
+                        <button type="button" id="btn-calcular-pension" class="btn-calcular-inversa" style="margin-top:0.5rem;background:linear-gradient(135deg,#7c3aed,#6d28d9);">
+                            <i class="fas fa-calculator"></i> Estimar mi pensión
+                        </button>
+                        <div id="resultado-pension" class="extra-block__resultado"></div>
                     </div>
+                </details>
 
-                    <!-- Tab: Revalorización -->
-                    <div class="tab-content" id="revalorizacion-tab">
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="revalorizacion_anual">
-                                Revalorización anual del inmueble
-                                <span class="help-tooltip" title="Asunción de crecimiento constante anual. El mercado real no es lineal: incluye caídas y subidas bruscas. Usa este campo para comparar escenarios, no como predicción.">ℹ️</span>
-                            </label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="revalorizacion" max="15" min="-5" step="0.1" type="number" inputmode="decimal" value="3.5"/>
-                                <span class="input-suffix">%</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="gastos_venta">Gastos de venta futura</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="gastosVenta" max="15" min="0" step="0.1" type="number" inputmode="decimal" value="8"/>
-                                <span class="input-suffix">%</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" style="display:flex;align-items:center;justify-content:space-between;">
-                                <span data-i18n="plusvalia">Plusvalía municipal</span>
-                                <button type="button" class="btn-calc-plusvalia" onclick="abrirCalcPlusvalia()">🧮 Calcular</button>
-                            </label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="plusvalia" min="0" step="100" type="number" inputmode="decimal" value="2000"/>
-                                <span class="input-suffix">€</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="irpf_venta">IRPF por venta (19-23%)</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="irpfVenta" max="47" min="0" step="0.1" type="number" inputmode="decimal" value="19"/>
-                                <span class="input-suffix">%</span>
-                            </div>
-                        </div>
+            </div><!-- /col-inputs -->
 
-                        <!-- Escenarios -->
-                        <div class="scenario-section">
-                            <div class="scenario-label" data-i18n="escenarios_label">⚡ Escenarios rápidos</div>
-                            <div class="scenario-buttons">
-                                <button class="btn-scenario" data-i18n="escenario_pesimista" onclick="aplicarEscenario('pesimista')">😟 Pesimista</button>
-                                <button class="btn-scenario active" data-i18n="escenario_realista" onclick="aplicarEscenario('realista')">😐 Realista</button>
-                                <button class="btn-scenario" data-i18n="escenario_optimista" onclick="aplicarEscenario('optimista')">🚀 Optimista</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tab: Turístico -->
-                    <div class="tab-content" id="turistico-tab">
-                        <div class="turistico-header">
-                            <span class="turistico-badge">🏖️ Alquiler Turístico</span>
-                            <p class="turistico-desc">Compara larga duración vs. alquiler vacacional para maximizar ingresos.</p>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Precio por noche</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="precioNoche" min="0" step="5" type="number" inputmode="decimal" value="85"/>
-                                <span class="input-suffix">€/noche</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">
-                                Ocupación media anual
-                                <span class="help-tooltip" title="% de noches ocupadas al año. Media España turístico: 60-75%. Zonas premium (Costa del Sol, Barcelona, Madrid centro): 70-85%.">ℹ️</span>
-                            </label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="ocupacionTuristico" min="0" max="100" step="1" type="number" inputmode="decimal" value="65"/>
-                                <span class="input-suffix">%</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Gastos plataforma (Airbnb/Booking)</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="comisionPlataforma" min="0" max="30" step="0.5" type="number" inputmode="decimal" value="15"/>
-                                <span class="input-suffix">%</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Gastos limpieza / rotación</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="gastosLimpieza" min="0" step="50" type="number" inputmode="decimal" value="1200"/>
-                                <span class="input-suffix">€/año</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Suministros (luz, agua, wifi)</label>
-                            <div class="input-group">
-                                <input class="form-input with-suffix" id="suministrosTuristico" min="0" step="50" type="number" inputmode="decimal" value="1800"/>
-                                <span class="input-suffix">€/año</span>
-                            </div>
-                        </div>
-                        <!-- Comparativa en tiempo real — se actualiza al cambiar los campos -->
-                        <div id="turisticoResultado" class="turistico-resultado"></div>
-                    </div>
-
-                    <!-- Botones de acción -->
-                    <div class="action-buttons" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                        <button class="btn btn-reset" id="resetBtn" title="Restablecer valores por defecto">🔄 Resetear</button>
-                        <button class="btn btn-share" id="shareBtn">🔗 Compartir</button>
-                        <button class="btn btn-share" onclick="abrirWizard()" title="Calculadora guiada paso a paso">🧭 Guiada</button>
-                        <button class="btn btn-share" onclick="abrirMapa()" title="Rentabilidad por ciudades">🗺️ Mapa</button>
-                        <button class="btn btn-tools" id="toolsBtn" title="Herramientas adicionales">🛠️ Herramientas</button>
-                        <button class="btn btn-primary" id="pdfBtn" style="background: var(--gradient-main); flex:1;">📄 Exportar PDF</button>
-                    </div>
-
-                    <!-- Notificación de enlace copiado -->
-                    <div class="share-toast" id="shareToast" data-i18n="share_toast">✅ Enlace copiado al portapapeles</div>
+            <!-- COLUMNA DERECHA: Gráfico + Resultados -->
+            <div class="col-results">
+                <div class="chart-container">
+                    <canvas id="salaryChart"></canvas>
                 </div>
-            </div>
 
-            <!-- Panel de Resultados -->
-            <div class="glass-card results-panel">
-                <div class="card-header">
-                    <div class="card-title"><span data-i18n="analisis_rentabilidad">📊 Análisis de Rentabilidad</span></div>
-                    <div class="card-subtitle"><span data-i18n="resultados_completos">Resultados completos de tu inversión a largo plazo</span></div>
-                </div>
-                <div class="card-body">
-                    <div id="resultados">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📈</div>
-                            <h3 data-i18n="analiza_inversion">¡Analiza tu inversión inmobiliaria!</h3>
-                            <p data-i18n="completa_datos">Completa los datos en el panel izquierdo y haz clic en "Analizar Inversión" para obtener un análisis detallado de rentabilidad con proyección a largo plazo.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <div id="resultados" class="results-container"></div>
+                <div id="nomina-visual-container"></div>
+                <div id="desglose-mensual-container"></div>
+                <!-- SLIDER COMPARATIVA BRUTO/NETO -->
+                <div id="slider-irpf-container"></div>
+                <div id="comparativa-container"></div>
+                <div id="curiosidades-container"></div>
+                <!-- HISTORIAL -->
+                <div id="historial-container"></div>
 
-        <!-- Sección SEO — contenido semántico indexable -->
-        <section class="seo-section" aria-label="Guía de inversión inmobiliaria">
+                <button onclick="exportarImagen()" class="btn-export">
+                    <i class="fab fa-whatsapp"></i> Compartir mi cálculo
+                </button>
+            </div><!-- /col-results -->
 
-            <!-- Bloque intro + guía métricas -->
-            <div class="seo-intro">
-                <h2>Cómo calcular la rentabilidad de un piso en alquiler en España</h2>
-                <p>Invertir en vivienda para alquilar es una de las decisiones financieras más importantes que puedes tomar. Esta calculadora gratuita te ayuda a analizar todos los factores que determinan si una inversión inmobiliaria es rentable: desde el precio de compra y los impuestos hasta el cashflow mensual, la TIR y el valor neto al vender tras años de alquiler.</p>
-                <p>A diferencia de otras calculadoras básicas, aquí puedes modelar la hipoteca real con amortización, el ITP según tu comunidad autónoma, los gastos operativos anuales, la fiscalidad sobre rentas del alquiler y la revalorización del inmueble a lo largo del tiempo. El resultado es una proyección año a año que te permite comparar tu inversión con alternativas como depósitos, bonos o el S&P 500.</p>
-            </div>
+        </div><!-- /desktop-layout -->
 
-            <!-- Guía de métricas con microcopy -->
-            <div class="seo-metrics-guide">
-                <h2>Qué métrica mirar según tu objetivo inversor</h2>
-                <p>La calculadora genera varios indicadores. Aquí te explicamos cuándo priorizar cada uno:</p>
-                <div class="seo-grid">
-                    <div class="seo-card">
-                        <div class="seo-icon">💧</div>
-                        <h3>Cashflow mensual neto</h3>
-                        <p>Lo que te queda en el bolsillo cada mes después de pagar hipoteca, gastos e impuestos. <strong>Si buscas vivir del alquiler o complementar ingresos hoy, este es tu número clave.</strong> Un cashflow positivo desde el primer año da tranquilidad financiera. Negativo no significa mala inversión, pero implica que necesitarás aportaciones mensuales.</p>
-                        <div class="metric-guide-tag">👉 Ideal para: renta pasiva mensual</div>
-                    </div>
-                    <div class="seo-card">
-                        <div class="seo-icon">⚡</div>
-                        <h3>Rentabilidad anual compuesta (TIR estimada)</h3>
-                        <p>Mide el rendimiento total de tu dinero teniendo en cuenta tanto los alquileres cobrados como la ganancia por venta futura. <strong>Si inviertes a largo plazo y priorizas el patrimonio final, este indicador lo resume todo.</strong> Una TIR superior al 6-7% supera históricamente al mercado inmobiliario español medio.</p>
-                        <div class="metric-guide-tag">👉 Ideal para: acumulación de patrimonio</div>
-                    </div>
-                    <div class="seo-card">
-                        <div class="seo-icon">📊</div>
-                        <h3>ROI anual sobre capital invertido</h3>
-                        <p>Relaciona el cashflow anual con el capital que pusiste de tu bolsillo (entrada + impuestos + gastos). <strong>Un ROI alto con cashflow negativo es señal de alerta: significa que el número queda bien sobre el papel pero que cada mes necesitas aportar dinero.</strong> Valora siempre ambos juntos.</p>
-                        <div class="metric-guide-tag">👉 Ojo: ROI alto + cashflow negativo = riesgo de liquidez</div>
-                    </div>
-                    <div class="seo-card">
-                        <div class="seo-icon">🏠</div>
-                        <h3>Valor neto al vender</h3>
-                        <p>Lo que recibirías si vendieras el inmueble al final del período de análisis, descontando gastos de venta, plusvalía municipal e IRPF sobre la ganancia de capital. <strong>Si tu estrategia es comprar, alquilar y vender en 10-15 años, esta cifra más el flujo acumulado define tu beneficio real total.</strong></p>
-                        <div class="metric-guide-tag">👉 Ideal para: estrategia buy-to-let a plazo fijo</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Artículo largo con keywords -->
-            <div class="seo-article">
-                <h2>Errores comunes al calcular el ROI de un piso en alquiler</h2>
-
-                <h3>1. Ignorar los meses sin inquilino</h3>
-                <p>La mayoría de calculadoras asumen 12 meses de alquiler al año. En la práctica, entre rotaciones de inquilinos, reformas entre contratos y períodos de búsqueda, lo habitual en España es perder entre 3 y 6 semanas al año. Esta calculadora te permite configurar los meses vacíos exactos para obtener un resultado realista. Un inmueble con 1 mes de vacío al año pierde un 8,3% de sus ingresos brutos.</p>
-
-                <h3>2. Olvidar los gastos que no se ven</h3>
-                <p>El IBI, los gastos de comunidad, el seguro de hogar, el seguro de impago, el mantenimiento y la gestión si tienes agencia: todos estos gastos pueden sumar fácilmente entre 2.000 y 4.000 euros al año en un piso de precio medio. Ignorarlos puede hacer que un piso que parece rentable en papel dé pérdidas reales.</p>
-
-                <h3>3. No tener en cuenta la fiscalidad</h3>
-                <p>Los rendimientos de capital inmobiliario tributan en el IRPF. La legislación española permite deducir los intereses de la hipoteca, el IBI, la comunidad, los seguros y la amortización del inmueble (generalmente el 3% del valor de construcción). Esta calculadora aplica un modelo fiscal simplificado sobre el alquiler neto. <em>No sustituye un cálculo IRPF real con todas tus deducciones personales.</em> Para una planificación fiscal precisa, consulta con un asesor.</p>
-
-                <h3>4. Asumir revalorización constante</h3>
-                <p>El modelo de esta calculadora asume un crecimiento anual constante del precio del inmueble. En la realidad, el mercado inmobiliario en España ha mostrado períodos de caídas (2008-2014), estancamiento y fuertes subidas (2015-2024). La revalorización constante es una simplificación útil para comparar escenarios, no una predicción. Úsala para ver el rango de resultados, no como certeza.</p>
-
-                <h3>5. Confundir rentabilidad bruta con rentabilidad neta</h3>
-                <p>La <strong>rentabilidad bruta</strong> es simplemente alquiler anual dividido entre precio de compra. La <strong>rentabilidad neta</strong> descuenta todos los gastos. En España, una rentabilidad bruta del 6% puede convertirse en una neta del 3-4% al incluir todos los costes. Esta calculadora trabaja siempre con rentabilidad neta real, que es el único dato que importa para tomar decisiones.</p>
-
-                <h3>¿Qué es un buen cashflow inmobiliario en España?</h3>
-                <p>En el mercado español actual, con precios elevados en las principales ciudades, conseguir un cashflow positivo con hipoteca es cada vez más difícil en Madrid, Barcelona o Valencia. Lo habitual es cashflow ligeramente negativo o cercano a cero en grandes urbes, apostando por revalorización, y cashflows positivos más claros en ciudades medianas o zonas de playa con alta demanda turística. Un cashflow de +200 a +400 €/mes se considera un resultado muy bueno en el contexto actual de tipos de interés.</p>
-            </div>
-
-            <!-- Aviso legal explícito -->
-            <div class="seo-disclaimer-box">
-                <span class="seo-disclaimer-icon">⚖️</span>
-                <div>
-                    <strong>Modelo fiscal simplificado.</strong> Esta herramienta aplica una tasa impositiva fija sobre el alquiler neto. La fiscalidad real del alquiler en España depende de tu tramo de IRPF, las deducciones aplicables (intereses, amortización, gastos reales) y tu situación personal. Los resultados son orientativos y no sustituyen el asesoramiento de un profesional fiscal. La rentabilidad anual compuesta mostrada es una estimación basada en flujos de caja proyectados, no una TIR financiera auditada.
-                </div>
-            </div>
-
-        </section>
-
-        <!--
-        ══════════════════════════════════════════════════
-        BLOQUE PUBLICITARIO — Google AdSense
-        Para activarlo cuando tengas cuenta aprobada:
-        1. Sustituye ca-pub-XXXXXXXXXXXXXXXXX por tu Publisher ID
-        2. Sustituye XXXXXXXXXX por tu Ad Unit ID
-        3. Descomenta todo este bloque
-
-        <div class="ad-banner-container">
-            <div class="ad-label">Publicidad</div>
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-                 data-ad-slot="XXXXXXXXXX"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true">
-            </ins>
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
-        ══════════════════════════════════════════════════
-        -->
-
-    </main>
-
-    <!-- Resumen flotante (mobile) -->
-    <div class="floating-summary" id="floatingSummary">
-        <div class="floating-label" data-i18n="rentabilidad_flujo">Cashflow mensual</div>
-        <div id="floatingValue" class="floating-value">-</div>
-        <div class="floating-tir" id="floatingTir"></div>
+        <p class="watermark">conveniodefarmacia.com</p>
     </div>
+
+    <section class="info-section">
+        <h2>📚 Todo sobre el Salario en Oficinas de Farmacia 2026</h2>
+
+        <div class="faq-container">
+            <details class="faq-item">
+                <summary>¿Qué conceptos incluye el sueldo base en 2026?</summary>
+                <p>Según el <strong>XXV Convenio Colectivo Nacional</strong>, incluye:</p>
+                <ul>
+                    <li>✓ Salario base por categoría profesional</li>
+                    <li>✓ Plus de Facultativo (solo farmacéuticos)</li>
+                    <li>✓ Plus de convenio provincial (si aplica)</li>
+                    <li>✓ Complemento de antigüedad (trienios o quinquenios)</li>
+                    <li>✓ Nocturnidad por horas trabajadas 22:00-06:00</li>
+                    <li>✓ Mejoras voluntarias pactadas con la empresa</li>
+                </ul>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Cómo se calculan las horas nocturnas?</summary>
+                <p>La <strong>nocturnidad</strong> se abona por cada hora trabajada entre las <strong>22:00 y las 06:00</strong>.</p>
+                <p>En 2026, el valor por hora (Convenio Nacional):</p>
+                <ul>
+                    <li>Farmacéutico: <strong>2,66€/hora</strong></li>
+                    <li>Técnico: <strong>1,83€/hora</strong></li>
+                    <li>Auxiliar: <strong>1,80€/hora</strong></li>
+                </ul>
+                <p><strong>⚠️ Importante:</strong> La nocturnidad NO se incluye en las pagas extras.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Qué es el MEI que aparece en mi nómina?</summary>
+                <p>El <strong>MEI (Mecanismo de Equidad Intergeneracional)</strong> es una cotización adicional desde 2023 para la sostenibilidad del sistema de pensiones.</p>
+                <p><strong>En 2026:</strong> Trabajador <strong>0,13%</strong> · Empresa <strong>0,52%</strong></p>
+                <p>Se descuenta de tu base de cotización junto con las demás cotizaciones a la Seguridad Social.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Diferencia entre 12, 14 y 15 pagas?</summary>
+                <p><strong>12 pagas:</strong> Las extras se prorratean mensualmente. Cobras igual todos los meses.</p>
+                <p><strong>14 pagas:</strong> El más común. 2 pagas extras completas en junio y diciembre.</p>
+                <p><strong>15 pagas (Asturias):</strong> 3 pagas extras al año.</p>
+                <p>💡 El bruto anual es idéntico en todos los sistemas.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Qué son los trienios y quinquenios?</summary>
+                <p><strong>Trienios:</strong> Complemento de antigüedad por cada 3 años en la misma empresa. Se usan en el Convenio Nacional y Cataluña. Importe fijo mensual incluido en pagas extras.</p>
+                <p><strong>Quinquenios (Bizkaia y Gipuzkoa):</strong> Complemento cada 5 años. Importe fijo según convenio provincial.</p>
+                <p>⚠️ La antigüedad se cuenta desde tu fecha de alta en la empresa, no desde que trabajas en el sector.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Qué convenios están disponibles?</summary>
+                <ul>
+                    <li><strong>Nacional (XXV Convenio):</strong> Aplicable en toda España si no hay convenio provincial. Con campo CPG.</li>
+                    <li><strong>Barcelona:</strong> Anulado en 2025. Desde enero 2025 rige el Convenio Nacional.</li>
+                    <li><strong>Girona / Tarragona / Lleida:</strong> Convenio provincial conjunto.</li>
+                    <li><strong>Bizkaia:</strong> Convenio propio con quinquenios.</li>
+                    <li><strong>Gipuzkoa:</strong> Convenio propio con quinquenios.</li>
+                    <li><strong>Álava:</strong> Sin convenio propio; rige el Nacional.</li>
+                    <li><strong>Asturias:</strong> 15 pagas y quinquenios.</li>
+                </ul>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Qué es el Plus Ad Personam o CPG?</summary>
+                <p>El <strong>Complemento Personal de Garantía (CPG)</strong> es el complemento por antigüedad de trabajadores del Convenio Nacional con antigüedad anterior al <strong>1 de julio de 2000</strong>, cuando se suprimieron los trienios.</p>
+                <p>Es <strong>consolidado e irrenunciable</strong>. Se incluye en pagas extras. Introdúcelo en el campo específico si es tu caso.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Cuánto cobra un farmacéutico en España en 2026?</summary>
+                <p>Según el <strong>XXV Convenio Nacional</strong>, el mínimo es <strong>2.224,39€/mes</strong> más plus de facultativo (91,49€). En convenios provinciales puede ser mayor:</p>
+                <ul>
+                    <li>Bizkaia: <strong>2.548,98€/mes</strong></li>
+                    <li>Gipuzkoa: <strong>2.517,77€/mes</strong></li>
+                    <li>Girona/Tarragona/Lleida: <strong>2.268,59€ + 228,89€</strong> de plus</li>
+                </ul>
+                <p>El neto dependerá del IRPF (habitualmente entre 18% y 23% para farmacéuticos).</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Cómo funciona la jornada parcial?</summary>
+                <p>El salario se calcula proporcionalmente. Al 50% cobras el 50% del base, plus, trienios, etc.</p>
+                <p><strong>⚠️ Atención:</strong> La nocturnidad NO se reduce. Se paga el precio/hora completo por cada hora nocturna, independientemente de la jornada.</p>
+            </details>
+        </div>
+
+        <article class="seo-text">
+            <h3>🧮 Calculadora de Sueldo para Oficinas de Farmacia 2026 — Nacional, Bizkaia, Gipuzkoa, Cataluña y Asturias</h3>
+            <p>Esta calculadora profesional está actualizada con las <strong>tablas salariales oficiales 2026</strong> de todos los convenios colectivos del sector farmacéutico español: el XXV Convenio Nacional, los convenios provinciales de <strong>Bizkaia</strong>, <strong>Gipuzkoa</strong>, <strong>Girona/Tarragona/Lleida</strong> y <strong>Asturias</strong>, además del histórico convenio de Barcelona (anulado en 2025).</p>
+
+            <p>Calcula de forma <strong>gratuita y precisa</strong> tu salario neto mensual y anual, con deducciones exactas de IRPF y Seguridad Social (incluyendo MEI). Simula jornadas parciales, trabajo nocturno, mejoras voluntarias, trienios, quinquenios y diferentes sistemas de pagas (12, 14 o 15).</p>
+
+            <p>Incluye la <strong>calculadora inversa</strong> (¿qué bruto necesito para cobrar X neto?), el <strong>simulador de nuevo convenio</strong>, el <strong>calculador de atrasos</strong> y el <strong>desglose mes a mes</strong> del año para ver exactamente cuándo cobras cada paga extra.</p>
+
+            <p><strong>No recopilamos datos personales.</strong> Todos los cálculos se realizan en tu navegador. 100% gratuito y sin registro. Uso orientativo; consulta siempre tu nómina oficial para datos exactos.</p>
+        </article>
+    </section>
 
     <footer class="legal-info">
-        <p><a href="privacidad.html" target="_blank" rel="noopener" style="color: #94a3b8; text-decoration: underline;">Aviso Legal y Privacidad</a></p>
-        <a href="https://librecounter.org/referer/show" target="_blank" rel="noopener">
-            <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" alt="Contador de visitas" style="width:1px;height:1px;opacity:0;position:absolute;" />
-        </a>
+        <p>📋 Datos basados en el XXV Convenio Nacional de Oficinas de Farmacia y convenios provinciales aplicables.</p>
+        <p>⚖️ Uso orientativo. Consulta tu nómina oficial para datos contractuales exactos.</p>
+        <p><a href="privacidad.html" target="_blank" rel="noopener" style="color:#94a3b8;text-decoration:underline;">Aviso Legal y Privacidad</a></p>
+        <div style="display:none;">
+            <a href="https://librecounter.org/referer/show" target="_blank" rel="noopener">
+                <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" alt="Contador de visitas">
+            </a>
+        </div>
     </footer>
-</div>
+</main>
 
 <div id="cookie-banner" class="cookie-banner">
-    <div class="cookie-content">
-        <div class="cookie-text">
-            <span class="cookie-icon">🍪</span>
-            <div>
-                <strong>Usamos cookies</strong><br>
-                Cookies técnicas propias (necesarias) y cookies de análisis de Google Analytics/GTM para mejorar el servicio. Las cookies de análisis solo se activan con tu consentimiento.
-                <a href="privacidad.html" target="_blank" rel="noopener" class="cookie-link">Más información</a>
-            </div>
-        </div>
-        <div class="cookie-btns">
-            <button onclick="rechazarCookies()" class="btn-cookie btn-cookie--rechazar">Solo necesarias</button>
-            <button onclick="aceptarCookies()" class="btn-cookie btn-cookie--aceptar">Aceptar todas</button>
-        </div>
-    </div>
+    <p>
+        🍪 Utilizamos cookies técnicas para el funcionamiento de la calculadora. No recopilamos datos personales.
+        <button onclick="aceptarCookies()" class="btn-cookie">Aceptar</button>
+    </p>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     FOOTER — Invítame a un café ☕
-══════════════════════════════════════════════════ -->
-<footer class="site-footer">
-    <div class="footer-inner">
-        <p class="footer-text" data-i18n="footer_texto">
-            Herramienta gratuita, hecha con ❤️ para inversores como tú
-        </p>
-        <a class="btn-coffee"
-           href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR"
-           target="_blank"
-           rel="noopener noreferrer">
-            ☕ <span data-i18n="footer_cafe">¿Te ha sido útil? Invítame a un café</span>
-        </a>
-        <p class="footer-disclaimer" data-i18n="footer_disclaimer">
-            Esta herramienta es orientativa y no constituye asesoramiento financiero.
-        </p>
-    </div>
-</footer>
+<div class="donation-banner">
+    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=boarding87%40gmail.com&currency_code=EUR" target="_blank" rel="noopener">
+        <i class="fas fa-coffee"></i> ¿Te ayudó? Cómprame un café ☕
+    </a>
+</div>
 
-<script src="app.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Sueldo Farmacia Pro",
+  "url": "https://conveniodefarmacia.com",
+  "description": "Calculadora de sueldo neto para trabajadores de oficinas de farmacia en España. Incluye XXV Convenio Nacional y convenios provinciales de Bizkaia, Gipuzkoa, Girona/Tarragona/Lleida y Asturias. Actualizada 2026.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+  "inLanguage": "es",
+  "author": { "@type": "Organization", "name": "conveniodefarmacia.com" }
+}
+</script>
 
-    <!-- ── MODAL: ANÁLISIS GUARDADOS ─────────────────────── -->
-    <div class="modal-overlay" id="savedModal" onclick="if(event.target===this)closeSavedModal()">
-        <div class="modal-box">
-            <div class="modal-header">
-                <span class="modal-title">💾 Análisis Guardados</span>
-                <button class="modal-close" onclick="closeSavedModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="save-new-row">
-                    <input type="text" id="saveNameInput" class="form-input" placeholder="Nombre del análisis (ej: Piso Sevilla centro)" maxlength="60"/>
-                    <button class="btn btn-primary" onclick="saveCurrentAnalysis()" style="white-space:nowrap; padding:0.75rem 1.25rem;">💾 Guardar</button>
-                </div>
-                <div id="savedList" class="saved-list"></div>
-            </div>
-        </div>
-    </div>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Cuánto cobra un farmacéutico en España en 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Según el XXV Convenio Nacional, el mínimo es 2.224,39€/mes más plus de facultativo (91,49€). En Bizkaia 2.548,98€, Gipuzkoa 2.517,77€, Girona/Tarragona/Lleida 2.268,59€ + 228,89€ de plus. El neto depende del IRPF, habitualmente entre 18% y 23% para farmacéuticos."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué conceptos incluye el sueldo base en el convenio de farmacia 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Según el XXV Convenio, incluye: salario base, plus de Facultativo (solo farmacéuticos), plus provincial (si aplica), complemento de antigüedad (trienios o quinquenios), nocturnidad por horas entre 22:00 y 06:00, y mejoras voluntarias."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué es el MEI que aparece en mi nómina de farmacia?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "El MEI (Mecanismo de Equidad Intergeneracional) es una cotización adicional desde 2023. En 2026, el trabajador aporta un 0,13% y la empresa un 0,52% de la base de cotización."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué son los trienios y quinquenios en el convenio de farmacia?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Los trienios son complementos de antigüedad por cada 3 años en la empresa, usados en el Convenio Nacional y Cataluña. Los quinquenios (Bizkaia y Gipuzkoa) son complementos cada 5 años con importes fijos según convenio provincial."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuál es la diferencia entre 12, 14 o 15 pagas en farmacia?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Con 12 pagas las extras se prorratean mensualmente. Con 14 pagas recibes 2 extras en junio y diciembre. Con 15 pagas (Asturias) hay 3 extras al año. El bruto anual es idéntico en todos los casos."
+      }
+    }
+  ]
+}
+</script>
 
-    <!-- ── MODAL: COMPARADOR ─────────────────────────────── -->
-    <div class="modal-overlay" id="compareModal" onclick="if(event.target===this)closeCompareModal()">
-        <div class="modal-box modal-box--wide">
-            <div class="modal-header">
-                <span class="modal-title">⚖️ Comparador de Inmuebles</span>
-                <button class="modal-close" onclick="closeCompareModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-hint">Selecciona dos análisis guardados para compararlos en detalle.</p>
-                <div class="compare-selectors">
-                    <div class="compare-selector">
-                        <label class="form-label">Inmueble A</label>
-                        <select id="compareSelectA" class="form-select"></select>
-                    </div>
-                    <div class="compare-vs">VS</div>
-                    <div class="compare-selector">
-                        <label class="form-label">Inmueble B</label>
-                        <select id="compareSelectB" class="form-select"></select>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="runComparison()" style="width:100%; margin-top:1rem;">⚖️ Comparar ahora</button>
-                <div id="compareResult" class="compare-result"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── MODAL: COMPARATIVA TURÍSTICO ────────────────────── -->
-    <div class="modal-overlay" id="turisticoModal" onclick="if(event.target===this)cerrarModalTuristico()">
-        <div class="modal-box modal-box--wide">
-            <div class="modal-header">
-                <span class="modal-title">🏖️ Turístico vs. 🏠 Larga Duración — Comparativa detallada</span>
-                <button class="modal-close" onclick="cerrarModalTuristico()">✕</button>
-            </div>
-            <div class="modal-body" id="turisticoModalBody"></div>
-        </div>
-    </div>
-
-    <!-- ── MODAL: SELECTOR DE SECCIONES PDF ─────────────────── -->
-    <div class="modal-overlay" id="pdfModal" onclick="if(event.target===this)closePdfModal()">
-        <div class="modal-box modal-box--wide">
-            <div class="modal-header">
-                <span class="modal-title">📄 Selecciona el contenido del informe</span>
-                <button class="modal-close" onclick="closePdfModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-hint">Marca las secciones que quieres incluir en el PDF. Se generará en el orden que ves aquí.</p>
-
-                <div class="pdf-sections">
-                    <div class="pdf-section-group">
-                        <div class="pdf-group-title">📊 Análisis principal</div>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_portada" checked> Portada con KPIs principales</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_mercado" checked> Referencia de mercado y oferta</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_parametros" checked> Parámetros de la inversión</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_inversion" checked> Desglose inversión inicial</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_gastos_op" checked> Gastos operativos anuales</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_resultados" checked> Resultados económicos año 1</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_venta" checked> Proyección de venta</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_proyecciones" checked> Proyección año por año (tabla completa)</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_comparativa" checked> Comparativa con otras inversiones</label>
-                    </div>
-
-                    <div class="pdf-section-group">
-                        <div class="pdf-group-title">🏦 Hipoteca</div>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_hipoteca" checked> Cuadro de amortización hipotecaria</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_inversa" checked> Análisis inverso (precio máximo)</label>
-                    </div>
-
-                    <div class="pdf-section-group">
-                        <div class="pdf-group-title">🗺️ Nuevas funciones</div>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_zona" checked> Análisis de zona (CP, €/m², valor estimado)</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_plusvalia_real" checked> Plusvalía municipal real (Ley 11/2021)</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_rentabilidad_ciudad"> Rentabilidad comparada por ciudades</label>
-                    </div>
-
-                    <div class="pdf-section-group">
-                        <div class="pdf-group-title">🛠️ Herramientas</div>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_turistico"> Comparativa turístico vs. larga duración</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_capacidad"> Capacidad de compra (¿Cuánto puedo pagar?)</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_reforma"> ROI de reforma</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_euribor"> Simulador Euríbor</label>
-                        <label class="pdf-check"><input type="checkbox" id="pdfSec_rapido"> Análisis rápido</label>
-                    </div>
-                </div>
-
-                <div class="pdf-modal-footer">
-                    <button class="btn btn-share" onclick="toggleAllPdfSections(true)">✅ Seleccionar todo</button>
-                    <button class="btn btn-share" onclick="toggleAllPdfSections(false)">☐ Desmarcar todo</button>
-                    <button class="btn btn-primary" id="pdfGenerateBtn" onclick="generatePdfWithOptions()" style="flex:1; min-width:160px;">📄 Generar PDF</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── MODAL: HERRAMIENTAS ──────────────────────────────── -->
-    <div class="modal-overlay" id="toolsModal" onclick="if(event.target===this)closeToolsModal()">
-        <div class="modal-box modal-box--wide">
-            <div class="modal-header">
-                <span class="modal-title">🛠️ Herramientas Adicionales</span>
-                <button class="modal-close" onclick="closeToolsModal()">✕</button>
-            </div>
-            <div class="modal-body">
-
-                <!-- HERRAMIENTA 1: ¿Cuánto puedo pagar? -->
-                <div class="tool-section" id="tool-capacidad">
-                    <div class="tool-section-header" onclick="toggleTool('capacidad')">
-                        <span class="tool-icon">🏦</span>
-                        <div class="tool-info">
-                            <span class="tool-title">¿Cuánto puedo pagar?</span>
-                            <span class="tool-desc">Calcula el precio máximo según tus ingresos</span>
-                        </div>
-                        <span class="tool-chevron">▾</span>
-                    </div>
-                    <div class="tool-body" id="tool-body-capacidad">
-                        <div class="tool-inner">
-                            <div class="tools-row">
-                                <div class="form-group">
-                                    <label class="form-label">Sueldo neto mensual</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="sueldoNeto" type="number" min="0" step="100" value="2500" inputmode="decimal"/>
-                                        <span class="input-suffix">€/mes</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Otros ingresos (pareja, etc.)</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="otrosIngresos" type="number" min="0" step="100" value="0" inputmode="decimal"/>
-                                        <span class="input-suffix">€/mes</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Otras deudas mensuales</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="otrasDeudas" type="number" min="0" step="50" value="0" inputmode="decimal"/>
-                                        <span class="input-suffix">€/mes</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Ahorros disponibles (entrada)</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="ahorrosDisponibles" type="number" min="0" step="1000" value="40000" inputmode="decimal"/>
-                                        <span class="input-suffix">€</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" style="width:100%;" onclick="calcularCapacidad()">🏦 Calcular capacidad</button>
-                            <div id="capacidadResultado" class="tool-resultado" style="display:none;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HERRAMIENTA 2: Historial de CPs -->
-                <div class="tool-section" id="tool-historial">
-                    <div class="tool-section-header" onclick="toggleTool('historial')">
-                        <span class="tool-icon">🕐</span>
-                        <div class="tool-info">
-                            <span class="tool-title">Historial de zonas buscadas</span>
-                            <span class="tool-desc">Últimas búsquedas por código postal</span>
-                        </div>
-                        <span class="tool-chevron">▾</span>
-                    </div>
-                    <div class="tool-body" id="tool-body-historial">
-                        <div class="tool-inner">
-                            <div id="historialList" class="historial-list"></div>
-                            <button class="btn btn-share" style="width:100%; margin-top:0.5rem; font-size:0.8rem;" onclick="clearHistorial()">🗑️ Borrar historial</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HERRAMIENTA 3: Modo rápido ¿Me sale la cuenta? -->
-                <div class="tool-section" id="tool-rapido">
-                    <div class="tool-section-header" onclick="toggleTool('rapido')">
-                        <span class="tool-icon">⚡</span>
-                        <div class="tool-info">
-                            <span class="tool-title">¿Me sale la cuenta? (modo rápido)</span>
-                            <span class="tool-desc">4 datos, respuesta en 3 segundos</span>
-                        </div>
-                        <span class="tool-chevron">▾</span>
-                    </div>
-                    <div class="tool-body" id="tool-body-rapido">
-                        <div class="tool-inner">
-                            <div class="tools-row">
-                                <div class="form-group">
-                                    <label class="form-label">Precio del piso</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="rpPrecio" type="number" min="0" step="5000" value="120000" inputmode="decimal"/>
-                                        <span class="input-suffix">€</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Entrada disponible</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="rpEntrada" type="number" min="0" step="1000" value="30000" inputmode="decimal"/>
-                                        <span class="input-suffix">€</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Alquiler esperado</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="rpAlquiler" type="number" min="0" step="50" value="700" inputmode="decimal"/>
-                                        <span class="input-suffix">€/mes</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Años de análisis</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="rpAnos" type="number" min="5" max="40" step="1" value="20" inputmode="decimal"/>
-                                        <span class="input-suffix">años</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="rapidoResultado" class="rapido-resultado"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HERRAMIENTA 4: ROI de reforma -->
-                <div class="tool-section" id="tool-reforma">
-                    <div class="tool-section-header" onclick="toggleTool('reforma')">
-                        <span class="tool-icon">🔨</span>
-                        <div class="tool-info">
-                            <span class="tool-title">ROI de reforma</span>
-                            <span class="tool-desc">¿Cuánto mejora la rentabilidad reformando?</span>
-                        </div>
-                        <span class="tool-chevron">▾</span>
-                    </div>
-                    <div class="tool-body" id="tool-body-reforma">
-                        <div class="tool-inner">
-                            <div class="tools-row">
-                                <div class="form-group">
-                                    <label class="form-label">Coste de la reforma</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="refCoste" type="number" min="0" step="500" value="15000" inputmode="decimal"/>
-                                        <span class="input-suffix">€</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Alquiler actual (sin reforma)</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="refAlquilerAntes" type="number" min="0" step="50" value="650" inputmode="decimal"/>
-                                        <span class="input-suffix">€/mes</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Alquiler esperado (con reforma)</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="refAlquilerDespues" type="number" min="0" step="50" value="800" inputmode="decimal"/>
-                                        <span class="input-suffix">€/mes</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Plusvalía esperada por reforma</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="refPlusvalia" type="number" min="0" step="1000" value="20000" inputmode="decimal"/>
-                                        <span class="input-suffix">€</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" style="width:100%;" onclick="calcularROIReforma()">🔨 Calcular ROI reforma</button>
-                            <div id="reformaResultado" class="tool-resultado" style="display:none;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HERRAMIENTA 5: Alerta Euríbor variable -->
-                <div class="tool-section" id="tool-euribor">
-                    <div class="tool-section-header" onclick="toggleTool('euribor')">
-                        <span class="tool-icon">📊</span>
-                        <div class="tool-info">
-                            <span class="tool-title">Simulador Euríbor (hipoteca variable)</span>
-                            <span class="tool-desc">Cashflow según Euríbor actual y escenarios</span>
-                        </div>
-                        <span class="tool-chevron">▾</span>
-                    </div>
-                    <div class="tool-body" id="tool-body-euribor">
-                        <div class="tool-inner">
-                            <div class="tools-row">
-                                <div class="form-group">
-                                    <label class="form-label">Capital pendiente</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="eurCapital" type="number" min="0" step="1000" value="80000" inputmode="decimal"/>
-                                        <span class="input-suffix">€</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Diferencial del banco</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="eurDiferencial" type="number" min="0" step="0.05" value="0.75" inputmode="decimal"/>
-                                        <span class="input-suffix">%</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Años restantes</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="eurAnos" type="number" min="1" max="40" step="1" value="20" inputmode="decimal"/>
-                                        <span class="input-suffix">años</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Alquiler mensual</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="eurAlquiler" type="number" min="0" step="50" value="700" inputmode="decimal"/>
-                                        <span class="input-suffix">€/mes</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Gastos fijos mensuales</label>
-                                    <div class="input-group">
-                                        <input class="form-input with-suffix" id="eurGastos" type="number" min="0" step="10" value="150" inputmode="decimal"/>
-                                        <span class="input-suffix">€/mes</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary" style="width:100%;" onclick="calcularEuribor()">📊 Simular escenarios Euríbor</button>
-                            <div id="euriborResultado" class="tool-resultado" style="display:none;"></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- ── MODAL: WIDGET EMBEBIBLE ──────────────────────────── -->
-    <div class="modal-overlay" id="widgetModal" onclick="if(event.target===this)closeWidgetModal()">
-        <div class="modal-box modal-box--wide">
-            <div class="modal-header">
-                <span class="modal-title">🔌 Widget Embebible</span>
-                <button class="modal-close" onclick="closeWidgetModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-hint">Copia este código en tu web o blog para incrustar la calculadora con tu branding.</p>
-                <div class="widget-options">
-                    <label class="form-label">Tamaño</label>
-                    <div class="widget-size-row">
-                        <button class="widget-size-btn active" onclick="setWidgetSize('full')" id="ws-full">Completo</button>
-                        <button class="widget-size-btn" onclick="setWidgetSize('compact')" id="ws-compact">Compacto (800px)</button>
-                        <button class="widget-size-btn" onclick="setWidgetSize('mini')" id="ws-mini">Mini (480px)</button>
-                    </div>
-                </div>
-                <div class="widget-preview-label">Código para copiar:</div>
-                <div class="widget-code-wrap">
-                    <pre id="widgetCode" class="widget-code"></pre>
-                    <button class="widget-copy-btn" onclick="copyWidgetCode()">📋 Copiar</button>
-                </div>
-                <div class="widget-disclaimer">
-                    ℹ️ El widget carga la calculadora completa en un iframe. Puedes añadir <code>?lang=en</code> para inglés. Uso libre con atribución a pisorentable.org.
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ── MODAL: CALCULADORA PLUSVALÍA REAL ────────────────── -->
-    <div class="modal-overlay" id="plusvaliaModal" onclick="if(event.target===this)cerrarCalcPlusvalia()">
-        <div class="modal-box" style="max-width:520px;">
-            <div class="modal-header">
-                <span class="modal-title">🏛️ Plusvalía Municipal — Cálculo Real (Ley 11/2021)</span>
-                <button class="modal-close" onclick="cerrarCalcPlusvalia()">✕</button>
-            </div>
-            <div class="modal-body">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
-                    <div class="form-group" style="margin:0;">
-                        <label class="form-label">Valor catastral del suelo (€)
-                            <span class="help-tooltip" title="Consúltalo en el recibo del IBI. El suelo suele ser el 30-50% del valor catastral total.">ℹ️</span>
-                        </label>
-                        <input class="form-input" id="pvCatastral" type="number" min="0" step="1000" placeholder="ej. 45000" oninput="calcularPlusvaliaModal()"/>
-                    </div>
-                    <div class="form-group" style="margin:0;">
-                        <label class="form-label">Años de tenencia</label>
-                        <input class="form-input" id="pvAnos" type="number" min="1" max="30" step="1" value="10" oninput="calcularPlusvaliaModal()"/>
-                    </div>
-                </div>
-                <div class="form-group" style="margin-bottom:0.75rem;">
-                    <label class="form-label">Municipio</label>
-                    <select class="form-select" id="pvMunicipio" onchange="calcularPlusvaliaModal()">
-                        <option value="_default">Otros municipios (25%)</option>
-                        <option value="Madrid">Madrid (29%)</option>
-                        <option value="Barcelona">Barcelona (30%)</option>
-                        <option value="Valencia">Valencia (30%)</option>
-                        <option value="Sevilla">Sevilla (28%)</option>
-                        <option value="Zaragoza">Zaragoza (28%)</option>
-                        <option value="Málaga">Málaga (27%)</option>
-                        <option value="Bilbao">Bilbao (25%)</option>
-                        <option value="Palma">Palma de Mallorca (22%)</option>
-                        <option value="Alicante">Alicante (25%)</option>
-                        <option value="Murcia">Murcia (25%)</option>
-                    </select>
-                </div>
-                <div id="pvResultado">
-                    <p style="color:#94a3b8;text-align:center;padding:1rem;">Introduce el valor catastral del suelo para calcular.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── MODAL: MAPA DE RENTABILIDAD ──────────────────────── -->
-    <div class="modal-overlay" id="mapaModal" onclick="if(event.target===this)cerrarMapa()">
-        <div class="modal-box modal-box--wide" style="max-width:900px;">
-            <div class="modal-header">
-                <span class="modal-title">🗺️ Rentabilidad Media por Ciudad — España 2025</span>
-                <button class="modal-close" onclick="cerrarMapa()">✕</button>
-            </div>
-            <div class="modal-body" style="padding:0;">
-                <div id="mapaContainer"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── WIZARD PASO A PASO ───────────────────────────────── -->
-    <div class="modal-overlay" id="wizardModal" onclick="if(event.target===this)cerrarWizard()">
-        <div class="modal-box modal-box--wide" style="max-width:560px;">
-            <div class="modal-header">
-                <span class="modal-title">🧭 Calculadora guiada</span>
-                <button class="modal-close" onclick="cerrarWizard()">✕</button>
-            </div>
-            <div class="modal-body" id="wizardBody"></div>
-        </div>
-    </div>
-
+<script src="script.js" defer></script>
 </body>
 </html>
