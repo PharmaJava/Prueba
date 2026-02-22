@@ -664,6 +664,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </div>
 
+    <!-- ── MODAL: COMPARATIVA TURÍSTICO ────────────────────── -->
+    <div class="modal-overlay" id="turisticoModal" onclick="if(event.target===this)cerrarModalTuristico()">
+        <div class="modal-box modal-box--wide">
+            <div class="modal-header">
+                <span class="modal-title">🏖️ Turístico vs. 🏠 Larga Duración — Comparativa detallada</span>
+                <button class="modal-close" onclick="cerrarModalTuristico()">✕</button>
+            </div>
+            <div class="modal-body" id="turisticoModalBody"></div>
+        </div>
+    </div>
+
     <!-- ── MODAL: SELECTOR DE SECCIONES PDF ─────────────────── -->
     <div class="modal-overlay" id="pdfModal" onclick="if(event.target===this)closePdfModal()">
         <div class="modal-box modal-box--wide">
